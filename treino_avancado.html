@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Treino avançado – Avaliação Inicial</title>
+  <style>
+    :root{--green:#29ff47;--bg:#0a0a0a;--panel:#111;--muted:#9a9a9a;--danger:#ff4d4d;}
+    html,body{margin:0;padding:0;background:var(--bg);color:#eaeaea;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial;}
+    .wrap{max-width:860px;margin:0 auto;padding:16px;}
+    .card{background:var(--panel);border:1px solid #1e1e1e;border-radius:16px;padding:16px;box-shadow:0 8px 28px rgba(0,0,0,.35);}
+    .logo{display:flex;align-items:center;justify-content:center;margin:8px 0 16px;}
+    .logo img{max-width:260px;height:auto;filter:drop-shadow(0 4px 16px rgba(41,255,71,.25));}
+    h1{margin:8px 0 8px;font-size:1.35rem;color:var(--green);text-align:center;letter-spacing:.5px}
+    .subtitle{margin:0 0 10px;text-align:center;color:#c9c9c9;font-size:.95rem}
+    .section{margin:18px 0;padding:14px;border:1px solid #1e1e1e;border-radius:14px;background:#0e0e0e}
+    .section-title{margin:0 0 6px;color:#fff;font-weight:700;font-size:1rem;background:linear-gradient(90deg, rgba(41,255,71,.15), transparent);padding:8px 10px;border-radius:10px}
+    label.q{display:block;color:#fff;font-weight:600;margin:12px 0 6px}
+    .hint{color:#9a9a9a;font-size:.88rem;margin:-2px 0 8px}
+    input[type=text], input[type=number], textarea, select{
+      width:100%;padding:12px 14px;border-radius:12px;border:1px solid #1e1e1e;background:#141414;color:#eee;
+      outline:none;transition:.2s;
+    }
+    textarea{min-height:84px;resize:vertical}
+    input:focus, textarea:focus, select:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(41,255,71,.12)}
+    .arrow{display:flex;align-items:center;gap:8px;color:#29ff47;opacity:.9;margin:8px 0 0;font-size:.95rem}
+    .arrow::after{content:'➡️';margin-left:auto}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media (max-width:560px){.row{grid-template-columns:1fr} .logo img{max-width:200px}}
+    .btn{margin-top:12px;width:100%;background:var(--green);color:#091109;border:none;border-radius:14px;padding:14px 16px;font-weight:800;font-size:1.05rem;box-shadow:0 10px 30px rgba(41,255,71,.22);cursor:pointer;}
+    .btn:active{transform:translateY(1px)}
+    .btn-alt{margin-top:10px;width:100%;background:#222;color:#eee;border:1px solid #333;border-radius:14px;padding:12px 14px;font-weight:700;cursor:pointer;}
+    .error{color:#ff4d4d;font-size:.9rem;margin-top:6px;display:none}
+    .success{display:none;color:#b6f5c1;background:#0f1f12;border:1px solid #203b21;padding:10px;border-radius:10px;margin-top:10px}
+    .copy{margin-top:10px;text-align:center}
+    .divider{height:1px;background:#1e1e1e;margin:10px 0}
+    .radio-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    @media (max-width:480px){.radio-grid{grid-template-columns:1fr}}
+    .rbx{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid #1e1e1f;border-radius:12px;background:#141414}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    
+    
+
+
+<div class="logo">
+      <img src="data:image/svg+xml;utf8,
+        <svg xmlns='http://www.w3.org/2000/svg' width='720' height='220' viewBox='0 0 720 220'>
+          <rect width='100%' height='100%' fill='black'/>
+          <g fill='%2329ff47'>
+            <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='40' font-family='Arial' font-weight='700'>TREINO PERSONALIZADO</text>
+            <text x='50%' y='78%' dominant-baseline='middle' text-anchor='middle' font-size='18' font-family='Arial'>MFit Personal – Avançado</text>
+          </g>
+        </svg>" alt="Treino Personalizado – Avançado"/>
+    </div>
+    <h1>Treino avançado – Avaliação Inicial</h1>
+    <p class="subtitle">Preencha com atenção suas informações para que o Personal elabore seu treino de forma personalizada.</p>
+
+    <form id="mfitForm" class="card" onsubmit="return false;">
+      <!-- Seção 1 – Dados Pessoais -->
+      <div class="section">
+        <div class="section-title">Seção 1 – Dados Pessoais</div>
+        <label class="q" for="nome">1. Nome completo</label>
+        <div class="hint">(resposta curta)</div>
+        <input id="nome" name="nome" type="text" placeholder="Ex.: Ana Souza" required>
+        <div class="arrow">Próxima pergunta</div>
+
+        <div class="row">
+          <div>
+            <label class="q" for="idade">2. Idade</label>
+            <input id="idade" name="idade" type="number" inputmode="numeric" min="0" max="120" placeholder="Ex.: 28">
+          </div>
+          <div>
+            <label class="q" for="altura">3. Altura</label>
+            <input id="altura" name="altura" type="text" placeholder="Ex.: 1,70 m">
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label class="q" for="peso">4. Peso</label>
+            <input id="peso" name="peso" type="text" placeholder="Ex.: 72 kg">
+          </div>
+          <div>
+            <label class="q" for="zap">5. WhatsApp</label>
+            <input id="zap" name="zap" type="text" inputmode="tel" placeholder="Ex.: (69) 99291-3628">
+          </div>
+        </div>
+      </div>
+
+      <!-- Seção 2 – Objetivo -->
+      <div class="section">
+        <div class="section-title">Seção 2 – Objetivo</div>
+        <label class="q" for="objetivo">1. Qual é o seu principal objetivo?</label>
+        <div class="hint">(múltipla escolha – escolha 1)</div>
+        <select id="objetivo" name="objetivo">
+          <option value="" selected>Selecione...</option>
+          <option>Ganhar massa muscular</option>
+          <option>Perder peso / gordura</option>
+          <option>Melhorar saúde e disposição</option>
+          <option>Condicionamento físico</option>
+          <option>Outro (especifique abaixo)</option>
+        </select>
+        <textarea id="objetivoOutro" name="objetivoOutro" placeholder="Se marcou 'Outro', descreva aqui"></textarea>
+        <div class="arrow">Próxima pergunta</div>
+      </div>
+
+      <!-- Seção 3 – Experiência e Frequência -->
+      <div class="section">
+        <div class="section-title">Seção 3 – Experiência e Frequência</div>
+        <label class="q" for="experiencia">1. Qual é o seu nível de experiência com treino?</label>
+        <div class="hint">(múltipla escolha – escolha 1)</div>
+        <select id="experiencia" name="experiencia">
+          <option value="" selected>Selecione...</option>
+          <option>Iniciante (nunca treinei)</option>
+          <option>Intermediário (menos de 6 meses de treino)</option>
+          <option>Avançado (mais de 6 meses de treino)</option>
+        </select>
+
+        <label class="q">2. Quantos dias por semana você pode treinar?</label>
+        <div class="hint">(escolha apenas 1)</div>
+        <div class="radio-grid">
+          <label class="rbx"><input type="radio" name="dias" value="3 dias/semana"> 3 dias/semana</label>
+          <label class="rbx"><input type="radio" name="dias" value="4 dias/semana"> 4 dias/semana</label>
+          <label class="rbx"><input type="radio" name="dias" value="5 dias/semana"> 5 dias/semana</label>
+          <label class="rbx"><input type="radio" name="dias" value="6 dias/semana"> 6 dias/semana</label>
+        </div>
+
+        <label class="q" for="tempo">3. Quanto tempo por treino?</label>
+        <input id="tempo" name="tempo" type="text" placeholder="Ex.: 50–60 min">
+
+        <div class="arrow">Próxima pergunta</div>
+      </div>
+
+      <!-- Seção 4 – Local de Treino e Equipamentos -->
+      <div class="section">
+        <div class="section-title">Seção 4 – Local de Treino e Equipamentos</div>
+        <label class="q" for="local">1. Onde você costuma treinar?</label>
+        <div class="hint">(múltipla escolha – escolha 1)</div>
+        <select id="local" name="local">
+          <option value="" selected>Selecione...</option>
+          <option>Academia</option>
+          <option>Casa com equipamentos</option>
+          <option>Casa sem equipamentos</option>
+        </select>
+
+        <div class="section" style="margin-top:12px">
+          <div class="section-title">Preferência de Equipamentos</div>
+          <div class="radio-grid">
+            <label class="rbx"><input type="radio" name="equipamento" value="Treinos livres"> Treinos livres</label>
+            <label class="rbx"><input type="radio" name="equipamento" value="Máquinas"> Máquinas</label>
+            <label class="rbx"><input type="radio" name="equipamento" value="Ambos equilibrado"> Ambos equilibrado</label>
+          </div>
+        </div>
+
+        <div class="arrow">Próxima pergunta</div>
+      </div>
+
+      <!-- Seção 5 – Histórico de Saúde -->
+      <div class="section">
+        <div class="section-title">Seção 5 – Histórico de Saúde</div>
+        <label class="q" for="cardiaco">Você possui problemas cardíacos?</label>
+        <select id="cardiaco" name="cardiaco">
+          <option value="" selected>Selecione...</option>
+          <option>Sim</option>
+          <option>Não</option>
+          <option>Não sei</option>
+        </select>
+        <textarea id="cardiacoDesc" name="cardiacoDesc" placeholder="Se sim, descreva"></textarea>
+
+        <label class="q" for="respiratorio">Você possui problemas respiratórios (ex.: asma, bronquite)?</label>
+        <select id="respiratorio" name="respiratorio">
+          <option value="" selected>Selecione...</option>
+          <option>Sim</option>
+          <option>Não</option>
+          <option>Não sei</option>
+        </select>
+        <textarea id="respiratorioDesc" name="respiratorioDesc" placeholder="Se sim, descreva"></textarea>
+
+        <div class="row">
+          <div>
+            <label class="q" for="pressao">Problemas de pressão arterial?</label>
+            <select id="pressao" name="pressao">
+              <option value="" selected>Selecione...</option>
+              <option>Hipertensão</option>
+              <option>Hipotensão</option>
+              <option>Normal</option>
+              <option>Não sei</option>
+            </select>
+          </div>
+          <div>
+            <label class="q" for="medicacao">Uso de medicamentos contínuos?</label>
+            <input id="medicacao" name="medicacao" type="text" placeholder="Quais?">
+          </div>
+        </div>
+
+        <label class="q" for="cirurgia">Já realizou cirurgias ou possui doenças crônicas?</label>
+        <textarea id="cirurgia" name="cirurgia" placeholder="Descreva"></textarea>
+
+        <div class="divider"></div>
+        <label class="q" for="cesarea">Você já realizou parto cesariano (cesárea)?</label>
+        <select id="cesarea" name="cesarea">
+          <option value="" selected>Selecione...</option>
+          <option>Sim</option>
+          <option>Não</option>
+          <option>Não se aplica</option>
+        </select>
+        <div id="cesareaBox" style="display:none">
+          <label class="q" for="cesareaTempo">Se sim, há quanto tempo foi realizada?</label>
+          <input id="cesareaTempo" name="cesareaTempo" type="text" placeholder="Ex.: 8 meses, 2 anos">
+          <label class="q" for="cesareaInter">Houve alguma intercorrência na recuperação?</label>
+          <textarea id="cesareaInter" name="cesareaInter" placeholder="Descreva (ex.: dor, aderência, diástase, etc.)"></textarea>
+        </div>
+        <div class="arrow">Próxima pergunta</div>
+      </div>
+
+      <!-- Seção 6 – Tipo de Metabolismo -->
+      <div class="section" id="secMetabolismo">
+        <div class="section-title">🧬 Seção 6 – Tipo de Metabolismo</div>
+        <p class="hint">Responda rapidamente para identificarmos seu tipo metabólico:</p>
+
+        <label class="q" for="met1">1. Você ganha peso com facilidade ou dificuldade?</label>
+        <select id="met1" name="met1">
+          <option value="" selected>Selecione...</option>
+          <option>Com facilidade</option>
+          <option>Com dificuldade</option>
+          <option>Normal</option>
+        </select>
+
+        <label class="q" for="met2">2. Seu corpo tende a ser mais magro, médio ou largo?</label>
+        <select id="met2" name="met2">
+          <option value="" selected>Selecione...</option>
+          <option>Mais magro</option>
+          <option>Médio</option>
+          <option>Mais largo</option>
+        </select>
+
+        <label class="q" for="met3">3. Tem facilidade para perder peso?</label>
+        <select id="met3" name="met3">
+          <option value="" selected>Selecione...</option>
+          <option>Sim</option>
+          <option>Não</option>
+          <option>Mais ou menos</option>
+        </select>
+
+        <label class="q" for="met4">4. Como é seu apetite?</label>
+        <select id="met4" name="met4">
+          <option value="" selected>Selecione...</option>
+          <option>Baixo</option>
+          <option>Moderado</option>
+          <option>Alto</option>
+        </select>
+
+        <label class="q" for="met5">5. Como é sua energia ao longo do dia?</label>
+        <select id="met5" name="met5">
+          <option value="" selected>Selecione...</option>
+          <option>Alta o tempo todo</option>
+          <option>Regular</option>
+          <option>Baixa com frequência</option>
+        </select>
+
+        <p style="margin-top:12px;color:#9a9a9a;font-size:.9rem;">
+          ➤ <strong>Resultado automático:</strong> Seu metabolismo é 
+          <span id="metResultado" style="color:#29ff47;font-weight:600;">—</span>.
+        </p>
+      </div>
+
+      <!-- Seção 7 – Mobilidade e Alongamento -->
+      <div class="section">
+        <div class="section-title">Seção 7 – Mobilidade e Alongamento</div>
+        <label class="q">Deseja incluir <strong>mobilidade</strong> no seu treino?</label>
+        <div class="radio-grid">
+          <label class="rbx"><input type="radio" name="mobilidade" value="Sim"> Sim</label>
+          <label class="rbx"><input type="radio" name="mobilidade" value="Não"> Não</label>
+        </div>
+
+        <label class="q">Deseja incluir <strong>alongamento</strong> no seu treino?</label>
+        <div class="radio-grid">
+          <label class="rbx"><input type="radio" name="alongamento" value="Sim"> Sim</label>
+          <label class="rbx"><input type="radio" name="alongamento" value="Não"> Não</label>
+        </div>
+      </div>
+
+      <!-- Seção 8 – Foco Muscular (escolha única) -->
+      <div class="section">
+        <div class="section-title">Seção 8 – Foco Muscular (escolha única)</div>
+        <div class="hint">Selecione apenas uma opção.</div>
+        <div class="radio-grid">
+          <label class="rbx"><input type="radio" name="foco" value="Costa"> Costa</label>
+          <label class="rbx"><input type="radio" name="foco" value="Peito"> Peito</label>
+          <label class="rbx"><input type="radio" name="foco" value="Ombro"> Ombro</label>
+          <label class="rbx"><input type="radio" name="foco" value="Braço"> Braço</label>
+          <label class="rbx"><input type="radio" name="foco" value="Abdômen"> Abdômen</label>
+          <label class="rbx"><input type="radio" name="foco" value="Perna completa"> Perna completa</label>
+          <label class="rbx"><input type="radio" name="foco" value="Treino equilibrado"> Treino equilibrado</label>
+        </div>
+      </div>
+
+      <!-- Seção 9 – Condições Físicas e Limitações -->
+      <div class="section">
+        <div class="section-title">Seção 9 – Condições Físicas e Limitações</div>
+        <label class="q" for="temLesao">Você possui alguma dor, lesão ou limitação física?</label>
+        <select id="temLesao" name="temLesao">
+          <option value="" selected>Selecione...</option>
+          <option>Sim</option>
+          <option>Não</option>
+          <option>Às vezes</option>
+        </select>
+
+        <label class="q" for="ondeLesao">Onde é a limitação ou dor?</label>
+        <input id="ondeLesao" name="ondeLesao" type="text" placeholder="Ex.: joelho, ombro, coluna, tornozelo etc.">
+
+        <label class="q" for="movimentoDor">Algum movimento ou exercício causa desconforto?</label>
+        <textarea id="movimentoDor" name="movimentoDor" placeholder="Descreva o movimento/exercício que incomoda"></textarea>
+      </div>
+
+      <!-- Seção 10 – Observações Finais -->
+      <div class="section">
+        <div class="section-title">Seção 10 – Observações Finais</div>
+        <label class="q" for="obs">Deseja adicionar alguma observação ou preferência?</label>
+        <textarea id="obs" name="obs" placeholder="Preferências de treino, horários, restrições, etc."></textarea>
+      </div>
+
+      <!-- Ações -->
+      <button id="copyAllBtn" class="btn-alt" type="button">📋 Copiar minhas respostas</button>
+      <button id="sendBtn" class="btn" type="button">💪 Enviar minhas respostas no WhatsApp</button>
+      <div id="err" class="error">Preencha pelo menos o nome e um WhatsApp válido.</div>
+      <div id="ok" class="success">Abrindo o WhatsApp... Se não abrir no iPhone, toque e segure e escolha 'Abrir em nova aba'.</div>
+    
+      <textarea id="copyAllHidden" style="position:absolute;left:-9999px;top:-9999px;height:0;width:0;opacity:0;"></textarea>
+    </form>
+            
+  </div>
+
+  <script>
+    const phone = "5569992913628";
+    const $ = (id) => document.getElementById(id);
+    const normalizePhone = v => (v||"").replace(/\\D+/g,'');
+
+    // Mostrar/ocultar detalhes de cesárea
+    function toggleCesarea(){
+      const cesareaEl = $("cesarea");
+      const cesareaBox = $("cesareaBox");
+      if(!cesareaEl||!cesareaBox) return;
+      cesareaBox.style.display = (cesareaEl.value === "Sim") ? "block" : "none";
+    }
+    document.addEventListener("change", e=>{ if(e.target && e.target.id==="cesarea") toggleCesarea(); });
+    toggleCesarea();
+
+    // Persistência (inclui foco, equipamentos e limitações físicas)
+    const fields = [
+      "nome","idade","altura","peso","zap","objetivo","objetivoOutro","experiencia",
+      "tempo","local",
+      "cardiaco","cardiacoDesc","respiratorio","respiratorioDesc","pressao","medicacao","cirurgia",
+      "cesarea","cesareaTempo","cesareaInter",
+      "obs","met1","met2","met3","met4","met5",
+      "temLesao","ondeLesao","movimentoDor",
+      "focoSelecionado","equipSelecionado","diasSelecionado","mobilidade","alongamento"
+    ];
+
+    function save(){
+      const d={};
+      fields.forEach(f=>{
+        if(f==="focoSelecionado"){
+          const sel = document.querySelector('input[name="foco"]:checked');
+          d[f] = sel ? sel.value : "";
+          return;
+        }
+        if(f==="equipSelecionado"){
+          const sel = document.querySelector('input[name="equipamento"]:checked');
+          d[f] = sel ? sel.value : "";
+          return;
+        }
+        if(f==="diasSelecionado"){
+          const sel = document.querySelector('input[name="dias"]:checked');
+          d[f] = sel ? sel.value : "";
+          return;
+        }
+        const el=$(f);
+        if(!el) return;
+        d[f] = el.value;
+      });
+      // Mobilidade & alongamento (radio)
+      d["mobilidade"] = (document.querySelector('input[name="mobilidade"]:checked')||{}).value||"";
+      d["alongamento"] = (document.querySelector('input[name="alongamento"]:checked')||{}).value||"";
+
+      localStorage.setItem("mfit_treino_avancado_v7_sem_dieta", JSON.stringify(d));
+    }
+
+    function load(){
+      try{
+        const d=JSON.parse(localStorage.getItem("mfit_treino_avancado_v7_sem_dieta")||"{}");
+        fields.forEach(f=>{
+          if(f==="focoSelecionado"){
+            const val = d[f];
+            if(val){
+              const radio = Array.from(document.querySelectorAll('input[name="foco"]')).find(r=>r.value===val);
+              if(radio) radio.checked = true;
+            }
+            return;
+          }
+          if(f==="equipSelecionado"){
+            const val = d[f];
+            if(val){
+              const radio = Array.from(document.querySelectorAll('input[name="equipamento"]')).find(r=>r.value===val);
+              if(radio) radio.checked = true;
+            }
+            return;
+          }
+          if(f==="diasSelecionado"){
+            const val = d[f];
+            if(val){
+              const radio = Array.from(document.querySelectorAll('input[name="dias"]')).find(r=>r.value===val);
+              if(radio) radio.checked = true;
+            }
+            return;
+          }
+          const el=$(f);
+          if(el && d[f]!==undefined){ el.value = d[f]; }
+        });
+        // Mobilidade & alongamento
+        ["mobilidade","alongamento"].forEach(name=>{
+          const val = d[name];
+          if(val){
+            const r = document.querySelector('input[name="'+name+'"][value="'+val+'"]');
+            if(r) r.checked = true;
+          }
+        });
+        if(typeof mfit_classificar_metabolismo==='function') mfit_classificar_metabolismo();
+        toggleCesarea();
+      }catch(e){}
+    }
+    load();
+
+    // listeners para salvar automático
+    fields.forEach(f=>{
+      if(f==="focoSelecionado"){
+        document.querySelectorAll('input[name="foco"]').forEach(r=> r.addEventListener("change", save));
+      }else if(f==="equipSelecionado"){
+        document.querySelectorAll('input[name="equipamento"]').forEach(r=> r.addEventListener("change", save));
+      }else if(f==="diasSelecionado"){
+        document.querySelectorAll('input[name="dias"]').forEach(r=> r.addEventListener("change", save));
+      }else{
+        const el=$(f);
+        if(el){ el.addEventListener("input", save); el.addEventListener("change", save); }
+      }
+    });
+    document.querySelectorAll('input[name="mobilidade"],input[name="alongamento"]').forEach(r=>r.addEventListener('change', save));
+
+    function getFoco(){ const sel = document.querySelector('input[name="foco"]:checked'); return sel? sel.value : ""; }
+    function getEquip(){ const sel = document.querySelector('input[name="equipamento"]:checked'); return sel? sel.value : ""; }
+    function getDias(){ const sel = document.querySelector('input[name="dias"]:checked'); return sel? sel.value : ""; }
+
+    function mfit_classificar_metabolismo(){
+      function val(id){ var el=document.getElementById(id); return el?el.value:""; }
+      var v1=val("met1"), v2=val("met2"), v3=val("met3"), v4=val("met4"), v5=val("met5");
+      var ecto=0, meso=0, endo=0;
+      if(v1==="Com dificuldade") ecto++;
+      if(v1==="Com facilidade") endo++;
+      if(v2==="Mais magro") ecto++;
+      if(v2==="Médio") meso++;
+      if(v2==="Mais largo") endo++;
+      if(v3==="Sim") ecto++;
+      if(v3==="Não") endo++;
+      if(v4==="Baixo") ecto++;
+      if(v4==="Alto") endo++;
+      if(v5==="Alta o tempo todo") ecto++;
+      if(v5==="Baixa com frequência") endo++;
+      var res = "Mesomorfo";
+      if(ecto>endo && ecto>meso) res="Ectomorfo";
+      if(endo>ecto && endo>meso) res="Endomorfo";
+      var span=document.getElementById("metResultado");
+      if(span) span.textContent=res;
+      return res;
+    }
+    ["met1","met2","met3","met4","met5"].forEach(id=>{
+      var el=document.getElementById(id);
+      if(el){ el.addEventListener("change", mfit_classificar_metabolismo); }
+    });
+
+    function buildMessage(){
+      const objetivoSel = $("objetivo")?.value || "";
+      const objetivoOutro = $("objetivoOutro")?.value?.trim() || "";
+      const objetivo = (objetivoSel === "Outro (especifique abaixo)" && objetivoOutro) ? objetivoOutro : objetivoSel;
+
+      const data = {
+        "Nome": $("nome")?.value?.trim() || "",
+        "Idade": $("idade")?.value?.trim() || "",
+        "Altura": $("altura")?.value?.trim() || "",
+        "Peso": $("peso")?.value?.trim() || "",
+        "WhatsApp do aluno": $("zap")?.value?.trim() || "",
+        "Objetivo": objetivo,
+        "Experiência": $("experiencia")?.value?.trim() || "",
+        "Frequência (dias)": getDias(),
+        "Tempo por treino": $("tempo")?.value?.trim() || "",
+        "Local de treino": $("local")?.value?.trim() || "",
+
+        "Preferência de equipamentos": getEquip(),
+        "Mobilidade no treino": (document.querySelector('input[name="mobilidade"]:checked')||{}).value||"",
+        "Alongamento no treino": (document.querySelector('input[name="alongamento"]:checked')||{}).value||"",
+
+        "Problemas cardíacos": $("cardiaco")?.value?.trim() || "",
+        "Cardíaco - descrição": $("cardiacoDesc")?.value?.trim() || "",
+        "Problemas respiratórios": $("respiratorio")?.value?.trim() || "",
+        "Respiratório - descrição": $("respiratorioDesc")?.value?.trim() || "",
+        "Pressão arterial": $("pressao")?.value?.trim() || "",
+        "Medicação contínua": $("medicacao")?.value?.trim() || "",
+        "Cirurgias/doenças crônicas": $("cirurgia")?.value?.trim() || "",
+        "Parto cesáreo": $("cesarea")?.value?.trim() || "",
+        "Cesárea - tempo": $("cesareaTempo")?.value?.trim() || "",
+        "Cesárea - intercorrências": $("cesareaInter")?.value?.trim() || "",
+
+        "Foco muscular": getFoco(),
+        "Observações": $("obs")?.value?.trim() || "",
+
+        "Possui dor/lesão/limitação": $("temLesao")?.value?.trim() || "",
+        "Local da dor/limitação": $("ondeLesao")?.value?.trim() || "",
+        "Movimento que causa desconforto": $("movimentoDor")?.value?.trim() || ""
+      };
+
+      const lines = ["Olá Personal! Preenchi minha ficha para montar meu TREINO PERSONALIZADO 💪"];
+      for(const [k,v] of Object.entries(data)){ if(v) lines.push(`${k}: ${v}`); }
+      const metab = mfit_classificar_metabolismo();
+      lines.push("Resultado: Seu metabolismo é " + metab + ".");
+      return lines.join("\\n");
+    }
+
+    // Botão copiar tudo (sempre visível)
+    document.getElementById("copyAllBtn").addEventListener("click", async () => {
+      const text = buildMessage();
+      try{
+        await navigator.clipboard.writeText(text);
+        alert("Mensagem copiada! Abra onde quiser e cole.");
+      }catch(e){
+        prompt("Copie manualmente (Ctrl+C/⌘C):", text);
+      }
+      save();
+    });
+
+    // Botão enviar WhatsApp
+    
+// ====== MFIT: buildMessageAll (100% da pesquisa + metabolismo) ======
+function buildMessageAll() {
+  const form = document.getElementById("mfitForm") || document;
+  const lines = [];
+  lines.push("📝 Formulário MFIT – Cópia Completa");
+  lines.push("===============================================");
+
+  const fields = form.querySelectorAll("input, select, textarea");
+  fields.forEach(el => {
+    let labelTxt = "";
+    if (el.id) {
+      const lab = form.querySelector('label[for="'+el.id+'"]');
+      if (lab) labelTxt = (lab.textContent || "").replace(/\s+/g, " ").trim();
+    }
+    if (!labelTxt) labelTxt = el.getAttribute("placeholder") || el.getAttribute("name") || "(campo)";
+
+    let val = "";
+    const tag = el.tagName.toLowerCase();
+    if (el.type === "radio" || el.type === "checkbox") {
+      if (el.checked) val = (el.value || "").trim();
+      else return;
+    } else if (tag === "select" || tag === "textarea" || tag === "input") {
+      val = (el.value || "").trim();
+    }
+
+    labelTxt = labelTxt.replace(/\s+/g, " ").trim();
+    if (!labelTxt) labelTxt = "(campo)";
+    if (!val) val = "—";
+    lines.push(labelTxt + ": " + val);
+  });
+
+  let metab = "—";
+  try { metab = (typeof mfit_classificar_metabolismo === "function") ? mfit_classificar_metabolismo() : "—"; } catch(e) {}
+  lines.push("-----------------------------------------------");
+  lines.push("➡️ Resultado automático do metabolismo: " + metab);
+  return lines.join("\n");
+}
+
+    document.getElementById("sendBtn").addEventListener("click", () => {
+      const nome = $("nome")?.value?.trim() || "";
+      const zapAluno = normalizePhone($("zap")?.value || "");
+      if(!nome || zapAluno.length < 10){
+        $("err").style.display = "block"; $("ok").style.display = "none"; return;
+      }
+
+      $("err").style.display = "none";
+      save();
+
+      const full = buildMessage();
+
+      const deep = "whatsapp://send?phone=" + phone + "&text=" + encodeURIComponent(full);
+      const url  = "https://wa.me/" + phone + "?text=" + encodeURIComponent(full);
+      try{
+        window.location.href = deep;
+        setTimeout(function(){ if(!document.hidden){ window.location.href = url; }}, 600);
+      }catch(e){
+        window.location.href = url;
+      }
+
+      $("ok").style.display = "block";
+    });
+  
+    // ====== MFIT: Copiar tudo (com fallbacks e notificações) ======
+    (function(){
+      const btn = document.getElementById("copyAllBtn");
+      if(!btn) return;
+      btn.addEventListener("click", async () => {
+        try { if (typeof save === "function") save(); } catch(e) {}
+        const text = (typeof buildMessageAll === "function") ? buildMessageAll() : "";
+        if(!text){ alert("Não foi possível montar o texto da pesquisa. Preencha o formulário e tente novamente."); return; }
+
+        try {
+          await navigator.clipboard.writeText(text);
+          alert("✅ Pesquisa completa copiada! Agora é só colar onde quiser.");
+          return;
+        } catch(e) {}
+
+        try {
+          const ta = document.getElementById("copyAllHidden");
+          ta.value = text;
+          ta.focus(); ta.select();
+          const ok = document.execCommand("copy");
+          if (ok) { alert("✅ Pesquisa completa copiada! Agora é só colar onde quiser."); return; }
+        } catch(e) {}
+
+        try {
+          const ta2 = document.getElementById("copyAllHidden");
+          ta2.value = text;
+          ta2.style.position = "fixed";
+          ta2.style.left = "8px"; ta2.style.right = "8px"; ta2.style.bottom = "12px";
+          ta2.style.width = "calc(100% - 16px)"; ta2.style.height = "180px";
+          ta2.style.opacity = "1"; ta2.style.background = "#0e0e0e"; ta2.style.color = "#eaeaea";
+          ta2.style.border = "1px solid #2a2a2a"; ta2.style.padding = "10px"; ta2.style.zIndex = "9999";
+          ta2.focus(); ta2.select();
+          alert("📋 O TEXTO INTEIRO foi SELECIONADO automaticamente. Toque em 'Copiar' e depois cole onde quiser. Toque em OK para esconder.");
+          ta2.style.position = "absolute"; ta2.style.left = "-9999px"; ta2.style.top = "-9999px";
+          ta2.style.width = "0"; ta2.style.height = "0"; ta2.style.opacity = "0";
+        } catch(e) {
+          alert("Não foi possível copiar automaticamente. Selecione e copie manualmente.");
+        }
+      });
+    })();
+    
+</script>
+
+<script>
+(function(){
+  const KEY = "mfit_logo_custom";
+  const img = document.querySelector(".logo img");
+  const input = document.getElementById("logoInput");
+  const clear = document.getElementById("clearLogo");
+
+  function load(){
+    const data = localStorage.getItem(KEY);
+    if(data && img){ img.src = data; }
+  }
+  function save(file){
+    const r = new FileReader();
+    r.onload = e => {
+      localStorage.setItem(KEY, e.target.result);
+      if(img) img.src = e.target.result;
+    };
+    r.readAsDataURL(file);
+  }
+  if(input){
+    input.addEventListener("change", e=>{
+      const f = e.target.files && e.target.files[0];
+      if(f) save(f);
+    });
+  }
+  if(clear){
+    clear.addEventListener("click", ()=>{
+      localStorage.removeItem(KEY);
+      location.reload();
+    });
+  }
+  load();
+})();
+</script>
+</body>
+
+</html>

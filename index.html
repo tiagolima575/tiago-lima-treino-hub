@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Pesquisa Personalizada | Tiago Lima</title>
+
+  <style>
+    :root{
+      --green:#29ff47;
+      --bg:#0a0a0a;
+      --card:#111;
+      --border:#1f1f1f;
+      --text:#eaeaea;
+      --muted:#9a9a9a;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+    }
+    .wrap{max-width:820px;margin:0 auto;padding:16px}
+    .logo{display:flex;justify-content:center;margin:10px 0 16px}
+    .logo img{max-width:200px;filter:drop-shadow(0 4px 16px rgba(41,255,71,.25))}
+    h1{text-align:center;color:var(--green);font-size:1.4rem;margin-bottom:4px}
+    .subtitle{text-align:center;color:var(--muted);margin-bottom:20px;font-size:.95rem}
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:16px;
+      margin-bottom:14px;
+      cursor:pointer;
+      transition:.15s;
+    }
+    .card:active{transform:scale(.98)}
+    .tag{color:var(--green);font-size:.85rem;font-weight:600;margin-bottom:6px}
+    .title{font-size:1.15rem;font-weight:800;color:var(--green)}
+    .desc{font-size:.9rem;color:#cfcfcf;margin-top:6px}
+    .price{margin-top:8px;font-weight:700;color:#b6f5c1}
+  </style>
+
+  <script>
+    function openPage(page){
+      window.location.href = page;
+    }
+  </script>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <div class="logo">
+      <img src="logo-tiago.png" alt="Tiago Lima Personal">
+    </div>
+
+    <h1>Pesquisa Personalizada</h1>
+    <div class="subtitle">Selecione o plano ideal para você</div>
+
+    <div class="card" onclick="openPage('treino_basico.html')">
+      <div class="tag">Treino</div>
+      <div class="title">Plano Iniciante</div>
+      <div class="desc">
+        Treino seguro para criar base, aprender execução correta e evoluir com consistência.
+      </div>
+      <div class="price">R$ 15 / mês</div>
+    </div>
+
+    <div class="card" onclick="openPage('treino_intermediario.html')">
+      <div class="tag">Treino</div>
+      <div class="title">Plano Intermediário</div>
+      <div class="desc">
+        Progressão estruturada, ajustes de volume e alongamento específico do dia.
+      </div>
+      <div class="price">R$ 30 / mês</div>
+    </div>
+
+    <div class="card" onclick="openPage('treino_avancado.html')">
+      <div class="tag">Treino</div>
+      <div class="title">Plano Avançado</div>
+      <div class="desc">
+        Mobilidade, alongamento e estratégias avançadas conforme o objetivo.
+      </div>
+      <div class="price">R$ 50 / mês</div>
+    </div>
+
+    <div class="card" onclick="openPage('dieta.html')">
+      <div class="tag">Dieta</div>
+      <div class="title">Dieta Personalizada</div>
+      <div class="desc">
+        Calorias e macronutrientes calculados com cardápio prático e adaptações.
+      </div>
+      <div class="price">R$ 20</div>
+    </div>
+
+  </div>
+</body>
+</html>

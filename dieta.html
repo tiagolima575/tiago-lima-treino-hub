@@ -1,0 +1,3606 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>🍎 Dieta personalizada | MFIT Premium</title>
+
+  <style>
+    :root{
+      --green:#29ff47;
+      --bg:#0a0a0a;
+      --panel:#111;
+      --muted:#9a9a9a;
+      --danger:#ff4d4d;
+      --border:#1e1e1e;
+      --panel-alt:#0e0e0e;
+      --text:#eaeaea;
+    }
+
+    html,body{
+      margin:0;
+      padding:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial;
+    }
+
+    .wrap{
+      max-width:820px;
+      margin:0 auto;
+      padding:16px;
+    }
+
+    .card{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:16px;
+      box-shadow:0 8px 28px rgba(0,0,0,.35);
+    }
+
+    .logo{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin:8px 0 16px;
+    }
+
+    .logo img{
+      max-width:260px;
+      height:auto;
+      filter:drop-shadow(0 4px 16px rgba(41,255,71,.25));
+    }
+
+    h1{
+      margin:8px 0 8px;
+      font-size:1.35rem;
+      color:var(--green);
+      text-align:center;
+      letter-spacing:.5px
+    }
+
+    .subtitle{
+      margin:0 0 10px;
+      text-align:center;
+      color:#c9c9c9;
+      font-size:.95rem
+    }
+
+    .section{
+      margin:18px 0;
+      padding:14px;
+      border:1px solid #1f1f1f;
+      border-radius:14px;
+      background:var(--panel-alt);
+    }
+
+    .section-title{
+      margin:0 0 6px;
+      color:#fff;
+      font-weight:700;
+      font-size:1rem;
+      background:linear-gradient(90deg, rgba(41,255,71,.15), transparent);
+      padding:8px 10px;
+      border-radius:10px
+    }
+
+    label.q{
+      display:block;
+      color:#fff;
+      font-weight:600;
+      margin:12px 0 6px
+    }
+
+    .hint{
+      color:var(--muted);
+      font-size:.88rem;
+      margin:-2px 0 8px
+    }
+
+    input[type=text],
+    input[type=number],
+    textarea,
+    select{
+      width:100%;
+      padding:12px 14px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:#141414;
+      color:#eee;
+      outline:none;
+      transition:.2s;
+      font-size:.95rem;
+    }
+    textarea{min-height:84px;resize:vertical}
+
+    input:focus,
+    textarea:focus,
+    select:focus{
+      border-color:var(--green);
+      box-shadow:0 0 0 3px rgba(41,255,71,.12)
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px
+    }
+
+    @media (max-width:560px){
+      .row{grid-template-columns:1fr}
+      .logo img{max-width:200px}
+    }
+
+    /* BOTÕES FINAIS */
+    .btns{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:10px;
+      margin-top:18px;
+    }
+    @media (min-width:520px){
+      .btns{grid-template-columns:1fr 1fr;}
+    }
+
+    .btn{
+      width:100%;
+      background:var(--green);
+      color:#091109;
+      border:none;
+      border-radius:14px;
+      padding:14px 16px;
+      font-weight:800;
+      font-size:1.05rem;
+      box-shadow:0 10px 30px rgba(41,255,71,.22);
+      cursor:pointer;
+    }
+    .btn:active{transform:translateY(1px)}
+
+    .btn-outline{
+      background:#171717;
+      color:#eaeaea;
+      border:1px solid #2a2a2a;
+      box-shadow:none;
+    }
+    .btn-outline:active{transform:translateY(1px)}
+
+    .logo-tools{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:-8px 0 10px}
+    .btn.small{width:auto;padding:10px 12px;font-size:.95rem;border-radius:12px}
+
+
+    .error{
+      color:var(--danger);
+      font-size:.9rem;
+      margin-top:6px;
+      display:none
+    }
+
+    .success{
+      display:none;
+      color:#b6f5c1;
+      background:#0f1f12;
+      border:1px solid #203b21;
+      padding:10px;
+      border-radius:10px;
+      margin-top:10px
+    }
+
+    /* ====== CARDS DE ALIMENTO (com emoji e seleção verde) ====== */
+    .food-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(min(110px,31%),1fr));
+      gap:12px;
+    }
+
+    .food-card{
+      background:#141414;
+      border:2px solid var(--border);
+      border-radius:16px;
+      padding:14px 10px;
+      text-align:center;
+      color:#fff;
+      font-size:.85rem;
+      line-height:1.3;
+      font-weight:600;
+      cursor:pointer;
+      user-select:none;
+      min-height:96px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      position:relative;
+      box-shadow:0 12px 24px rgba(0,0,0,.6);
+      transition:transform .06s ease, box-shadow .12s ease, background .12s ease, border-color .12s ease;
+    }
+
+    .food-card:active{
+      transform:scale(.98)
+    }
+
+    .food-card .emoji{
+      font-size:1.5rem;
+      line-height:1.5rem;
+      margin-bottom:6px;
+    }
+
+    .food-card .label{
+      font-size:.8rem;
+      color:#fff;
+      word-break:break-word;
+    }
+
+    .food-card .check-badge{
+      display:none;
+      position:absolute;
+      top:6px;
+      right:6px;
+      background-color:rgba(0,0,0,.8);
+      color:var(--green);
+      font-size:.9rem;
+      line-height:1;
+      padding:5px 7px;
+      border-radius:8px;
+      border:1px solid var(--green);
+      font-weight:800;
+      box-shadow:0 6px 14px rgba(41,255,71,.25);
+    }
+
+    .food-card.selected{
+      background:var(--green);
+      border-color:var(--green);
+      color:#000;
+      box-shadow:0 0 24px rgba(41,255,71,.45);
+    }
+
+    .food-card.selected .label{
+      color:#000;
+      font-weight:800;
+    }
+
+    .food-card.selected .check-badge{
+      display:block;
+    }
+
+  
+/* === MFIT: Guia Metabolismo × Objetivo === */
+#mfit-guide{background:#0f0f0f;border:1px solid #1e1e1e;border-radius:16px;padding:16px;margin:16px 0}
+#mfit-guide h3{margin:0 0 8px;color:var(--green,#00CC66)}
+#mfit-guide .row{display:grid;grid-template-columns:1fr;gap:12px}
+#mfit-guide .pill{display:inline-block;padding:6px 10px;border:1px solid #2a2a2a;border-radius:999px;margin:2px 6px 2px 0}
+#mfit-guide .list{margin:6px 0 0 0;padding-left:18px}
+#mfit-guide .list li{margin:4px 0}
+#mfit-guide .muted{color:#bdbdbd}
+
+
+/* === MFIT: destaque de alimentos por regra === */
+.food-card.recommended{outline:2px solid var(--green,#00CC66); box-shadow:0 0 16px rgba(0,204,102,.25)}
+.food-card.dim{opacity:.38; filter:grayscale(1)}
+
+
+/* === MFIT: seção final de alimentos sugeridos === */
+#mfit-food-auto{background:#0f0f0f;border:1px solid #1e1e1e;border-radius:16px;padding:16px;margin:24px 0}
+#mfit-food-auto h3{color:var(--green,#00CC66);margin:0 0 12px}
+.mfit-chip{display:inline-flex;align-items:center;gap:8px;margin:6px 6px 0 0;padding:8px 12px;border:1px solid #2a2a2a;border-radius:999px;background:#111;color:#fff;cursor:pointer;user-select:none}
+.mfit-chip input{accent-color:var(--green,#00CC66)}
+.mfit-chip.limit{opacity:.65;filter:grayscale(1)}
+.mfit-note{color:#bdbdbd;font-size:.95rem;margin-top:8px}
+
+
+.hidden{display:none !important}
+
+/* === MFIT: aviso quando o teste não foi concluído === */
+#mfit-locked-note{
+  background:#121212;
+  border:1px dashed #2a2a2a;
+  border-radius:14px;
+  padding:14px 16px;
+  margin:16px 0;
+  color:#cfcfcf;
+}
+#mfit-locked-note b{ color:var(--green,#00CC66); }
+.hidden{ display:none !important; }
+
+
+/* === MFIT v2.0: estado não indicado (bloqueado) === */
+.food-card.blocked{opacity:.35; filter:grayscale(1); pointer-events:none; position:relative}
+.food-card.blocked::after{
+  content:'Não indicado';
+  position:absolute; inset:auto 8px 8px auto;
+  font-size:.75rem; padding:2px 6px; border-radius:6px;
+  background:#2a2a2a; color:#ccc; border:1px solid #3a3a3a;
+}
+/* Mantém apenas DIM nos "limitar", mas permite clique */
+.food-card.dim{opacity:.55; filter:grayscale(.6); pointer-events:auto}
+
+
+/* === MFIT v2.1: neutraliza destaque 'recommended' e impede autoseleção visual === */
+.food-card.recommended{outline:none; box-shadow:none}
+
+
+/* === MFIT v2.2: aviso WhatsApp no rodapé === */
+#mfit-wa-note{
+  display:none;
+  background:rgba(0,204,102,.12);
+  border:1px solid rgba(0,204,102,.4);
+  color:#cfead9;
+  padding:14px 16px;
+  border-radius:14px;
+  margin:12px 0 0 0;
+  font-size:1rem;
+}
+#mfit-wa-note b{color:#00CC66}
+
+
+/* === MFIT v2.4: layout final consistente === */
+#mfit-food-auto{margin-top:24px}
+.mfit-final-grid{display:grid;gap:12px}
+@media(min-width:900px){ .mfit-final-grid{grid-template-columns:1fr 1fr 1fr} }
+.mfit-panel{background:#0f0f0f;border:1px solid #1e1e1e;border-radius:14px;padding:12px}
+.mfit-panel h4{margin:0 0 8px;color:var(--green,#00CC66)}
+.mfit-chip{display:inline-flex;align-items:center;gap:8px;margin:6px 6px 0 0;padding:8px 12px;border:1px solid #2a2a2a;border-radius:999px;background:#111;color:#fff;cursor:pointer;user-select:none}
+.mfit-chip input{accent-color:var(--green,#00CC66)}
+.mfit-chip.block{opacity:.5;filter:grayscale(1);cursor:not-allowed}
+.mfit-note{color:#bdbdbd;font-size:.95rem;margin-top:8px}
+
+
+
+    /* === MFIT ULTIMATE: Modo Pro + Modo Lite + animações seguras === */
+    body.mfit-pro .food-card{
+      transition:transform .12s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
+    }
+    body.mfit-pro .food-card:hover{
+      transform:translateY(-2px) scale(1.01);
+      box-shadow:0 16px 36px rgba(0,0,0,.75);
+    }
+    body.mfit-pro .btn{
+      transition:transform .08s ease, box-shadow .12s ease, background .12s ease;
+    }
+    body.mfit-pro .btn:hover{
+      transform:translateY(-1px);
+      box-shadow:0 14px 34px rgba(41,255,71,.32);
+    }
+
+    /* Lite: remove sombras e transições para celulares fracos */
+    body.mfit-lite .card,
+    body.mfit-lite .section,
+    body.mfit-lite .food-card,
+    body.mfit-lite .btn{
+      box-shadow:none !important;
+      transition:none !important;
+    }
+    body.mfit-lite .food-card:hover,
+    body.mfit-lite .btn:hover{
+      transform:none !important;
+    }
+
+    /* Respeito a preferência de redução de movimento do sistema */
+    @media (prefers-reduced-motion: reduce){
+      *{
+        animation-duration:0.001ms !important;
+        animation-iteration-count:1 !important;
+        transition-duration:0.001ms !important;
+        scroll-behavior:auto !important;
+      }
+    }
+</style>
+</head>
+<body data-mfit="1">
+<div id="guiaMetaObjetivo" class="container"></div>
+
+  <div class="wrap">
+    <!-- LOGO / TÍTULO -->
+    <div class="logo">
+      <img id="brandLogo" src="data:image/svg+xml;utf8,
+        <svg xmlns='http://www.w3.org/2000/svg' width='720' height='220' viewBox='0 0 720 220'>
+          <rect width='100%' height='100%' fill='black'/>
+          <g fill='%2329ff47'>
+            <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='40' font-family='Arial' font-weight='700'>MFIT PREMIUM</text>
+            <text x='50%' y='78%' dominant-baseline='middle' text-anchor='middle' font-size='18' font-family='Arial'>Pesquisa – Dieta Personalizada</text>
+          </g>
+        </svg>" alt="Logo MFIT"/>
+    </div>
+
+    <h1>🍎 Dieta personalizada</h1>
+    <p class="subtitle">
+      Responda para criarmos sua dieta personalizada conforme metabolismo, rotina e objetivo.
+      Envio direto no WhatsApp do Personal.
+    </p>
+
+    <form id="mfitDieta" class="card" onsubmit="return false;">
+
+      <!-- Seção 0 – Dados do Aluno -->
+      <div class="section">
+        <div class="section-title">Seção 0 – Dados do Aluno</div>
+
+        <div class="row">
+          <div>
+            <label class="q" for="nomeAluno">Nome completo</label>
+            <input id="nomeAluno" type="text" placeholder="Ex.: Laysla Vitória">
+          </div>
+          <div>
+            <label class="q" for="idadeAluno">Idade</label>
+            <input id="idadeAluno" type="number" placeholder="Ex.: 24">
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label class="q" for="sexo">Sexo biológico</label>
+            <select id="sexo">
+              <option value="" selected>Selecione...</option>
+              <option>Feminino</option>
+              <option>Masculino</option>
+            </select>
+          </div>
+          <div>
+            <label class="q" for="alturaAluno">Altura (cm)</label>
+            <input id="alturaAluno" type="number" placeholder="Ex.: 165">
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label class="q" for="pesoAluno">Peso atual (kg)</label>
+            <input id="pesoAluno" type="number" step="0.1" placeholder="Ex.: 72.5">
+          </div>
+          <div>
+            <label class="q" for="whatsAluno">WhatsApp (DDD)</label>
+            <input id="whatsAluno" type="text" placeholder="Ex.: 69 9XXXX-XXXX">
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label class="q" for="cidadeAluno">Cidade / Estado</label>
+            <input id="cidadeAluno" type="text" placeholder="Ex.: Ji-Paraná / RO">
+          </div>
+        </div>
+      </div>
+
+      <!-- Seção 1 – Objetivo Principal -->
+      <div class="section">
+        <div class="section-title">Seção 1 – Objetivo Principal</div>
+        <label class="q" for="objetivo">1. Qual é o seu principal objetivo com a dieta?</label>
+        <select id="objetivo">
+          <option value="" selected>Selecione...</option>
+          <option>Emagrecimento / Definição corporal</option>
+          <option>Ganho de massa muscular (hipertrofia)</option>
+          <option>Reeducação alimentar / Manutenção</option>
+          <option>Melhoria de performance / Energia</option>
+          <option>Controle metabólico / Saúde geral</option>
+        </select>
+
+<section id="mfit-guide" aria-live="polite">
+  <h3>Guia rápido: Metabolismo × Objetivo</h3>
+  <div class="row">
+    <div>
+      <div class="muted">Resumo do metabolismo</div>
+      <div id="mfit-meta-desc"></div>
+    </div>
+    <div>
+      <div class="muted">Foco pelo objetivo</div>
+      <div id="mfit-obj-desc"></div>
+    </div>
+  </div>
+  <hr style="border:none;border-top:1px solid #1e1e1e;margin:12px 0" />
+  <div class="row">
+    <div>
+      <div class="muted">Alimentos indicados</div>
+      <ul id="mfit-food-yes" class="list"></ul>
+    </div>
+    <div>
+      <div class="muted">Limitar / evitar</div>
+      <ul id="mfit-food-no" class="list"></ul>
+    </div>
+  </div>
+  <div class="muted" style="margin-top:10px;font-size:.95rem">As recomendações se ajustam automaticamente quando você responde <b>Metabolismo</b> e <b>Objetivo</b> no formulário.</div>
+</section>
+
+<div id="mfit-locked-note" role="status" aria-live="polite">
+  <b>Faça o teste de metabolismo</b> para liberar as sugestões de alimentos e o guia. Assim que o resultado aparecer, tudo será preenchido automaticamente conforme o seu <b>metabolismo</b> e o <b>objetivo</b>.
+</div>
+
+
+      </div>
+
+      <!-- Seção 2 – Tipo de Metabolismo -->
+      <div class="section" id="secMetabolismo">
+        <div class="section-title">🧬 Seção 2 – Tipo de Metabolismo (Teste rápido)</div>
+        <p class="hint">Responda rapidamente para identificação automática:</p>
+
+        <div class="row">
+          <div>
+            <label class="q" for="met1">1. Você ganha peso com facilidade ou dificuldade?</label>
+            <select id="met1">
+              <option value="" selected>Selecione...</option>
+              <option>Com facilidade</option>
+              <option>Com dificuldade</option>
+              <option>Normal</option>
+            </select>
+          </div>
+          <div>
+            <label class="q" for="met2">2. Seu corpo tende a ser mais magro, médio ou largo?</label>
+            <select id="met2">
+              <option value="" selected>Selecione...</option>
+              <option>Mais magro</option>
+              <option>Médio</option>
+              <option>Mais largo</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label class="q" for="met3">3. Tem facilidade para perder peso?</label>
+            <select id="met3">
+              <option value="" selected>Selecione...</option>
+              <option>Sim</option>
+              <option>Não</option>
+              <option>Mais ou menos</option>
+            </select>
+          </div>
+          <div>
+            <label class="q" for="met4">4. Como é seu apetite?</label>
+            <select id="met4">
+              <option value="" selected>Selecione...</option>
+              <option>Baixo</option>
+              <option>Moderado</option>
+              <option>Alto</option>
+            </select>
+          </div>
+        </div>
+
+        <label class="q" for="met5">5. Como é sua energia ao longo do dia?</label>
+        <select id="met5">
+          <option value="" selected>Selecione...</option>
+          <option>Alta o tempo todo</option>
+          <option>Regular</option>
+          <option>Baixa com frequência</option>
+        </select>
+
+        <p style="margin-top:12px;color:#9a9a9a;font-size:.9rem;">
+          ➤ <strong>Resultado automático:</strong> Seu metabolismo é
+          <span id="metResultado" style="color:#29ff47;font-weight:600;">—</span>.
+        </p>
+      </div>
+
+      
+      <!-- Seção 2B – Teste de Metabolismo MFIT (detalhado) -->
+      <div class="section" id="secMetabolismoDetalhado">
+        <div class="section-title">🧬 Seção 2B – Teste de Metabolismo MFIT (7 perguntas)</div>
+        <p class="hint">Responda as 7 perguntas. Cada resposta soma pontos para Ectomorfo, Mesomorfo ou Endomorfo.</p>
+
+        <label class="q">1) Estrutura óssea (punho/tornozelo)</label>
+        <div>
+          <label><input type="radio" name="m2_q1" value="ecto"> Muito fina</label><br>
+          <label><input type="radio" name="m2_q1" value="meso"> Média</label><br>
+          <label><input type="radio" name="m2_q1" value="endo"> Grossa</label>
+        </div>
+
+        <label class="q" style="margin-top:10px;">2) Facilidade de ganhar/perder peso</label>
+        <div>
+          <label><input type="radio" name="m2_q2" value="ecto"> Dificuldade para ganhar, perde fácil</label><br>
+          <label><input type="radio" name="m2_q2" value="meso"> Ganha e perde com facilidade</label><br>
+          <label><input type="radio" name="m2_q2" value="endo"> Ganha fácil, perde com dificuldade</label>
+        </div>
+
+        <label class="q" style="margin-top:10px;">3) Forma corporal predominante</label>
+        <div>
+          <label><input type="radio" name="m2_q3" value="ecto"> Longilíneo (ombros estreitos)</label><br>
+          <label><input type="radio" name="m2_q3" value="meso"> Atlético (ombros largos)</label><br>
+          <label><input type="radio" name="m2_q3" value="endo"> Reto/arredondado (quadris largos)</label>
+        </div>
+
+        <label class="q" style="margin-top:10px;">4) Acúmulo de gordura</label>
+        <div>
+          <label><input type="radio" name="m2_q4" value="ecto"> Pouco acúmulo mesmo em off</label><br>
+          <label><input type="radio" name="m2_q4" value="meso"> Moderado/distribuído</label><br>
+          <label><input type="radio" name="m2_q4" value="endo"> Acúmulo fácil (abdômen/quadril)</label>
+        </div>
+
+        <label class="q" style="margin-top:10px;">5) Apetite e saciedade</label>
+        <div>
+          <label><input type="radio" name="m2_q5" value="ecto"> Apetite baixo/sacia rápido</label><br>
+          <label><input type="radio" name="m2_q5" value="meso"> Apetite regulado</label><br>
+          <label><input type="radio" name="m2_q5" value="endo"> Apetite alto/fome frequente</label>
+        </div>
+
+        <label class="q" style="margin-top:10px;">6) Resposta a treinos de força</label>
+        <div>
+          <label><input type="radio" name="m2_q6" value="ecto"> Ganha força lentamente</label><br>
+          <label><input type="radio" name="m2_q6" value="meso"> Ganha força rápido</label><br>
+          <label><input type="radio" name="m2_q6" value="endo"> Ganha força moderada, cansa fácil</label>
+        </div>
+
+        <label class="q" style="margin-top:10px;">7) Circunferência do punho (opcional)</label>
+        <div>
+          <label><input type="radio" name="m2_q7" value="ecto"> Fino (&lt; 16 cm masc / &lt; 15 cm fem)</label><br>
+          <label><input type="radio" name="m2_q7" value="meso"> Médio (16–18 cm masc / 15–16.5 cm fem)</label><br>
+          <label><input type="radio" name="m2_q7" value="endo"> Grosso (&gt; 18 cm masc / &gt; 16.5 cm fem)</label>
+        </div>
+
+        <button type="button" class="btn" style="margin-top:14px;" onclick="if(window.mfit_calcular_metabolismo_detalhado){window.mfit_calcular_metabolismo_detalhado();}">
+          Calcular metabolismo
+        </button>
+
+        <p style="margin-top:10px;color:#cfcfcf;font-size:.9rem;">
+          ➤ <strong>Resultado do metabolismo (teste detalhado):</strong>
+          <span id="metDetResultado" style="color:#29ff47;font-weight:600;">—</span>
+        </p>
+      </div>
+<!-- Seção 3 – Rotina Diária -->
+      <div class="section">
+        <div class="section-title">Seção 3 – Rotina Diária</div>
+
+        <div class="row">
+          <div>
+            <label class="q" for="acorda">1. Que horas costuma acordar?</label>
+            <input id="acorda" type="text" placeholder="Ex.: 06:30">
+          </div>
+          <div>
+            <label class="q" for="dorme">2. Que horas costuma dormir?</label>
+            <input id="dorme" type="text" placeholder="Ex.: 22:30">
+          </div>
+        </div>
+
+        <label class="q">3. Horários de refeições</label>
+        <div class="row">
+          <input id="cafeHorario" type="text" placeholder="Café da manhã – Ex.: 07:00">
+          <input id="almocoHorario" type="text" placeholder="Almoço – Ex.: 12:00">
+        </div>
+        <input id="jantarHorario" type="text" placeholder="Jantar – Ex.: 19:30" style="margin-top:10px;">
+
+        <label class="q" for="lanches">4. Faz lanches entre as refeições?</label>
+        <select id="lanches">
+          <option value="" selected>Selecione...</option>
+          <option>Sim</option>
+          <option>Não</option>
+        </select>
+
+        <label class="q" for="atividade">5. Nível de atividade fora da academia</label>
+        <select id="atividade">
+          <option value="" selected>Selecione...</option>
+          <option>Leve (trabalho sentado)</option>
+          <option>Moderado (movimento ocasional)</option>
+          <option>Intenso (atividade física constante)</option>
+        </select>
+      </div>
+
+      <!-- Seção 3.1 – Rotina de Alimentação -->
+      <div class="section">
+        <div class="section-title">Seção 3.1 – Sua Rotina de Alimentação</div>
+
+        <label class="q" for="refeicoesDia">1. Quantas refeições você costuma fazer por dia?</label>
+        <select id="refeicoesDia">
+          <option value="" selected>Selecione...</option>
+          <option>2 refeições</option>
+          <option>3 refeições</option>
+          <option>4 refeições</option>
+          <option>5 ou mais</option>
+        </select>
+
+        <label class="q" for="tempoPreparo">2. Quanto tempo você tem pra preparar comida?</label>
+        <select id="tempoPreparo">
+            <option value="" selected>Selecione...</option>
+            <option>Preciso de coisa MUITO rápida</option>
+            <option>Consigo fazer algo simples (frango, ovo, arroz)</option>
+            <option>Consigo cozinhar de boa</option>
+        </select>
+
+        <label class="q" for="custoDieta">3. Nível de custo da sua dieta</label>
+        <select id="custoDieta">
+          <option value="" selected>Selecione...</option>
+          <option>Versão econômica (mais barata)</option>
+          <option>Intermediária</option>
+          <option>Posso investir mais</option>
+        </select>
+      </div>
+
+      <!-- Seção 4 – Preferências Alimentares -->
+      <div class="section">
+        <div class="section-title">Seção 4 – Preferências Alimentares</div>
+
+        <label class="q" for="estiloAlimentar">0. Você segue algum estilo alimentar?</label>
+        <select id="estiloAlimentar">
+          <option value="" selected>Nenhum / Como de tudo</option>
+          <option>Vegetariano (sem carne)</option>
+          <option>Vegano (sem nada animal)</option>
+          <option>Outro (descrever abaixo)</option>
+        </select>
+
+        <label class="q" for="estiloOutro">Se marcou "Outro", descreva</label>
+        <input id="estiloOutro" type="text" placeholder="Ex.: sem lactose / só peixe / jejum intermitente">
+
+        <label class="q" for="gosta">1. Alimentos que gosta muito</label>
+        <textarea id="gosta" placeholder="Liste aqui..."></textarea>
+
+        <label class="q" for="naoGosta">2. Alimentos que NÃO gosta / NÃO COME</label>
+        <textarea id="naoGosta" placeholder="Ex.: ovo, peixe, salada crua, leite…"></textarea>
+
+        <label class="q">3. Restrições alimentares</label>
+        <div class="row">
+          <label><input type="checkbox" class="rest" value="Lactose"> Lactose</label>
+          <label><input type="checkbox" class="rest" value="Glúten"> Glúten</label>
+        </div>
+        <div class="row">
+          <label><input type="checkbox" class="rest" value="Vegano"> Vegano</label>
+          <label><input type="checkbox" class="rest" value="Vegetariano"> Vegetariano</label>
+        </div>
+        <input id="restOutro" type="text" placeholder="Outro: descreva aqui (opcional)" style="margin-top:10px;">
+
+        <label class="q" for="alergias">4. Alergias alimentares</label>
+        <input id="alergias" type="text" placeholder="Ex.: amendoim, frutos do mar...">
+      </div>
+
+      <!-- Seção 4B – Alimentos aceitos (com clique visível) -->
+      <div class="section">
+        <div class="section-title">Seção 4B – Alimentos que você ACEITA comer</div>
+        <p class="hint">Toque nos alimentos que podem entrar na sua dieta. O que ficar verde e mostrar ✓ está selecionado.</p>
+
+        <label class="q">Café da manhã / Lanches rápidos</label>
+        <div class="food-grid" id="cafeGrid">
+          <div class="food-card" role="button" aria-pressed="false" data-value="Ovos">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🥚</div>
+            <div class="label">Ovos</div>
+          </div>
+          <div class="food-card" role="button" aria-pressed="false" data-value="Pão integral">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🍞</div>
+            <div class="label">Pão integral</div>
+          </div>
+          <div class="food-card" role="button" aria-pressed="false" data-value="Tapioca">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🌮</div>
+            <div class="label">Tapioca</div>
+          </div>
+          <div class="food-card" role="button" aria-pressed="false" data-value="Aveia">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🌾</div>
+            <div class="label">Aveia</div>
+          </div>
+          <div class="food-card" role="button" aria-pressed="false" data-value="Frutas">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🍌</div>
+            <div class="label">Frutas</div>
+          </div>
+          <div class="food-card" role="button" aria-pressed="false" data-value="Iogurte / leite desnatado">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🥛</div>
+            <div class="label">Iogurte / leite desnatado</div>
+          </div>
+          <div class="food-card" role="button" aria-pressed="false" data-value="Pasta de amendoim">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🥜</div>
+            <div class="label">Pasta de amendoim</div>
+          </div>
+          <div class="food-card" role="button" aria-pressed="false" data-value="Whey Protein">
+            <div class="check-badge">✓</div>
+            <div class="emoji">💪</div>
+            <div class="label">Whey Protein</div>
+          </div>
+          <!-- extras café -->
+          <div class="food-card" role="button" aria-pressed="false" data-value="Panqueca de aveia">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🥞</div>
+            <div class="label">Panqueca de aveia</div>
+          </div>
+          <div class="food-card" role="button" aria-pressed="false" data-value="Crepioca">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🍳</div>
+            <div class="label">Crepioca</div>
+          </div>
+          <div class="food-card" role="button" aria-pressed="false" data-value="Queijo cottage">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🧀</div>
+            <div class="label">Queijo cottage</div>
+          </div>
+          <div class="food-card" role="button" aria-pressed="false" data-value="Iogurte grego natural">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🍶</div>
+            <div class="label">Iogurte grego natural</div>
+          </div>
+          <div class="food-card" role="button" aria-pressed="false" data-value="Banana com aveia">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🍌</div>
+            <div class="label">Banana com aveia</div>
+          </div>
+        </div>
+
+        <label class="q" style="margin-top:16px;">Almoço / Jantar</label>
+        <div class="food-grid" id="almocoGrid">
+          <div class="food-card" role="button" aria-pressed="false" data-value="Frango">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🍗</div>
+            <div class="label">Frango</div>
+          </div>
+          <div class="food-card" role="button" aria-pressed="false" data-value="Patinho / carne magra">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🥩</div>
+            <div class="label">Patinho / carne magra</div>
+          </div>
+          <div class="food-card" role="button" aria-pressed="false" data-value="Carne de porco">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🐷</div>
+            <div class="label">Carne de porco</div>
+          </div>
+          <div class="food-card" role="button" aria-pressed="false" data-value="Peixe / Tilápia">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🐟</div>
+            <div class="label">Peixe / Tilápia</div>
+          </div>
+          <div class="food-card" role="button" aria-pressed="false" data-value="Arroz">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🍚</div>
+            <div class="label">Arroz</div>
+          </div>
+          <div class="food-card" role="button" aria-pressed="false" data-value="Macarrão">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🍝</div>
+            <div class="label">Macarrão</div>
+          </div>
+          <div class="food-card" role="button" aria-pressed="false" data-value="Feijão">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🫘</div>
+            <div class="label">Feijão</div>
+          </div>
+          <div class="food-card" role="button" aria-pressed="false" data-value="Mandioca / Batata Doce">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🥔</div>
+            <div class="label">Mandioca / Batata Doce</div>
+          </div>
+          <div class="food-card" role="button" aria-pressed="false" data-value="Salada / Legumes">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🥗</div>
+            <div class="label">Salada / Legumes</div>
+          </div>
+          <!-- extras almoço/jantar -->
+          <div class="food-card" role="button" aria-pressed="false" data-value="Arroz integral">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🍚</div>
+            <div class="label">Arroz integral</div>
+          </div>
+          <div class="food-card" role="button" aria-pressed="false" data-value="Carne moída magra">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🥩</div>
+            <div class="label">Carne moída magra</div>
+          </div>
+          <div class="food-card" role="button" aria-pressed="false" data-value="Grão-de-bico">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🫘</div>
+            <div class="label">Grão-de-bico</div>
+          </div>
+          <div class="food-card" role="button" aria-pressed="false" data-value="Tofu">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🍱</div>
+            <div class="label">Tofu</div>
+          </div>
+        </div>
+
+        <label class="q" style="margin-top:16px;">Lanches / Snacks rápidos</label>
+        <div class="food-grid" id="snackGrid">
+          <div class="food-card" role="button" aria-pressed="false" data-value="Sanduíche frango / atum">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🥙</div>
+            <div class="label">Sanduíche frango / atum</div>
+          </div>
+          <div class="food-card" role="button" aria-pressed="false" data-value="Rap10 / Wrap">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🌯</div>
+            <div class="label">Rap10 / Wrap</div>
+          </div>
+          <div class="food-card" role="button" aria-pressed="false" data-value="Fruta sozinha">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🍎</div>
+            <div class="label">Fruta sozinha</div>
+          </div>
+          <div class="food-card" role="button" aria-pressed="false" data-value="Shake / vitamina">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🥤</div>
+            <div class="label">Shake / vitamina</div>
+          </div>
+          <div class="food-card" role="button" aria-pressed="false" data-value="Oleaginosas / amendoim">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🥜</div>
+            <div class="label">Oleaginosas / amendoim</div>
+          </div>
+          <!-- extras snacks -->
+          <div class="food-card" role="button" aria-pressed="false" data-value="Mix de nuts">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🥜</div>
+            <div class="label">Mix de nuts</div>
+          </div>
+          <div class="food-card" role="button" aria-pressed="false" data-value="Barra de proteína">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🍫</div>
+            <div class="label">Barra de proteína</div>
+          </div>
+          <div class="food-card" role="button" aria-pressed="false" data-value="Iogurte zero">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🥛</div>
+            <div class="label">Iogurte zero</div>
+          </div>
+          <div class="food-card" role="button" aria-pressed="false" data-value="Cookie de aveia">
+            <div class="check-badge">✓</div>
+            <div class="emoji">🍪</div>
+            <div class="label">Cookie de aveia</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seção 5 – Saúde e Exames -->
+      <div class="section">
+        <div class="section-title">Seção 5 – Saúde e Exames</div>
+
+        <label class="q" for="exames">1. Já realizou exames laboratoriais recentes?</label>
+        <select id="exames">
+          <option value="" selected>Selecione...</option>
+          <option>Sim</option>
+          <option>Não</option>
+        </select>
+
+        <label class="q" for="alteracoes">2. Se sim, há alguma alteração relevante?</label>
+        <textarea id="alteracoes" placeholder="Descreva (ex.: glicemia alta, colesterol, etc.)"></textarea>
+
+        <label class="q" for="medic">3. Usa medicamentos contínuos?</label>
+        <input id="medic" type="text" placeholder="Quais?">
+
+        <label class="q">4. Histórico familiar</label>
+        <div class="row">
+          <label><input type="checkbox" class="hist" value="Diabetes"> Diabetes</label>
+          <label><input type="checkbox" class="hist" value="Colesterol alto"> Colesterol alto</label>
+        </div>
+        <label><input type="checkbox" class="hist" value="Hipertensão"> Hipertensão</label>
+      </div>
+
+      <!-- Seção 6 – Comprometimento -->
+      <div class="section">
+        <div class="section-title">Seção 6 – Comprometimento com a Dieta</div>
+        <select id="commit">
+          <option value="" selected>Selecione...</option>
+          <option>Iniciante — quer começar leve</option>
+          <option>Intermediário — rotina prática, busca resultado</option>
+          <option>Avançado — segue à risca, performance máxima</option>
+        </select>
+      </div>
+
+      <!-- Seção 7 – Faixa de Investimento -->
+      <div class="section">
+        <div class="section-title">Seção 7 – Faixa de Investimento</div>
+        <select id="invest">
+          <option value="" selected>Selecione...</option>
+          <option>Econômico — alimentos simples e acessíveis</option>
+          <option>Médio — variedade moderada</option>
+          <option>Alta — aceita opções e suplementos premium</option>
+        </select>
+      </div>
+
+      <!-- Seção 8 – Suplementação -->
+      <div class="section">
+        <div class="section-title">Seção 8 – Suplementação</div>
+
+        <label class="q" for="usaSup">1. Você já usa suplemento atualmente?</label>
+        <select id="usaSup">
+          <option value="" selected>Selecione...</option>
+          <option>Não uso suplemento</option>
+          <option>Sim, uso suplemento</option>
+        </select>
+
+        <label class="q" for="quaisSup">2. Se usa, quais?</label>
+        <input id="quaisSup" type="text" placeholder="Ex.: Whey, creatina, cafeína...">
+
+        <label class="q" for="incluirSup">3. Quer que eu inclua suplemento no plano?</label>
+        <select id="incluirSup">
+          <option value="" selected>Selecione...</option>
+          <option>Sim, pode incluir sugestões</option>
+          <option>Sim, mas só o essencial / barato</option>
+          <option>Não quero suplemento agora</option>
+        </select>
+      </div>
+
+      <!-- Seção 9 – Hidratação -->
+      <div class="section">
+        <div class="section-title">Seção 9 – Hidratação</div>
+        <label class="q" for="agua">Consumo médio diário de água</label>
+        <select id="agua">
+          <option value="" selected>Selecione...</option>
+          <option>&lt; 1L</option>
+          <option>1–2L</option>
+          <option>2–3L</option>
+          <option>&gt; 3L</option>
+        </select>
+      </div>
+
+      <!-- Seção 10 – Estilo de Vida -->
+      <div class="section">
+        <div class="section-title">Seção 10 – Estilo de Vida</div>
+
+        <div class="row">
+          <div>
+            <label class="q" for="alcool">1. Consome bebidas alcoólicas?</label>
+            <select id="alcool">
+              <option value="" selected>Selecione...</option>
+              <option>Sim</option>
+              <option>Não</option>
+              <option>Às vezes</option>
+            </select>
+          </div>
+          <div>
+            <label class="q" for="fuma">2. Fuma?</label>
+            <select id="fuma">
+              <option value="" selected>Selecione...</option>
+              <option>Sim</option>
+              <option>Não</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label class="q" for="estresse">3. Nível de estresse</label>
+            <select id="estresse">
+              <option value="" selected>Selecione...</option>
+              <option>Baixo</option>
+              <option>Médio</option>
+              <option>Alto</option>
+            </select>
+          </div>
+          <div>
+            <label class="q" for="sonoQualidade">4. Dorme bem à noite?</label>
+            <select id="sonoQualidade">
+              <option value="" selected>Selecione...</option>
+              <option>Sim</option>
+              <option>Não</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label class="q" for="sonoHoras">5. Quantas horas de sono por noite (média)?</label>
+            <select id="sonoHoras">
+              <option value="" selected>Selecione...</option>
+              <option>Menos de 5h</option>
+              <option>5h a 6h</option>
+              <option>7h a 8h</option>
+              <option>Mais de 8h</option>
+            </select>
+          </div>
+          <div>
+            <label class="q" for="lixo">6. Fast food / doce / refrigerante</label>
+            <select id="lixo">
+              <option value="" selected>Selecione...</option>
+              <option>Quase nunca</option>
+              <option>Às vezes</option>
+              <option>Quase todo dia</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Seção 11 – Prévia Automática da Dieta (Objetivo × Metabolismo) -->
+      <div class="section" id="secPreview">
+        <div class="section-title">Seção 11 – Prévia da Dieta (automática)</div>
+        <p class="hint">Resumo calculado a partir do objetivo, metabolismo, peso, atividade, refeições/dia e preferências.</p>
+        <div id="previewCalc" style="white-space:pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; background:#101010; border:1px solid #222; padding:12px; border-radius:10px;">
+          Preencha objetivo, peso, atividade, refeições/dia e teste de metabolismo para ver aqui a prévia automática da dieta.
+        </div>
+      </div>
+
+      <!-- Seção 12 – Cardápio Sugerido – Dia 1 -->
+      <div class="section" id="secDay1">
+        <div class="section-title">Seção 12 – Cardápio Sugerido – Dia 1</div>
+        <p class="hint">Gerado automaticamente conforme objetivo, metabolismo, peso, refeições/dia e alimentos ACEITOS.</p>
+        <div id="dayPlan" style="white-space:pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; background:#0f1110; border:1px solid #222; padding:12px; border-radius:10px;">
+          A prévia do cardápio aparecerá aqui quando os campos estiverem preenchidos.
+        </div>
+      </div>
+
+
+      <!-- BOTÕES FINAIS -->
+      <div class="btns">
+        <button id="sendBtn" class="btn" type="button">📲 Enviar respostas no WhatsApp</button>
+      </div>
+
+      <div id="err" class="error">Preencha pelo menos o objetivo antes de enviar.</div>
+    </form>
+  </div>
+
+<script>
+  // ====== LOGO (Android content://) ======
+  // Funciona mesmo abrindo o HTML como arquivo no celular.
+  const MFIT_DIETA_LOGO_KEY = "mfit_dieta_logo_dataurl";
+  const MFIT_DIETA_FALLBACK_LOGO = `data:image/svg+xml;utf8,
+        <svg xmlns='http://www.w3.org/2000/svg' width='720' height='220' viewBox='0 0 720 220'>
+          <rect width='100%' height='100%' fill='black'/>
+          <g fill='%2329ff47'>
+            <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='40' font-family='Arial' font-weight='700'>MFIT PREMIUM</text>
+            <text x='50%' y='78%' dominant-baseline='middle' text-anchor='middle' font-size='18' font-family='Arial'>Pesquisa – Dieta Personalizada</text>
+          </g>
+        </svg>`;
+
+  function mfitInitLogoDieta(){
+    const img = document.getElementById('brandLogo');
+    if(!img) return;
+
+    // Carrega automaticamente (se existir) o logo salvo neste navegador
+    try{
+      const saved = localStorage.getItem(MFIT_DIETA_LOGO_KEY);
+      img.src = saved || MFIT_DIETA_FALLBACK_LOGO;
+    }catch(e){
+      img.src = MFIT_DIETA_FALLBACK_LOGO;
+    }
+
+    // Se os controles existirem (outras versões do HTML), conecta os listeners
+    const pickBtn = document.getElementById('logoPickBtn');
+    const resetBtn = document.getElementById('logoResetBtn');
+    const fileInput = document.getElementById('logoFile');
+    if(!pickBtn || !resetBtn || !fileInput) return;
+
+    // 1) Carrega do storage, se existir
+    const saved = localStorage.getItem(MFIT_DIETA_LOGO_KEY);
+    if(saved){
+      img.src = saved;
+    }else{
+      // garante o fallback
+      img.src = img.src || MFIT_DIETA_FALLBACK_LOGO;
+    }
+
+    // 2) Se der erro, cai no fallback
+    img.onerror = function(){
+      img.onerror = null;
+      img.src = MFIT_DIETA_FALLBACK_LOGO;
+    };
+
+    // Abrir seletor
+    pickBtn.addEventListener('click', () => fileInput.click());
+
+    // Ler arquivo e salvar
+    fileInput.addEventListener('change', () => {
+      const f = fileInput.files && fileInput.files[0];
+      if(!f) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const dataUrl = String(reader.result || '');
+        if(!dataUrl.startsWith('data:image/')) return;
+        localStorage.setItem(MFIT_DIETA_LOGO_KEY, dataUrl);
+        img.src = dataUrl;
+      };
+      reader.readAsDataURL(f);
+    });
+
+    // Restaurar
+    resetBtn.addEventListener('click', () => {
+      localStorage.removeItem(MFIT_DIETA_LOGO_KEY);
+      img.src = MFIT_DIETA_FALLBACK_LOGO;
+    });
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', mfitInitLogoDieta);
+  }else{
+    mfitInitLogoDieta();
+  }
+
+</script>
+
+<script>
+  // ====== CONFIG ======
+  const phone = "556992913628"; // +55 69 99291-3628
+
+  // ====== HELPERS ======
+  const $ = (id) => document.getElementById(id);
+  function val(id){ const el=$(id); return el ? el.value : ""; }
+
+  // ====== Seleção dos cards de alimento ======
+  function setupFoodGrid(gridId){
+    const grid = $(gridId);
+    if(!grid) return;
+    grid.querySelectorAll('.food-card').forEach(card=>{
+      card.addEventListener('click', ()=>{
+        card.classList.toggle('selected');
+        card.setAttribute('aria-pressed', card.classList.contains('selected') ? 'true' : 'false');
+        save();
+      });
+    });
+  }
+
+  function getSelectedList(gridId){
+    const grid = $(gridId);
+    if(!grid) return [];
+    return Array.from(grid.querySelectorAll('.food-card.selected')).map(c => c.getAttribute('data-value'));
+  }
+
+  function restoreSelectedList(gridId, arr){
+    const grid = $(gridId);
+    if(!grid || !arr) return;
+    grid.querySelectorAll('.food-card').forEach(card=>{
+      const on = arr.includes(card.getAttribute('data-value'));
+      card.classList.toggle('selected', on);
+      card.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+  }
+
+  function listSelectedPretty(gridId){
+    const grid = $(gridId);
+    if(!grid) return "";
+    const sel = grid.querySelectorAll('.food-card.selected');
+    return Array.from(sel).map(c => "- " + c.getAttribute('data-value')).join("\\n");
+  }
+
+  // ====== Persistência local ======
+  const fields = [
+    "nomeAluno","idadeAluno","sexo","alturaAluno","pesoAluno","whatsAluno","cidadeAluno",
+    "objetivo",
+    "met1","met2","met3","met4","met5",
+    "acorda","dorme","cafeHorario","almocoHorario","jantarHorario","lanches","atividade",
+    "refeicoesDia","tempoPreparo","custoDieta",
+    "estiloAlimentar","estiloOutro","gosta","naoGosta","restOutro","alergias",
+    "exames","alteracoes","medic",
+    "commit",
+    "invest",
+    "usaSup","quaisSup","incluirSup",
+    "agua",
+    "alcool","fuma","estresse","sonoQualidade","sonoHoras","lixo"
+  ];
+
+  function save(){
+    const d = {};
+    fields.forEach(f=>{
+      const el=$(f);
+      if(el){ d[f]=el.value; }
+    });
+
+    d._rest = Array.from(document.querySelectorAll('.rest:checked')).map(x=>x.value);
+    d._hist = Array.from(document.querySelectorAll('.hist:checked')).map(x=>x.value);
+
+    d._cafeSel  = getSelectedList("cafeGrid");
+    d._almocoSel= getSelectedList("almocoGrid");
+    d._snackSel = getSelectedList("snackGrid");
+
+    localStorage.setItem("mfit_dieta_modelo_v32", JSON.stringify(d));
+    // atualizar prévia e cardápio automático
+    try{ refreshPreview(); refreshDayPlan(); }catch(e){}
+  }
+
+  function load(){
+    try{
+      const d = JSON.parse(localStorage.getItem("mfit_dieta_modelo_v32")||"{}");
+
+      fields.forEach(f=>{
+        const el=$(f);
+        if(el && d[f]!==undefined){
+          el.value=d[f];
+        }
+      });
+
+      if(d._rest){
+        Array.from(document.querySelectorAll('.rest')).forEach(x=>{
+          x.checked = d._rest.includes(x.value);
+        });
+      }
+
+      if(d._hist){
+        Array.from(document.querySelectorAll('.hist')).forEach(x=>{
+          x.checked = d._hist.includes(x.value);
+        });
+      }
+
+      if(d._cafeSel){ restoreSelectedList("cafeGrid", d._cafeSel); }
+      if(d._almocoSel){ restoreSelectedList("almocoGrid", d._almocoSel); }
+      if(d._snackSel){ restoreSelectedList("snackGrid", d._snackSel); }
+
+    }catch(e){}
+  }
+
+  // ====== Metabolismo automático ======
+  function mfit_classificar_metabolismo(){
+    const v1=val("met1"), v2=val("met2"), v3=val("met3"), v4=val("met4"), v5=val("met5");
+    let ecto=0, meso=0, endo=0;
+
+    if(v1==="Com dificuldade") ecto++;
+    if(v1==="Com facilidade") endo++;
+
+    if(v2==="Mais magro") ecto++;
+    if(v2==="Médio") meso++;
+    if(v2==="Mais largo") endo++;
+
+    if(v3==="Sim") ecto++;
+    if(v3==="Não") endo++;
+
+    if(v4==="Baixo") ecto++;
+    if(v4==="Alto") endo++;
+
+    if(v5==="Alta o tempo todo") ecto++;
+    if(v5==="Baixa com frequência") endo++;
+    if(v5==="Regular") meso++;
+
+    const res = (ecto>meso && ecto>endo) ? "Ectomorfo"
+              : (endo>meso && endo>ecto) ? "Endomorfo"
+              : "Mesomorfo";
+
+    const spot = $("metResultado");
+    if(spot){ spot.textContent = res; }
+    return res;
+  }
+
+
+  // ====== LÓGICA MFIT v6.2 (Prévia + Cardápio Dia 1) ======
+  function getObjetivo(){ return val("objetivo"); }
+  function getMet(){ return mfit_classificar_metabolismo(); }
+
+  function activityFactor(){
+    const a = val("atividade");
+    if(a.includes("Leve")) return 1.2;
+    if(a.includes("Moderado")) return 1.4;
+    if(a.includes("Intenso")) return 1.6;
+    return 1.2;
+  }
+
+  function goalAdjust(baseKcal, objetivo, metabolismo){
+    let pct = 0.0;
+    if(/Emagrecimento|Definição/i.test(objetivo)){
+      pct = -0.15;
+      if(metabolismo==="Endomorfo") pct = -0.18;
+      if(metabolismo==="Ectomorfo") pct = -0.12;
+    }else if(/Ganho de massa|Hipertrofia/i.test(objetivo)){
+      pct = 0.12;
+      if(metabolismo==="Ectomorfo") pct = 0.17;
+      if(metabolismo==="Endomorfo") pct = 0.10;
+    }else{
+      pct = 0.0;
+    }
+    return Math.round(baseKcal * (1 + pct));
+  }
+
+  function pickMacros(objetivo, metabolismo, peso){
+    let prot, carb, gord;
+    if(/Emagrecimento|Definição/i.test(objetivo)){
+      if(metabolismo==="Ectomorfo"){ prot=2.1; carb=2.5; gord=0.7; }
+      else if(metabolismo==="Endomorfo"){ prot=2.3; carb=1.9; gord=0.9; }
+      else { prot=1.9; carb=2.2; gord=0.8; }
+    }else if(/Ganho de massa|Hipertrofia/i.test(objetivo)){
+      if(metabolismo==="Ectomorfo"){ prot=1.9; carb=4.7; gord=0.7; }
+      else if(metabolismo==="Endomorfo"){ prot=2.0; carb=3.0; gord=0.9; }
+      else { prot=1.7; carb=4.0; gord=0.8; }
+    }else{
+      if(metabolismo==="Ectomorfo"){ prot=1.8; carb=3.5; gord=0.8; }
+      else if(metabolismo==="Endomorfo"){ prot=2.0; carb=2.5; gord=0.9; }
+      else { prot=1.8; carb=3.0; gord=0.8; }
+    }
+    return {
+      prot: Math.round(prot * (parseFloat(peso)||0)),
+      carb: Math.round(carb * (parseFloat(peso)||0)),
+      gord: Math.round(gord * (parseFloat(peso)||0)),
+    };
+  }
+
+  function estimateBMR(weight, height, age, sexo){
+    const s = (sexo==="Masculino")?5:-161;
+    const h = (parseFloat(height)||170);
+    const a = (parseFloat(age)||30);
+    const w = (parseFloat(weight)||0);
+    if(w<=0) return 0;
+    return Math.round(10*w + 6.25*h - 5*a + s);
+  }
+
+  function gramsToKcal(g){
+    return Math.round(g.prot*4 + g.carb*4 + g.gord*9);
+  }
+
+  function distributePerMeals(targets, nMeals){
+    const meals = Math.max(2, Math.min(6, parseInt(nMeals)||3));
+    const per = {
+      prot: Math.round(targets.prot / meals),
+      carb: Math.round(targets.carb / meals),
+      gord: Math.round(targets.gord / meals),
+    };
+    return { meals, per };
+  }
+
+  function joinChecks(selector){
+    const arr = Array.from(document.querySelectorAll(selector+":checked")).map(x=>x.value);
+    return arr.length? arr.join(", ") : "";
+  }
+
+  function listSelectedPretty(gridId){
+    const grid = document.getElementById(gridId);
+    if(!grid) return "";
+    const sel = grid.querySelectorAll('.food-card.selected');
+    return Array.from(sel).map(c => "- " + c.getAttribute('data-value')).join("\\n");
+  }
+
+  function buildDietPreview(){
+    const peso = parseFloat(val("pesoAluno"))||0;
+    const altura = parseFloat(val("alturaAluno"))||0;
+    const idade = parseFloat(val("idadeAluno"))||0;
+    const sexo = val("sexo")||"Masculino";
+    const objetivo = getObjetivo();
+    const metabolismo = getMet();
+    const refeicoes = val("refeicoesDia")||"3 refeições";
+
+    if(!objetivo || !peso || !altura || !idade){
+      return "Preencha objetivo, peso, altura e idade para calcular a prévia.";
+    }
+
+    const bmr = estimateBMR(peso, altura, idade, sexo);
+    const tdee = Math.round(bmr * activityFactor());
+    const kcal = goalAdjust(tdee, objetivo, metabolismo);
+    const macros = pickMacros(objetivo, metabolismo, peso);
+    const kcalFromMacros = gramsToKcal(macros);
+
+    let diff = kcal - kcalFromMacros;
+    let gordAdj = macros.gord + Math.round(diff/9);
+    if(gordAdj < 0) gordAdj = 0;
+    const macrosAdj = { prot: macros.prot, carb: macros.carb, gord: gordAdj };
+    const kcalAdj = gramsToKcal(macrosAdj);
+
+    const nMeals = parseInt((refeicoes.match(/\d+/)||[3])[0]);
+    const dist = distributePerMeals(macrosAdj, nMeals);
+
+    const prefs = (val("gosta")||"").trim();
+    const nao = (val("naoGosta")||"").trim();
+    const rest = joinChecks(".rest");
+    const alerg = val("alergias")||"";
+    const aceitaCafe = listSelectedPretty("cafeGrid");
+    const aceitaAlmoco = listSelectedPretty("almocoGrid");
+    const aceitaSnack = listSelectedPretty("snackGrid");
+
+    const linhas = [];
+    linhas.push(`🎯 Objetivo: ${objetivo}`);
+    linhas.push(`🧬 Metabolismo: ${metabolismo}`);
+    linhas.push(`⚖️ Peso: ${peso} kg · Altura: ${altura} cm · Idade: ${idade}`);
+    linhas.push(`🔥 BMR (est.): ${bmr} kcal · TDEE (atividade): ${tdee} kcal`);
+    linhas.push(`📊 Alvo calórico diário: ${kcalAdj} kcal`);
+    linhas.push(`🍽️ Refeições/dia: ${dist.meals}`);
+    linhas.push(`🥩 Proteína: ${macrosAdj.prot} g/dia`);
+    linhas.push(`🍚 Carbo: ${macrosAdj.carb} g/dia`);
+    linhas.push(`🥑 Gorduras: ${macrosAdj.gord} g/dia`);
+    linhas.push(`— Por refeição (~${dist.meals}x/dia): Prot ${dist.per.prot} g · Carb ${dist.per.carb} g · Gord ${dist.per.gord} g`);
+
+    if(prefs || nao || rest || alerg){
+      linhas.push("");
+      linhas.push("✅ Preferências/Restrições:");
+      if(prefs) linhas.push("• Gosta: " + prefs.replace(/\n+/g," "));
+      if(nao)   linhas.push("• Não come: " + nao.replace(/\n+/g," "));
+      if(rest)  linhas.push("• Restrições: " + rest);
+      if(alerg) linhas.push("• Alergias: " + alerg);
+    }
+    if(aceitaCafe || aceitaAlmoco || aceitaSnack){
+      linhas.push("");
+      linhas.push("🧾 Itens ACEITOS (cards):");
+      if(aceitaCafe)  linhas.push("• Café/Lanches:\n" + aceitaCafe);
+      if(aceitaAlmoco)linhas.push("• Almoço/Jantar:\n" + aceitaAlmoco);
+      if(aceitaSnack) linhas.push("• Snacks:\n" + aceitaSnack);
+    }
+    return linhas.join("\n");
+  }
+
+  // ====== GERAÇÃO DE CARDÁPIO – DIA 1 ======
+  function pickOne(arr){ return (arr && arr.length)? arr[Math.floor(Math.random()*arr.length)] : ""; }
+  function ensurePool(pool, fallback){ return (pool && pool.length)? pool : fallback; }
+  function poolCafe(){ return getSelectedList("cafeGrid"); }
+  function poolAlmoco(){ return getSelectedList("almocoGrid"); }
+  function poolSnack(){ return getSelectedList("snackGrid"); }
+
+  const BASES = {
+    cafe: ["Ovos","Pão integral","Aveia","Frutas","Iogurte / leite desnatado","Tapioca","Whey Protein","Pasta de amendoim"],
+    almoco: ["Frango","Patinho / carne magra","Peixe / Tilápia","Arroz","Feijão","Mandioca / Batata Doce","Salada / Legumes","Macarrão"],
+    snack: ["Fruta sozinha","Shake / vitamina","Oleaginosas / amendoim","Rap10 / Wrap","Sanduíche frango / atum"]
+  };
+
+  function styleByGoalMeta(obj, meta){
+    const s = { carbs: "moderado", fats: "moderado", protein: "alto", notes: [] };
+    if(/Emagrecimento|Definição/i.test(obj)){
+      s.carbs = (meta==="Endomorfo")? "baixo" : "moderado";
+      s.fats  = (meta==="Endomorfo")? "moderado-alto" : "moderado";
+      s.protein = "alto";
+      s.notes.push("Déficit calórico; foco em proteínas e fibras.");
+    }else if(/Ganho de massa|Hipertrofia/i.test(obj)){
+      s.carbs = (meta==="Ectomorfo")? "alto" : (meta==="Mesomorfo"?"moderado-alto":"moderado");
+      s.fats  = "moderado";
+      s.protein = "moderado-alto";
+      s.notes.push("Superávit calórico com ênfase em carbo complexos.");
+    }else{
+      s.carbs = "moderado";
+      s.fats  = "moderado";
+      s.protein = "moderado-alto";
+      s.notes.push("Equilíbrio e densidade nutricional.");
+    }
+    return s;
+  }
+
+  function makePlate(style){
+    let q = {
+      prot: (style.protein==="alto"? "30–40 g" : style.protein==="moderado-alto" ? "25–35 g" : "20–30 g"),
+      carb: (style.carbs==="alto"? "60–90 g" : style.carbs==="moderado-alto" ? "45–70 g" : style.carbs==="moderado" ? "30–50 g" : "15–30 g"),
+      fat:  (style.fats==="moderado-alto"? "15–25 g" : "10–20 g")
+    };
+    function gramsFood(name){
+      const map = {
+        "Ovos":"2–3 un",
+        "Pão integral":"2 fatias (60–80 g)",
+        "Aveia":"40–60 g",
+        "Frutas":"1–2 porções",
+        "Iogurte / leite desnatado":"200 ml",
+        "Tapioca":"1 disco (50–70 g)",
+        "Whey Protein":"1 dose (25–30 g)",
+        "Pasta de amendoim":"1–2 col (15–30 g)",
+        "Frango":"120–180 g",
+        "Patinho / carne magra":"120–180 g",
+        "Peixe / Tilápia":"120–180 g",
+        "Arroz":"120–180 g cozido",
+        "Feijão":"100–150 g cozido",
+        "Mandioca / Batata Doce":"120–180 g",
+        "Salada / Legumes":"à vontade",
+        "Macarrão":"120–160 g cozido",
+        "Fruta sozinha":"1 porção",
+        "Shake / vitamina":"300–400 ml",
+        "Oleaginosas / amendoim":"20–30 g",
+        "Rap10 / Wrap":"1 un",
+        "Sanduíche frango / atum":"1 un"
+      };
+      return map[name] || "";
+    }
+    return function combo(p1,p2,p3){
+      const parts = [];
+      if(p1) parts.push(`${p1} (${gramsFood(p1)})`);
+      if(p2) parts.push(`${p2} (${gramsFood(p2)})`);
+      if(p3) parts.push(`${p3} (${gramsFood(p3)})`);
+      return { text: parts.join(" + "), targets: q };
+    }
+  }
+
+  function buildDayPlan(){
+    const objetivo = val("objetivo");
+    const meta = mfit_classificar_metabolismo();
+    const refeicoesTxt = val("refeicoesDia") || "5 refeições";
+    const mealsNum = parseInt((refeicoesTxt.match(/\d+/)||[5])[0]) || 5;
+
+    if(!objetivo){
+      return "Selecione um objetivo (Seção 1) para gerar o cardápio.";
+    }
+    const cafePool = ensurePool(poolCafe(), BASES.cafe);
+    const almocoPool = ensurePool(poolAlmoco(), BASES.almoco);
+    const snackPool = ensurePool(poolSnack(), BASES.snack);
+
+    const style = styleByGoalMeta(objetivo, meta);
+    const make = makePlate(style);
+
+    let cafeP1 = pickOne(cafePool.filter(x=>["Ovos","Whey Protein","Iogurte / leite desnatado"].includes(x))) || pickOne(cafePool);
+    let cafeP2 = pickOne(cafePool.filter(x=>["Pão integral","Aveia","Tapioca","Frutas"].includes(x))) || pickOne(cafePool);
+    let cafeP3 = pickOne(cafePool.filter(x=>["Frutas","Pasta de amendoim"].includes(x))) || "";
+
+    if(/Emagrecimento|Definição/i.test(objetivo) && meta==="Endomorfo"){
+      if(["Pão integral","Tapioca"].includes(cafeP2)) cafeP2 = "Frutas";
+    }
+    if(/Ganho de massa|Hipertrofia/i.test(objetivo) && meta==="Ectomorfo"){
+      if(cafeP2==="Frutas") cafeP3 = pickOne(cafePool.filter(x=>["Pão integral","Aveia","Tapioca"].includes(x))) || cafeP3;
+    }
+
+    let lanche1P1 = pickOne(snackPool.filter(x=>["Shake / vitamina","Whey Protein","Iogurte / leite desnatado"].includes(x))) || pickOne(snackPool);
+    let lanche1P2 = pickOne(snackPool.filter(x=>["Fruta sozinha","Oleaginosas / amendoim"].includes(x))) || "";
+
+    let almP1 = pickOne(almocoPool.filter(x=>["Frango","Patinho / carne magra","Peixe / Tilápia"].includes(x))) || pickOne(almocoPool);
+    let almP2 = pickOne(almocoPool.filter(x=>["Arroz","Macarrão","Mandioca / Batata Doce","Feijão"].includes(x))) || "";
+    let almP3 = almocoPool.includes("Salada / Legumes")? "Salada / Legumes" : pickOne(almocoPool);
+
+    if(/Emagrecimento|Definição/i.test(objetivo) && meta==="Endomorfo"){
+      if(["Macarrão"].includes(almP2)) almP2 = "Mandioca / Batata Doce";
+    }
+    if(/Ganho de massa|Hipertrofia/i.test(objetivo) && meta==="Ectomorfo"){
+      if(almocoPool.includes("Arroz")) almP2 = "Arroz";
+    }
+
+    let lanche2P1 = pickOne(snackPool.filter(x=>["Rap10 / Wrap","Sanduíche frango / atum","Whey Protein","Shake / vitamina"].includes(x))) || pickOne(snackPool);
+    let lanche2P2 = pickOne(snackPool.filter(x=>["Fruta sozinha","Oleaginosas / amendoim"].includes(x))) || "";
+
+    let janP1 = pickOne(almocoPool.filter(x=>["Peixe / Tilápia","Frango","Patinho / carne magra"].includes(x))) || pickOne(almocoPool);
+    let janP2 = pickOne(almocoPool.filter(x=>["Mandioca / Batata Doce","Arroz","Feijão"].includes(x))) || "";
+    let janP3 = almocoPool.includes("Salada / Legumes")? "Salada / Legumes" : pickOne(almocoPool);
+
+    if(/Emagrecimento|Definição/i.test(objetivo)){
+      if(janP2==="Arroz") janP2 = "Mandioca / Batata Doce";
+      if(meta==="Endomorfo") janP2 = "";
+    }
+
+    let ceia = "";
+    if(mealsNum >= 5){
+      const ceiaP1 = pickOne(cafePool.filter(x=>["Iogurte / leite desnatado","Whey Protein","Ovos"].includes(x))) || "";
+      const ceiaP2 = pickOne(snackPool.filter(x=>["Oleaginosas / amendoim","Fruta sozinha"].includes(x))) || "";
+      if(ceiaP1){
+        const mk = make;
+        ceia = mk(ceiaP1, ceiaP2, "");
+      }
+    }
+
+    const cafe = make(cafeP1, cafeP2, cafeP3);
+    const lanche1 = make(lanche1P1, lanche1P2, "");
+    const almoco = make(almP1, almP2, almP3);
+    const lanche2 = make(lanche2P1, lanche2P2, "");
+    const jantar = make(janP1, janP2, janP3);
+
+    const linhas = [];
+    linhas.push(`🎯 Objetivo: ${objetivo} | 🧬 Metabolismo: ${meta}`);
+    linhas.push(`📌 Estilo do dia → Carbo: ${style.carbs} · Gorduras: ${style.fats} · Proteína: ${style.protein}`);
+    linhas.push("");
+    linhas.push(`🍳 Café da manhã: ${cafe.text}`);
+    linhas.push(`🥤 Lanche 1: ${lanche1.text}`);
+    linhas.push(`🍽️ Almoço: ${almoco.text}`);
+    linhas.push(`🥪 Lanche 2: ${lanche2.text}`);
+    linhas.push(`🍲 Jantar: ${jantar.text}`);
+    if(ceia && ceia.text) linhas.push(`🌙 Ceia (opcional): ${ceia.text}`);
+    linhas.push("");
+    linhas.push(`ℹ️ Metas por refeição (aprox.): Prot ${cafe.targets.prot} · Carb ${cafe.targets.carb} · Gord ${cafe.targets.fat}`);
+    return linhas.join("\n");
+  }
+
+  function refreshPreview(){
+    const el = document.getElementById("previewCalc");
+    if(!el) return;
+    el.textContent = buildDietPreview();
+  }
+
+  function refreshDayPlan(){
+    const el = document.getElementById("dayPlan");
+    if(!el) return;
+    el.textContent = buildDayPlan();
+  }
+
+  // ====== Mensagem pro WhatsApp ======
+  function joinChecks(selector){
+    const arr = Array.from(document.querySelectorAll(selector+":checked")).map(x=>x.value);
+    return arr.length? arr.join(", ") : "";
+  }
+
+  function buildMessage(){
+    const texto =
+`🍎 Dieta personalizada
+
+👤 DADOS DO ALUNO
+Nome: ${val("nomeAluno")}
+Idade: ${val("idadeAluno")}
+Sexo biológico: ${val("sexo")}
+Altura: ${val("alturaAluno")} cm
+Peso: ${val("pesoAluno")} kg
+WhatsApp do aluno: ${val("whatsAluno")}
+Cidade/Estado: ${val("cidadeAluno")}
+
+🎯 OBJETIVO / METABOLISMO
+Objetivo principal: ${val("objetivo")}
+Metabolismo (auto): ${mfit_classificar_metabolismo()}
+Nível de atividade fora da academia: ${val("atividade")}
+
+⏰ ROTINA
+Acorda: ${val("acorda")}
+Dorme: ${val("dorme")}
+Café da manhã (horário): ${val("cafeHorario")}
+Almoço (horário): ${val("almocoHorario")}
+Jantar (horário): ${val("jantarHorario")}
+Faz lanches entre refeições?: ${val("lanches")}
+Refeições por dia: ${val("refeicoesDia")}
+Tempo pra preparar comida: ${val("tempoPreparo")}
+Custo da dieta: ${val("custoDieta")}
+
+🍽 ESTILO / PREFERÊNCIAS
+Estilo alimentar: ${val("estiloAlimentar")}
+Detalhe estilo (outro): ${val("estiloOutro")}
+Gosta muito de:
+${val("gosta")}
+Não come / não gosta:
+${val("naoGosta")}
+Possíveis restrições: ${joinChecks(".rest")}${val("restOutro")?(" | Outro: "+val("restOutro")):""}
+Alergias: ${val("alergias")}
+
+🍳 ACEITO COMER (Café / Lanches)
+${listSelectedPretty("cafeGrid")}
+
+🍛 ACEITO COMER (Almoço / Jantar)
+${listSelectedPretty("almocoGrid")}
+
+🥪 ACEITO COMER (Snacks)
+${listSelectedPretty("snackGrid")}
+
+🩺 SAÚDE / EXAMES
+Exames recentes: ${val("exames")}
+Alterações nos exames: ${val("alteracoes")}
+Medicamentos contínuos: ${val("medic")}
+Histórico familiar: ${joinChecks(".hist")}
+
+💊 SUPLEMENTAÇÃO
+Já usa suplemento?: ${val("usaSup")}
+Quais suplementos usa: ${val("quaisSup")}
+Quer suplemento no plano?: ${val("incluirSup")}
+
+💧 HIDRATAÇÃO
+Água por dia: ${val("agua")}
+
+🧠 ESTILO DE VIDA
+Álcool: ${val("alcool")}
+Fuma: ${val("fuma")}
+Nível de estresse: ${val("estresse")}
+Dorme bem?: ${val("sonoQualidade")}
+Horas de sono (média): ${val("sonoHoras")}
+Fast food / doce / refri: ${val("lixo")}
+
+⚠ Observação final
+Pronto para gerar DIETA MFIT PRETO/VERDE com opções por refeição, quantidades (g/ml), hidratação e suplementação personalizada.`;
+
+    return texto;
+  }
+
+  // ====== Enviar no WhatsApp ======
+  function sendWhatsApp(){
+    if(!val("objetivo")){
+      $("err").style.display="block";
+      $("ok").style.display="none";
+      return;
+    }
+    $("err").style.display="none";
+
+    save();
+    const text = buildMessage();
+    const url = "https://api.whatsapp.com/send?phone=" + phone + "&text=" + encodeURIComponent(text);
+
+    let opened = false;
+    try{
+      const win = window.open(url, "_blank");
+      if(win && typeof win.focus==="function"){
+        win.focus();
+        opened = true;
+      }
+    }catch(e){}
+
+    if(!opened){
+      try{
+        window.location.href = url;
+        opened = true;
+      }catch(e){}
+    }
+
+    $("ok").style.display="block";
+  }
+
+  // ====== Copiar mensagem manual (iPhone etc.) ======
+  async function copyMessage(){
+    const text = buildMessage() + "\\n\\nEnviar para: https://wa.me/" + phone;
+    try{
+      await navigator.clipboard.writeText(text);
+      alert("Mensagem copiada! Abra o WhatsApp e cole no chat do Personal MFIT 💚");
+    }catch(e){
+      const ta=document.createElement('textarea');
+      ta.value=text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      alert("Se não copiou automático, selecione e copie manualmente.");
+    }
+  }
+
+  // ====== Listeners / init ======
+  function attachListeners(){
+    fields.forEach(f=>{
+      const el=$(f);
+      if(el){
+        el.addEventListener("input", save);
+        el.addEventListener("change", save);
+      }
+    });
+
+    Array.from(document.querySelectorAll('.rest,.hist')).forEach(x=>{
+      x.addEventListener("change", save);
+    });
+
+    ["met1","met2","met3","met4","met5"].forEach(id=>{
+      const el=$(id);
+      if(el){
+        el.addEventListener("change", ()=>{
+          mfit_classificar_metabolismo();
+          save();
+        });
+      }
+    });
+  }
+
+  setupFoodGrid("cafeGrid");
+  setupFoodGrid("almocoGrid");
+  setupFoodGrid("snackGrid");
+
+  load();
+  attachListeners();
+  try{ mfit_classificar_metabolismo(); refreshPreview(); refreshDayPlan(); }catch(e){}
+
+  $("sendBtn").addEventListener("click", sendWhatsApp);
+  $("copyBtn2").addEventListener("click", copyMessage);
+</script>
+
+<script>
+// === MFIT: lógica Metabolismo × Objetivo (Guia dinâmico) ===
+(function(){
+  // Helpers
+  function byId(id){ return document.getElementById(id); }
+  function valByIdOrName(key){
+    const el = byId(key);
+    if(el){
+      if(el.tagName === 'SELECT' || el.tagName === 'INPUT' || el.tagName === 'TEXTAREA'){
+        return el.value;
+      }
+      return el.textContent.trim();
+    }
+    // procura por [name=key]
+    const byName = document.querySelector(`[name="${key}"]:checked`) || document.querySelector(`[name="${key}"]`);
+    if(byName){
+      if(byName.type === 'radio'){
+        const checked = document.querySelectorAll(`[name="${key}"]:checked`);
+        if(checked && checked[0]) return checked[0].value;
+      }
+      return byName.value || byName.textContent || '';
+    }
+    return '';
+  }
+
+  // Metabolism classifier: try existing; fallback to custom
+  function getMeta(){
+    try{ if(typeof mfit_classificar_metabolismo === 'function'){ return mfit_classificar_metabolismo(); } }catch(e){}
+    // fallback: look for select#metabolismo, #metabox, or name="metabolismo"
+    let meta = valByIdOrName('metabolismo') || valByIdOrName('metabox');
+    meta = meta || 'Mesomorfo';
+    return meta;
+  }
+
+  function getObj(){
+    let obj = valByIdOrName('objetivo');
+    if(!obj || obj==='') {
+      // fallback: tenta alguns rótulos comuns
+      const cand = document.querySelector('#objetivo, [name="objetivo"], #objetivoPrincipal, [name="objetivoPrincipal"]');
+      if(cand){
+        obj = cand.value || cand.textContent || '';
+      }
+    }
+    return obj || 'Emagrecimento / Definição corporal';
+  }
+
+  const META_DESC = {
+    "Ectomorfo": "Magro, perde peso fácil. Precisa de mais calorias e bastante carboidrato de qualidade; manter proteína adequada.",
+    "Mesomorfo": "Intermediário. Responde bem com equilíbrio entre carbo, proteína e gordura boa; foco em porções corretas.",
+    "Endomorfo": "Ganha peso fácil. Beneficia de carbo menor, alta proteína, fibras e gorduras boas; evitar refinados."
+  };
+
+  const OBJ_DESC = {
+    "Emagrecimento / Definição corporal": "Calorias controladas, proteína alta, carbo de qualidade em porções medidas, cortar açúcar e ultraprocessados.",
+    "Ganho de massa muscular (hipertrofia)": "Superávit calórico leve, carbo elevado e proteína suficiente; refeições densas e consistentes.",
+    "Saúde / Emagrecimento": "Alimentação limpa e balanceada; foco em legumes, frutas, grãos e carnes magras; reduzir ultraprocessados."
+  };
+
+  // Listas base
+  const BASE = {
+    ovos:"Ovos",
+    iogurte:"Iogurte / leite desnatado",
+    frutas:"Frutas variadas",
+    aveia:"Aveia / farelo de aveia",
+    pao:"Pão integral",
+    tapioca:"Tapioca",
+    arroz:"Arroz (pref. integral no corte)",
+    macarrao:"Macarrão (pref. integral)",
+    batata:"Batata doce / mandioca",
+    feijao:"Feijão / leguminosas",
+    frango:"Frango",
+    peixe:"Peixe / Tilápia",
+    patinho:"Patinho / carnes magras",
+    salada:"Salada / Legumes",
+    wrap:"Rap10 / Wrap",
+    sanduiche:"Sanduíche natural (frango/atum)",
+    shake:"Shake / vitamina",
+    oleaginosas:"Oleaginosas (amendoim, castanhas)",
+    ultra:"Ultraprocessados, frituras, refrigerantes, doces (evitar)"
+  };
+
+  // Combinações Objetivo × Metabolismo
+  const RULES = {
+    "Emagrecimento / Definição corporal": {
+      "Ectomorfo": {
+        yes:[BASE.ovos,BASE.frutas,BASE.aveia,BASE.pao,BASE.tapioca,BASE.arroz,BASE.macarrao,BASE.frango,BASE.patinho,BASE.peixe,BASE.feijao,BASE.salada,BASE.batata],
+        no:[BASE.ultra]
+      },
+      "Mesomorfo": {
+        yes:[BASE.ovos,BASE.aveia,BASE.frutas,BASE.iogurte,BASE.frango,BASE.peixe,BASE.patinho,BASE.arroz,BASE.feijao,BASE.salada,BASE.batata],
+        no:[BASE.macarrao,BASE.shake,BASE.oleaginosas,BASE.ultra]
+      },
+      "Endomorfo": {
+        yes:[BASE.ovos,BASE.iogurte,BASE.frutas,BASE.frango,BASE.peixe,BASE.patinho,BASE.salada,BASE.batata,BASE.arroz,BASE.feijao],
+        no:[BASE.pao,BASE.tapioca,BASE.macarrao,BASE.shake,BASE.ultra]
+      }
+    },
+    "Ganho de massa muscular (hipertrofia)": {
+      "Ectomorfo": {
+        yes:[BASE.pao,BASE.aveia,BASE.tapioca,BASE.arroz,BASE.macarrao,BASE.frutas,BASE.shake,BASE.wrap,BASE.frango,BASE.patinho,BASE.peixe,BASE.feijao,BASE.salada],
+        no:[BASE.oleaginosas,BASE.ultra] // moderar gordura p/ caber mais carbo
+      },
+      "Mesomorfo": {
+        yes:[BASE.aveia,BASE.frutas,BASE.arroz,BASE.feijao,BASE.macarrao,BASE.frango,BASE.patinho,BASE.peixe,BASE.salada,BASE.batata],
+        no:[BASE.ultra]
+      },
+      "Endomorfo": {
+        yes:[BASE.ovos,BASE.iogurte,BASE.frutas,BASE.arroz,BASE.feijao,BASE.batata,BASE.frango,BASE.patinho,BASE.peixe,BASE.salada],
+        no:[BASE.macarrao,BASE.tapioca,BASE.pao,BASE.shake,BASE.ultra]
+      }
+    },
+    "Saúde / Emagrecimento": {
+      "Ectomorfo": {
+        yes:[BASE.arroz,BASE.feijao,BASE.aveia,BASE.frutas,BASE.frango,BASE.peixe,BASE.patinho,BASE.salada,BASE.batata],
+        no:[BASE.ultra]
+      },
+      "Mesomorfo": {
+        yes:[BASE.arroz,BASE.feijao,BASE.aveia,BASE.frutas,BASE.frango,BASE.peixe,BASE.patinho,BASE.salada,BASE.batata],
+        no:[BASE.ultra]
+      },
+      "Endomorfo": {
+        yes:[BASE.ovos,BASE.iogurte,BASE.frutas,BASE.frango,BASE.peixe,BASE.patinho,BASE.salada,BASE.batata,BASE.feijao],
+        no:[BASE.pao,BASE.macarrao,BASE.tapioca,BASE.ultra]
+      }
+    }
+  };
+
+  function renderList(ul, items){
+    if(!ul) return;
+    ul.innerHTML='';
+    (items||[]).forEach(t=>{
+      const li=document.createElement('li'); li.textContent=t; ul.appendChild(li);
+    });
+  }
+
+  function updateGuide(){
+    const meta = getMeta();
+    const obj = getObj();
+    const metaDesc = META_DESC[meta] || '';
+    const objDesc = OBJ_DESC[obj] || '';
+
+    const pack = (RULES[obj] && RULES[obj][meta]) ? RULES[obj][meta] : {yes:[], no:[]};
+
+    const metaBox = byId('mfit-meta-desc');
+    const objBox = byId('mfit-obj-desc');
+    const yesUl = byId('mfit-food-yes');
+    const noUl = byId('mfit-food-no');
+
+    if(metaBox) metaBox.innerHTML = `<span class="pill">${meta}</span> — ${metaDesc}`;
+    if(objBox) objBox.innerHTML = `<span class="pill">${obj}</span> — ${objDesc}`;
+    renderList(yesUl, pack.yes);
+    renderList(noUl, pack.no);
+  }
+
+  // Try to place the panel near existing objective/metabolism fields
+  function ensurePanel(){
+    if(document.getElementById('mfit-guide')) return;
+    const host = document.querySelector('#guiaMetaObjetivo') || document.querySelector('#guia-meta-objetivo') || document.body;
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = `\n<section id=\"mfit-guide\" aria-live=\"polite\">\n  <h3>Guia rápido: Metabolismo × Objetivo</h3>\n  <div class=\"row\">\n    <div>\n      <div class=\"muted\">Resumo do metabolismo</div>\n      <div id=\"mfit-meta-desc\"></div>\n    </div>\n    <div>\n      <div class=\"muted\">Foco pelo objetivo</div>\n      <div id=\"mfit-obj-desc\"></div>\n    </div>\n  </div>\n  <hr style=\"border:none;border-top:1px solid #1e1e1e;margin:12px 0\" />\n  <div class=\"row\">\n    <div>\n      <div class=\"muted\">Alimentos indicados</div>\n      <ul id=\"mfit-food-yes\" class=\"list\"></ul>\n    </div>\n    <div>\n      <div class=\"muted\">Limitar / evitar</div>\n      <ul id=\"mfit-food-no\" class=\"list\"></ul>\n    </div>\n  </div>\n  <div class=\"muted\" style=\"margin-top:10px;font-size:.95rem\">As recomendações se ajustam automaticamente quando você responde <b>Metabolismo</b> e <b>Objetivo</b> no formulário.</div>\n</section>\n`;
+    host.appendChild(wrapper.firstElementChild);
+  }
+
+  function attachListeners(){
+    const ids = ['objetivo','metabolismo','metabox','met1','met2','met3','met4','met5'];
+    ids.forEach(id=>{
+      const el = byId(id) || document.querySelector(`[name="${id}"]`);
+      if(!el) return;
+      el.addEventListener('change', updateGuide, {passive:true});
+      el.addEventListener('input', updateGuide, {passive:true});
+    });
+  }
+
+  // init
+  ensurePanel();
+  attachListeners();
+  updateGuide();
+})();
+</script>
+<script>
+// === MFIT: marcação visual de cards de alimentos ===
+(function(){
+  function norm(s){
+    if(!s) return "";
+    return s.toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+  }
+  function byId(id){ return document.getElementById(id); }
+  function valField(idOrName){
+    const el = byId(idOrName);
+    if(el) return el.value || el.textContent || '';
+    const q = document.querySelector(`[name="${idOrName}"]:checked`) || document.querySelector(`[name="${idOrName}"]`);
+    if(q){
+      if(q.type==='radio'){
+        const chk = document.querySelectorAll(`[name="${idOrName}"]:checked`);
+        if(chk && chk[0]) return chk[0].value;
+      }
+      return q.value || q.textContent || '';
+    }
+    return '';
+  }
+  function getObj(){
+    return valField('objetivo') || 'Emagrecimento / Definição corporal';
+  }
+  function getMeta(){
+    try{ if(typeof mfit_classificar_metabolismo === 'function'){ return mfit_classificar_metabolismo(); } }catch(e){}
+    return valField('metabolismo') || valField('metabox') || 'Mesomorfo';
+  }
+
+  const K = {
+    ovos: ["ovo","ovos"],
+    iogurte:["iogurte","leite desnatado"],
+    frutas:["fruta","banana","maca","maça","pera","laranja","manga","uva","abacaxi","morango"],
+    aveia:["aveia","farelo"],
+    pao:["pao integral","pao","integral"],
+    tapioca:["tapioca"],
+    arroz:["arroz"],
+    macarrao:["macarrao","massa","espaguete","parafuso","penne","talharim"],
+    batata:["batata doce","mandioca","aipim","inhame"],
+    feijao:["feijao","lentilha","grao de bico","grão de bico"],
+    frango:["frango","peito de frango"],
+    peixe:["peixe","tilapia","atum","sardinha","salmao","salmão"],
+    patinho:["patinho","carne magra","coxao mole","coxao duro"],
+    salada:["salada","legume","alface","tomate","pepino","brocolis","cenoura","abobrinha","berinjela","brócolis"],
+    wrap:["rap10","wrap","tortilha"],
+    sanduiche:["sanduiche","sanduíche","natural"],
+    shake:["shake","vitamina","smoothie"],
+    oleaginosas:["oleaginosa","amendoim","castanha","noz","amendoas","amêndoas"]
+  };
+
+  const RULES_KEYS = {
+    "Emagrecimento / Definição corporal": {
+      "Ectomorfo": { yes:["ovos","frutas","aveia","pao","tapioca","arroz","macarrao","frango","patinho","peixe","feijao","salada","batata"], no:["oleaginosas","shake"] },
+      "Mesomorfo": { yes:["ovos","aveia","frutas","iogurte","frango","peixe","patinho","arroz","feijao","salada","batata"], no:["macarrao","shake","oleaginosas"] },
+      "Endomorfo": { yes:["ovos","iogurte","frutas","frango","peixe","patinho","salada","batata","arroz","feijao"], no:["pao","tapioca","macarrao","shake","oleaginosas"] }
+    },
+    "Ganho de massa muscular (hipertrofia)": {
+      "Ectomorfo": { yes:["pao","aveia","tapioca","arroz","macarrao","frutas","shake","wrap","frango","patinho","peixe","feijao","salada"], no:["oleaginosas"] },
+      "Mesomorfo": { yes:["aveia","frutas","arroz","feijao","macarrao","frango","patinho","peixe","salada","batata"], no:[] },
+      "Endomorfo": { yes:["ovos","iogurte","frutas","arroz","feijao","batata","frango","patinho","peixe","salada"], no:["macarrao","tapioca","pao","shake","oleaginosas"] }
+    },
+    "Saúde / Emagrecimento": {
+      "Ectomorfo": { yes:["arroz","feijao","aveia","frutas","frango","peixe","patinho","salada","batata"], no:["oleaginosas","shake"] },
+      "Mesomorfo": { yes:["arroz","feijao","aveia","frutas","frango","peixe","patinho","salada","batata"], no:["shake","oleaginosas"] },
+      "Endomorfo": { yes:["ovos","iogurte","frutas","frango","peixe","patinho","salada","batata","feijao"], no:["pao","macarrao","tapioca","shake","oleaginosas"] }
+    }
+  };
+
+  function getCardName(card){
+    const dv = card.getAttribute('data-value');
+    if(dv) return dv;
+    const t = card.querySelector('.title, .name, .food-name');
+    return (t ? t.textContent : card.textContent || '').trim();
+  }
+
+  function matchesAny(name, keys){
+    const n = norm(name);
+    return keys.some(k => n.includes(norm(k)));
+  }
+
+  function markFoodCards(){
+    const obj = getObj();
+    const meta = getMeta();
+    const pack = (RULES_KEYS[obj] && RULES_KEYS[obj][meta]) ? RULES_KEYS[obj][meta] : null;
+    const all = document.querySelectorAll('.food-card');
+    all.forEach(c => {
+      c.classList.remove('recommended','dim');
+      if(!pack) return;
+      const name = getCardName(c);
+      const yesKeys = (pack.yes||[]).flatMap(k => K[k] || []);
+      const noKeys  = (pack.no ||[]).flatMap(k => K[k] || []);
+      if(yesKeys.length && matchesAny(name, yesKeys)) c.classList.add('recommended');
+      if(noKeys.length  && matchesAny(name, noKeys))  c.classList.add('dim');
+    });
+  }
+
+  const ids = ['objetivo','metabolismo','metabox','met1','met2','met3','met4','met5'];
+  ids.forEach(id=>{
+    const el = document.getElementById(id) || document.querySelector(`[name="${id}"]`);
+    if(el){
+      el.addEventListener('change', markFoodCards, {passive:true});
+      el.addEventListener('input', markFoodCards, {passive:true});
+    }
+  });
+
+  window.mfit_markFoodCards = markFoodCards;
+  setTimeout(markFoodCards, 0);
+})();
+</script>
+
+
+<section id="mfit-food-auto">
+  <h3>Alimentos sugeridos para você</h3>
+  <div class="mfit-final-grid">
+    <div class="mfit-panel">
+      <h4>Sua seleção</h4>
+      <div id="mfit-chosen"></div>
+      <div class="mfit-note">Marque/desmarque aqui ou nos cards acima.</div>
+    </div>
+    <div class="mfit-panel">
+      <h4>Sugeridos (permitidos)</h4>
+      <div id="mfit-allowed"></div>
+      <div class="mfit-note">Opções alinhadas ao seu <b>metabolismo</b> e <b>objetivo</b>.</div>
+    </div>
+    <div class="mfit-panel">
+      <h4>Bloqueados para seu perfil</h4>
+      <div id="mfit-blocked"></div>
+      <div class="mfit-note">Esses não entram na seleção.</div>
+    </div>
+  </div>
+</section>
+
+
+<script>
+// === MFIT: seção final auto de alimentos sugeridos ===
+(function(){
+  function byId(id){ return document.getElementById(id); }
+  function valField(idOrName){
+    const el = byId(idOrName);
+    if(el) return el.value || el.textContent || '';
+    const q = document.querySelector(`[name="${idOrName}"]:checked`) || document.querySelector(`[name="${idOrName}"]`);
+    if(q){
+      if(q.type==='radio'){
+        const chk = document.querySelectorAll(`[name="${idOrName}"]:checked`);
+        if(chk && chk[0]) return chk[0].value;
+      }
+      return q.value || q.textContent || '';
+    }
+    return '';
+  }
+  function getObj(){
+    return valField('objetivo') || 'Emagrecimento / Definição corporal';
+  }
+  function getMeta(){
+    try{ if(typeof mfit_classificar_metabolismo === 'function'){ return mfit_classificar_metabolismo(); } }catch(e){}
+    return valField('metabolismo') || valField('metabox') || 'Mesomorfo';
+  }
+
+  // Reusa mapeamento do script anterior se existir no escopo global
+  const RULES_KEYS = (function(){
+    // Pega do escopo da página se já definido
+    if(window.__MFIT_RULES_KEYS__) return window.__MFIT_RULES_KEYS__;
+    // Caso não, define rapidamente um igual ao do módulo dos cards
+    return {
+      "Emagrecimento / Definição corporal": {
+        "Ectomorfo": { yes:["ovos","frutas","aveia","pao","tapioca","arroz","macarrao","frango","patinho","peixe","feijao","salada","batata"], no:["oleaginosas","shake"] },
+        "Mesomorfo": { yes:["ovos","aveia","frutas","iogurte","frango","peixe","patinho","arroz","feijao","salada","batata"], no:["macarrao","shake","oleaginosas"] },
+        "Endomorfo": { yes:["ovos","iogurte","frutas","frango","peixe","patinho","salada","batata","arroz","feijao"], no:["pao","tapioca","macarrao","shake","oleaginosas"] }
+      },
+      "Ganho de massa muscular (hipertrofia)": {
+        "Ectomorfo": { yes:["pao","aveia","tapioca","arroz","macarrao","frutas","shake","wrap","frango","patinho","peixe","feijao","salada"], no:["oleaginosas"] },
+        "Mesomorfo": { yes:["aveia","frutas","arroz","feijao","macarrao","frango","patinho","peixe","salada","batata"], no:[] },
+        "Endomorfo": { yes:["ovos","iogurte","frutas","arroz","feijao","batata","frango","patinho","peixe","salada"], no:["macarrao","tapioca","pao","shake","oleaginosas"] }
+      },
+      "Saúde / Emagrecimento": {
+        "Ectomorfo": { yes:["arroz","feijao","aveia","frutas","frango","peixe","patinho","salada","batata"], no:["oleaginosas","shake"] },
+        "Mesomorfo": { yes:["arroz","feijao","aveia","frutas","frango","peixe","patinho","salada","batata"], no:["shake","oleaginosas"] },
+        "Endomorfo": { yes:["ovos","iogurte","frutas","frango","peixe","patinho","salada","batata","feijao"], no:["pao","macarrao","tapioca","shake","oleaginosas"] }
+      }
+    };
+  })();
+
+  // Dicionário rótulos bonitos para as chaves
+  const LABELS = {
+    ovos:"Ovos",
+    iogurte:"Iogurte / Leite desnatado",
+    frutas:"Frutas",
+    aveia:"Aveia",
+    pao:"Pão integral",
+    tapioca:"Tapioca",
+    arroz:"Arroz",
+    macarrao:"Macarrão",
+    batata:"Batata doce / Mandioca",
+    feijao:"Feijão / Leguminosas",
+    frango:"Frango",
+    peixe:"Peixe / Tilápia",
+    patinho:"Patinho / Carne magra",
+    salada:"Salada / Legumes",
+    wrap:"Rap10 / Wrap",
+    sanduiche:"Sanduíche natural",
+    shake:"Shake / vitamina",
+    oleaginosas:"Oleaginosas"
+  };
+
+  function renderChips(container, keys, limit=false){
+    if(!container) return;
+    container.innerHTML = '';
+    (keys||[]).forEach(k => {
+      const label = LABELS[k] || k;
+      const id = 'chip_'+k;
+      const wrap = document.createElement('label');
+      wrap.className = 'mfit-chip' + (limit ? ' limit' : '');
+      wrap.innerHTML = `<input type="checkbox" checked id="${id}" /> ${label}`;
+      container.appendChild(wrap);
+    });
+  }
+
+  function updateAutoFoods(){
+    const meta = getMeta();
+    const obj = getObj();
+    const pack = (RULES_KEYS[obj] && RULES_KEYS[obj][meta]) ? RULES_KEYS[obj][meta] : {yes:[], no:[]};
+    renderChips(document.getElementById('mfit-food-auto-yes'), pack.yes, false);
+    renderChips(document.getElementById('mfit-food-auto-no'), pack.no, true);
+
+    // Opcional: sincroniza com cards existentes (.food-card)
+    if(typeof window.mfit_markFoodCards === 'function'){
+      window.mfit_markFoodCards();
+    }
+  }
+
+  // Oculta seletor manual de metabolismo se o teste existir
+  try{
+    if(typeof mfit_classificar_metabolismo === 'function'){
+      const manual = document.getElementById('metabox');
+      if(manual){ manual.closest('.card')?.classList.add('hidden'); manual.style.display='none'; }
+    }
+  }catch(e){}
+
+  // Gatilhos
+  ['objetivo','metabolismo','metabox','met1','met2','met3','met4','met5'].forEach(id=>{
+    const el = document.getElementById(id) || document.querySelector(`[name="${id}"]`);
+    if(el){
+      el.addEventListener('change', updateAutoFoods, {passive:true});
+      el.addEventListener('input', updateAutoFoods, {passive:true});
+    }
+  });
+
+  // Inicial
+  setTimeout(updateAutoFoods, 0);
+  window.mfit_updateAutoFoods = updateAutoFoods;
+})();
+</script>
+<script>
+// === MFIT: sincronizar chips → gerador/cardápio ===
+(function(){
+  function norm(s){
+    if(!s) return "";
+    return s.toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+  }
+  // Mesmo dicionário de palavras-chave dos cards
+  const K = {
+    ovos: ["ovo","ovos"],
+    iogurte:["iogurte","leite desnatado"],
+    frutas:["fruta","banana","maca","maça","pera","laranja","manga","uva","abacaxi","morango"],
+    aveia:["aveia","farelo"],
+    pao:["pao integral","pao","integral"],
+    tapioca:["tapioca"],
+    arroz:["arroz"],
+    macarrao:["macarrao","massa","espaguete","parafuso","penne","talharim"],
+    batata:["batata doce","mandioca","aipim","inhame"],
+    feijao:["feijao","lentilha","grao de bico","grão de bico"],
+    frango:["frango","peito de frango"],
+    peixe:["peixe","tilapia","atum","sardinha","salmao","salmão"],
+    patinho:["patinho","carne magra","coxao mole","coxao duro"],
+    salada:["salada","legume","alface","tomate","pepino","brocolis","cenoura","abobrinha","berinjela","brócolis"],
+    wrap:["rap10","wrap","tortilha"],
+    sanduiche:["sanduiche","sanduíche","natural"],
+    shake:["shake","vitamina","smoothie"],
+    oleaginosas:["oleaginosa","amendoim","castanha","noz","amendoas","amêndoas"]
+  };
+
+  // Mapa rótulo → chave
+  const LABEL2KEY = {
+    "Ovos":"ovos",
+    "Iogurte / Leite desnatado":"iogurte",
+    "Frutas":"frutas",
+    "Aveia":"aveia",
+    "Pão integral":"pao",
+    "Tapioca":"tapioca",
+    "Arroz":"arroz",
+    "Macarrão":"macarrao",
+    "Batata doce / Mandioca":"batata",
+    "Feijão / Leguminosas":"feijao",
+    "Frango":"frango",
+    "Peixe / Tilápia":"peixe",
+    "Patinho / Carne magra":"patinho",
+    "Salada / Legumes":"salada",
+    "Rap10 / Wrap":"wrap",
+    "Sanduíche natural":"sanduiche",
+    "Shake / vitamina":"shake",
+    "Oleaginosas":"oleaginosas"
+  };
+
+  function getChipsSelected(){
+    const yes = Array.from(document.querySelectorAll('#mfit-food-auto-yes .mfit-chip input[type="checkbox"]:checked')).map(el => el.parentElement.textContent.trim());
+    const no  = Array.from(document.querySelectorAll('#mfit-food-auto-no  .mfit-chip input[type="checkbox"]:checked')).map(el => el.parentElement.textContent.trim());
+    // Converte rótulos → chaves
+    const mapToKeys = arr => arr.map(lbl => LABEL2KEY[lbl]).filter(Boolean);
+    return { yesKeys: mapToKeys(yes), noKeys: mapToKeys(no) };
+  }
+
+  // Interface pública para outros módulos
+  window.mfit_collectSelectedFoods = function(){
+    const {yesKeys, noKeys} = getChipsSelected();
+    return {
+      indicados: yesKeys,
+      limitar: noKeys
+    };
+  };
+
+  // Tenta sincronizar com .food-card (selecionar/deselecionar)
+  function syncToCards(){
+    const {yesKeys, noKeys} = getChipsSelected();
+    const yesWords = yesKeys.flatMap(k => K[k] || []);
+    const noWords  = noKeys .flatMap(k => K[k] || []);
+
+    function matchesAny(text, keys){
+      const n = norm(text);
+      return keys.some(k => n.includes(norm(k)));
+    }
+    function getName(card){
+      const dv = card.getAttribute('data-value');
+      if(dv) return dv;
+      const t = card.querySelector('.title, .name, .food-name');
+      return (t ? t.textContent : card.textContent || '').trim();
+    }
+    // Estratégia: marcar 'selected' nos recomendados, remover dos limitados
+    document.querySelectorAll('.food-card').forEach(card => {
+      const name = getName(card);
+      const isYes = matchesAny(name, yesWords);
+      const isNo  = matchesAny(name, noWords);
+      // assume toggle por classe 'selected' + aria-pressed
+      if(isYes){
+        if(!card.classList.contains('selected')){
+          card.classList.add('selected');
+          card.setAttribute('aria-pressed','true');
+        }
+      }
+      if(isNo){
+        if(card.classList.contains('selected')){
+          card.classList.remove('selected');
+          card.setAttribute('aria-pressed','false');
+        }
+      }
+    });
+
+    // Chama hooks do seu gerador, se existirem
+    try{ if(typeof save === 'function') save(); }catch(e){}
+    try{ if(typeof refreshPreview === 'function') refreshPreview(); }catch(e){}
+    try{ if(typeof refreshDayPlan === 'function') refreshDayPlan(); }catch(e){}
+  }
+
+  // Botão auxiliar (injetado no painel) para o usuário aplicar seleção automaticamente
+  function ensureApplyButton(){
+    if(document.getElementById('mfit-apply-chips')) return;
+    const host = document.getElementById('mfit-food-auto');
+    if(!host) return;
+    const btn = document.createElement('button');
+    btn.id = 'mfit-apply-chips';
+    btn.textContent = 'Aplicar seleção aos cards / cardápio';
+    btn.style.cssText = 'margin-top:12px;padding:10px 14px;border-radius:10px;border:1px solid #1e1e1e;background:#00CC66;color:#000;font-weight:600;cursor:pointer';
+    btn.addEventListener('click', syncToCards);
+    host.appendChild(btn);
+  }
+
+  // Atualiza botão e sincroniza quando objetivo/metabolismo mudarem
+  function wireUpdates(){
+    ['objetivo','metabolismo','metabox','met1','met2','met3','met4','met5'].forEach(id=>{
+      const el = document.getElementById(id) || document.querySelector(`[name="${id}"]`);
+      if(el){
+        el.addEventListener('change', ensureApplyButton, {passive:true});
+        el.addEventListener('input', ensureApplyButton, {passive:true});
+      }
+    });
+  }
+
+  // Inicializa
+  setTimeout(ensureApplyButton, 0);
+  wireUpdates();
+
+  // Exponibiliza sincronização manual via console, se quiser
+  window.mfit_applyChipsToCards = syncToCards;
+})();
+</script>
+
+
+
+
+<script>
+(function(){
+  function byId(id){ return document.getElementById(id); }
+  function safeMeta(){
+    try{
+      if(typeof mfit_classificar_metabolismo === 'function'){
+        const m = mfit_classificar_metabolismo();
+        if(m && /^(Ecto|Meso|Endo)/i.test(m)) return m;
+      }
+    }catch(e){}
+    return null;
+  }
+  function clearHighlights(){
+    document.querySelectorAll('.food-card').forEach(c=>{
+      c.classList.remove('recommended','dim');
+    });
+  }
+  function setVisible(ok){
+    const guide = byId('mfit-guide');
+    const auto  = byId('mfit-food-auto');
+    const note  = byId('mfit-locked-note');
+    if(guide) guide.classList.toggle('hidden', !ok);
+    if(auto)  auto.classList.toggle('hidden',  !ok);
+    if(note)  note.classList.toggle('hidden',   ok);
+    if(!ok) clearHighlights();
+  }
+  function onChange(){
+    const m = safeMeta();
+    setVisible(!!m);
+    if(m && typeof window.mfit_updateAutoFoods === 'function'){
+      window.mfit_updateAutoFoods();
+    }
+    if(m && typeof window.mfit_markFoodCards === 'function'){
+      window.mfit_markFoodCards();
+    }
+  }
+  // Esconde/mostra conforme estado no carregamento
+  setVisible(false);
+  const ids = ['met1','met2','met3','met4','met5','metabolismo'];
+  ids.forEach(id=>{
+    const el = byId(id) || document.querySelector(`[name="${id}"]`);
+    if(el){
+      el.addEventListener('change', onChange, {passive:true});
+      el.addEventListener('input', onChange, {passive:true});
+    }
+  });
+  let tries = 0;
+  const iv = setInterval(()=>{
+    tries++;
+    onChange();
+    if(tries>20) clearInterval(iv);
+  }, 200);
+})();
+</script>
+
+
+
+<script>
+// === MFIT v1.8: Cabeçalho fixo; ordem interna = Objetivo → Teste → Guia → Alimentos; autoaplica ===
+(function(){
+  function byId(id){ return document.getElementById(id); }
+  function closestCard(el){
+    if(!el) return null;
+    let n = el;
+    while(n && n !== document.body){
+      if(n.classList && n.classList.contains('card')) return n;
+      n = n.parentElement;
+    }
+    return el.parentElement || null;
+  }
+  function getTestContainer(){
+    const ids = ['met1','met2','met3','met4','met5','metabolismo'];
+    for(const id of ids){
+      const el = byId(id) || document.querySelector(`[name="${id}"]`);
+      if(el){
+        const card = closestCard(el);
+        return card || el.closest('section, div, fieldset, form') || el.parentElement;
+      }
+    }
+    return null;
+  }
+  function getObjetivoContainer(){
+    const el = byId('objetivo') || document.querySelector('[name="objetivo"]') || null;
+    if(!el) return null;
+    const card = closestCard(el);
+    return card || el.closest('section, div, fieldset, form') || el.parentElement;
+  }
+  function arrangeLocal(){
+    const objetivoBox = getObjetivoContainer();
+    const testBox = getTestContainer();
+    const guide = byId('mfit-guide');
+    const note = byId('mfit-locked-note');
+    const auto = byId('mfit-food-auto');
+    if(!objetivoBox) return;
+
+    // Não mover objetivo para o topo do documento! Mantém cabeçalho intacto.
+    // Apenas garante a sequência relativa dentro do mesmo pai.
+    const parent = objetivoBox.parentElement;
+
+    if(testBox && testBox !== objetivoBox){
+      if(testBox.parentElement !== parent){
+        // move para o mesmo container do objetivo
+        parent.appendChild(testBox);
+      }
+      objetivoBox.insertAdjacentElement('afterend', testBox);
+    }
+    if(guide){
+      const anchor = testBox || objetivoBox;
+      if(guide.parentElement !== parent){
+        parent.appendChild(guide);
+      }
+      anchor.insertAdjacentElement('afterend', guide);
+      if(note){
+        if(note.parentElement !== parent){
+          parent.appendChild(note);
+        }
+        guide.insertAdjacentElement('afterend', note);
+      }
+    }
+    if(auto){
+      const anchor2 = guide || testBox || objetivoBox;
+      if(auto.parentElement !== parent){
+        parent.appendChild(auto);
+      }
+      anchor2.insertAdjacentElement('afterend', auto);
+    }
+  }
+
+  function safeMeta(){
+    try{ if(typeof mfit_classificar_metabolismo === 'function'){ return mfit_classificar_metabolismo(); } }catch(e){}
+    return null;
+  }
+  function hasObj(){
+    const el = byId('objetivo') || document.querySelector('[name="objetivo"]');
+    return !!(el && (el.value || el.textContent));
+  }
+  function autoApply(){
+    const m = safeMeta();
+    if(m && /^(Ecto|Meso|Endo)/i.test(m) && hasObj()){
+      if(typeof window.mfit_updateAutoFoods === 'function') window.mfit_updateAutoFoods();
+      if(typeof window.mfit_markFoodCards === 'function') window.mfit_markFoodCards();
+      if(typeof window.mfit_applyChipsToCards === 'function') window.mfit_applyChipsToCards();
+    }
+  }
+
+  function wire(){
+    const ids = ['objetivo','met1','met2','met3','met4','met5','metabolismo'];
+    ids.forEach(id=>{
+      const el = byId(id) || document.querySelector(`[name="${id}"]`);
+      if(el){
+        el.addEventListener('change', autoApply, {passive:true});
+        el.addEventListener('input', autoApply, {passive:true});
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    arrangeLocal();
+    wire();
+    let tries = 0;
+    const iv = setInterval(()=>{
+      arrangeLocal();
+      autoApply();
+      tries++;
+      if(tries>20) clearInterval(iv);
+    }, 200);
+  });
+})();
+</script>
+
+
+
+<script>
+// === MFIT v1.9: Levar o bloco de ações (WhatsApp/Copy) para o final ===
+(function(){
+  function moveActionsToBottom(){
+    const root = document.querySelector('.container') || document.body;
+    // Procura por botões pelo texto
+    const allBtns = Array.from(document.querySelectorAll('button, a'));
+    const targets = allBtns.filter(b => /enviar respostas no whatsapp/i.test(b.textContent) ||
+                                        /copiar mensagem/i.test(b.textContent) ||
+                                        /whatsapp/i.test(b.textContent));
+    if(targets.length === 0) return;
+    // Encontra o contêiner mais externo relevante (card/section/div)
+    function outerBox(el){
+      return el.closest('.card, section, form, div') || el.parentElement;
+    }
+    const boxes = Array.from(new Set(targets.map(outerBox).filter(Boolean)));
+    if(boxes.length === 0) return;
+    // Agrupa em um wrapper e manda para o final, após mfit-food-auto se existir
+    let wrapper = document.getElementById('mfit-actions-final');
+    if(!wrapper){
+      wrapper = document.createElement('div');
+      wrapper.id = 'mfit-actions-final';
+      wrapper.style.margin = '24px 0';
+    }else{
+      wrapper.innerHTML = '';
+    }
+    boxes.forEach(box => wrapper.appendChild(box));
+    const anchor = document.getElementById('mfit-food-auto') || document.getElementById('mfit-guide') || root.lastElementChild;
+    if(anchor && anchor.parentElement){
+      anchor.parentElement.insertBefore(wrapper, anchor.nextSibling);
+    }else{
+      root.appendChild(wrapper);
+    }
+  }
+  document.addEventListener('DOMContentLoaded', moveActionsToBottom);
+  // Reajusta após mudanças que re-renderizam conteúdo
+  setTimeout(moveActionsToBottom, 300);
+  setTimeout(moveActionsToBottom, 1000);
+  window.mfit_moveActionsToBottom = moveActionsToBottom;
+})();
+</script>
+
+
+<script>
+// === MFIT v2.0: regras expandidas + bloqueio do "não indicado" ===
+(function(){
+  function norm(s){ return (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim(); }
+  function byId(id){ return document.getElementById(id); }
+  function valField(idOrName){
+    const el = byId(idOrName);
+    if(el) return el.value || el.textContent || '';
+    const q = document.querySelector(`[name="${idOrName}"]:checked`) || document.querySelector(`[name="${idOrName}"]`);
+    if(q){
+      if(q.type==='radio'){
+        const chk = document.querySelectorAll(`[name="${idOrName}"]:checked`);
+        if(chk && chk[0]) return chk[0].value;
+      }
+      return q.value || q.textContent || '';
+    }
+    return '';
+  }
+  function getObj(){ return valField('objetivo') || 'Emagrecimento / Definição corporal'; }
+  function getMeta(){
+    try{ if(typeof mfit_classificar_metabolismo === 'function'){ return mfit_classificar_metabolismo(); } }catch(e){}
+    return valField('metabolismo') || 'Mesomorfo';
+  }
+
+  // Vocabulário ampliado
+  const K = {
+    ovos:["ovo","ovos"],
+    iogurte:["iogurte","leite desnatado","leite"],
+    queijo_light:["queijo branco","ricota","cottage"],
+    whey:["whey","proteina","proteína"],
+    frutas:["fruta","banana","maca","maça","pera","laranja","manga","uva","abacaxi","morango","kiwi","melancia","melão","melao"],
+    aveia:["aveia","farelo","granola sem açucar","granola sem acucar","granola integral"],
+    pao:["pao integral","pao","integral"],
+    tapioca:["tapioca"],
+    arroz:["arroz","arroz integral","integral"],
+    macarrao:["macarrao","massa","espaguete","penne","parafuso","talharim","integral"],
+    batata:["batata doce","mandioca","aipim","inhame","batata inglesa"],
+    feijao:["feijao","lentilha","grao de bico","grão de bico","ervilha"],
+    frango:["frango","peito de frango"],
+    peixe:["peixe","tilapia","atum","sardinha","salmao","salmão"],
+    patinho:["patinho","carne magra","coxao mole","coxao duro"],
+    porco_mago:["lombo","lombo de porco","file mignon suíno","file mignon suino","porco magro"],
+    peru:["peito de peru","peru"],
+    tofu:["tofu","soja"],
+    salada:["salada","legume","alface","tomate","pepino","brocolis","brócolis","cenoura","abobrinha","berinjela","couve","acelga","repolho"],
+    wrap:["rap10","wrap","tortilha"],
+    sanduiche:["sanduiche","sanduíche","natural"],
+    shake:["shake","vitamina","smoothie"],
+    oleaginosas:["oleaginosa","amendoim","castanha","noz","amendoas","amêndoas","pasta de amendoim"],
+    azeite:["azeite"],
+    abacate:["abacate"],
+    iogurte_grego:["iogurte grego"],
+    arroz_parboilizado:["arroz parboilizado","parboilizado"]
+  };
+
+  // REGRAS (ampliadas): "yes" = indicado; "limit" = pode, mas com cautela; "no" = NÃO indicado (bloquear)
+  const RULES = {
+    "Emagrecimento / Definição corporal": {
+      "Ectomorfo": { 
+        yes:["ovos","frutas","aveia","arroz","macarrao","batata","frango","patinho","peixe","porco_mago","feijao","salada","wrap","pao","tapioca","tofu","queijo_light","iogurte"],
+        limit:["oleaginosas","azeite","abacate","shake","whey","iogurte_grego"],
+        no:["ultraprocessados","refrigerante","doce"] 
+      },
+      "Mesomorfo": { 
+        yes:["ovos","aveia","frutas","iogurte","queijo_light","frango","peixe","patinho","porco_mago","arroz","feijao","salada","batata","tofu","wrap","pao","arroz_parboilizado"],
+        limit:["macarrao","oleaginosas","azeite","abacate","shake","whey"],
+        no:["ultraprocessados","refrigerante","doce"]
+      },
+      "Endomorfo": { 
+        yes:["ovos","iogurte","queijo_light","frutas","frango","peixe","patinho","porco_mago","salada","batata","arroz_parboilizado","feijao","tofu"],
+        limit:["arroz","pao","tapioca","macarrao","oleaginosas","azeite","abacate","shake","whey"],
+        no:["ultraprocessados","refrigerante","doce"]
+      }
+    },
+    "Ganho de massa muscular (hipertrofia)": {
+      "Ectomorfo": { 
+        yes:["pao","aveia","tapioca","arroz","macarrao","frutas","wrap","frango","patinho","porco_mago","peixe","feijao","salada","batata","whey","iogurte","queijo_light","peru","tofu","arroz_parboilizado"],
+        limit:["oleaginosas","azeite","abacate","shake"],
+        no:["ultraprocessados","refrigerante","doce"]
+      },
+      "Mesomorfo": { 
+        yes:["aveia","frutas","arroz","feijao","macarrao","frango","patinho","porco_mago","peixe","salada","batata","wrap","iogurte","queijo_light","peru","tofu","arroz_parboilizado"],
+        limit:["oleaginosas","azeite","abacate","shake","whey"],
+        no:["ultraprocessados","refrigerante","doce"]
+      },
+      "Endomorfo": { 
+        yes:["ovos","iogurte","queijo_light","frutas","arroz_parboilizado","feijao","batata","frango","patinho","porco_mago","peixe","salada","peru","tofu"],
+        limit:["arroz","macarrao","tapioca","pao","oleaginosas","azeite","abacate","shake","whey"],
+        no:["ultraprocessados","refrigerante","doce"]
+      }
+    },
+    "Saúde / Emagrecimento": {
+      "Ectomorfo": { 
+        yes:["arroz","feijao","aveia","frutas","frango","peixe","patinho","porco_mago","salada","batata","iogurte","queijo_light","tofu","wrap","arroz_parboilizado"],
+        limit:["oleaginosas","azeite","abacate","pao","tapioca","macarrao","shake","whey"],
+        no:["ultraprocessados","refrigerante","doce"]
+      },
+      "Mesomorfo": { 
+        yes:["arroz","feijao","aveia","frutas","frango","peixe","patinho","porco_mago","salada","batata","iogurte","queijo_light","tofu","wrap","arroz_parboilizado"],
+        limit:["oleaginosas","azeite","abacate","pao","tapioca","macarrao","shake","whey"],
+        no:["ultraprocessados","refrigerante","doce"]
+      },
+      "Endomorfo": { 
+        yes:["ovos","iogurte","queijo_light","frutas","frango","peixe","patinho","porco_mago","salada","batata","feijao","arroz_parboilizado","tofu"],
+        limit:["pao","macarrao","tapioca","arroz","oleaginosas","azeite","abacate","shake","whey"],
+        no:["ultraprocessados","refrigerante","doce"]
+      }
+    }
+  };
+
+  // guarda em global para outras rotinas, se necessário
+  window.__MFIT_RULES_V2 = RULES;
+
+  // leitura de nome do card
+  function getCardName(card){
+    const dv = card.getAttribute('data-value');
+    if(dv) return dv;
+    const t = card.querySelector('.title, .name, .food-name');
+    return (t ? t.textContent : card.textContent || '').trim();
+  }
+
+  function matchesAny(name, keys){
+    const n = norm(name);
+    return keys.some(k => n.includes(norm(k)));
+  }
+
+  function buildKeyWords(keys){
+    return (keys||[]).flatMap(k => K[k] || []);
+  }
+
+  // Principal: marcar dim (limit) e blocked (no); NÃO selecionar nada.
+  function applyFoodState(){
+    const obj = getObj();
+    const meta = getMeta();
+    const pack = (RULES[obj] && RULES[obj][meta]) ? RULES[obj][meta] : null;
+    const yesKeys = buildKeyWords(pack ? pack.yes : []);
+    const limitKeys = buildKeyWords(pack ? pack.limit : []);
+    const noKeys = buildKeyWords(pack ? pack.no : []);
+
+    document.querySelectorAll('.food-card').forEach(card => {
+      const name = getCardName(card);
+      card.classList.remove('recommended','selected','dim','blocked');
+      card.removeAttribute('aria-pressed');
+      card.removeAttribute('aria-disabled');
+      // ordem: no > limit > livre
+      if(noKeys.length && matchesAny(name, noKeys)){
+        card.classList.add('blocked'); // bloqueado
+        card.setAttribute('aria-disabled','true');
+      } else if(limitKeys.length && matchesAny(name, limitKeys)){
+        card.classList.add('dim'); // pode, mas limitado
+      } else {
+        // permitido livre → nada de classe
+      }
+    });
+  }
+
+  // Bloqueia cliques nos cards bloqueados (defesa extra)
+  document.addEventListener('click', function(e){
+    const card = e.target.closest('.food-card');
+    if(card && card.classList.contains('blocked')){
+      e.preventDefault(); e.stopPropagation();
+      // feedback opcional acessível
+      card.setAttribute('title','Não indicado para seu objetivo/metabolismo');
+      return false;
+    }
+  }, true);
+
+  // Gatilhos
+  ['objetivo','metabolismo','met1','met2','met3','met4','met5'].forEach(id=>{
+    const el = document.getElementById(id) || document.querySelector(`[name="${id}"]`);
+    if(el){
+      el.addEventListener('change', applyFoodState, {passive:true});
+      el.addEventListener('input', applyFoodState, {passive:true});
+    }
+  });
+
+  // Executa na carga
+  setTimeout(applyFoodState, 0);
+
+  // Exponibiliza para outras rotinas
+  window.mfit_applyFoodState_v2 = applyFoodState;
+})();
+</script>
+
+
+<script>
+// === MFIT v2.1: desativa autoseleção e remove botão "Aplicar seleção" ===
+(function(){
+  function nukeAutoSelect(){
+    // Remove botão se existir
+    var btn = document.getElementById('mfit-apply-chips');
+    if(btn && btn.parentElement){ btn.parentElement.removeChild(btn); }
+    // No-ops para funções antigas
+    window.mfit_applyChipsToCards = function(){};
+    // Reaproveita nosso estado v2 (bloqueado/dim) quando alguém chamar markFoodCards
+    if(typeof window.mfit_applyFoodState_v2 === 'function'){
+      window.mfit_markFoodCards = window.mfit_applyFoodState_v2;
+      // aplica imediatamente para garantir consistência
+      window.mfit_applyFoodState_v2();
+    }
+  }
+  document.addEventListener('DOMContentLoaded', nukeAutoSelect);
+  // reforço em caso de re-render
+  setTimeout(nukeAutoSelect, 200);
+  setTimeout(nukeAutoSelect, 800);
+})();
+</script>
+<script>
+// === MFIT v2.4: Final consistente (Escolhidos / Permitidos / Bloqueados) ===
+(function(){
+  function byId(id){ return document.getElementById(id); }
+  function norm(s){ return (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim(); }
+  function valField(idOrName){
+    const el = byId(idOrName);
+    if(el) return el.value || el.textContent || '';
+    const q = document.querySelector(`[name="${idOrName}"]:checked`) || document.querySelector(`[name="${idOrName}"]`);
+    if(q){
+      if(q.type==='radio'){
+        const chk = document.querySelectorAll(`[name="${idOrName}"]:checked`);
+        if(chk && chk[0]) return chk[0].value;
+      }
+    return q.value || q.textContent || '';
+    }
+    return '';
+  }
+  function getObj(){ return valField('objetivo') || 'Emagrecimento / Definição corporal'; }
+  function getMeta(){
+    try{ if(typeof mfit_classificar_metabolismo === 'function'){ return mfit_classificar_metabolismo(); } }catch(e){}
+    return valField('metabolismo') || 'Mesomorfo';
+  }
+
+  // Reaproveita regras v2.0 se existirem, senão cria um mínimo seguro
+  const RULES = window.__MFIT_RULES_V2 || {
+    "Emagrecimento / Definição corporal": {
+      "Mesomorfo": { yes:["arroz","feijao","frango","peixe","patinho","salada","batata","aveia","frutas"], limit:["macarrao"], no:["ultraprocessados"] }
+    }
+  };
+
+  // Vocabulário (mesmo da v2.0)
+  const K = {
+    ovos:["ovo","ovos"], iogurte:["iogurte","leite desnatado","leite"],
+    queijo_light:["queijo branco","ricota","cottage"], whey:["whey","proteina","proteína"],
+    frutas:["fruta","banana","maca","maça","pera","laranja","manga","uva","abacaxi","morango","kiwi","melancia","melão","melao"],
+    aveia:["aveia","farelo","granola sem açucar","granola sem acucar","granola integral"],
+    pao:["pao integral","pao","integral"], tapioca:["tapioca"],
+    arroz:["arroz","arroz integral","integral","parboilizado","arroz parboilizado"],
+    macarrao:["macarrao","massa","espaguete","penne","parafuso","talharim","integral"],
+    batata:["batata doce","mandioca","aipim","inhame","batata inglesa"],
+    feijao:["feijao","lentilha","grao de bico","grão de bico","ervilha"],
+    frango:["frango","peito de frango"], peixe:["peixe","tilapia","atum","sardinha","salmao","salmão"],
+    patinho:["patinho","carne magra","coxao mole","coxao duro"], porco_mago:["lombo","file mignon suino","suíno","suino"],
+    peru:["peito de peru","peru"], tofu:["tofu","soja"], salada:["salada","legume","alface","tomate","pepino","brocolis","brócolis","cenoura","abobrinha","berinjela","couve","acelga","repolho"],
+    wrap:["rap10","wrap","tortilha"], sanduiche:["sanduiche","sanduíche","natural"],
+    shake:["shake","vitamina","smoothie"], oleaginosas:["oleaginosa","amendoim","castanha","noz","amendoas","amêndoas","pasta de amendoim"],
+    azeite:["azeite"], abacate:["abacate"], iogurte_grego:["iogurte grego"],
+    arroz_parboilizado:["arroz parboilizado","parboilizado"]
+  };
+
+  // Conversores
+  const LABELS = {
+    ovos:"Ovos", iogurte:"Iogurte / Leite desnatado", queijo_light:"Queijo branco / Ricota / Cottage",
+    whey:"Whey", frutas:"Frutas", aveia:"Aveia / Granola sem açúcar", pao:"Pão integral", tapioca:"Tapioca",
+    arroz:"Arroz (integral/parboilizado)", macarrao:"Macarrão (pref. integral)", batata:"Batata doce / Mandioca / Inhame",
+    feijao:"Feijão / Leguminosas", frango:"Frango", peixe:"Peixe", patinho:"Patinho / Carne magra",
+    porco_mago:"Lombo / Suíno magro", peru:"Peito de peru", tofu:"Tofu", salada:"Saladas / Legumes",
+    wrap:"Rap10 / Wrap", sanduiche:"Sanduíche natural", shake:"Shake / Vitamina",
+    oleaginosas:"Oleaginosas", azeite:"Azeite", abacate:"Abacate", iogurte_grego:"Iogurte grego",
+    arroz_parboilizado:"Arroz parboilizado"
+  };
+
+  // util para checar se um nome de card bate em alguma KEY
+  function nameHasKey(name, key){ const words = K[key] || []; return words.some(w => norm(name).includes(norm(w))); }
+  function getCardName(card){
+    const dv = card.getAttribute('data-value');
+    if(dv) return dv;
+    const t = card.querySelector('.title, .name, .food-name');
+    return (t ? t.textContent : card.textContent || '').trim();
+  }
+
+  // Mapeia estado atual de cards -> set de keys selecionados
+  function readSelectedFromCards(){
+    const out = new Set();
+    document.querySelectorAll('.food-card.selected').forEach(c => {
+      const name = getCardName(c);
+      for(const key in K){ if(nameHasKey(name, key)){ out.add(key); break; } }
+    });
+    return out;
+  }
+
+  // Render helpers
+  function mkChip(label, key, disabled=false, checked=false){
+    const id = 'chip_'+key+'_'+Math.random().toString(36).slice(2,7);
+    const wrap = document.createElement('label');
+    wrap.className = 'mfit-chip'+(disabled?' block':'');
+    wrap.innerHTML = `<input type="checkbox" ${checked?'checked':''} ${disabled?'disabled':''} id="${id}" data-key="${key}" /> ${label}`;
+    return wrap;
+  }
+
+  function renderPanels(){
+    const obj = getObj();
+    const meta = getMeta();
+    const pack = (RULES[obj] && RULES[obj][meta]) ? RULES[obj][meta] : {yes:[], limit:[], no:[]};
+
+    const selKeys = readSelectedFromCards(); // set()
+    const allowed = pack.yes || [];
+    const limited = pack.limit || [];
+    const blocked = pack.no || [];
+
+    // Painéis DOM
+    const chosen = byId('mfit-chosen');
+    const allowedBox = byId('mfit-allowed');
+    const blockedBox = byId('mfit-blocked');
+    if(!chosen || !allowedBox || !blockedBox) return;
+
+    chosen.innerHTML = '';
+    allowedBox.innerHTML = '';
+    blockedBox.innerHTML = '';
+
+    // CHOSEN: mostrar selecionados que sejam allowed ou limited; ignorar bloqueados por segurança
+    const chosenKeys = Array.from(selKeys).filter(k => allowed.includes(k) || limited.includes(k));
+    chosenKeys.forEach(k => chosen.appendChild(mkChip(LABELS[k]||k, k, false, true)));
+
+    // ALLOWED: mostrar opções permitidas e limitadas NÃO selecionadas
+    const poolAllowed = allowed.filter(k => !selKeys.has(k));
+    const poolLimited = limited.filter(k => !selKeys.has(k));
+    poolAllowed.forEach(k => allowedBox.appendChild(mkChip(LABELS[k]||k, k, false, false)));
+    poolLimited.forEach(k => {
+      const chip = mkChip((LABELS[k]||k)+' (limitar)', k, false, false);
+      chip.style.opacity = .9;
+      allowedBox.appendChild(chip);
+    });
+
+    // BLOCKED: chips desabilitados
+    blocked.forEach(k => blockedBox.appendChild(mkChip(LABELS[k]||k, k, true, false)));
+
+    // Listeners: marcar chips deve sincronizar com cards
+    chosen.querySelectorAll('input[type="checkbox"]').forEach(input=>{
+      input.addEventListener('change', e => {
+        const key = e.target.getAttribute('data-key');
+        if(!key) return;
+        toggleCardsByKey(key, e.target.checked);
+        // re-render após troca
+        setTimeout(renderPanels, 0);
+      }, {passive:true});
+    });
+    allowedBox.querySelectorAll('input[type="checkbox"]').forEach(input=>{
+      input.addEventListener('change', e => {
+        const key = e.target.getAttribute('data-key');
+        toggleCardsByKey(key, e.target.checked);
+        setTimeout(renderPanels, 0);
+      }, {passive:true});
+    });
+  }
+
+  function toggleCardsByKey(key, shouldSelect){
+    // Não altera cards bloqueados
+    const words = K[key] || [];
+    document.querySelectorAll('.food-card').forEach(c => {
+      const name = getCardName(c);
+      const match = words.some(w => norm(name).includes(norm(w)));
+      if(!match) return;
+      if(c.classList.contains('blocked')) return;
+      if(shouldSelect){
+        c.classList.add('selected');
+        c.setAttribute('aria-pressed','true');
+      }else{
+        c.classList.remove('selected');
+        c.setAttribute('aria-pressed','false');
+      }
+    });
+    try{ if(typeof save === 'function') save(); }catch(e){}
+    try{ if(typeof refreshPreview === 'function') refreshPreview(); }catch(e){}
+    try{ if(typeof refreshDayPlan === 'function') refreshDayPlan(); }catch(e){}
+  }
+
+  // Quando cards mudarem (ex.: clique manual), reconstrói os painéis
+  document.addEventListener('click', function(e){
+    const card = e.target.closest('.food-card');
+    if(card && !card.classList.contains('blocked')){
+      // pequeno atraso para o card aplicar .selected no handler nativo
+      setTimeout(renderPanels, 50);
+    }
+  }, true);
+
+  function wire(){
+    ['objetivo','metabolismo','met1','met2','met3','met4','met5'].forEach(id=>{
+      const el = byId(id) || document.querySelector(`[name="${id}"]`);
+      if(el){
+        el.addEventListener('change', renderPanels, {passive:true});
+        el.addEventListener('input', renderPanels, {passive:true});
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    wire();
+    setTimeout(renderPanels, 0);
+    setTimeout(renderPanels, 300);
+  });
+
+  // Exponibiliza para chamadas externas
+  window.mfit_renderFinalPanels = renderPanels;
+})();
+</script>
+
+
+<script>
+(function(){
+  // Sobrescreve apenas a função renderPanels mantendo resto do v2.4
+  const K = window.mfit_vocab_K || {
+    ovos:["ovo","ovos"], iogurte:["iogurte","leite desnatado","leite"],
+    queijo_light:["queijo branco","ricota","cottage"], whey:["whey","proteina","proteína"],
+    frutas:["fruta","banana","maca","maça","pera","laranja","manga","uva","abacaxi","morango","kiwi","melancia","melão","melao"],
+    aveia:["aveia","farelo","granola sem açucar","granola sem acucar","granola integral"],
+    pao:["pao integral","pao","integral"], tapioca:["tapioca"],
+    arroz:["arroz","arroz integral","integral","parboilizado","arroz parboilizado"],
+    macarrao:["macarrao","massa","espaguete","penne","parafuso","talharim","integral"],
+    batata:["batata doce","mandioca","aipim","inhame","batata inglesa"],
+    feijao:["feijao","lentilha","grao de bico","grão de bico","ervilha"],
+    frango:["frango","peito de frango"], peixe:["peixe","tilapia","atum","sardinha","salmao","salmão"],
+    patinho:["patinho","carne magra","coxao mole","coxao duro"], porco_mago:["lombo","file mignon suino","suíno","suino"],
+    peru:["peito de peru","peru"], tofu:["tofu","soja"], salada:["salada","legume","alface","tomate","pepino","brocolis","brócolis","cenoura","abobrinha","berinjela","couve","acelga","repolho"],
+    wrap:["rap10","wrap","tortilha"], sanduiche:["sanduiche","sanduíche","natural"],
+    shake:["shake","vitamina","smoothie"], oleaginosas:["oleaginosa","amendoim","castanha","noz","amendoas","amêndoas","pasta de amendoim"],
+    azeite:["azeite"], abacate:["abacate"], iogurte_grego:["iogurte grego"],
+    arroz_parboilizado:["arroz parboilizado","parboilizado"]
+  };
+  window.mfit_vocab_K = K;
+
+  function norm(s){ return (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim(); }
+  function byId(id){ return document.getElementById(id); }
+  function valField(idOrName){
+    const el = byId(idOrName);
+    if(el) return el.value || el.textContent || '';
+    const q = document.querySelector(`[name="${idOrName}"]:checked`) || document.querySelector(`[name="${idOrName}"]`);
+    if(q){
+      if(q.type==='radio'){
+        const chk = document.querySelectorAll(`[name="${idOrName}"]:checked`);
+        if(chk && chk[0]) return chk[0].value;
+      }
+      return q.value || q.textContent || '';
+    }
+    return '';
+  }
+  function getObj(){ return valField('objetivo') || 'Emagrecimento / Definição corporal'; }
+  function getMeta(){
+    try{ if(typeof mfit_classificar_metabolismo === 'function'){ return mfit_classificar_metabolismo(); } }catch(e){}
+    return valField('metabolismo') || 'Mesomorfo';
+  }
+
+  const RULES = window.__MFIT_RULES_V2 || {};
+
+  const LABELS = window.mfit_labels || {
+    ovos:"Ovos", iogurte:"Iogurte / Leite desnatado", queijo_light:"Queijo branco / Ricota / Cottage",
+    whey:"Whey", frutas:"Frutas", aveia:"Aveia / Granola sem açúcar", pao:"Pão integral", tapioca:"Tapioca",
+    arroz:"Arroz (integral/parboilizado)", macarrao:"Macarrão (pref. integral)", batata:"Batata doce / Mandioca / Inhame",
+    feijao:"Feijão / Leguminosas", frango:"Frango", peixe:"Peixe", patinho:"Patinho / Carne magra",
+    porco_mago:"Lombo / Suíno magro", peru:"Peito de peru", tofu:"Tofu", salada:"Saladas / Legumes",
+    wrap:"Rap10 / Wrap", sanduiche:"Sanduíche natural", shake:"Shake / Vitamina",
+    oleaginosas:"Oleaginosas", azeite:"Azeite", abacate:"Abacate", iogurte_grego:"Iogurte grego",
+    arroz_parboilizado:"Arroz parboilizado"
+  };
+  window.mfit_labels = LABELS;
+
+  function getCardName(card){
+    const dv = card.getAttribute('data-value');
+    if(dv) return dv;
+    const t = card.querySelector('.title, .name, .food-name');
+    return (t ? t.textContent : card.textContent || '').trim();
+  }
+  function nameHasKey(name, key){
+    const words = K[key] || []; return words.some(w => norm(name).includes(norm(w)));
+  }
+
+  function readSelectedFromCards(){
+    const out = new Set();
+    document.querySelectorAll('.food-card.selected').forEach(c => {
+      const name = getCardName(c);
+      for(const key in K){ if(nameHasKey(name, key)){ out.add(key); break; } }
+    });
+    return out;
+  }
+
+  function mkChip(label, key, disabled=false, checked=false){
+    const id = 'chip_'+key+'_'+Math.random().toString(36).slice(2,7);
+    const wrap = document.createElement('label');
+    wrap.className = 'mfit-chip'+(disabled?' block':'');
+    wrap.innerHTML = `<input type="checkbox" ${checked?'checked':''} ${disabled?'disabled':''} id="${id}" data-key="${key}" /> ${label}`;
+    return wrap;
+  }
+
+  function toggleCardsByKey(key, shouldSelect){
+    const words = K[key] || [];
+    document.querySelectorAll('.food-card').forEach(c => {
+      const name = getCardName(c);
+      const match = words.some(w => norm(name).includes(norm(w)));
+      if(!match) return;
+      if(c.classList.contains('blocked')) return; // nunca mexe em bloqueado
+      if(shouldSelect){ c.classList.add('selected'); c.setAttribute('aria-pressed','true'); }
+      else { c.classList.remove('selected'); c.setAttribute('aria-pressed','false'); }
+    });
+    try{ if(typeof save === 'function') save(); }catch(e){}
+    try{ if(typeof refreshPreview === 'function') refreshPreview(); }catch(e){}
+    try{ if(typeof refreshDayPlan === 'function') refreshDayPlan(); }catch(e){}
+  }
+
+  window.mfit_renderFinalPanels = function renderPanels(){
+    const obj = getObj();
+    const meta = getMeta();
+    const pack = (RULES[obj] && RULES[obj][meta]) ? RULES[obj][meta] : {yes:[], limit:[], no:[]};
+
+    const chosen = byId('mfit-chosen');
+    const allowedBox = byId('mfit-allowed');
+    const blockedBox = byId('mfit-blocked');
+    if(!chosen || !allowedBox || !blockedBox) return;
+
+    const selKeys = readSelectedFromCards();
+
+    // === PERMITIDOS: apenas YES ===
+    const allowed = (pack.yes || []).filter(k => !selKeys.has(k));
+
+    // === BLOQUEADOS: NO ===
+    const blocked = (pack.no || []);
+
+    // === CHOSEN ===
+    const chosenKeys = Array.from(selKeys); // só reflete seleção atual
+
+    // limpa
+    chosen.innerHTML = ''; allowedBox.innerHTML = ''; blockedBox.innerHTML='';
+
+    // Render chosen
+    chosenKeys.forEach(k => chosen.appendChild(mkChip(LABELS[k]||k, k, false, true)));
+
+    // Render allowed YES
+    allowed.forEach(k => {
+      // se houver card correspondente e ele estiver bloqueado, não mostre aqui
+      let hasUnblockedCard = true;
+      const words = K[k] || [];
+      const cards = Array.from(document.querySelectorAll('.food-card'));
+      if(cards.length){
+        const matchCards = cards.filter(c => words.some(w => norm(getCardName(c)).includes(norm(w))));
+        if(matchCards.length){
+          hasUnblockedCard = matchCards.some(c => !c.classList.contains('blocked'));
+        }
+      }
+      if(hasUnblockedCard){
+        allowedBox.appendChild(mkChip(LABELS[k]||k, k, false, false));
+      }
+    });
+
+    // Render blocked
+    blocked.forEach(k => blockedBox.appendChild(mkChip(LABELS[k]||k, k, true, false)));
+
+    // Eventos
+    [chosen, allowedBox].forEach(box => {
+      box.querySelectorAll('input[type="checkbox"]').forEach(input=>{
+        input.addEventListener('change', e => {
+          const key = e.target.getAttribute('data-key');
+          toggleCardsByKey(key, e.target.checked);
+          setTimeout(window.mfit_renderFinalPanels, 0);
+        }, {passive:true});
+      });
+    });
+  };
+
+  // Re-render nos eventos padrões
+  function wire(){
+    ['objetivo','metabolismo','met1','met2','met3','met4','met5'].forEach(id=>{
+      const el = document.getElementById(id) || document.querySelector(`[name="${id}"]`);
+      if(el){
+        el.addEventListener('change', window.mfit_renderFinalPanels, {passive:true});
+        el.addEventListener('input', window.mfit_renderFinalPanels, {passive:true});
+      }
+    });
+    document.addEventListener('click', function(e){
+      const card = e.target.closest('.food-card');
+      if(card && !card.classList.contains('blocked')){
+        setTimeout(window.mfit_renderFinalPanels, 60);
+      }
+    }, true);
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    wire();
+    setTimeout(window.mfit_renderFinalPanels, 0);
+    setTimeout(window.mfit_renderFinalPanels, 300);
+  });
+})();
+</script>
+
+
+<script>
+// === MFIT v2.6: Modelo de seleção persistente + sincronização e diagnóstico ===
+(function(){
+  function byId(id){ return document.getElementById(id); }
+  function norm(s){ return (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim(); }
+  // Estado persistente para chips (sem depender de cards)
+  if(!window.__MFIT_MANUAL_SELECTION){
+    window.__MFIT_MANUAL_SELECTION = new Set();
+  }
+  const MAN = window.__MFIT_MANUAL_SELECTION;
+
+  // Vocabulário (reutiliza se existir)
+  const K = window.mfit_vocab_K || {
+    ovos:["ovo","ovos"], iogurte:["iogurte","leite desnatado","leite"],
+    queijo_light:["queijo branco","ricota","cottage"], whey:["whey","proteina","proteína"],
+    frutas:["fruta","banana","maca","maça","pera","laranja","manga","uva","abacaxi","morango","kiwi","melancia","melão","melao"],
+    aveia:["aveia","farelo","granola sem açucar","granola sem acucar","granola integral"],
+    pao:["pao integral","pao","integral"], tapioca:["tapioca"],
+    arroz:["arroz","arroz integral","integral","parboilizado","arroz parboilizado"],
+    macarrao:["macarrao","massa","espaguete","penne","parafuso","talharim","integral"],
+    batata:["batata doce","mandioca","aipim","inhame","batata inglesa"],
+    feijao:["feijao","lentilha","grao de bico","grão de bico","ervilha"],
+    frango:["frango","peito de frango"], peixe:["peixe","tilapia","atum","sardinha","salmao","salmão"],
+    patinho:["patinho","carne magra","coxao mole","coxao duro"], porco_mago:["lombo","file mignon suino","suíno","suino"],
+    peru:["peito de peru","peru"], tofu:["tofu","soja"], salada:["salada","legume","alface","tomate","pepino","brocolis","brócolis","cenoura","abobrinha","berinjela","couve","acelga","repolho"],
+    wrap:["rap10","wrap","tortilha"], sanduiche:["sanduiche","sanduíche","natural"],
+    shake:["shake","vitamina","smoothie"], oleaginosas:["oleaginosa","amendoim","castanha","noz","amendoas","amêndoas","pasta de amendoim"],
+    azeite:["azeite"], abacate:["abacate"], iogurte_grego:["iogurte grego"],
+    arroz_parboilizado:["arroz parboilizado","parboilizado"]
+  };
+  window.mfit_vocab_K = K;
+
+  const LABELS = window.mfit_labels || {
+    ovos:"Ovos", iogurte:"Iogurte / Leite desnatado", queijo_light:"Queijo branco / Ricota / Cottage",
+    whey:"Whey", frutas:"Frutas", aveia:"Aveia / Granola sem açúcar", pao:"Pão integral", tapioca:"Tapioca",
+    arroz:"Arroz (integral/parboilizado)", macarrao:"Macarrão (pref. integral)", batata:"Batata doce / Mandioca / Inhame",
+    feijao:"Feijão / Leguminosas", frango:"Frango", peixe:"Peixe", patinho:"Patinho / Carne magra",
+    porco_mago:"Lombo / Suíno magro", peru:"Peito de peru", tofu:"Tofu", salada:"Saladas / Legumes",
+    wrap:"Rap10 / Wrap", sanduiche:"Sanduíche natural", shake:"Shake / Vitamina",
+    oleaginosas:"Oleaginosas", azeite:"Azeite", abacate:"Abacate", iogurte_grego:"Iogurte grego",
+    arroz_parboilizado:"Arroz parboilizado"
+  };
+  window.mfit_labels = LABELS;
+
+  function valField(idOrName){
+    const el = byId(idOrName);
+    if(el) return el.value || el.textContent || '';
+    const q = document.querySelector(`[name="${idOrName}"]:checked`) || document.querySelector(`[name="${idOrName}"]`);
+    if(q){
+      if(q.type==='radio'){
+        const chk = document.querySelectorAll(`[name="${idOrName}"]:checked`);
+        if(chk && chk[0]) return chk[0].value;
+      }
+      return q.value || q.textContent || '';
+    }
+    return '';
+  }
+  function getObj(){ return valField('objetivo') || 'Emagrecimento / Definição corporal'; }
+  function getMeta(){
+    try{ if(typeof mfit_classificar_metabolismo === 'function'){ return mfit_classificar_metabolismo(); } }catch(e){}
+    return valField('metabolismo') || 'Mesomorfo';
+  }
+
+  const RULES = window.__MFIT_RULES_V2 || {};
+
+  function getCardName(card){
+    const dv = card.getAttribute('data-value');
+    if(dv) return dv;
+    const t = card.querySelector('.title, .name, .food-name');
+    return (t ? t.textContent : card.textContent || '').trim();
+  }
+  function nameHasKey(name, key){
+    const words = K[key] || []; return words.some(w => norm(name).includes(norm(w)));
+  }
+
+  // Seleção vinda dos cards
+  function readSelectedFromCards(){
+    const out = new Set();
+    document.querySelectorAll('.food-card.selected').forEach(c => {
+      const name = getCardName(c);
+      for(const key in K){ if(nameHasKey(name, key)){ out.add(key); break; } }
+    });
+    return out;
+  }
+
+  // Util chips
+  function mkChip(label, key, disabled=false, checked=false){
+    const id = 'chip_'+key+'_'+Math.random().toString(36).slice(2,7);
+    const wrap = document.createElement('label');
+    wrap.className = 'mfit-chip'+(disabled?' block':'');
+    wrap.innerHTML = `<input type="checkbox" ${checked?'checked':''} ${disabled?'disabled':''} id="${id}" data-key="${key}" /> ${label}`;
+    return wrap;
+  }
+
+  function toggleCardsByKey(key, shouldSelect){
+    const words = K[key] || [];
+    let affected = 0;
+    document.querySelectorAll('.food-card').forEach(c => {
+      const name = getCardName(c);
+      const match = words.some(w => norm(name).includes(norm(w)));
+      if(!match) return;
+      if(c.classList.contains('blocked')) return; // não altera bloqueado
+      affected++;
+      if(shouldSelect){ c.classList.add('selected'); c.setAttribute('aria-pressed','true'); }
+      else { c.classList.remove('selected'); c.setAttribute('aria-pressed','false'); }
+    });
+    // Atualiza modelo manual também
+    if(shouldSelect) MAN.add(key); else MAN.delete(key);
+    try{ if(typeof save === 'function') save(); }catch(e){}
+    try{ if(typeof refreshPreview === 'function') refreshPreview(); }catch(e){}
+    try{ if(typeof refreshDayPlan === 'function') refreshDayPlan(); }catch(e){}
+    return affected;
+  }
+
+  // Painéis finais
+  function renderPanels(){
+    const obj = getObj();
+    const meta = getMeta();
+    const pack = (RULES[obj] && RULES[obj][meta]) ? RULES[obj][meta] : {yes:[], limit:[], no:[]};
+    const allowed = pack.yes || [];
+    const blocked = pack.no || [];
+
+    const chosen = byId('mfit-chosen');
+    const allowedBox = byId('mfit-allowed');
+    const blockedBox = byId('mfit-blocked');
+    if(!chosen || !allowedBox || !blockedBox) return;
+
+    // Conjunto final de seleção = cards selecionados ∪ MANUAL, menos bloqueados
+    const selected = readSelectedFromCards();
+    MAN.forEach(k => selected.add(k));
+    blocked.forEach(k => selected.delete(k)); // garantia
+
+    // limpa
+    chosen.innerHTML = ''; allowedBox.innerHTML = ''; blockedBox.innerHTML='';
+
+    // Chosen: dos selecionados que são permitidos (ou limitados, se estiver usando limit fora)
+    Array.from(selected).forEach(k => chosen.appendChild(mkChip(LABELS[k]||k, k, false, true)));
+
+    // Allowed: apenas YES que não estejam selecionados
+    allowed.filter(k => !selected.has(k)).forEach(k => allowedBox.appendChild(mkChip(LABELS[k]||k, k, false, false)));
+
+    // Blocked: NO desabilitados
+    blocked.forEach(k => blockedBox.appendChild(mkChip(LABELS[k]||k, k, true, false)));
+
+    // Eventos dos chips
+    [chosen, allowedBox].forEach(box => {
+      box.querySelectorAll('input[type="checkbox"]').forEach(input=>{
+        input.addEventListener('change', e => {
+          const key = e.target.getAttribute('data-key');
+          const on = e.target.checked;
+          // Atualiza cards se houver; se não houver, persiste no modelo manual
+          const hits = toggleCardsByKey(key, on);
+          if(hits===0){
+            if(on) MAN.add(key); else MAN.delete(key);
+          }
+          setTimeout(renderPanels, 0);
+        }, {passive:true});
+      });
+    });
+  }
+
+  // Sincroniza o modelo manual quando o usuário clica num card
+  document.addEventListener('click', function(e){
+    const card = e.target.closest('.food-card');
+    if(card && !card.classList.contains('blocked')){
+      // detecta key do card
+      const name = getCardName(card);
+      let keyFound = null;
+      for(const key in K){ if(nameHasKey(name, key)){ keyFound = key; break; } }
+      if(keyFound){
+        if(card.classList.contains('selected')) MAN.add(keyFound);
+        else MAN.delete(keyFound);
+      }
+      setTimeout(renderPanels, 50);
+    }
+  }, true);
+
+  function wire(){
+    ['objetivo','metabolismo','met1','met2','met3','met4','met5'].forEach(id=>{
+      const el = byId(id) || document.querySelector(`[name="${id}"]`);
+      if(el){
+        el.addEventListener('change', function(){
+          // ao mudar perfil, limpamos seleção manual que ficou bloqueada no novo perfil
+          const obj = getObj(); const meta = getMeta();
+          const pack = (window.__MFIT_RULES_V2 && window.__MFIT_RULES_V2[obj] && window.__MFIT_RULES_V2[obj][meta]) ? window.__MFIT_RULES_V2[obj][meta] : {no:[]};
+          const blocked = new Set(pack.no||[]);
+          Array.from(MAN).forEach(k => { if(blocked.has(k)) MAN.delete(k); });
+          renderPanels();
+        }, {passive:true});
+        el.addEventListener('input', renderPanels, {passive:true});
+      }
+    });
+  }
+
+  // Função de diagnóstico para console
+  window.mfit_debugState = function(){
+    const obj = getObj(); const meta = getMeta();
+    const pack = (window.__MFIT_RULES_V2 && window.__MFIT_RULES_V2[obj] && window.__MFIT_RULES_V2[obj][meta]) ? window.__MFIT_RULES_V2[obj][meta] : {yes:[],limit:[],no:[]};
+    const cards = Array.from(document.querySelectorAll('.food-card')).map(c=>({name:c.textContent.trim().slice(0,60), blocked:c.classList.contains('blocked'), selected:c.classList.contains('selected')}));
+    return { objetivo: obj, metabolismo: meta, regras: pack, manual: Array.from(MAN), cards };
+  };
+
+  document.addEventListener('DOMContentLoaded', function(){
+    wire();
+    setTimeout(renderPanels, 0);
+    setTimeout(renderPanels, 300);
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  function classificarDetalhado(){
+    var pontos = {ecto:0, meso:0, endo:0};
+    var responded = 0;
+    for(var i=1;i<=7;i++){
+      var nome = "m2_q"+i;
+      var els = document.getElementsByName(nome);
+      if(!els || !els.length) continue;
+      var marcado = null;
+      for(var j=0;j<els.length;j++){
+        if(els[j].checked){ marcado = els[j].value; break; }
+      }
+      if(marcado){
+        responded++;
+        if(pontos.hasOwnProperty(marcado)){
+          pontos[marcado] += 1;
+        }
+      }
+    }
+    if(responded < 3){
+      return "";
+    }
+    var meta = "";
+    if(pontos.ecto > pontos.meso && pontos.ecto > pontos.endo){
+      meta = "Ectomorfo";
+    } else if(pontos.endo > pontos.meso && pontos.endo > pontos.ecto){
+      meta = "Endomorfo";
+    } else if(pontos.meso > 0){
+      meta = "Mesomorfo";
+    }
+    return meta;
+  }
+
+  window.mfit_calcular_metabolismo_detalhado = function(){
+    var meta = classificarDetalhado();
+    var spanDet = document.getElementById("metDetResultado");
+    if(spanDet){
+      spanDet.textContent = meta || "—";
+    }
+    var span = document.getElementById("metResultado");
+    if(span && meta){
+      span.textContent = meta;
+    }
+    if(typeof window.mfit_markFoodCards === "function"){
+      window.mfit_markFoodCards();
+    }
+    if(typeof window.mfit_updateAutoFoods === "function"){
+      window.mfit_updateAutoFoods();
+    }
+  };
+
+  var oldSimple = window.mfit_classificar_metabolismo;
+  window.mfit_classificar_metabolismo = function(){
+    var meta = classificarDetalhado();
+    if(meta){
+      return meta;
+    }
+    if(typeof oldSimple === "function"){
+      return oldSimple();
+    }
+    return "";
+  };
+})();
+</script>
+
+<script>
+(function(){
+  try{
+    var cls = [];
+    // Sempre dark mode MFIT
+    cls.push('mfit-dark');
+    // Detecção simples de "força" do aparelho
+    var cores = navigator.hardwareConcurrency || 2;
+    var mem = navigator.deviceMemory || 2;
+    if(cores >= 6 && mem >= 4){
+      cls.push('mfit-pro');
+    }else{
+      cls.push('mfit-lite');
+    }
+    document.addEventListener('DOMContentLoaded', function(){
+      document.body.classList.add.apply(document.body.classList, cls);
+    });
+  }catch(e){
+    // fallback: lite
+    document.addEventListener('DOMContentLoaded', function(){
+      document.body.classList.add('mfit-dark','mfit-lite');
+    });
+  }
+})();
+</script>
+</body>
+</html>
+<script>
+// ==== CORREÇÃO MFIT – METABOLISMO + GUIA + ALIMENTOS (iPhone friendly) ====
+(function () {
+  function val(id) {
+    var el = document.getElementById(id);
+    return el ? (el.value || el.textContent || "").trim() : "";
+  }
+
+  // 1) Classificação simples e global
+  window.mfit_classificar_metabolismo = function () {
+    var v1 = val("met1");
+    var v2 = val("met2");
+    var v3 = val("met3");
+    var v4 = val("met4");
+    var v5 = val("met5");
+
+    var ecto = 0, meso = 0, endo = 0;
+
+    // Ganha peso
+    if (v1 === "Com dificuldade") ecto++;
+    if (v1 === "Com facilidade") endo++;
+
+    // Biotipo visual
+    if (v2 === "Mais magro") ecto++;
+    if (v2 === "Médio")      meso++;
+    if (v2 === "Mais largo") endo++;
+
+    // Facilidade de perder peso
+    if (v3 === "Sim") ecto++;
+    if (v3 === "Não") endo++;
+
+    // Apetite
+    if (v4 === "Baixo") ecto++;
+    if (v4 === "Alto")  endo++;
+
+    // Energia
+    if (v5 === "Alta o tempo todo")    ecto++;
+    if (v5 === "Baixa com frequência") endo++;
+    if (v5 === "Regular")             meso++;
+
+    var res;
+    if (ecto === 0 && meso === 0 && endo === 0) {
+      res = "—";
+    } else if (ecto > meso && ecto > endo) {
+      res = "Ectomorfo";
+    } else if (endo > meso && endo > ecto) {
+      res = "Endomorfo";
+    } else {
+      res = "Mesomorfo";
+    }
+
+    var span = document.getElementById("metResultado");
+    if (span) span.textContent = res;
+    return res;
+  };
+
+  // 2) Mostrar / esconder guia e painel de alimentos
+  function toggleMetaBlocks() {
+    var meta = window.mfit_classificar_metabolismo();
+    var ok = (meta === "Ectomorfo" || meta === "Mesomorfo" || meta === "Endomorfo");
+
+    var guide = document.getElementById("mfit-guide");
+    var auto  = document.getElementById("mfit-food-auto");
+    var note  = document.getElementById("mfit-locked-note");
+
+    if (guide) guide.classList.toggle("hidden", !ok);
+    if (auto)  auto.classList.toggle("hidden", !ok);
+    if (note)  note.classList.toggle("hidden", ok);
+
+    // Se existirem, atualiza regras de alimentos e cards
+    if (typeof window.mfit_updateAutoFoods === "function") {
+      window.mfit_updateAutoFoods();
+    }
+    if (typeof window.mfit_markFoodCards === "function") {
+      window.mfit_markFoodCards();
+    }
+  }
+
+  // 3) Liga nos campos do teste + objetivo
+  ["met1","met2","met3","met4","met5","objetivo"].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener("change", toggleMetaBlocks);
+    el.addEventListener("input",  toggleMetaBlocks);
+  });
+
+  // 4) Primeira checagem (iPhone/safari inclusive)
+  document.addEventListener("DOMContentLoaded", function () {
+    toggleMetaBlocks();
+    // pequeno reforço nos primeiros segundos
+    var tries = 0;
+    var iv = setInterval(function () {
+      toggleMetaBlocks();
+      tries++;
+      if (tries > 10) clearInterval(iv);
+    }, 250);
+  });
+})();
+</script>
