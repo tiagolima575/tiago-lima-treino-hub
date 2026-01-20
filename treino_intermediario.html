@@ -13,11 +13,6 @@
     .card{background:var(--panel);border:1px solid #1e1e1e;border-radius:16px;padding:16px;box-shadow:0 8px 28px rgba(0,0,0,.35);}
     .logo{display:flex;align-items:center;justify-content:center;margin:8px 0 16px;}
     .logo img{max-width:220px;height:auto;filter:drop-shadow(0 4px 16px rgba(41,255,71,.25));}
-
-    .logo-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:-6px 0 12px}
-    .logo-actions input{display:none}
-    .btn-mini{background:#222;color:#eee;border:1px solid #333;border-radius:12px;padding:10px 12px;font-weight:800;cursor:pointer}
-    .btn-mini.primary{background:var(--green);color:#091109;border:none}
     h1{margin:8px 0 8px;font-size:1.35rem;color:var(--green);text-align:center;letter-spacing:.5px}
     .subtitle{margin:0 0 10px;text-align:center;color:#c9c9c9;font-size:.95rem}
     .section{margin:18px 0;padding:14px;border:1px solid #1f1f1f;border-radius:14px;background:#0e0e0e}
@@ -58,12 +53,6 @@
           </g>
         </svg>" alt="MFit Personal"/>
     </div>
-    <div class="logo-actions">
-      <input id="logoFile" type="file" accept="image/*" />
-      <button class="btn-mini primary" type="button" id="btnLoadLogo">Carregar logo</button>
-      <button class="btn-mini" type="button" id="btnClearLogo">Remover logo</button>
-    </div>
-
     <h1>Treino Intermediário – Avaliação Inicial</h1>
     <p class="subtitle">Preencha os dados. No final, você pode <strong>copiar tudo</strong> ou <strong>enviar no WhatsApp</strong>.</p>
 
@@ -343,73 +332,25 @@
 
   <script>
 
-    // ====== MFIT: Logo carregável (Android/content:// e GitHub) ======
-    (function(){
-      const LOGO_KEY = "mfit_brand_logo_v1";
-      const img = document.getElementById("brandLogo");
-      const input = document.getElementById("logoFile");
-      const btnLoad = document.getElementById("btnLoadLogo");
-      const btnClear = document.getElementById("btnClearLogo");
-      if(!img || !input || !btnLoad || !btnClear) return;
+    
 
-      const fallbackSrc = img.getAttribute("src") || "";
+    // ====== MFIT: Logo automatico (sem botoes) ======
+(function(){
+  const LOGO_KEY = "mfit_brand_logo_v1";
+  const img = document.getElementById("brandLogo");
+  if(!img) return;
+  const fallbackSrc = img.getAttribute("src") || "";
+  try{
+    const saved = localStorage.getItem(LOGO_KEY) || "";
+    if(saved && saved.startsWith("data:image")){
+      img.src = saved;
+      return;
+    }
+  }catch(e){}
+  img.src = fallbackSrc;
+})();
 
-      function applySaved(){
-        try{
-          const saved = localStorage.getItem(LOGO_KEY) || "";
-          if(saved && saved.startsWith("data:image")){
-            img.src = saved;
-            return;
-          }
-        }catch(e){}
-        img.src = fallbackSrc;
-      }
-
-      function fileToDataUrl(file){
-        return new Promise((resolve, reject)=>{
-          const r = new FileReader();
-          r.onload = ()=>resolve(String(r.result||""));
-          r.onerror = ()=>reject(new Error("Falha ao ler arquivo"));
-          r.readAsDataURL(file);
-        });
-      }
-
-      btnLoad.addEventListener("click", ()=> input.click());
-
-      input.addEventListener("change", async ()=>{
-        const file = (input.files && input.files[0]) ? input.files[0] : null;
-        if(!file) return;
-        if(!file.type || !file.type.startsWith("image/")){
-          alert("Selecione um arquivo de imagem (PNG/JPG)." );
-          input.value = "";
-          return;
-        }
-        try{
-          const dataUrl = await fileToDataUrl(file);
-          // limite simples para evitar estourar o localStorage
-          if(dataUrl.length > 3000000){
-            alert("Imagem muito pesada. Use uma imagem menor (recomendado: até ~800 KB).\nDica: exporte em PNG otimizado.");
-            input.value = "";
-            return;
-          }
-          localStorage.setItem(LOGO_KEY, dataUrl);
-          img.src = dataUrl;
-        }catch(e){
-          alert("Não foi possível carregar o logo.");
-        }finally{
-          input.value = "";
-        }
-      });
-
-      btnClear.addEventListener("click", ()=>{
-        try{ localStorage.removeItem(LOGO_KEY); }catch(e){}
-        img.src = fallbackSrc;
-      });
-
-      applySaved();
-    })();
-
-    const phone = "5569992913628";
+const phone = "5569992913628";
     const $ = (id) => document.getElementById(id);
     const normalizePhone = v => (v||"").replace(/\\D+/g,'');
 
@@ -586,7 +527,7 @@
         "Movimento que causa dor": $("movimentoDor")?.value?.trim() || ""
       };
 
-      const lines = ["Olá Personal! Preenchi minha ficha para montar meu TREINO INTERMEDIÁRIO 💪"];
+      const lines = ["Olá! Seguem minhas respostas do formulário *Treino Intermediário – Avaliação Inicial*:"];
       for(const [k,v] of Object.entries(data)){ if(v) lines.push(`${k}: ${v}`); }
 
       const metab = mfit_classificar_metabolismo();

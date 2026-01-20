@@ -403,12 +403,6 @@
         </svg>" alt="Logo MFIT"/>
     </div>
 
-    <div class="logo-tools">
-      <button type="button" id="logoPickBtn" class="btn btn-outline small">Carregar logo</button>
-      <button type="button" id="logoResetBtn" class="btn btn-outline small">Restaurar padrao</button>
-      <input type="file" id="logoFile" accept="image/*" style="display:none" />
-    </div>
-
     <h1>🍎 Dieta personalizada</h1>
     <p class="subtitle">
       Responda para criarmos sua dieta personalizada conforme metabolismo, rotina e objetivo.
@@ -1110,17 +1104,10 @@
       <!-- BOTÕES FINAIS -->
       <div class="btns">
         <button id="sendBtn" class="btn" type="button">📲 Enviar respostas no WhatsApp</button>
-        <button id="copyBtn2" class="btn btn-outline" type="button">📋 Copiar mensagem (iPhone / enviar manual)</button>
       </div>
 
       <div id="err" class="error">Preencha pelo menos o objetivo antes de enviar.</div>
-      <div id="ok" class="success">Abrindo o WhatsApp... Se não abrir no iPhone, use “Copiar mensagem”.</div>
-
     </form>
-
-    <p style="text-align:center;margin:18px 0;color:#29ff47">
-      💚 MFIT Premium – Seu corpo, sua melhor forma.
-    </p>
   </div>
 
 <script>
@@ -1138,10 +1125,21 @@
 
   function mfitInitLogoDieta(){
     const img = document.getElementById('brandLogo');
+    if(!img) return;
+
+    // Carrega automaticamente (se existir) o logo salvo neste navegador
+    try{
+      const saved = localStorage.getItem(MFIT_DIETA_LOGO_KEY);
+      img.src = saved || MFIT_DIETA_FALLBACK_LOGO;
+    }catch(e){
+      img.src = MFIT_DIETA_FALLBACK_LOGO;
+    }
+
+    // Se os controles existirem (outras versões do HTML), conecta os listeners
     const pickBtn = document.getElementById('logoPickBtn');
     const resetBtn = document.getElementById('logoResetBtn');
     const fileInput = document.getElementById('logoFile');
-    if(!img || !pickBtn || !resetBtn || !fileInput) return;
+    if(!pickBtn || !resetBtn || !fileInput) return;
 
     // 1) Carrega do storage, se existir
     const saved = localStorage.getItem(MFIT_DIETA_LOGO_KEY);
@@ -2820,33 +2818,6 @@ Pronto para gerar DIETA MFIT PRETO/VERDE com opções por refeição, quantidade
   setTimeout(nukeAutoSelect, 800);
 })();
 </script>
-
-
-<div id="mfit-wa-note" role="status" aria-live="polite">
-  Abrindo o <b>WhatsApp</b>... Se não abrir no iPhone, use <b>Copiar mensagem</b>.
-</div>
-
-
-<script>
-// === MFIT v2.2: mostrar aviso após clique no botão de WhatsApp ===
-(function(){
-  function showNote(){
-    var note = document.getElementById('mfit-wa-note');
-    if(!note) return;
-    note.style.display = 'block';
-    // rola para o final para o usuário ver
-    try{ note.scrollIntoView({behavior:'smooth', block:'end'}); }catch(e){}
-  }
-  function wire(){
-    var btns = Array.from(document.querySelectorAll('button, a')).filter(b => /enviar respostas no whatsapp/i.test(b.textContent));
-    btns.forEach(b => b.addEventListener('click', function(){ setTimeout(showNote, 150); }, {passive:true}));
-  }
-  document.addEventListener('DOMContentLoaded', wire);
-  setTimeout(wire, 400); // reforço após render dinâmico
-})();
-</script>
-
-
 <script>
 // === MFIT v2.4: Final consistente (Escolhidos / Permitidos / Bloqueados) ===
 (function(){

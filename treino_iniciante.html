@@ -30,8 +30,6 @@
     .btn{margin-top:12px;width:100%;background:var(--green);color:#091109;border:none;border-radius:14px;padding:14px 16px;font-weight:800;font-size:1.05rem;box-shadow:0 10px 30px rgba(41,255,71,.22);cursor:pointer;}
     .btn:active{transform:translateY(1px)}
     .btn.secondary{background:#1a1a1a;color:#eaeaea;border:1px solid #2a2a2a;box-shadow:none}
-    .logo-tools{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:-8px 0 10px}
-    .btn.small{width:auto;padding:10px 12px;font-size:.95rem;border-radius:12px}
 
     .error{color:var(--danger);font-size:.9rem;margin-top:6px;display:none}
     .success{display:none;color:#b6f5c1;background:#0f1f12;border:1px solid #203b21;padding:10px;border-radius:10px;margin-top:10px}
@@ -44,14 +42,6 @@
     <div class="logo">
       <img id="brandLogo" src="logo-tiago.png" alt="Logo Tiago Lima"/>
     </div>
-
-    <div class="logo-tools">
-      <button type="button" id="logoPickBtn" class="btn secondary small">Carregar logo</button>
-      <button type="button" id="logoResetBtn" class="btn secondary small">Restaurar padrao</button>
-      <input type="file" id="logoFile" accept="image/*" style="display:none" />
-      <div class="hint" style="margin:8px 0 0;text-align:center;">Se o logo nao aparecer, toque em "Carregar logo" e selecione a imagem.</div>
-    </div>
-
 
     <h1>Treino Iniciante – Avaliação Inicial</h1>
     <p class="subtitle">Preencha com atenção suas informações para que o Personal elabore seu treino de forma personalizada.</p>
@@ -203,8 +193,8 @@
   </div>
 
   <script>
-    // Logo robusto: funciona em GitHub Pages e tambem abrindo via arquivo (content://).
-    // 1) Tenta carregar logo salvo no localStorage (selecionado pelo botao)
+    // Logo automatico (sem botoes):
+    // 1) Tenta carregar logo salvo no localStorage (mfit_brand_logo_dataurl)
     // 2) Tenta carregar logo-tiago.png (mesma pasta do HTML)
     // 3) Se falhar, cai no banner padrao (SVG).
     const MFIT_FALLBACK_LOGO = `data:image/svg+xml;utf8,
@@ -215,6 +205,7 @@
             <text x='50%' y='78%' dominant-baseline='middle' text-anchor='middle' font-size='18' font-family='Arial'>Avaliacao Inicial</text>
           </g>
         </svg>`;
+
     function mfit_init_logo(){
       const img = document.getElementById('brandLogo');
       if(!img) return;
@@ -224,41 +215,13 @@
         return;
       }
       img.onerror = () => { img.onerror = null; img.src = MFIT_FALLBACK_LOGO; };
-      // tenta carregar arquivo local relativo
       img.src = 'logo-tiago.png';
     }
-    function mfit_bind_logo_buttons(){
-      const pickBtn = document.getElementById('logoPickBtn');
-      const resetBtn = document.getElementById('logoResetBtn');
-      const file = document.getElementById('logoFile');
-      const img = document.getElementById('brandLogo');
-      if(pickBtn && file){
-        pickBtn.addEventListener('click', () => file.click());
-        file.addEventListener('change', () => {
-          const f = file.files && file.files[0];
-          if(!f) return;
-          const reader = new FileReader();
-          reader.onload = () => {
-            const dataUrl = String(reader.result||'');
-            if(dataUrl.startsWith('data:image')){
-              localStorage.setItem('mfit_brand_logo_dataurl', dataUrl);
-              if(img) img.src = dataUrl;
-            }
-          };
-          reader.readAsDataURL(f);
-        });
-      }
-      if(resetBtn){
-        resetBtn.addEventListener('click', () => {
-          localStorage.removeItem('mfit_brand_logo_dataurl');
-          if(img) img.src = MFIT_FALLBACK_LOGO;
-        });
-      }
-    }
+
     if(document.readyState==='complete' || document.readyState==='interactive'){
-      setTimeout(() => { mfit_init_logo(); mfit_bind_logo_buttons(); }, 0);
+      setTimeout(() => { mfit_init_logo(); }, 0);
     } else {
-      document.addEventListener('DOMContentLoaded', () => { mfit_init_logo(); mfit_bind_logo_buttons(); });
+      document.addEventListener('DOMContentLoaded', () => { mfit_init_logo(); });
     }
   </script>
 
