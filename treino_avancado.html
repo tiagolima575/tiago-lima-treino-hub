@@ -284,9 +284,14 @@
           <label class="rbx"><input type="radio" name="foco" value="Ombro"> Ombro</label>
           <label class="rbx"><input type="radio" name="foco" value="Braço"> Braço</label>
           <label class="rbx"><input type="radio" name="foco" value="Abdômen"> Abdômen</label>
+          <label class="rbx"><input type="radio" name="foco" value="Glúteos"> Glúteos</label>
           <label class="rbx"><input type="radio" name="foco" value="Perna completa"> Perna completa</label>
           <label class="rbx"><input type="radio" name="foco" value="Treino equilibrado"> Treino equilibrado</label>
         </div>
+
+        <label class="q" for="focoOutro">Se o músculo alvo que você quer treinar não estiver aqui, descreva</label>
+        <div class="hint">(resposta curta — exemplo: panturrilhas, posterior, glúteo médio, trapézio)</div>
+        <textarea id="focoOutro" name="focoOutro" placeholder="Descreva aqui..."></textarea>
       </div>
 
       <!-- Seção 9 – Condições Físicas e Limitações -->
@@ -346,7 +351,7 @@
       "tempo","local",
       "cardiaco","cardiacoDesc","respiratorio","respiratorioDesc","pressao","medicacao","cirurgia",
       "cesarea","cesareaTempo","cesareaInter",
-      "obs","met1","met2","met3","met4","met5",
+      "obs","focoOutro","met1","met2","met3","met4","met5",
       "temLesao","ondeLesao","movimentoDor",
       "focoSelecionado","equipSelecionado","diasSelecionado","mobilidade","alongamento"
     ];
@@ -504,6 +509,7 @@
         "Cesárea - intercorrências": $("cesareaInter")?.value?.trim() || "",
 
         "Foco muscular": getFoco(),
+        "Foco muscular (descrição)": $("focoOutro")?.value?.trim() || "",
         "Observações": $("obs")?.value?.trim() || "",
 
         "Possui dor/lesão/limitação": $("temLesao")?.value?.trim() || "",
