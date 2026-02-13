@@ -487,6 +487,7 @@
         "Altura": $("altura")?.value?.trim() || "",
         "Peso": $("peso")?.value?.trim() || "",
         "WhatsApp do aluno": $("zap")?.value?.trim() || "",
+
         "Objetivo": objetivo,
         "Experiência": $("experiencia")?.value?.trim() || "",
         "Frequência (dias)": getDias(),
@@ -512,69 +513,81 @@
         "Foco muscular (descrição)": $("focoOutro")?.value?.trim() || "",
         "Observações": $("obs")?.value?.trim() || "",
 
-        "Possui dor/lesão/limitação": $("temLesao")?.value?.trim() || "",
-        "Local da dor/limitação": $("ondeLesao")?.value?.trim() || "",
-        "Movimento que causa desconforto": $("movimentoDor")?.value?.trim() || ""
+        "Possui dor/lesão/limitação": (document.querySelector('input[name="dor"]:checked')||{}).value||"",
+        "Local da dor/lesão": $("dorLocal")?.value?.trim() || "",
+        "Movimento com desconforto": $("dorMov")?.value?.trim() || ""
       };
 
-      const lines = ["Olá Personal! Preenchi minha ficha para montar meu TREINO PERSONALIZADO 💪"];
-      for(const [k,v] of Object.entries(data)){ if(v) lines.push(`${k}: ${v}`); }
-      const metab = mfit_classificar_metabolismo();
-      lines.push("Resultado: Seu metabolismo é " + metab + ".");
-      return lines.join("\\n");
+      const lines = [];
+      const add = (label, value) => {
+        const v = (value || "").toString().trim();
+        if(v) lines.push(label + ": " + v);
+      };
+
+      // ===== Cabeçalho (primeira linha obrigatória)
+      lines.push("*Treino Avançado — Avaliação Inicial*");
+      lines.push("");
+
+      // ===== Dados do aluno
+      lines.push("👤 Dados do aluno");
+      add("Nome", data["Nome"]);
+      add("Idade", data["Idade"]);
+      add("Altura", data["Altura"]);
+      add("Peso", data["Peso"]);
+      add("WhatsApp do aluno", data["WhatsApp do aluno"]);
+      lines.push("");
+
+      // ===== Objetivo e rotina
+      lines.push("🎯 Objetivo e rotina");
+      add("Objetivo", data["Objetivo"]);
+      add("Experiência", data["Experiência"]);
+      add("Frequência (dias)", data["Frequência (dias)"]);
+      add("Tempo por treino", data["Tempo por treino"]);
+      add("Local de treino", data["Local de treino"]);
+      lines.push("");
+
+      // ===== Preferências
+      lines.push("🧩 Preferências");
+      add("Preferência de equipamentos", data["Preferência de equipamentos"]);
+      add("Mobilidade no treino", data["Mobilidade no treino"]);
+      add("Alongamento no treino", data["Alongamento no treino"]);
+      lines.push("");
+
+      // ===== Saúde e histórico
+      lines.push("🩺 Saúde e histórico");
+      add("Problemas cardíacos", data["Problemas cardíacos"]);
+      add("Cardíaco - descrição", data["Cardíaco - descrição"]);
+      add("Problemas respiratórios", data["Problemas respiratórios"]);
+      add("Respiratório - descrição", data["Respiratório - descrição"]);
+      add("Pressão arterial", data["Pressão arterial"]);
+      add("Medicação contínua", data["Medicação contínua"]);
+      add("Cirurgias/doenças crônicas", data["Cirurgias/doenças crônicas"]);
+      add("Parto cesáreo", data["Parto cesáreo"]);
+      add("Cesárea - tempo", data["Cesárea - tempo"]);
+      add("Cesárea - intercorrências", data["Cesárea - intercorrências"]);
+      lines.push("");
+
+      // ===== Foco e observações
+      lines.push("🎯 Foco e observações");
+      add("Foco muscular", data["Foco muscular"]);
+      add("Foco muscular (descrição)", data["Foco muscular (descrição)"]);
+      add("Observações", data["Observações"]);
+      lines.push("");
+
+      // ===== Dor / Lesão
+      lines.push("🦴 Dor / Lesão");
+      add("Possui dor/lesão/limitação", data["Possui dor/lesão/limitação"]);
+      add("Local da dor/lesão", data["Local da dor/lesão"]);
+      add("Movimento com desconforto", data["Movimento com desconforto"]);
+      lines.push("");
+
+      // ===== Metabolismo (resultado)
+      let metab = "—";
+      try { metab = (typeof mfit_classificar_metabolismo === "function") ? mfit_classificar_metabolismo() : "—"; } catch(e) {}
+      lines.push("✅ Resultado: Seu metabolismo é " + metab + ".");
+
+      return lines.join("\n");
     }
-
-    // Botão copiar tudo (sempre visível)
-    document.getElementById("copyAllBtn").addEventListener("click", async () => {
-      const text = buildMessage();
-      try{
-        await navigator.clipboard.writeText(text);
-        alert("Mensagem copiada! Abra onde quiser e cole.");
-      }catch(e){
-        prompt("Copie manualmente (Ctrl+C/⌘C):", text);
-      }
-      save();
-    });
-
-    // Botão enviar WhatsApp
-    
-// ====== MFIT: buildMessageAll (100% da pesquisa + metabolismo) ======
-function buildMessageAll() {
-  const form = document.getElementById("mfitForm") || document;
-  const lines = [];
-  lines.push("📝 Formulário MFIT – Cópia Completa");
-  lines.push("===============================================");
-
-  const fields = form.querySelectorAll("input, select, textarea");
-  fields.forEach(el => {
-    let labelTxt = "";
-    if (el.id) {
-      const lab = form.querySelector('label[for="'+el.id+'"]');
-      if (lab) labelTxt = (lab.textContent || "").replace(/\s+/g, " ").trim();
-    }
-    if (!labelTxt) labelTxt = el.getAttribute("placeholder") || el.getAttribute("name") || "(campo)";
-
-    let val = "";
-    const tag = el.tagName.toLowerCase();
-    if (el.type === "radio" || el.type === "checkbox") {
-      if (el.checked) val = (el.value || "").trim();
-      else return;
-    } else if (tag === "select" || tag === "textarea" || tag === "input") {
-      val = (el.value || "").trim();
-    }
-
-    labelTxt = labelTxt.replace(/\s+/g, " ").trim();
-    if (!labelTxt) labelTxt = "(campo)";
-    if (!val) val = "—";
-    lines.push(labelTxt + ": " + val);
-  });
-
-  let metab = "—";
-  try { metab = (typeof mfit_classificar_metabolismo === "function") ? mfit_classificar_metabolismo() : "—"; } catch(e) {}
-  lines.push("-----------------------------------------------");
-  lines.push("➡️ Resultado automático do metabolismo: " + metab);
-  return lines.join("\n");
-}
 
     document.getElementById("sendBtn").addEventListener("click", () => {
       const nome = $("nome")?.value?.trim() || "";
