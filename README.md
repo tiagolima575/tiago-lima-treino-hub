@@ -8,5 +8,4 @@ Arquivos estáticos (HTML) prontos para GitHub Pages e para abrir localmente no 
 - treino_intermediario.html
 - treino_avancado.html
 
-## Observação
-- "treino_basico.html" existe apenas como redirecionamento para compatibilidade.
+
