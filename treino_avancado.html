@@ -332,18 +332,16 @@
 
     <div class="actions">
       <button class="btn" id="sendBtn">💬 Enviar minhas respostas no WhatsApp</button>
-      <button class="btn2" id="copyBtn">📋 Copiar minhas respostas</button>
       <button class="btn2" id="clearBtn">🗑️ Limpar tudo</button>
     </div>
-    <div class="foot">Dica: se o WhatsApp não abrir, use “Copiar” e cole manualmente.</div>
+    <div class="foot">Dica: se o WhatsApp não abrir, atualize a página e tente de novo. Se persistir, abra no navegador (Chrome) e verifique se o WhatsApp está instalado.</div>
   </section>
 </div>
-
-<textarea id="_copyHidden" class="hidden"></textarea>
 
 <script>
 (() => {
   const KEY = 'mfit_treinoavancadov1';
+    const PERSONAL_PHONE = "5569992913628";
 
   const $ = (id) => document.getElementById(id);
   const show = (el, on) => el.classList.toggle('hidden', !on);
@@ -553,21 +551,13 @@
   $('sendBtn').addEventListener('click', (e)=>{
     e.preventDefault();
     const text = buildText();
-    const url = 'https://wa.me/?text=' + encodeURIComponent(text);
-    window.open(url, '_blank');
-  });
-
-  $('copyBtn').addEventListener('click', (e)=>{
-    e.preventDefault();
-    const text = buildText();
-    const ta = $('_copyHidden');
-    ta.classList.remove('hidden');
-    ta.value = text;
-    ta.focus();
-    ta.select();
-    try{ document.execCommand('copy'); }catch(e){}
-    ta.classList.add('hidden');
-    alert('📋 Copiado!');
+    if (!text || text.trim().length === 0) {
+      alert('Preencha pelo menos 1 campo antes de enviar.');
+      return;
+    }
+    const url = `https://wa.me/5569992913628?text=${encodeURIComponent(text)}`;
+    const w = window.open(url, '_blank');
+    if (!w) window.location.href = url;
   });
 
   $('clearBtn').addEventListener('click', (e)=>{
