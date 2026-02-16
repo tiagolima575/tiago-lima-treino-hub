@@ -1541,7 +1541,7 @@
   // ====== LOGO (Android content://) ======
   // Funciona mesmo abrindo o HTML como arquivo no celular.
 
-  const PHONE = "5569992913628"; // +55 69 99291-3628
+  const phone = "5569992913628"; // +55 69 99291-3628
 
   // ====== HELPERS ======
   const $ = (id) => document.getElementById(id);
@@ -2305,109 +2305,83 @@ if(missing.length){
   return true;
 }
 
-function copyFallback(text){
-    try{
-      const ta = document.createElement('textarea');
-      ta.value = text;
-      ta.setAttribute('readonly','');
-      ta.style.position='fixed';
-      ta.style.opacity='0';
-      document.body.appendChild(ta);
-      ta.focus();
-      ta.select();
-      document.execCommand('copy');
-      document.body.removeChild(ta);
-      return true;
-    }catch(e){ return false; }
-  }
-
-  function showToast(msg) {
-  try {
-    let t = document.getElementById('toast');
-    if (!t) {
-      t = document.createElement('div');
-      t.id = 'toast';
-      t.style.position = 'fixed';
-      t.style.left = '50%';
-      t.style.bottom = '22px';
-      t.style.transform = 'translateX(-50%)';
-      t.style.background = 'rgba(0,0,0,0.85)';
-      t.style.color = '#fff';
-      t.style.padding = '10px 14px';
-      t.style.borderRadius = '12px';
-      t.style.fontSize = '14px';
-      t.style.zIndex = '99999';
-      t.style.maxWidth = '92vw';
-      t.style.textAlign = 'center';
-      t.style.border = '1px solid rgba(0,204,102,0.55)';
-      t.style.boxShadow = '0 10px 30px rgba(0,0,0,0.35)';
-      t.style.opacity = '0';
-      t.style.transition = 'opacity .18s ease';
-      document.body.appendChild(t);
-    }
-    t.textContent = msg;
-    t.style.opacity = '1';
-    clearTimeout(window.__toastTimer);
-    window.__toastTimer = setTimeout(() => { t.style.opacity = '0'; }, 2200);
-  } catch (e) {}
-}
-
 function sendWhatsApp() {
-  // 1) Monta mensagem
-  const message = buildWhatsAppMessage();
-  if (!message || !message.trim()) {
-    alert('Preencha o formulário antes de enviar.');
-    return;
+    // Validação (opcional, mas recomendado)
+    try { if (typeof validateForm === "function" && !validateForm()) return; } catch(e){}
+
+    const raw = (buildMessage && typeof buildMessage === "function") ? String(buildMessage()) : "";
+    const msg = raw.trim();
+
+    // Sanitiza número (somente dígitos)
+    const digits = String(phone || "").replace(/\D/g, "");
+
+    if(!digits){
+      alert("Número do WhatsApp não configurado (variável 'phone').");
+      return;
+    }
+    if(!msg){
+      alert("Mensagem vazia. Preencha o formulário antes de enviar.");
+      return;
+    }
+
+    // Click-to-Chat com mensagem já preenchida
+    const encoded = encodeURIComponent(msg);
+    const base = `https://wa.me/${digits}`;
+    const urlWithText = `${base}?text=${encoded}`;
+
+    // Limite prático de URL (varia por navegador). Se estourar, faz fallback:
+    const MAX_URL = 1800;
+
+    function openUrl(u){
+      // Em alguns Androids/In-app browsers, _blank abre melhor o WhatsApp
+      const w = window.open(u, "_blank");
+      if(!w) window.location.href = u;
+    }
+
+    if(urlWithText.length <= MAX_URL){
+      openUrl(urlWithText);
+      toast("WhatsApp aberto com a mensagem pronta para enviar.");
+      return;
+    }
+
+    // Fallback: mensagem muito grande -> copia e abre o chat
+    copyTextToClipboard(msg);
+    openUrl(base);
+    toast("Mensagem muito grande: copiada. No WhatsApp, cole e envie.");
   }
 
-  // 2) Copia (SÍNCRONO) — mantém gesto do usuário
-  const copied = copyToClipboardFallback(message);
-  if (!copied && navigator.clipboard && window.isSecureContext) {
-    // tentativa extra (assíncrona) — não depende para abrir WhatsApp
-    navigator.clipboard.writeText(message).catch(() => {});
+  function copyTextToClipboard(text) {
+    // Clipboard API (moderno)
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+      return;
+    }
+    fallbackCopy(text);
   }
 
-  // 3) Abre WhatsApp DIRETO no número (sem depender de async)
-  const phone = '5569992913628';
-  const deepLink = `whatsapp://send?phone=${phone}`;
-  const webLink = `https://wa.me/${phone}`;
-
-  // Abre primeiro via deep link (app), depois fallback web
-  try {
-    window.location.href = deepLink;
-  } catch (e) {
-    window.location.href = webLink;
+  function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.top = '-9999px';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
   }
-
-  // Se o app não abrir, cai para web em ~900ms
-  setTimeout(() => {
-    // Se ainda estiver na página (não foi para o WhatsApp), tenta web
-    if (!document.hidden) window.location.href = webLink;
-  }, 900);
-
-  showToast('Mensagem copiada. Abrindo WhatsApp…');
+function isHHMM(v){
+  return /^([01]\d|2[0-3]):[0-5]\d$/.test((v||"").trim());
 }
 
-
-function attachListeners() {
-  const btnWpp = document.getElementById("btnWhatsApp");
-  const btnClear = document.getElementById("btnClear");
-
-  if (btnWpp) btnWpp.addEventListener("click", (e) => { e.preventDefault(); sendWhatsApp(); });
-  if (btnClear) btnClear.addEventListener("click", (e) => { e.preventDefault(); clearAll(); });
-
-  // Atualiza visual do biotipo quando mudar
-  const bio = document.getElementById("biotipo");
-  if (bio) bio.addEventListener("change", paintBioSelection);
-
-  // Atualiza prévia quando digitar
-  document.querySelectorAll("input, select, textarea").forEach(el => {
-    el.addEventListener("input", refreshPreview);
-    el.addEventListener("change", refreshPreview);
-  });
-}
-
-
+function attachListeners(){
+    fields.forEach(f=>{
+      const el=$(f);
+      if(el){
+        el.addEventListener("input", save);
+        el.addEventListener("change", save);
+      
 // Biotipo visual: tabs + seleção (override opcional)
 function paintBioSelection(){
   const mv = (val("metVisual")||"").trim();
