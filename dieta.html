@@ -1521,14 +1521,7 @@
   <textarea id="recordatorio24h" placeholder="Ex.: 07:00 2 ovos + 1 pão; 12:00 150g arroz + 120g frango; 16:00 café + 1 banana; 20:00 200g macarrão + carne..."></textarea>
 </div>
 
-<!-- Seção 12 – Cardápio Sugerido – Dia 1 -->
-<div class="section" id="secDay1">
-<div class="section-title">Seção 12 – Cardápio Sugerido – Dia 1</div>
-<p class="hint">Gerado automaticamente conforme objetivo, metabolismo, peso, refeições/dia e alimentos ACEITOS.</p>
-<div id="dayPlan" style="white-space:pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; background:#0f1110; border:1px solid #222; padding:12px; border-radius:10px;">
-          A prévia do cardápio aparecerá aqui quando os campos estiverem preenchidos.
-        </div>
-</div>
+<!-- Seção 12 – Cardápio Sugerido – Dia 1 (REMOVIDA PARA EVITAR MENSAGEM GRANDE NO WHATSAPP) -->
 <!-- BOTÕES FINAIS -->
 <div class="btns">
   <button class="btn" id="sendBtn" type="button">📲 Enviar respostas no WhatsApp</button>
@@ -1616,7 +1609,7 @@
 
     localStorage.setItem("mfit_dieta_modelo_v32", JSON.stringify(d));
     // atualizar prévia e cardápio automático
-    try{ refreshPreview(); refreshDayPlan(); }catch(e){}
+    try{ refreshPreview(); }catch(e){}
   }
 
   function load(){
@@ -2328,9 +2321,10 @@ function sendWhatsApp() {
     const encoded = encodeURIComponent(msg);
     const base = `https://wa.me/${digits}`;
     const urlWithText = `${base}?text=${encoded}`;
+    const urlScheme = `whatsapp://send?phone=${digits}&text=${encoded}`;
 
     // Limite prático de URL (varia por navegador). Se estourar, faz fallback:
-    const MAX_URL = 1800;
+    const MAX_URL = 8000;
 
     function openUrl(u){
       // Em alguns Androids/In-app browsers, _blank abre melhor o WhatsApp
@@ -2339,7 +2333,8 @@ function sendWhatsApp() {
     }
 
     if(urlWithText.length <= MAX_URL){
-      openUrl(urlWithText);
+      // Tenta abrir via scheme (geralmente ignora limite de URL em alguns Androids)
+      try{ openUrl(urlScheme); }catch(e){ openUrl(urlWithText); }
       toast("WhatsApp aberto com a mensagem pronta para enviar.");
       return;
     }
@@ -2463,7 +2458,7 @@ initBiotipoVisual();
 
   load();
   attachListeners();
-  try{ mfit_classificar_metabolismo(); applyAtividadeSuggestion(); refreshPreview(); refreshDayPlan(); }catch(e){}
+  try{ mfit_classificar_metabolismo(); applyAtividadeSuggestion(); refreshPreview(); }catch(e){}
 
   $("sendBtn").addEventListener("click", sendWhatsApp);
   // ====== Limpar tudo ======
