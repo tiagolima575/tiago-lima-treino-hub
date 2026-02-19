@@ -50,7 +50,7 @@
   </div>
 
   <section class="card" data-sess="1">
-    <div class="title"><span>SESSÃO 1/10</span> — 👤 Dados Pessoais</div>
+    <div class="title"><span>SESSÃO 1/11</span> — 👤 Dados Pessoais</div>
     <div class="row">
       <div>
         <label>Nome completo</label>
@@ -61,6 +61,39 @@
         <input id="idade" type="number" inputmode="numeric" placeholder="Ex.: 28" />
       </div>
     </div>
+
+    <div class="row">
+      <div>
+        <label>Sexo</label>
+        <select id="sexo">
+          <option value="Masculino">Masculino</option>
+          <option value="Feminino">Feminino</option>
+          <option value="Prefiro não informar">Prefiro não informar</option>
+        </select>
+      </div>
+      <div>
+        <label>Horário preferido de treino</label>
+        <select id="horario">
+          <option value="Manhã">Manhã</option>
+          <option value="Tarde">Tarde</option>
+          <option value="Noite">Noite</option>
+          <option value="Varia">Varia</option>
+        </select>
+      </div>
+    </div>
+
+    <label>Profissão/rotina (nível de atividade no dia)</label>
+    <span class="hint">Ex.: trabalho sentado, em pé, físico pesado, turnos</span>
+    <input id="rotina" type="text" placeholder="Descreva em 1 linha" />
+    <label>Atividade no trabalho (marque o mais próximo)</label>
+    <select id="trabalhoAtiv">
+      <option value="Não informado">Não informado</option>
+      <option value="Sentado (sedentário)">Sentado (sedentário)</option>
+      <option value="Em pé (moderado)">Em pé (moderado)</option>
+      <option value="Carrega peso / físico pesado">Carrega peso / físico pesado</option>
+      <option value="Varia muito">Varia muito</option>
+    </select>
+
     <div class="row">
       <div>
         <label>Altura (cm)</label>
@@ -72,11 +105,11 @@
       </div>
     </div>
     <label>WhatsApp</label>
-    <input id="whats" type="text" inputmode="numeric" placeholder="Ex.: 69999999999" />
+    <input id="whats" type="tel" inputmode="tel" autocomplete="tel" placeholder="Ex.: (69) 99999-9999" maxlength="15" />
   </section>
 
   <section class="card" data-sess="2">
-    <div class="title"><span>SESSÃO 2/10</span> — 🎯 Objetivo</div>
+    <div class="title"><span>SESSÃO 2/11</span> — 🎯 Objetivo</div>
     <label>Qual é o seu principal objetivo?</label>
     <select id="objetivo">
       <option value="Perder peso">Perder peso</option>
@@ -90,15 +123,87 @@
       <label>Se marcou “Outro”, especifique</label>
       <input id="objetivoOutro" type="text" placeholder="Ex.: melhorar postura, correr 5km, etc." />
     </div>
+
+    <div class="row">
+      <div>
+        <label>Objetivo secundário (opcional)</label>
+        <input id="objetivo2" type="text" placeholder="Ex.: melhorar postura, ganhar força, definir abdômen" />
+      </div>
+      <div>
+        <label>Prazo de foco (semanas)</label>
+        <select id="prazo">
+          <option value="4 semanas">4 semanas</option>
+          <option value="8 semanas">8 semanas</option>
+          <option value="12 semanas">12 semanas</option>
+          <option value="16 semanas">16 semanas</option>
+        </select>
+      </div>
+    </div>
+
+    <label>Como você vai medir resultado? (marque o que faz sentido)</label>
+    <span class="hint">Isso guia a progressão e evita “treino no escuro”</span>
+    <div class="pill" id="metricas">
+      <label class="opt"><input type="checkbox" name="metrica" value="Peso (balança)"> Peso (balança)</label>
+      <label class="opt"><input type="checkbox" name="metrica" value="Medidas (cintura/quadril/etc.)"> Medidas (cintura/quadril/etc.)</label>
+      <label class="opt"><input type="checkbox" name="metrica" value="Performance (carga/reps/tempo)"> Performance (carga/reps/tempo)</label>
+      <label class="opt"><input type="checkbox" name="metrica" value="Estética (definição/volume)"> Estética (definição/volume)</label>
+    </div>
   </section>
 
   <section class="card" data-sess="3">
-    <div class="title"><span>SESSÃO 3/10</span> — 📅 Experiência e Frequência</div>
+    <div class="title"><span>SESSÃO 3/11</span> — 📅 Experiência e Frequência</div>
     <label>Qual é o seu nível de experiência com treino?</label>
     <select id="experiencia">
       <option value="Iniciante (0–2 meses)">Iniciante (0–2 meses)</option>
       <option value="Intermediário (2–6 meses)">Intermediário (2–6 meses)</option>
       <option value="Avançado (mais de 6 meses)">Avançado (mais de 6 meses)</option>
+    </select>
+
+    <div class="row">
+      <div>
+        <label>Já treinou antes (no passado)?</label>
+        <select id="treinouAntes">
+          <option value="Não">Não</option>
+          <option value="Sim, já treinei e parei">Sim, já treinei e parei</option>
+          <option value="Sim, treino há bastante tempo (com pausas)">Sim, treino há bastante tempo (com pausas)</option>
+        </select>
+      </div>
+      <div>
+        <label>Últimos 30 dias: consistência</label>
+        <select id="consistencia30">
+          <option value="Consistente">Consistente</option>
+          <option value="Mais ou menos">Mais ou menos</option>
+          <option value="Irregular">Irregular</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Você treina perto da falha?</label>
+        <select id="falha">
+          <option value="Não sei">Não sei</option>
+          <option value="Sim">Sim</option>
+          <option value="Não">Não</option>
+        </select>
+      </div>
+      <div>
+        <label>Nível de técnica (autoavaliação)</label>
+        <select id="tecnica">
+          <option value="Baixa">Baixa</option>
+          <option value="Média">Média</option>
+          <option value="Alta">Alta</option>
+          <option value="Não sei">Não sei</option>
+        </select>
+      </div>
+    </div>
+
+    <label>Preferência de estilo</label>
+    <select id="estilo">
+      <option value="Equilibrado">Equilibrado</option>
+      <option value="Mais pesado (força)">Mais pesado (força)</option>
+      <option value="Mais volume (hipertrofia)">Mais volume (hipertrofia)</option>
+      <option value="Mais metabólico (densidade/cardio)">Mais metabólico (densidade/cardio)</option>
     </select>
 
     <div class="row">
@@ -114,7 +219,7 @@
       </div>
       <div>
         <label>Quanto tempo por treino? (min)</label>
-        <input id="tempo" type="number" inputmode="numeric" placeholder="Ex.: 40" />
+        <input id="tempo" type="number" inputmode="numeric" placeholder="Ex.: 40" min="10" max="240" />
       </div>
     </div>
 
@@ -157,13 +262,82 @@
       </div>
     </div>
 
-    <label>Você quer ênfase em algum grupo muscular?</label>
-    <span class="hint">Resposta curta — ex.: Glúteos, Dorsal, Peitoral, Quadríceps, Posterior</span>
-    <input id="enfase" type="text" placeholder="Ex.: Glúteos e posterior" />
+    <label>Passos por dia (média)</label>
+    <select id="passos">
+      <option value="Não sei">Não sei</option>
+      <option value="< 5 mil">&lt; 5 mil</option>
+      <option value="5–8 mil">5–8 mil</option>
+      <option value="8–12 mil">8–12 mil</option>
+      <option value="12+ mil">12+ mil</option>
+    </select>
+
+    <label>Ênfase secundária (opcional)</label>
+    <span class="hint">Ex.: Glúteos, Dorsal, Peitoral, Quadríceps, Isquiotibiais</span>
+    <input id="enfase" type="text" placeholder="Ex.: Glúteos e isquiotibiais" />
+    <div class="row">
+      <div>
+        <label>Qual sua chance real de cumprir essa frequência? (0–10)</label>
+        <select id="compliance">
+          <option value="Não informado">Não informado</option>
+          <option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+          <option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option>
+        </select>
+      </div>
+      <div>
+        <label>Maior barreira hoje</label>
+        <select id="barreira">
+          <option value="Não informado">Não informado</option>
+          <option value="Tempo">Tempo</option>
+          <option value="Cansaço">Cansaço</option>
+          <option value="Dor">Dor</option>
+          <option value="Motivação">Motivação</option>
+          <option value="Alimentação">Alimentação</option>
+          <option value="Rotina/Trabalho">Rotina/Trabalho</option>
+        </select>
+      </div>
+    </div>
+
+  
+    <div class="hr"></div>
+    <label>Histórico de treino (real)</label>
+    <select id="histTreino">
+      <option value="">Selecione</option>
+      <option value="Nunca treinei">Nunca treinei</option>
+      <option value="Voltei agora (retorno)">Voltei agora (retorno)</option>
+      <option value="Já treinei antes, mas parei">Já treinei antes, mas parei</option>
+      <option value="Treino há pouco tempo (até 2 meses)">Treino há pouco tempo (até 2 meses)</option>
+    </select>
+
+    <label style="margin-top:12px;">Movimentos com desconforto (marque se existir)</label>
+    <div class="grid">
+      <label class="opt"><input type="checkbox" name="desconfMov" value="Agachar/Levantar"> Agachar/Levantar</label>
+      <label class="opt"><input type="checkbox" name="desconfMov" value="Puxar/Remar"> Puxar/Remar</label>
+      <label class="opt"><input type="checkbox" name="desconfMov" value="Empurrar/Supinar"> Empurrar/Supinar</label>
+      <label class="opt"><input type="checkbox" name="desconfMov" value="Elevar braços acima da cabeça"> Elevar braços acima da cabeça</label>
+      <label class="opt"><input type="checkbox" name="desconfMov" value="Dobrar quadril (pegar algo no chão)"> Dobrar quadril (pegar algo no chão)</label>
+      <label class="opt"><input type="checkbox" name="desconfMov" value="Correr/Saltar"> Correr/Saltar</label>
+    </div>
+
+    <label style="margin-top:12px;">Nível de segurança com carga</label>
+    <select id="segCarga">
+      <option value="">Selecione</option>
+      <option value="Tenho insegurança/medo de carga">Tenho insegurança/medo de carga</option>
+      <option value="Consigo treinar com carga leve sem medo">Consigo treinar com carga leve sem medo</option>
+      <option value="Me sinto seguro(a) com cargas moderadas">Me sinto seguro(a) com cargas moderadas</option>
+    </select>
+
+    <label style="margin-top:12px;">Condição atual</label>
+    <select id="condAtual">
+      <option value="">Selecione</option>
+      <option value="Sedentário(a)">Sedentário(a)</option>
+      <option value="Ativo(a) (caminho/rotina movimentada)">Ativo(a) (caminho/rotina movimentada)</option>
+      <option value="Trabalho físico (cansaço alto)">Trabalho físico (cansaço alto)</option>
+    </select>
+
   </section>
 
   <section class="card" data-sess="4">
-    <div class="title"><span>SESSÃO 4/10</span> — 🏋️ Local de Treino e Equipamentos</div>
+    <div class="title"><span>SESSÃO 4/11</span> — 🏋️ Local de Treino e Equipamentos</div>
 
     <label>Onde você costuma treinar?</label>
     <select id="local">
@@ -179,6 +353,46 @@
       <option value="Pesos livres">Pesos livres</option>
       <option value="Ambos equilibrado">Ambos equilibrado</option>
       <option value="Sem preferência">Sem preferência</option>
+    </select>
+
+    <div class="row">
+      <div>
+        <label>Exercícios que você GOSTA</label>
+        <input id="gosta" type="text" placeholder="Ex.: puxadas, remadas, leg press..." />
+      </div>
+      <div>
+        <label>Exercícios que você ODEIA</label>
+        <input id="odeia" type="text" placeholder="Ex.: corrida, agachamento livre..." />
+      </div>
+    </div>
+
+    <label>Exercícios que você NÃO PODE fazer por dor/limitação</label>
+    <span class="hint">Se não tiver, deixe em branco</span>
+    <input id="naoPode" type="text" placeholder="Ex.: desenvolvimento acima da cabeça, corrida..." />
+
+    <div class="row">
+      <div>
+        <label>O que você NÃO tem acesso (equipamentos que não existem aí)?</label>
+        <input id="naoTem" type="text" placeholder="Ex.: não tem cabo, não tem hack, não tem barra..." />
+      </div>
+      <div>
+        <label>Academia costuma estar lotada no seu horário?</label>
+        <select id="lotacao">
+          <option value="Baixa">Baixa</option>
+          <option value="Média">Média</option>
+          <option value="Alta">Alta</option>
+          <option value="Varia">Varia</option>
+        </select>
+      </div>
+    </div>
+
+    <label>Quando a academia está lotada, você prefere treinar mais em:</label>
+    <select id="lotacaoPref">
+      <option value="Não informado">Não informado</option>
+      <option value="Máquinas">Máquinas</option>
+      <option value="Halteres / pesos livres">Halteres / pesos livres</option>
+      <option value="Cabos / polias">Cabos / polias</option>
+      <option value="Tanto faz">Tanto faz</option>
     </select>
 
     <div class="sep"></div>
@@ -202,7 +416,7 @@
   </section>
 
   <section class="card" data-sess="5">
-    <div class="title"><span>SESSÃO 5/10</span> — ❤️ Histórico de Saúde</div>
+    <div class="title"><span>SESSÃO 5/11</span> — ❤️ Histórico de Saúde</div>
     <div class="row">
       <div>
         <label>Você possui problemas cardíacos?</label>
@@ -227,7 +441,7 @@
   </section>
 
   <section class="card" data-sess="6">
-    <div class="title"><span>SESSÃO 6/10</span> — 🧬 Tipo de Metabolismo</div>
+    <div class="title"><span>SESSÃO 6/11</span> — 🧬 Tipo de Metabolismo</div>
     <label>Você ganha peso com facilidade ou dificuldade?</label>
     <select id="meta1"><option value="Com facilidade">Com facilidade</option><option value="Com dificuldade">Com dificuldade</option><option value="Não sei">Não sei</option></select>
 
@@ -245,7 +459,7 @@
   </section>
 
   <section class="card" data-sess="7">
-    <div class="title"><span>SESSÃO 7/10</span> — 🧘 Mobilidade e Alongamento</div>
+    <div class="title"><span>SESSÃO 7/11</span> — 🧘 Mobilidade e Alongamento</div>
     <div class="row">
       <div>
         <label>Deseja incluir mobilidade no seu treino?</label>
@@ -256,10 +470,19 @@
         <select id="along"><option value="Não">Não</option><option value="Sim">Sim</option></select>
       </div>
     </div>
+
+    <label>Por quê você quer mobilidade/alongamento?</label>
+    <select id="mobMotivo">
+      <option value="Não informado">Não informado</option>
+      <option value="Dor/rigidez">Dor/rigidez</option>
+      <option value="Performance">Performance</option>
+      <option value="Estética/postura">Estética/postura</option>
+      <option value="Recuperação">Recuperação</option>
+    </select>
   </section>
 
   <section class="card" data-sess="8">
-    <div class="title"><span>SESSÃO 8/10</span> — 💪 Foco Muscular (escolha única)</div>
+    <div class="title"><span>SESSÃO 8/11</span> — 💪 Foco Muscular (escolha única)</div>
     <label>Selecione apenas uma opção</label>
     <div class="pill">
       <label class="opt"><input type="radio" name="foco" value="Dorsal"> Dorsal</label>
@@ -277,13 +500,27 @@
   </section>
 
   <section class="card" data-sess="9">
-    <div class="title"><span>SESSÃO 9/10</span> — 🦵 Condições Físicas e Limitações</div>
+    <div class="title"><span>SESSÃO 9/11</span> — 🦵 Condições Físicas e Limitações</div>
     <label>Você possui alguma dor, lesão ou limitação física?</label>
     <select id="dor"><option value="Não">Não</option><option value="Sim">Sim</option></select>
 
     <div id="dorWrap" class="hidden">
       <label>Onde é a limitação ou dor?</label>
-      <input id="dorLocal" type="text" placeholder="Ex.: joelho, ombro, lombar" />
+      <select id="dorLocal">
+        <option value="Joelho">Joelho</option>
+        <option value="Quadril">Quadril</option>
+        <option value="Tornozelo">Tornozelo</option>
+        <option value="Lombar">Lombar</option>
+        <option value="Cervical">Cervical</option>
+        <option value="Ombro">Ombro</option>
+        <option value="Cotovelo">Cotovelo</option>
+        <option value="Punho/Mão">Punho/Mão</option>
+        <option value="Outro">Outro</option>
+      </select>
+      <div id="dorLocalOutroWrap" class="hidden">
+        <label>Se marcou “Outro”, qual?</label>
+        <input id="dorLocalOutro" type="text" placeholder="Descreva a região" />
+      </div>
 
       <div class="row">
         <div>
@@ -301,6 +538,43 @@
 
       <label>Dor atual (0–10)</label>
       <input id="dorEscala" type="number" min="0" max="10" inputmode="numeric" placeholder="0 a 10" />
+
+      <div class="row">
+        <div>
+          <label>Quando a dor aparece mais?</label>
+          <select id="dorQuando">
+            <option value="Não sei / varia">Não sei / varia</option>
+            <option value="Durante o treino">Durante o treino</option>
+            <option value="Depois do treino (mesmo dia)">Depois do treino (mesmo dia)</option>
+            <option value="No dia seguinte">No dia seguinte</option>
+            <option value="Constante">Constante</option>
+          </select>
+        </div>
+        <div>
+          <label>Piora mais com carga ou com amplitude?</label>
+          <select id="pioraComo">
+            <option value="Não sei">Não sei</option>
+            <option value="Mais com carga">Mais com carga</option>
+            <option value="Mais com amplitude">Mais com amplitude</option>
+            <option value="Com ambos">Com ambos</option>
+          </select>
+        </div>
+      </div>
+
+      <label>Regra de segurança: você aceita parar/ajustar se a dor passar de 3/10?</label>
+      <select id="regraDor">
+        <option value="Sim">Sim</option>
+        <option value="Não">Não</option>
+      </select>
+
+      <label>Sinais vermelhos (marque se tiver)</label>
+      <span class="hint">Se marcar algum, o treino precisa ser adaptado com mais cautela</span>
+      <div class="pill" id="redFlags">
+        <label class="opt"><input type="checkbox" name="redflag" value="Formigamento"> Formigamento</label>
+        <label class="opt"><input type="checkbox" name="redflag" value="Perda de força"> Perda de força</label>
+        <label class="opt"><input type="checkbox" name="redflag" value="Dor irradiando"> Dor irradiando</label>
+        <label class="opt"><input type="checkbox" name="redflag" value="Travamento/estalo com dor"> Travamento/estalo com dor</label>
+      </div>
 
       <label>Qual padrão de movimento tende a piorar?</label>
       <select id="pioraMov">
@@ -326,9 +600,91 @@
   </section>
 
   <section class="card" data-sess="10">
-    <div class="title"><span>SESSÃO 10/10</span> — 📝 Observações Finais</div>
+    <div class="title"><span>SESSÃO 10/11</span> — 🚦 Semáforo de Recuperação</div>
     <label>Deseja adicionar alguma observação ou preferência?</label>
     <textarea id="obs" placeholder="Ex.: horários, preferências, limitações, etc."></textarea>
+
+    <div class="sep"></div>
+
+    <div class="row">
+      <div>
+        <label>Sono (horas/noite)</label>
+        <select id="sonoHoras">
+          <option value="Não informado">Não informado</option>
+          <option value="≤ 5h">≤ 5h</option>
+          <option value="6h">6h</option>
+          <option value="7h">7h</option>
+          <option value="8h">8h</option>
+          <option value="9h+">9h+</option>
+        </select>
+      </div>
+      <div>
+        <label>Qualidade do sono</label>
+        <select id="sonoQual">
+          <option value="Não informado">Não informado</option>
+          <option value="Ruim">Ruim</option>
+          <option value="Média">Média</option>
+          <option value="Boa">Boa</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Estresse diário</label>
+        <select id="estresse">
+          <option value="Não informado">Não informado</option>
+          <option value="Baixo">Baixo</option>
+          <option value="Médio">Médio</option>
+          <option value="Alto">Alto</option>
+        </select>
+      </div>
+      <div>
+        <label>Fadiga pós-treino (dor muscular) costuma durar</label>
+        <select id="doms">
+          <option value="Não informado">Não informado</option>
+          <option value="1–2 dias">1–2 dias</option>
+          <option value="3–4 dias">3–4 dias</option>
+          <option value="5+ dias">5+ dias</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="badge" id="semaforoBadge" style="margin:10px 0 2px; width:fit-content;">Semáforo de recuperação: —</div>
+    <div class="foot" id="semaforoHint" style="margin-top:6px;">Preenchendo sono/estresse/DOMS, eu marco sua capacidade de volume (Verde/Amarelo/Vermelho).</div>
+
+    <div class="row">
+      <div>
+</div>
+      <div>
+        <label>Fotos para acompanhamento (opcional)</label>
+        <select id="fotos">
+          <option value="Não">Não</option>
+          <option value="Sim">Sim</option>
+        </select>
+      </div>
+    </div>
+</section>
+  <section class="card" data-sess="11">
+    <div class="title"><span>SESSÃO 11/11</span> — 📝 Observações Finais</div>
+    <label>Observações finais</label>
+    <textarea id="obs" rows="4" placeholder="Ex.: preferências, horários, desconfortos, histórico, recados importantes"></textarea>
+
+    <div class="row">
+      <div>
+        <label>Medidas (opcional)</label>
+        <input id="medidas" type="text" placeholder="Ex.: cintura/quadril/abdômen (cm)" />
+      </div>
+      <div>
+        <label>Fotos (opcional)</label>
+        <select id="fotos">
+          <option value="">Não informado</option>
+          <option value="Sim">Sim</option>
+          <option value="Não">Não</option>
+        </select>
+      </div>
+    </div>
+  
 
     <div class="actions">
       <button class="btn" id="sendBtn">💬 Enviar minhas respostas no WhatsApp</button>
@@ -336,11 +692,12 @@
     </div>
     <div class="foot">Dica: se o WhatsApp não abrir, atualize a página e tente de novo. Se persistir, abra no navegador (Chrome) e verifique se o WhatsApp está instalado.</div>
   </section>
+
 </div>
 
 <script>
 (() => {
-  const KEY = 'mfit_treinoiniciantev1';
+  const KEY = 'mfit_treinoiniciante_v3';
     const PERSONAL_PHONE = "5569992913628";
 
   const $ = (id) => document.getElementById(id);
@@ -371,11 +728,129 @@
     show($('cardioOutroWrap'), cardioOn && getSelect('cardioTipo') === 'Outro');
 
     const dorOn = getSelect('dor') === 'Sim';
+    const dorLocalSel = getSelect('dorLocal');
+    const dorLocalFinal = (dorLocalSel === 'Outro') ? (getVal('dorLocalOutro') || 'Outro') : dorLocalSel;
     show($('dorWrap'), dorOn);
     show($('pioraOutroWrap'), dorOn && getSelect('pioraMov') === 'Outro');
+    show($('dorLocalOutroWrap'), dorOn && getSelect('dorLocal') === 'Outro');
+    updateSemaforo();
   }
 
-  ['objetivo','cardio','cardioTipo','dor','pioraMov'].forEach(id=>{
+
+  // ===== MFIT v3 helpers (máscaras, validações e semáforo) =====
+  const digitsOnly = (s) => (s || '').toString().replace(/\D+/g,'');
+  function maskBRPhone(rawDigits){
+    // Espera DDD + número (10 ou 11 dígitos). Ex.: 69 99999-9999
+    const d = rawDigits.slice(0,11);
+    if(d.length <= 2) return d;
+    const ddd = d.slice(0,2);
+    const rest = d.slice(2);
+    if(rest.length <= 4) return `(${ddd}) ${rest}`;
+    if(rest.length <= 8) return `(${ddd}) ${rest.slice(0,4)}-${rest.slice(4)}`;
+    // 9 dígitos (celular) ou 8 (fixo) com DDD
+    if(rest.length === 9) return `(${ddd}) ${rest.slice(0,5)}-${rest.slice(5)}`;
+    return `(${ddd}) ${rest.slice(0,4)}-${rest.slice(4,8)}` + (rest.length>8 ? rest.slice(8) : '');
+  }
+
+  function normalizeNumericField(id, {min=null,max=null}={}){
+    const el = $(id);
+    if(!el) return;
+    el.addEventListener('blur', ()=>{
+      let v = el.value;
+      if(v === '' || v == null) return;
+      v = v.toString().replace(',', '.');
+      const num = Number(v);
+      if(Number.isNaN(num)) { el.value=''; return; }
+      let out = num;
+      if(min!=null) out = Math.max(min,out);
+      if(max!=null) out = Math.min(max,out);
+      // sem casas decimais para altura/peso aqui
+      el.value = String(out).replace(/\.0+$/,'');
+    });
+  }
+
+  function computeSemaforo(){
+    const sonoQ = getSelect('sonoQual'); // Ruim/Média/Boa
+    const est = getSelect('estresse'); // Baixo/Médio/Alto
+    const doms = getSelect('doms'); // 1–2 / 3–4 / 5+
+    // score simples e robusto
+    let score = 0;
+    if(sonoQ === 'Ruim') score += 2;
+    if(sonoQ === 'Média') score += 1;
+
+    if(est === 'Alto') score += 2;
+    if(est === 'Médio') score += 1;
+
+    if(doms === '5+ dias') score += 2;
+    if(doms === '3–4 dias') score += 1;
+
+    if(score <= 1) return {label:'Verde', note:'Boa capacidade de volume. Dá pra progredir com segurança.'};
+    if(score <= 3) return {label:'Amarelo', note:'Volume moderado. Progressão controlada e foco em técnica.'};
+    return {label:'Vermelho', note:'Recuperação limitada. Volume baixo, mais cautela e prioridade em consistência.'};
+  }
+
+  function updateSemaforo(){
+    const badge = $('semaforoBadge');
+    const hint = $('semaforoHint');
+    if(!badge || !hint) return;
+    const sonoQ = getSelect('sonoQual');
+    const est = getSelect('estresse');
+    const doms = getSelect('doms');
+
+    if((sonoQ==='Não informado' || !sonoQ) && (est==='Não informado' || !est) && (doms==='Não informado' || !doms)){
+      badge.textContent = 'Semáforo de recuperação: —';
+      hint.textContent = 'Preenchendo sono/estresse/DOMS, eu marco sua capacidade de volume (Verde/Amarelo/Vermelho).';
+      return;
+    }
+    const s = computeSemaforo();
+    badge.textContent = `Semáforo de recuperação: ${s.label}`;
+    hint.textContent = s.note;
+  }
+
+  function validateBeforeSend(){
+    // WhatsApp do aluno (opcional, mas se preencher, tem que estar certo)
+    const wEl = $('whats');
+    const wDigits = digitsOnly(wEl.value);
+    if(wEl.value.trim() && (wDigits.length < 10 || wDigits.length > 11)){
+      alert('WhatsApp do aluno inválido. Use DDD + número (10 ou 11 dígitos). Ex.: (69) 99999-9999');
+      wEl.focus();
+      return false;
+    }
+
+    // Tempo por treino deve ser uma das opções
+    const tempo = getSelect('tempo');
+    const allowedTempo = new Set(['30','40','50','60','75','90']);
+    if(tempo && !allowedTempo.has(tempo)){
+      alert('Tempo por treino inválido. Selecione uma das opções (30/40/50/60/75/90).');
+      $('tempo').focus();
+      return false;
+    }
+
+    // Dor: se Sim, escala e local obrigatórios
+    if(getSelect('dor') === 'Sim'){
+      const esc = getVal('dorEscala');
+      const loc = getSelect('dorLocal');
+      if(esc === ''){
+        alert('Você marcou que tem dor/lesão. Preencha a escala de dor (0–10).');
+        $('dorEscala').focus();
+        return false;
+      }
+      const escN = Number(esc);
+      if(Number.isNaN(escN) || escN < 0 || escN > 10){
+        alert('Escala de dor inválida. Use um número de 0 a 10.');
+        $('dorEscala').focus();
+        return false;
+      }
+      if(!loc){
+        alert('Você marcou que tem dor/lesão. Selecione a região da dor.');
+        $('dorLocal').focus();
+        return false;
+      }
+    }
+    return true;
+  }
+
+  ['objetivo','cardio','cardioTipo','dor','pioraMov','dorLocal','sonoQual','estresse','doms'].forEach(id=>{
     const el = $(id);
     if(el) el.addEventListener('change', applyConditional);
   });
@@ -411,30 +886,58 @@
     const s1 = [
       formatLine('Nome completo', getVal('nome')),
       formatLine('Idade', getVal('idade')),
+      formatLine('Sexo', getSelect('sexo')),
       formatLine('Altura', getVal('altura')),
       formatLine('Peso', getVal('peso')),
+      formatLine('Rotina/Profissão', getVal('rotina')),
+      formatLine('Atividade no trabalho', getSelect('trabalhoAtiv')),
+      formatLine('Horário preferido de treino', getSelect('horario')),
       formatLine('WhatsApp', getVal('whats')),
     ].filter(Boolean);
 
     const obj = (getSelect('objetivo') === 'Outro') ? (getVal('objetivoOutro') || 'Outro') : getSelect('objetivo');
-    const s2 = [formatLine('Qual é o seu principal objetivo?', obj)].filter(Boolean);
+    const metricas = getChecks('metrica');
+    const s2 = [
+      formatLine('Qual é o seu principal objetivo?', obj),
+      formatLine('Objetivo secundário', getVal('objetivo2')),
+      formatLine('Prazo de foco', getSelect('prazo')),
+      formatLine('Métricas de resultado', metricas.length ? metricas.join(', ') : ''),
+    ].filter(Boolean);
 
     const s3 = [
       formatLine('Qual é o seu nível de experiência com treino?', getSelect('experiencia')),
+      formatLine('Já treinou antes (no passado)?', getSelect('treinouAntes')),
+      formatLine('Últimos 30 dias: consistência', getSelect('consistencia30')),
+      formatLine('Você treina perto da falha?', getSelect('falha')),
+      formatLine('Nível de técnica (autoavaliação)', getSelect('tecnica')),
+      formatLine('Preferência de estilo', getSelect('estilo')),
       formatLine('Quantos dias por semana você pode treinar?', getSelect('dias')),
       formatLine('Quanto tempo por treino? (min)', getVal('tempo')),
+      formatLine('Histórico de treino (real)', getSelect('histTreino')),
+      formatLine('Movimentos com desconforto', (getChecks('desconfMov').length? getChecks('desconfMov').join(', '):'')),
+      formatLine('Nível de segurança com carga', getSelect('segCarga')),
+      formatLine('Condição atual', getSelect('condAtual')),
       formatLine('Qual divisão você prefere?', getSelect('divisao')),
       formatLine('Quer incluir cardio no plano?', getSelect('cardio')),
       ...(cardioOn ? [
         formatLine('Tempo de cardio por sessão', getVal('cardioTempo')),
         formatLine('Preferência de cardio', cardioTipoFinal),
       ] : []),
-      formatLine('Ênfase em grupo muscular', getVal('enfase')),
+      formatLine('Passos por dia (média)', getSelect('passos')),
+      formatLine('Ênfase secundária (opcional)', getVal('enfase')),
+      formatLine('Chance real de cumprir (0–10)', getSelect('compliance')),
+      formatLine('Maior barreira', getSelect('barreira')),
     ].filter(Boolean);
 
     const s4 = [
       formatLine('Onde você costuma treinar?', getSelect('local')),
       formatLine('Preferência de Equipamentos', getSelect('prefEquip')),
+      formatLine('Exercícios que gosta', getVal('gosta')),
+      formatLine('Exercícios que odeia', getVal('odeia')),
+      formatLine('Exercícios que não pode (dor/limitação)', getVal('naoPode')),
+      formatLine('O que não tem acesso', getVal('naoTem')),
+      formatLine('Academia lotada no horário', getSelect('lotacao')),
+      formatLine('Preferência quando lota', getSelect('lotacaoPref')),
       formatLine('Exercícios que NÃO quer fazer', getVal('naoQuer')),
       formatLine('Equipamentos disponíveis', equips.length ? equips.join(', ') : ''),
     ].filter(Boolean);
@@ -459,6 +962,7 @@
     const s7 = [
       formatLine('Incluir mobilidade?', getSelect('mob')),
       formatLine('Incluir alongamento?', getSelect('along')),
+      formatLine('Motivo (mobilidade/alongamento)', getSelect('mobMotivo')),
     ].filter(Boolean);
 
     const s8 = [formatLine('Foco muscular (escolha única)', focoFinal)].filter(Boolean);
@@ -466,17 +970,40 @@
     const s9 = [
       formatLine('Possui dor/lesão/limitação?', getSelect('dor')),
       ...(dorOn ? [
-        formatLine('Onde é a limitação ou dor?', getVal('dorLocal')),
+        formatLine('Onde é a limitação ou dor?', dorLocalFinal),
         formatLine('Diagnóstico/exame?', getSelect('diag')),
         formatLine('Fisioterapia?', getSelect('fisio')),
         formatLine('Cirurgia na região?', getSelect('cirReg')),
         formatLine('Dor atual (0–10)', getVal('dorEscala')),
+        formatLine('Quando a dor aparece mais?', getSelect('dorQuando')),
+        formatLine('Piora mais com carga ou amplitude?', getSelect('pioraComo')),
+        formatLine('Regra de segurança (parar se dor >3/10)', getSelect('regraDor')),
+        formatLine('Sinais vermelhos', (getChecks('redflag').length ? getChecks('redflag').join(', ') : '')),
         formatLine('Padrão de movimento que piora', pioraFinal),
         formatLine('Movimento/exercício que incomoda', getVal('desconforto')),
       ] : []),
     ].filter(Boolean);
 
-    const s10 = [formatLine('Observações finais', getVal('obs'))].filter(Boolean);
+    const recAny = (() => {
+      const a = getSelect('sonoQual'), b = getSelect('estresse'), c = getSelect('doms');
+      return (a && a !== 'Não informado') || (b && b !== 'Não informado') || (c && c !== 'Não informado');
+    })();
+    const semaforo = recAny ? computeSemaforo().label : '';
+
+    const s10 = [
+      formatLine('Sono (horas/noite)', getSelect('sonoHoras')),
+      formatLine('Qualidade do sono', getSelect('sonoQual')),
+      formatLine('Estresse diário', getSelect('estresse')),
+      formatLine('Dor muscular costuma durar', getSelect('doms')),
+      formatLine('Semáforo de recuperação', semaforo),
+    ].filter(Boolean);
+
+    const s11 = [
+      formatLine('Observações finais', getVal('obs')),
+      formatLine('Medidas (opcional)', getVal('medidas')),
+      formatLine('Fotos (opcional)', getSelect('fotos')),
+    ].filter(Boolean);
+
 
     const blocks = [
       sessBlock(1,'👤','Dados Pessoais',s1),
@@ -488,7 +1015,8 @@
       sessBlock(7,'🧘','Mobilidade e Alongamento',s7),
       sessBlock(8,'💪','Foco Muscular',s8),
       sessBlock(9,'🦵','Condições Físicas e Limitações',s9),
-      sessBlock(10,'📝','Observações Finais',s10),
+      sessBlock(10,'🚦','Semáforo de Recuperação',s10),
+      sessBlock(11,'📝','Observações Finais',s11),
     ];
 
     return head + blocks.join('');
@@ -548,23 +1076,51 @@
     if(e.target && (e.target.matches('input') || e.target.matches('textarea') || e.target.matches('select'))) save();
   });
 
-  $('sendBtn').addEventListener('click', (e)=>{
-    e.preventDefault();
-    const text = buildText();
-    if (!text || text.trim().length === 0) {
-      alert('Preencha pelo menos 1 campo antes de enviar.');
-      return;
-    }
-    const url = `https://wa.me/5569992913628?text=${encodeURIComponent(text)}`;
-    const w = window.open(url, '_blank');
-    if (!w) window.location.href = url;
-  });
+  // Envio WhatsApp (sem modo copiar) — primário: abrir WhatsApp com mensagem pronta
+function openWhatsApp(message){
+  const encoded = encodeURIComponent(message || '');
+  // wa.me funciona bem em mobile; api.whatsapp.com tende a ser mais compatível em desktop
+  const url1 = `https://wa.me/${PERSONAL_PHONE}?text=${encoded}`;
+  const url2 = `https://api.whatsapp.com/send?phone=${PERSONAL_PHONE}&text=${encoded}`;
+  const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || '');
+  const url = isMobile ? url1 : url2;
 
-  $('clearBtn').addEventListener('click', (e)=>{
+  // Tenta abrir em nova aba; se bloqueado, redireciona na mesma aba
+  const w = window.open(url, '_blank');
+  if (!w) window.location.href = url;
+}
+
+$('sendBtn').addEventListener('click', (e)=>{
+  e.preventDefault();
+  if(!validateBeforeSend()) return;
+  const text = buildText();
+  if (!text || text.trim().length === 0) {
+    alert('Preencha pelo menos 1 campo antes de enviar.');
+    return;
+  }
+  openWhatsApp(text);
+});
+
+$('clearBtn').addEventListener('click', (e)=>{
     e.preventDefault();
     localStorage.removeItem(KEY);
     location.reload();
   });
+
+  // Máscaras e normalização
+  const wEl = $('whats');
+  if(wEl){
+    wEl.addEventListener('input', ()=>{
+      const d = digitsOnly(wEl.value);
+      wEl.value = maskBRPhone(d);
+    });
+  }
+  normalizeNumericField('altura', {min: 100, max: 230});
+  normalizeNumericField('peso', {min: 30, max: 250});
+  normalizeNumericField('idade', {min: 10, max: 99});
+
+  // Atualiza semáforo ao iniciar
+  updateSemaforo();
 
   load();
   applyConditional();
