@@ -1,0 +1,635 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MFIT — Check-in 30 Dias (Resposta ao Estímulo)</title>
+  <style>
+    :root{
+      --bg:#0b0b0b;--card:#141414;--card2:#101010;--text:#ffffff;--muted:#b8b8b8;
+      --green:#00CC66;--line:#242424;--danger:#ff4d4d;--warn:#ffd24d;
+    }
+    *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif}
+    body{margin:0;background:var(--bg);color:var(--text);padding:18px}
+    .wrap{max-width:820px;margin:0 auto}
+    .top{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:14px}
+    .brand{display:flex;flex-direction:column;gap:4px}
+    .brand h1{margin:0;font-size:18px;letter-spacing:.4px}
+    .brand p{margin:0;color:var(--muted);font-size:13px}
+    .pill{background:rgba(0,204,102,.12);border:1px solid rgba(0,204,102,.35);color:var(--green);
+      padding:8px 10px;border-radius:12px;font-weight:700;font-size:12px}
+    .progress{height:10px;background:var(--card2);border:1px solid var(--line);border-radius:999px;overflow:hidden}
+    .progress>div{height:100%;width:0;background:var(--green);transition:width .2s ease}
+    .card{background:linear-gradient(180deg,rgba(20,20,20,1),rgba(14,14,14,1));
+      border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0}
+    .card h2{margin:0 0 10px 0;font-size:16px}
+    .sub{color:var(--muted);font-size:13px;margin:0 0 12px 0}
+    .grid{display:grid;grid-template-columns:1fr;gap:12px}
+    @media (min-width:720px){ .grid-2{grid-template-columns:1fr 1fr} }
+    label{display:block;font-size:13px;color:var(--muted);margin:0 0 6px 2px}
+    input,select,textarea{width:100%;background:#0f0f0f;color:var(--text);border:1px solid var(--line);
+      border-radius:14px;padding:12px 12px;font-size:15px;outline:none}
+    textarea{min-height:100px;resize:vertical}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{border:1px solid var(--line);background:#0f0f0f;color:var(--text);
+      padding:12px 14px;border-radius:14px;font-weight:700;cursor:pointer;user-select:none}
+    .btn.primary{background:rgba(0,204,102,.16);border:1px solid rgba(0,204,102,.45);color:#eafff3}
+    .btn.primary:hover{filter:brightness(1.06)}
+    .btn:disabled{opacity:.45;cursor:not-allowed}
+    .nav{display:flex;gap:10px;justify-content:space-between;margin-top:10px}
+    .hint{color:var(--muted);font-size:12px;margin-top:10px;line-height:1.35}
+    .divider{height:1px;background:var(--line);margin:12px 0}
+    .resultBox{border-radius:16px;padding:12px;border:1px solid var(--line);background:#0f0f0f}
+    .ok{border-color:rgba(0,204,102,.45)}
+    .warn{border-color:rgba(255,210,77,.45)}
+    .bad{border-color:rgba(255,77,77,.45)}
+    .small{font-size:12px;color:var(--muted);margin:6px 0 0 0}
+    .kpi{display:grid;grid-template-columns:1fr;gap:10px}
+    @media (min-width:720px){ .kpi{grid-template-columns:1fr 1fr 1fr} }
+    .kpi .box{background:#0f0f0f;border:1px solid var(--line);border-radius:16px;padding:12px}
+    .kpi .box .t{font-size:12px;color:var(--muted);margin:0 0 6px 0}
+    .kpi .box .v{font-size:16px;font-weight:900;margin:0}
+  
+    .logoWrap{
+      width:56px;height:56px;border-radius:14px;
+      border:1px solid var(--line);background:#0f0f0f;
+      display:flex;align-items:center;justify-content:center;overflow:hidden
+    }
+    .logoWrap img{width:100%;height:100%;object-fit:cover}
+    #appLogo{
+      position:fixed;top:12px;left:12px;
+      width:34px;height:34px;border-radius:10px;
+      border:1px solid rgba(0,204,102,.35);
+      background:#0f0f0f;object-fit:contain;
+      padding:4px;z-index:9999
+    }
+
+  </style>
+</head>
+<body>
+<div class="wrap">
+  
+<div class="top">
+  <div class="brand">
+    <h1>🟩 MFIT — Check-in 30 Dias</h1>
+    <p>Pesquisa rápida para medir <b>resposta ao estímulo</b> e sugerir ajustes (volume/densidade/nível).</p>
+  </div>
+  <div class="logoWrap">
+    <img id="brandLogo" src="logo-tiago.png" alt="Logo" style="display:block;" />
+  </div>
+</div>
+
+<!-- Logo do app (opcional): coloque o arquivo 'logo-mfit-app.png' na mesma pasta do site -->
+<img id="appLogo" src="logo-mfit-app.png" alt="MFIT" onerror="this.style.display='none'">
+<div class="progress"><div id="bar"></div></div>
+
+  <form id="form">
+    <section class="card session" data-step="1">
+      <h2>SESSÃO 1/7 — 👤 Identificação</h2>
+      <p class="sub">Só o necessário para cruzar com seu plano atual.</p>
+      <div class="grid grid-2">
+        <div><label>Nome completo</label><input id="nome" placeholder="Ex.: Maria Silva" required /></div>
+        <div><label>WhatsApp (com DDD)</label><input id="whats" inputmode="numeric" placeholder="Ex.: 69999999999" required /></div>
+      </div>
+      <div class="grid grid-2">
+        <div>
+          <label>Qual nível você está HOJE?</label>
+          <select id="nivelAtual" required>
+            <option value="">Selecione</option>
+            <option>Iniciante</option><option>Intermediário</option><option>Avançado</option>
+          </select>
+        </div>
+        <div>
+          <label>Objetivo atual</label>
+          <select id="objetivo" required>
+            <option value="">Selecione</option>
+            <option>Hipertrofia</option>
+            <option>Emagrecimento / Definição</option>
+            <option>Recomposição</option>
+            <option>Força</option>
+            <option>Condicionamento</option>
+            <option value="Outro">Outro (descrever)</option>
+          </select>
+        </div>
+      </div>
+      <div id="objOutroWrap" style="display:none">
+        <label>Descreva seu objetivo</label>
+        <input id="objetivoOutro" placeholder="Ex.: melhorar condicionamento e reduzir cintura" />
+      </div>
+      <div class="nav"><span></span><button type="button" class="btn primary" onclick="next()">Próximo</button></div>
+    </section>
+
+    <section class="card session" data-step="2" style="display:none">
+      <h2>SESSÃO 2/7 — ✅ Aderência (últimos 30 dias)</h2>
+      <p class="sub">Sem isso, não existe ajuste inteligente.</p>
+      <div class="grid grid-2">
+        <div>
+          <label>Treinos planejados por semana</label>
+          <select id="planejado" required>
+            <option value="">Selecione</option>
+            <option value="2">2</option><option value="3">3</option><option value="4">4</option>
+            <option value="5">5</option><option value="6">6</option>
+          </select>
+        </div>
+        <div>
+          <label>Média de treinos feitos por semana</label>
+          <select id="feito" required>
+            <option value="">Selecione</option>
+            <option value="0">0</option><option value="1">1</option><option value="2">2</option>
+            <option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>
+          </select>
+        </div>
+      </div>
+      <div><label>% de treinos completos (0–100)</label><input id="pctCompleto" inputmode="numeric" placeholder="Ex.: 80" required /></div>
+      <div class="grid grid-2">
+        <div>
+          <label>Principal motivo das faltas (se houver)</label>
+          <select id="motivoFalta" required>
+            <option value="">Selecione</option>
+            <option>Não faltei</option><option>Falta de tempo</option><option>Cansaço / sono</option>
+            <option>Dor / desconforto</option><option>Trabalho / rotina</option><option>Viagem</option><option>Outro</option>
+          </select>
+        </div>
+        <div>
+          <label>O treino cabe no seu tempo real?</label>
+          <select id="tempoCabe" required>
+            <option value="">Selecione</option><option>Sim</option><option>Mais ou menos</option><option>Não</option>
+          </select>
+        </div>
+      </div>
+      <div class="nav">
+        <button type="button" class="btn" onclick="prev()">Voltar</button>
+        <button type="button" class="btn primary" onclick="next()">Próximo</button>
+      </div>
+    </section>
+
+    <section class="card session" data-step="3" style="display:none">
+      <h2>SESSÃO 3/7 — 🚦 Semáforo de recuperação</h2>
+      <p class="sub">Preencha de 0 a 10. No final eu marco Verde/Amarelo/Vermelho e ajusto o volume.</p>
+      <div class="grid grid-2">
+        <div><label>Sono (0–10)</label><select id="sono" required><option value="">Selecione</option><option value="0">0</option>
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+<option value="8">8</option>
+<option value="9">9</option>
+<option value="10">10</option></select></div>
+        <div><label>Estresse (0–10)</label><select id="estresse" required><option value="">Selecione</option><option value="0">0</option>
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+<option value="8">8</option>
+<option value="9">9</option>
+<option value="10">10</option></select></div>
+      </div>
+      <div class="grid grid-2">
+        <div><label>DOMS (dor muscular tardia) (0–10)</label><select id="doms" required><option value="">Selecione</option><option value="0">0</option>
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+<option value="8">8</option>
+<option value="9">9</option>
+<option value="10">10</option></select></div>
+        <div><label>Energia no treino (0–10)</label><select id="energia" required><option value="">Selecione</option><option value="0">0</option>
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+<option value="8">8</option>
+<option value="9">9</option>
+<option value="10">10</option></select></div>
+      </div>
+      <div class="divider"></div>
+      <div class="grid grid-2">
+        <div><label>Dor articular média (0–10)</label><select id="dor" required><option value="">Selecione</option><option value="0">0</option>
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+<option value="8">8</option>
+<option value="9">9</option>
+<option value="10">10</option></select></div>
+        <div>
+          <label>Local principal da dor (se houver)</label>
+          <select id="localDor" required>
+            <option value="">Selecione</option>
+            <option>Sem dor</option><option>Ombro</option><option>Cotovelo</option><option>Punho/Mão</option>
+            <option>Coluna cervical</option><option>Coluna torácica</option><option>Lombar</option>
+            <option>Quadril</option><option>Joelho</option><option>Tornozelo/Pé</option><option>Outro</option>
+          </select>
+        </div>
+      </div>
+      <div class="nav">
+        <button type="button" class="btn" onclick="prev()">Voltar</button>
+        <button type="button" class="btn primary" onclick="next()">Próximo</button>
+      </div>
+    </section>
+
+    <section class="card session" data-step="4" style="display:none">
+      <h2>SESSÃO 4/7 — 📈 Performance (marcadores)</h2>
+      <p class="sub">Escolha 3 exercícios-chave do seu plano e marque o que aconteceu.</p>
+
+      <div class="resultBox">
+        <p class="sub" style="margin:0 0 10px 0">Exercício-chave #1</p>
+        <div class="grid grid-2">
+          <div><label>Nome do exercício</label><input id="ex1" placeholder="Ex.: Supino / Leg Press / Remada..." required /></div>
+          <div>
+            <label>Resultado (30 dias)</label>
+            <select id="res1" required>
+              <option value="">Selecione</option><option>Subiu carga</option><option>Subiu reps</option>
+              <option>Igual</option><option>Caiu</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="resultBox">
+        <p class="sub" style="margin:0 0 10px 0">Exercício-chave #2</p>
+        <div class="grid grid-2">
+          <div><label>Nome do exercício</label><input id="ex2" placeholder="Ex.: Cadeira extensora / Puxada..." required /></div>
+          <div>
+            <label>Resultado (30 dias)</label>
+            <select id="res2" required>
+              <option value="">Selecione</option><option>Subiu carga</option><option>Subiu reps</option>
+              <option>Igual</option><option>Caiu</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="resultBox">
+        <p class="sub" style="margin:0 0 10px 0">Exercício-chave #3</p>
+        <div class="grid grid-2">
+          <div><label>Nome do exercício</label><input id="ex3" placeholder="Ex.: Elevação pélvica / Rosca..." required /></div>
+          <div>
+            <label>Resultado (30 dias)</label>
+            <select id="res3" required>
+              <option value="">Selecione</option><option>Subiu carga</option><option>Subiu reps</option>
+              <option>Igual</option><option>Caiu</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="grid grid-2">
+        <div>
+          <label>RIR médio real nas séries principais</label>
+          <select id="rir" required>
+            <option value="">Selecione</option>
+            <option>RIR 1–2 (controlado)</option><option>RIR 3–4</option>
+            <option>RIR 5+ (muito leve)</option><option>Falha quase sempre</option>
+          </select>
+        </div>
+        <div>
+          <label>Execução técnica ficou estável?</label>
+          <select id="tecnica" required>
+            <option value="">Selecione</option><option>Sim</option><option>Às vezes</option><option>Não</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="nav">
+        <button type="button" class="btn" onclick="prev()">Voltar</button>
+        <button type="button" class="btn primary" onclick="next()">Próximo</button>
+      </div>
+    </section>
+
+    <section class="card session" data-step="5" style="display:none">
+      <h2>SESSÃO 5/7 — 🧩 Sinais de risco (SAVRL-MFIT)</h2>
+      <p class="sub">Se teve dor/pinçamento, eu travo o risco e ajusto o plano.</p>
+      <div class="grid grid-2">
+        <div>
+          <label>Teve “pinçamento”, “travamento” ou dor pontuda?</label>
+          <select id="pinca" required><option value="">Selecione</option><option>Não</option><option>Sim</option></select>
+        </div>
+        <div><label>Se sim, em qual exercício?</label><input id="pincaEx" placeholder="Se não teve, deixe vazio" /></div>
+      </div>
+      <div class="grid grid-2">
+        <div>
+          <label>Algum exercício você evita por medo/desconforto?</label>
+          <select id="evita" required><option value="">Selecione</option><option>Não</option><option>Sim</option></select>
+        </div>
+        <div><label>Qual exercício?</label><input id="evitaEx" placeholder="Se não, deixe vazio" /></div>
+      </div>
+      <div><label>Observação rápida (1–2 linhas)</label><textarea id="obsRisco" placeholder="Ex.: joelho incomodou na descida; ombro pinçou no final..."></textarea></div>
+      <div class="nav">
+        <button type="button" class="btn" onclick="prev()">Voltar</button>
+        <button type="button" class="btn primary" onclick="next()">Próximo</button>
+      </div>
+    </section>
+
+    <section class="card session" data-step="6" style="display:none">
+      <h2>SESSÃO 6/7 — 🧠 Percepção e logística</h2>
+      <p class="sub">Mobilidade e alongamento estão liberados para todos (se desejar).</p>
+      <div class="grid grid-2">
+        <div><label>O que mais gostou no treino?</label><input id="gostou" placeholder="Ex.: divisão, exercícios, pump, organização" required /></div>
+        <div><label>O que mais atrapalhou?</label><input id="atrapalhou" placeholder="Ex.: tempo, dor, equipamento, cansaço" required /></div>
+      </div>
+      <div class="grid grid-2">
+        <div><label>Mobilidade no treino</label><select id="mob" required><option value="">Selecione</option><option>Sim</option><option>Não</option></select></div>
+        <div><label>Alongamento no treino</label><select id="along" required><option value="">Selecione</option><option>Sim</option><option>Não</option></select></div>
+      </div>
+      <div>
+        <label>Preferência para o próximo mês</label>
+        <select id="preferencia" required>
+          <option value="">Selecione</option>
+          <option>Manter o plano e progredir</option>
+          <option>Ajustar volume (menos séries)</option>
+          <option>Ajustar densidade (descansos/tempo)</option>
+          <option>Mudar exercícios (equipamento/dor)</option>
+          <option>Reorganizar divisão semanal</option>
+        </select>
+      </div>
+      <div class="nav">
+        <button type="button" class="btn" onclick="prev()">Voltar</button>
+        <button type="button" class="btn primary" onclick="next()">Próximo</button>
+      </div>
+    </section>
+
+    <section class="card session" data-step="7" style="display:none">
+      <h2>SESSÃO 7/7 — 📝 Resultado final + Envio</h2>
+      <p class="sub">Calculo o semáforo e sugiro: manter/ajustar + possível promoção de nível.</p>
+
+      <div class="kpi" style="margin-bottom:10px">
+        <div class="box"><p class="t">Aderência estimada</p><p class="v" id="kpiAder">—</p></div>
+        <div class="box"><p class="t">Semáforo de recuperação</p><p class="v" id="kpiSem">—</p></div>
+        <div class="box"><p class="t">Sugestão de nível</p><p class="v" id="kpiNivel">—</p></div>
+      </div>
+
+      <div id="boxResumo" class="resultBox">
+        <b>Resumo:</b>
+        <div class="small" id="resumoTxt">Preencha tudo nas sessões anteriores e clique “Calcular resultado”.</div>
+      </div>
+
+      <div class="row" style="margin-top:12px">
+        <button type="button" class="btn" onclick="calcular()">Calcular resultado</button>
+        <button type="button" class="btn" onclick="limpar()">Limpar tudo</button>
+      </div>
+
+      <div class="divider"></div>
+
+      <button type="button" id="sendBtn" class="btn primary" style="width:100%;padding:14px 16px;font-size:16px" onclick="enviarWhats()" disabled>
+        💬 Enviar minhas respostas no WhatsApp
+      </button>
+
+      <p class="hint">Dica: se o WhatsApp não abrir, atualize a página e tente de novo. Se persistir, abra no navegador (Chrome) e verifique se o WhatsApp está instalado.</p>
+
+      <div class="nav"><button type="button" class="btn" onclick="prev()">Voltar</button><span></span></div>
+    </section>
+  </form>
+</div>
+
+<script>
+  const sessions = Array.from(document.querySelectorAll(".session"));
+  let step = 1;
+  const bar = document.getElementById("bar");
+
+  function updateBar(){
+    const pct = Math.round((step-1)/(sessions.length-1)*100);
+    bar.style.width = pct + "%";
+  }
+  updateBar();
+
+  function showStep(n){
+    step = n;
+    sessions.forEach(s=>s.style.display = (Number(s.dataset.step)===step) ? "block" : "none");
+    updateBar();
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+  function next(){ if(!validateCurrent()) return; if(step < sessions.length) showStep(step+1); }
+  function prev(){ if(step > 1) showStep(step-1); }
+
+  // Objetivo "Outro"
+  const objetivo = document.getElementById("objetivo");
+  const objOutroWrap = document.getElementById("objOutroWrap");
+  objetivo.addEventListener("change", ()=>{ objOutroWrap.style.display = (objetivo.value==="Outro") ? "block" : "none"; });
+
+  function onlyDigits(s){ return (s||"").replace(/\D/g,""); }
+
+  function validateCurrent(){
+    const sec = sessions.find(s=>Number(s.dataset.step)===step);
+    const req = Array.from(sec.querySelectorAll("[required]"));
+    for(const el of req){
+      if(el.offsetParent===null) continue;
+      if(!el.value || String(el.value).trim()===""){
+        el.focus();
+        alert("Preencha todos os campos obrigatórios desta sessão.");
+        return false;
+      }
+    }
+    if(step===1){
+      const w = onlyDigits(document.getElementById("whats").value);
+      if(w.length<10 || w.length>11){ alert("WhatsApp inválido. Use apenas números com DDD (10–11 dígitos)."); return false; }
+      document.getElementById("whats").value = w;
+    }
+    if(step===2){
+      const p = Number(onlyDigits(document.getElementById("pctCompleto").value));
+      if(isNaN(p) || p<0 || p>100){ alert("Informe % de treinos completos entre 0 e 100."); return false; }
+      document.getElementById("pctCompleto").value = String(p);
+    }
+    return true;
+  }
+
+  function calcSemaforo(){
+    const sono = Number(document.getElementById("sono").value);
+    const estresse = Number(document.getElementById("estresse").value);
+    const doms = Number(document.getElementById("doms").value);
+    const energia = Number(document.getElementById("energia").value);
+    const dor = Number(document.getElementById("dor").value);
+    if(dor>=3 || sono<=4 || estresse>=8 || doms>=8) return "Vermelho";
+    if(sono>=7 && estresse<=5 && doms<=6 && energia>=7 && dor<=2) return "Verde";
+    return "Amarelo";
+  }
+
+  function perfScore(){
+    const res = [document.getElementById("res1").value, document.getElementById("res2").value, document.getElementById("res3").value];
+    let up=0, down=0;
+    res.forEach(r=>{ if(r==="Subiu carga"||r==="Subiu reps") up++; if(r==="Caiu") down++; });
+    return {up, down};
+  }
+
+  function calcAderencia(){
+    const planejado = Number(document.getElementById("planejado").value);
+    const feito = Number(document.getElementById("feito").value);
+    const pctCompleto = Number(document.getElementById("pctCompleto").value);
+    const freq = (planejado>0) ? Math.min(1, feito/planejado) : 0;
+    return Math.round((freq*0.6 + (pctCompleto/100)*0.4)*100);
+  }
+
+  function sugestaoNivel(){
+    const nivelAtual = document.getElementById("nivelAtual").value;
+    const ader = calcAderencia();
+    const sem = calcSemaforo();
+    const dor = Number(document.getElementById("dor").value);
+    const {up, down} = perfScore();
+    const tecnica = document.getElementById("tecnica").value;
+    const rir = document.getElementById("rir").value;
+
+    if(dor>2) return {sug:"Manter (SAVRL ativo)", motivo:"Dor > 2/10 bloqueia promoção."};
+    if(ader<75) return {sug:"Manter", motivo:"Aderência < 75% bloqueia promoção."};
+    if(sem==="Vermelho") return {sug:"Manter (reduzir volume)", motivo:"Semáforo Vermelho bloqueia promoção."};
+
+    if(nivelAtual==="Iniciante"){
+      const okPerf = (up>=1 && down===0) || (up>=2);
+      const okTec = (tecnica==="Sim" || tecnica==="Às vezes");
+      if(okPerf && okTec) return {sug:"Subir para Intermediário", motivo:"Aderência ok + técnica estável + performance reagindo."};
+      return {sug:"Manter (consolidar)", motivo:"Consolidar técnica/consistência antes de subir."};
+    }
+
+    if(nivelAtual==="Intermediário"){
+      const okA = ader>=85;
+      const okS = (sem==="Verde");
+      const okT = (tecnica==="Sim");
+      const okP = (up>=2 && down===0);
+      const okR = (rir==="RIR 1–2 (controlado)" || rir==="RIR 3–4");
+      if(okA && okS && okT && okP && okR) return {sug:"Subir para Avançado", motivo:"Recuperação verde + aderência alta + performance consistente + técnica sólida."};
+      return {sug:"Manter (ajuste fino)", motivo:"Ainda falta 1–2 critérios para avançado. Ajuste e reavalie."};
+    }
+
+    if(nivelAtual==="Avançado"){
+      if(sem==="Verde" && up>=2) return {sug:"Manter Avançado (progredir)", motivo:"Boa resposta ao estímulo."};
+      if(sem==="Amarelo") return {sug:"Avançado (ajustar densidade/volume)", motivo:"Recuperação moderada; ajuste para sustentar progresso."};
+      return {sug:"Avançado (deload/trocas)", motivo:"Sinais pedem redução e/ou trocas de exercícios."};
+    }
+
+    return {sug:"Manter", motivo:"Dados insuficientes."};
+  }
+
+  function calcular(){
+    for(let i=1;i<=sessions.length;i++){ const saved=step; step=i; if(!validateCurrent()){ showStep(i); step=saved; return; } }
+    const ader = calcAderencia();
+    const sem = calcSemaforo();
+    const niv = sugestaoNivel();
+    const {up, down} = perfScore();
+    document.getElementById("kpiAder").textContent = ader + "%";
+    document.getElementById("kpiSem").textContent = sem;
+    document.getElementById("kpiNivel").textContent = niv.sug;
+
+    const box = document.getElementById("boxResumo");
+    box.classList.remove("ok","warn","bad");
+    if(sem==="Verde") box.classList.add("ok");
+    if(sem==="Amarelo") box.classList.add("warn");
+    if(sem==="Vermelho") box.classList.add("bad");
+
+    const mob = document.getElementById("mob").value;
+    const along = document.getElementById("along").value;
+    const pref = document.getElementById("preferencia").value;
+
+    document.getElementById("resumoTxt").innerHTML =
+      `• Aderência estimada: <b>${ader}%</b><br>` +
+      `• Semáforo: <b>${sem}</b><br>` +
+      `• Marcadores: <b>${up}</b> melhoraram, <b>${down}</b> caíram<br>` +
+      `• Mobilidade: <b>${mob}</b> • Alongamento: <b>${along}</b><br>` +
+      `• Preferência: <b>${pref}</b><br>` +
+      `• Sugestão: <b>${niv.sug}</b><br>` +
+      `• Motivo: <span style="color:var(--muted)">${niv.motivo}</span>`;
+
+    document.getElementById("sendBtn").disabled = false;
+    showStep(7);
+  }
+
+  function buildMessage(){
+    const nome = document.getElementById("nome").value.trim();
+    const nivelAtual = document.getElementById("nivelAtual").value;
+    let obj = document.getElementById("objetivo").value;
+    if(obj==="Outro"){ const o = document.getElementById("objetivoOutro").value.trim(); if(o) obj = "Outro: " + o; }
+
+    const planejado = document.getElementById("planejado").value;
+    const feito = document.getElementById("feito").value;
+    const pctCompleto = document.getElementById("pctCompleto").value;
+    const motivoFalta = document.getElementById("motivoFalta").value;
+    const tempoCabe = document.getElementById("tempoCabe").value;
+
+    const sono = document.getElementById("sono").value;
+    const estresse = document.getElementById("estresse").value;
+    const doms = document.getElementById("doms").value;
+    const energia = document.getElementById("energia").value;
+    const dor = document.getElementById("dor").value;
+    const localDor = document.getElementById("localDor").value;
+
+    const ex1 = document.getElementById("ex1").value.trim();
+    const res1 = document.getElementById("res1").value;
+    const ex2 = document.getElementById("ex2").value.trim();
+    const res2 = document.getElementById("res2").value;
+    const ex3 = document.getElementById("ex3").value.trim();
+    const res3 = document.getElementById("res3").value;
+
+    const rir = document.getElementById("rir").value;
+    const tecnica = document.getElementById("tecnica").value;
+
+    const pinca = document.getElementById("pinca").value;
+    const pincaEx = document.getElementById("pincaEx").value.trim();
+    const evita = document.getElementById("evita").value;
+    const evitaEx = document.getElementById("evitaEx").value.trim();
+    const obsRisco = document.getElementById("obsRisco").value.trim();
+
+    const gostou = document.getElementById("gostou").value.trim();
+    const atrapalhou = document.getElementById("atrapalhou").value.trim();
+    const mob = document.getElementById("mob").value;
+    const along = document.getElementById("along").value;
+    const preferencia = document.getElementById("preferencia").value;
+
+    const ader = calcAderencia();
+    const sem = calcSemaforo();
+    const niv = sugestaoNivel();
+
+    return `CHECK-IN 30 DIAS — MFIT (Resposta ao Estímulo)\n\n` +
+`1) Identificação\nNome: ${nome}\nNível atual: ${nivelAtual}\nObjetivo: ${obj}\n\n` +
+`2) Aderência (30 dias)\nPlanejado/sem: ${planejado}\nFeito/sem (média): ${feito}\n% completos: ${pctCompleto}%\nMotivo faltas: ${motivoFalta}\nTempo cabe: ${tempoCabe}\n\n` +
+`3) Semáforo de recuperação\nSono: ${sono}/10\nEstresse: ${estresse}/10\nDOMS: ${doms}/10\nEnergia: ${energia}/10\nDor articular: ${dor}/10\nLocal: ${localDor}\n\n` +
+`4) Performance (3 marcadores)\n1) ${ex1} — ${res1}\n2) ${ex2} — ${res2}\n3) ${ex3} — ${res3}\nRIR médio: ${rir}\nTécnica estável: ${tecnica}\n\n` +
+`5) Risco (SAVRL)\nPinçamento/travamento: ${pinca}${pincaEx ? " | Ex.: "+pincaEx : ""}\nEvita exercício: ${evita}${evitaEx ? " | Ex.: "+evitaEx : ""}\nObs: ${obsRisco || "—"}\n\n` +
+`6) Percepção\nGostou: ${gostou}\nAtrapalhou: ${atrapalhou}\nMobilidade: ${mob}\nAlongamento: ${along}\nPreferência próximo mês: ${preferencia}\n\n` +
+`7) Resultado (Lotus)\nAderência estimada: ${ader}%\nSemáforo: ${sem}\nSugestão: ${niv.sug}\nMotivo: ${niv.motivo}\n`;
+  }
+
+  function enviarWhats(){
+    const w = onlyDigits(document.getElementById("whats").value);
+    const phone55 = "55" + w;
+    const text = buildMessage();
+    const encoded = encodeURIComponent(text);
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const url = isMobile ? `https://wa.me/${phone55}?text=${encoded}`
+                         : `https://api.whatsapp.com/send?phone=${phone55}&text=${encoded}`;
+    const win = window.open(url, "_blank");
+    if(!win) window.location.href = url;
+  }
+
+  function limpar(){
+    if(!confirm("Limpar tudo?")) return;
+    document.getElementById("form").reset();
+    objOutroWrap.style.display = "none";
+    document.getElementById("sendBtn").disabled = true;
+    document.getElementById("kpiAder").textContent = "—";
+    document.getElementById("kpiSem").textContent = "—";
+    document.getElementById("kpiNivel").textContent = "—";
+    document.getElementById("resumoTxt").textContent = "Preencha tudo nas sessões anteriores e clique “Calcular resultado”.";
+    showStep(1);
+  }
+</script>
+</body>
+</html>
