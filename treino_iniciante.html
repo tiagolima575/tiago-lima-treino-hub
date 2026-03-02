@@ -1,1138 +1,714 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Treino INICIANTE — Avaliação Inicial</title>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Avaliação Inicial - Treino Iniciante</title>
 <style>
-  :root{--bg:#0b0b0b;--card:#121212;--card2:#0f0f0f;--text:#f2f2f2;--muted:#b9b9b9;--green:#00CC66;--border:#262626;--shadow:0 10px 25px rgba(0,0,0,.35);}
-  *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
-  body{margin:0;background:linear-gradient(180deg,#070707 0%,#0b0b0b 60%,#070707 100%);color:var(--text);}
-  .wrap{max-width:860px;margin:0 auto;padding:18px 14px 42px;}
-  .top{display:flex;gap:12px;align-items:center;justify-content:space-between;}
-  h1{margin:8px 0 6px;font-size:24px;letter-spacing:.2px;}
-  .sub{color:var(--muted);font-size:13px;margin:0 0 12px;}
-  .logoWrap{display:flex;align-items:center;justify-content:flex-end;min-width:120px;}
-  .logoWrap img{width:56px;height:56px;object-fit:cover;border-radius:999px;border:1px solid rgba(255,255,255,.10);background:#000;}
-  .badge{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--border);border-radius:14px;background:rgba(0,204,102,.08);color:var(--green);font-weight:700;}
-  .card{background:rgba(18,18,18,.92);border:1px solid var(--border);border-radius:18px;padding:14px 14px 12px;margin:12px 0;box-shadow:var(--shadow);}
-  .title{display:flex;align-items:center;gap:10px;font-weight:800;font-size:16px;margin-bottom:10px;}
-  .title span{color:var(--green);}
-  label{display:block;font-weight:650;margin:10px 0 6px;}
-  .hint{display:block;color:var(--muted);font-size:12px;margin-top:-4px;}
-  input[type=text], input[type=number], textarea, select{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:14px;color:var(--text);padding:12px 12px;font-size:15px;outline:none;}
-  textarea{min-height:88px;resize:vertical;}
-  input:focus, textarea:focus, select:focus{border-color:rgba(0,204,102,.75);box-shadow:0 0 0 3px rgba(0,204,102,.14);}
-  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-  @media (max-width:700px){.row{grid-template-columns:1fr;}}
-  .pill{display:flex;gap:10px;flex-wrap:wrap;}
-  .opt{display:flex;align-items:center;gap:10px;padding:12px 12px;border:1px solid var(--border);border-radius:16px;background:#0f0f0f;}
-  .opt input{width:18px;height:18px;}
-  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
-  button{border:0;border-radius:14px;padding:13px 14px;font-weight:800;cursor:pointer;}
-  .btn{background:rgba(0,204,102,.18);color:var(--text);border:1px solid rgba(0,204,102,.55);}
-  .btn:hover{background:rgba(0,204,102,.25);}
-  .btn2{background:#171717;color:var(--text);border:1px solid var(--border);}
-  .btn2:hover{border-color:rgba(0,204,102,.35);}
-  .sep{height:1px;background:rgba(255,255,255,.06);margin:12px 0;}
-  .foot{margin-top:10px;color:var(--muted);font-size:12px;}
-  .hidden{display:none;}
-</style>
+    :root{
+      --bg:#050505;--card:#0d0d0d;--card2:#121212;--text:#fff;--muted:#b8b8b8;
+      --line:#242424;--green:#00cc66;--danger:#ff5e5e;--r:16px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#040404 0%,#0a0a0a 100%);color:var(--text);font-family:Arial,Helvetica,sans-serif;line-height:1.45}
+    .wrap{max-width:980px;margin:0 auto;padding:24px 16px 56px}
+    .hero{
+      background:linear-gradient(135deg,rgba(0,204,102,.18),rgba(0,204,102,.04));
+      border:1px solid rgba(0,204,102,.28);border-radius:22px;padding:24px;margin-bottom:20px;
+      box-shadow:0 10px 30px rgba(0,0,0,.35)
+    }
+    .brand{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+    .logo{max-height:54px;width:auto;object-fit:contain}
+    .brand-text{display:flex;flex-direction:column;line-height:1.1}
+    .brand-name{font-size:18px;font-weight:900;color:var(--green);letter-spacing:.2px}
+    .hero h1{margin:0 0 8px;font-size:clamp(1.6rem,3vw,2.4rem);color:var(--green);letter-spacing:.02em}
+    .hero p{margin:6px 0;color:var(--muted)}
+    form{display:grid;gap:18px}
+    .section{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:0 6px 18px rgba(0,0,0,.22)}
+    .section h2{margin:0 0 8px;color:var(--green);font-size:1.2rem}
+    .section .desc{margin:0 0 18px;color:var(--muted);font-size:.95rem}
+    .grid{display:grid;gap:14px;grid-template-columns:repeat(12,1fr)}
+    .field{grid-column:span 12}
+    .col-6{grid-column:span 6}.col-4{grid-column:span 4}.col-3{grid-column:span 3}.col-8{grid-column:span 8}
+    @media(max-width:760px){.col-6,.col-4,.col-3,.col-8{grid-column:span 12}.hero,.section{padding:16px}}
+    label.label{display:block;margin-bottom:8px;font-weight:700}
+    .helper{display:block;margin-top:6px;color:var(--muted);font-size:.88rem}
+    input[type="text"],input[type="number"],input[type="tel"],textarea,select{
+      width:100%;padding:12px 14px;border-radius:12px;border:1px solid #313131;background:#101010;color:var(--text);outline:none;font-size:.98rem
+    }
+    input:focus,textarea:focus,select:focus{border-color:rgba(0,204,102,.9);box-shadow:0 0 0 3px rgba(0,204,102,.12)}
+    textarea{min-height:100px;resize:vertical}
+    .options{display:grid;gap:10px}
+    .options.inline-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    @media(max-width:760px){.options.inline-2{grid-template-columns:1fr}}
+    .option{display:flex;align-items:flex-start;gap:10px;padding:12px;border:1px solid #2a2a2a;border-radius:12px;background:#101010}
+    .option input{margin-top:2px;accent-color:var(--green)}
+    .option span{flex:1}
+    .hidden{display:none!important}
+    .mt-8{margin-top:8px}
+    .subhead{
+      margin:18px 0 10px;padding:10px 12px;border-left:4px solid var(--green);
+      background:var(--card2);border-radius:10px;font-weight:800
+    }
+    .danger-note{
+      margin-top:10px;padding:12px;border-radius:12px;border:1px solid rgba(255,94,94,.28);
+      background:rgba(255,94,94,.06);color:#ffd2d2;font-size:.92rem
+    }
+    .submit-bar{
+      display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;
+      padding:18px 20px;border-radius:var(--r);background:var(--card);border:1px solid var(--line)
+    }
+    .submit-left{display:flex;flex-direction:column;gap:6px}
+    .submit-right{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .consent{display:flex;gap:10px;align-items:flex-start;margin-top:10px;color:var(--muted);font-size:.92rem}
+    .consent input{margin-top:3px;accent-color:var(--green)}
+    .btn{border:0;border-radius:12px;padding:12px 18px;font-weight:800;cursor:pointer}
+    .btn-primary{background:var(--green);color:#04150d}
+    .btn-secondary{background:#151515;color:var(--text);border:1px solid #2d2d2d}
+  </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="top">
-    <div>
-      <h1>Treino INICIANTE — Avaliação Inicial</h1>
-      <p class="sub">Preencha e envie no WhatsApp. Cada resposta sai em uma linha, organizado por sessão.</p>
-    </div>
-    <div class="logoWrap"><img id="brandLogo" src="logo-tiago.png" alt="Logo" style="display:block;" /></div>
-  </div>
-
-  <section class="card" data-sess="1">
-    <div class="title"><span>SESSÃO 1/11</span> — 👤 Dados Pessoais</div>
-    <div class="row">
-      <div>
-        <label>Nome completo</label>
-        <input id="nome" type="text" placeholder="Ex.: Maria da Silva" />
-      </div>
-      <div>
-        <label>Idade</label>
-        <input id="idade" type="number" inputmode="numeric" placeholder="Ex.: 28" />
-      </div>
-    </div>
-
-    <div class="row">
-      <div>
-        <label>Sexo</label>
-        <select id="sexo">
-          <option value="Masculino">Masculino</option>
-          <option value="Feminino">Feminino</option>
-          <option value="Prefiro não informar">Prefiro não informar</option>
-        </select>
-      </div>
-      <div>
-        <label>Horário preferido de treino</label>
-        <select id="horario">
-          <option value="Manhã">Manhã</option>
-          <option value="Tarde">Tarde</option>
-          <option value="Noite">Noite</option>
-          <option value="Varia">Varia</option>
-        </select>
-      </div>
-    </div>
-
-    <label>Profissão/rotina (nível de atividade no dia)</label>
-    <span class="hint">Ex.: trabalho sentado, em pé, físico pesado, turnos</span>
-    <input id="rotina" type="text" placeholder="Descreva em 1 linha" />
-    <label>Atividade no trabalho (marque o mais próximo)</label>
-    <select id="trabalhoAtiv">
-      <option value="Não informado">Não informado</option>
-      <option value="Sentado (sedentário)">Sentado (sedentário)</option>
-      <option value="Em pé (moderado)">Em pé (moderado)</option>
-      <option value="Carrega peso / físico pesado">Carrega peso / físico pesado</option>
-      <option value="Varia muito">Varia muito</option>
-    </select>
-
-    <div class="row">
-      <div>
-        <label>Altura (cm)</label>
-        <input id="altura" type="number" inputmode="numeric" placeholder="Ex.: 170" />
-      </div>
-      <div>
-        <label>Peso (kg)</label>
-        <input id="peso" type="number" inputmode="decimal" placeholder="Ex.: 72" />
-      </div>
-    </div>
-    <label>WhatsApp</label>
-    <input id="whats" type="tel" inputmode="tel" autocomplete="tel" placeholder="Ex.: (69) 99999-9999" maxlength="15" />
-  </section>
-
-  <section class="card" data-sess="2">
-    <div class="title"><span>SESSÃO 2/11</span> — 🎯 Objetivo</div>
-    <label>Qual é o seu principal objetivo?</label>
-    <select id="objetivo">
-      <option value="Perder peso">Perder peso</option>
-      <option value="Hipertrofia">Hipertrofia</option>
-      <option value="Perder peso e hipertrofia">Perder peso e hipertrofia</option>
-      <option value="Força">Força</option>
-      <option value="Condicionamento">Condicionamento</option>
-      <option value="Outro">Outro</option>
-    </select>
-    <div id="objetivoOutroWrap" class="hidden">
-      <label>Se marcou “Outro”, especifique</label>
-      <input id="objetivoOutro" type="text" placeholder="Ex.: melhorar postura, correr 5km, etc." />
-    </div>
-
-    <div class="row">
-      <div>
-        <label>Objetivo secundário (opcional)</label>
-        <input id="objetivo2" type="text" placeholder="Ex.: melhorar postura, ganhar força, definir abdômen" />
-      </div>
-      <div>
-        <label>Prazo de foco (semanas)</label>
-        <select id="prazo">
-          <option value="4 semanas">4 semanas</option>
-          <option value="8 semanas">8 semanas</option>
-          <option value="12 semanas">12 semanas</option>
-          <option value="16 semanas">16 semanas</option>
-        </select>
-      </div>
-    </div>
-
-    <label>Como você vai medir resultado? (marque o que faz sentido)</label>
-    <span class="hint">Isso guia a progressão e evita “treino no escuro”</span>
-    <div class="pill" id="metricas">
-      <label class="opt"><input type="checkbox" name="metrica" value="Peso (balança)"> Peso (balança)</label>
-      <label class="opt"><input type="checkbox" name="metrica" value="Medidas (cintura/quadril/etc.)"> Medidas (cintura/quadril/etc.)</label>
-      <label class="opt"><input type="checkbox" name="metrica" value="Performance (carga/reps/tempo)"> Performance (carga/reps/tempo)</label>
-      <label class="opt"><input type="checkbox" name="metrica" value="Estética (definição/volume)"> Estética (definição/volume)</label>
-    </div>
-  </section>
-
-  <section class="card" data-sess="3">
-    <div class="title"><span>SESSÃO 3/11</span> — 📅 Experiência e Frequência</div>
-    <label>Qual é o seu nível de experiência com treino?</label>
-    <select id="experiencia">
-      <option value="Iniciante (0–2 meses)">Iniciante (0–2 meses)</option>
-      <option value="Intermediário (2–6 meses)">Intermediário (2–6 meses)</option>
-      <option value="Avançado (mais de 6 meses)">Avançado (mais de 6 meses)</option>
-    </select>
-
-    <div class="row">
-      <div>
-        <label>Já treinou antes (no passado)?</label>
-        <select id="treinouAntes">
-          <option value="Não">Não</option>
-          <option value="Sim, já treinei e parei">Sim, já treinei e parei</option>
-          <option value="Sim, treino há bastante tempo (com pausas)">Sim, treino há bastante tempo (com pausas)</option>
-        </select>
-      </div>
-      <div>
-        <label>Últimos 30 dias: consistência</label>
-        <select id="consistencia30">
-          <option value="Consistente">Consistente</option>
-          <option value="Mais ou menos">Mais ou menos</option>
-          <option value="Irregular">Irregular</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="row">
-      <div>
-        <label>Você treina perto da falha?</label>
-        <select id="falha">
-          <option value="Não sei">Não sei</option>
-          <option value="Sim">Sim</option>
-          <option value="Não">Não</option>
-        </select>
-      </div>
-      <div>
-        <label>Nível de técnica (autoavaliação)</label>
-        <select id="tecnica">
-          <option value="Baixa">Baixa</option>
-          <option value="Média">Média</option>
-          <option value="Alta">Alta</option>
-          <option value="Não sei">Não sei</option>
-        </select>
-      </div>
-    </div>
-
-    <label>Preferência de estilo</label>
-    <select id="estilo">
-      <option value="Equilibrado">Equilibrado</option>
-      <option value="Mais pesado (força)">Mais pesado (força)</option>
-      <option value="Mais volume (hipertrofia)">Mais volume (hipertrofia)</option>
-      <option value="Mais metabólico (densidade/cardio)">Mais metabólico (densidade/cardio)</option>
-    </select>
-
-    <div class="row">
-      <div>
-        <label>Quantos dias por semana você pode treinar?</label>
-        <select id="dias">
-          <option value="2 dias/semana">2 dias/semana</option>
-          <option value="3 dias/semana">3 dias/semana</option>
-          <option value="4 dias/semana">4 dias/semana</option>
-          <option value="5 dias/semana">5 dias/semana</option>
-          <option value="6 dias/semana">6 dias/semana</option>
-        </select>
-      </div>
-      <div>
-        <label>Quanto tempo por treino? (min)</label>
-        <input id="tempo" type="number" inputmode="numeric" placeholder="Ex.: 40" min="10" max="240" />
-      </div>
-    </div>
-
-    <label>Qual divisão você prefere?</label>
-    <select id="divisao">
-      <option value="Sem preferência">Sem preferência</option>
-      <option value="Corpo todo">Corpo todo</option>
-      <option value="Superior/Inferior">Superior/Inferior</option>
-      <option value="Push/Pull/Legs">Push/Pull/Legs</option>
-      <option value="ABC">ABC</option>
-      <option value="AB">AB</option>
-    </select>
-
-    <label>Quer incluir cardio no plano?</label>
-    <select id="cardio">
-      <option value="Não">Não</option>
-      <option value="Sim">Sim</option>
-    </select>
-
-    <div id="cardioWrap" class="hidden">
-      <div class="row">
-        <div>
-          <label>Se sim, quanto tempo de cardio por sessão?</label>
-          <input id="cardioTempo" type="text" placeholder="Ex.: 10–20 min" />
-        </div>
-        <div>
-          <label>Preferência de cardio</label>
-          <select id="cardioTipo">
-            <option value="Esteira">Esteira</option>
-            <option value="Bike">Bike</option>
-            <option value="Elíptico">Elíptico</option>
-            <option value="Escada">Escada</option>
-            <option value="Outro">Outro</option>
-          </select>
-        </div>
-      </div>
-      <div id="cardioOutroWrap" class="hidden">
-        <label>Se marcou “Outro”, qual?</label>
-        <input id="cardioOutro" type="text" placeholder="Ex.: corda, corrida rua, etc." />
-      </div>
-    </div>
-
-    <label>Passos por dia (média)</label>
-    <select id="passos">
-      <option value="Não sei">Não sei</option>
-      <option value="< 5 mil">&lt; 5 mil</option>
-      <option value="5–8 mil">5–8 mil</option>
-      <option value="8–12 mil">8–12 mil</option>
-      <option value="12+ mil">12+ mil</option>
-    </select>
-
-    <label>Ênfase secundária (opcional)</label>
-    <span class="hint">Ex.: Glúteos, Dorsal, Peitoral, Quadríceps, Isquiotibiais</span>
-    <input id="enfase" type="text" placeholder="Ex.: Glúteos e isquiotibiais" />
-    <div class="row">
-      <div>
-        <label>Qual sua chance real de cumprir essa frequência? (0–10)</label>
-        <select id="compliance">
-          <option value="Não informado">Não informado</option>
-          <option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
-          <option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option>
-        </select>
-      </div>
-      <div>
-        <label>Maior barreira hoje</label>
-        <select id="barreira">
-          <option value="Não informado">Não informado</option>
-          <option value="Tempo">Tempo</option>
-          <option value="Cansaço">Cansaço</option>
-          <option value="Dor">Dor</option>
-          <option value="Motivação">Motivação</option>
-          <option value="Alimentação">Alimentação</option>
-          <option value="Rotina/Trabalho">Rotina/Trabalho</option>
-        </select>
-      </div>
-    </div>
-
-  
-    <div class="hr"></div>
-    <label>Histórico de treino (real)</label>
-    <select id="histTreino">
-      <option value="">Selecione</option>
-      <option value="Nunca treinei">Nunca treinei</option>
-      <option value="Voltei agora (retorno)">Voltei agora (retorno)</option>
-      <option value="Já treinei antes, mas parei">Já treinei antes, mas parei</option>
-      <option value="Treino há pouco tempo (até 2 meses)">Treino há pouco tempo (até 2 meses)</option>
-    </select>
-
-    <label style="margin-top:12px;">Movimentos com desconforto (marque se existir)</label>
-    <div class="grid">
-      <label class="opt"><input type="checkbox" name="desconfMov" value="Agachar/Levantar"> Agachar/Levantar</label>
-      <label class="opt"><input type="checkbox" name="desconfMov" value="Puxar/Remar"> Puxar/Remar</label>
-      <label class="opt"><input type="checkbox" name="desconfMov" value="Empurrar/Supinar"> Empurrar/Supinar</label>
-      <label class="opt"><input type="checkbox" name="desconfMov" value="Elevar braços acima da cabeça"> Elevar braços acima da cabeça</label>
-      <label class="opt"><input type="checkbox" name="desconfMov" value="Dobrar quadril (pegar algo no chão)"> Dobrar quadril (pegar algo no chão)</label>
-      <label class="opt"><input type="checkbox" name="desconfMov" value="Correr/Saltar"> Correr/Saltar</label>
-    </div>
-
-    <label style="margin-top:12px;">Nível de segurança com carga</label>
-    <select id="segCarga">
-      <option value="">Selecione</option>
-      <option value="Tenho insegurança/medo de carga">Tenho insegurança/medo de carga</option>
-      <option value="Consigo treinar com carga leve sem medo">Consigo treinar com carga leve sem medo</option>
-      <option value="Me sinto seguro(a) com cargas moderadas">Me sinto seguro(a) com cargas moderadas</option>
-    </select>
-
-    <label style="margin-top:12px;">Condição atual</label>
-    <select id="condAtual">
-      <option value="">Selecione</option>
-      <option value="Sedentário(a)">Sedentário(a)</option>
-      <option value="Ativo(a) (caminho/rotina movimentada)">Ativo(a) (caminho/rotina movimentada)</option>
-      <option value="Trabalho físico (cansaço alto)">Trabalho físico (cansaço alto)</option>
-    </select>
-
-  </section>
-
-  <section class="card" data-sess="4">
-    <div class="title"><span>SESSÃO 4/11</span> — 🏋️ Local de Treino e Equipamentos</div>
-
-    <label>Onde você costuma treinar?</label>
-    <select id="local">
-      <option value="Academia">Academia</option>
-      <option value="Casa">Casa</option>
-      <option value="Condomínio">Condomínio</option>
-      <option value="Ao ar livre">Ao ar livre</option>
-    </select>
-
-    <label>Preferência de equipamentos</label>
-    <select id="prefEquip">
-      <option value="Máquinas">Máquinas</option>
-      <option value="Pesos livres">Pesos livres</option>
-      <option value="Ambos equilibrado">Ambos equilibrado</option>
-      <option value="Sem preferência">Sem preferência</option>
-    </select>
-
-    <div class="row">
-      <div>
-        <label>Exercícios que você GOSTA</label>
-        <input id="gosta" type="text" placeholder="Ex.: puxadas, remadas, leg press..." />
-      </div>
-      <div>
-        <label>Exercícios que você ODEIA</label>
-        <input id="odeia" type="text" placeholder="Ex.: corrida, agachamento livre..." />
-      </div>
-    </div>
-
-    <label>Exercícios que você NÃO PODE fazer por dor/limitação</label>
-    <span class="hint">Se não tiver, deixe em branco</span>
-    <input id="naoPode" type="text" placeholder="Ex.: desenvolvimento acima da cabeça, corrida..." />
-
-    <div class="row">
-      <div>
-        <label>O que você NÃO tem acesso (equipamentos que não existem aí)?</label>
-        <input id="naoTem" type="text" placeholder="Ex.: não tem cabo, não tem hack, não tem barra..." />
-      </div>
-      <div>
-        <label>Academia costuma estar lotada no seu horário?</label>
-        <select id="lotacao">
-          <option value="Baixa">Baixa</option>
-          <option value="Média">Média</option>
-          <option value="Alta">Alta</option>
-          <option value="Varia">Varia</option>
-        </select>
-      </div>
-    </div>
-
-    <label>Quando a academia está lotada, você prefere treinar mais em:</label>
-    <select id="lotacaoPref">
-      <option value="Não informado">Não informado</option>
-      <option value="Máquinas">Máquinas</option>
-      <option value="Halteres / pesos livres">Halteres / pesos livres</option>
-      <option value="Cabos / polias">Cabos / polias</option>
-      <option value="Tanto faz">Tanto faz</option>
-    </select>
-
-    <div class="sep"></div>
-
-    <label>⚠️ Tem algum exercício que você NÃO quer fazer?</label>
-    <span class="hint">Opcional — ex.: agachamento livre, corrida, etc.</span>
-    <textarea id="naoQuer" placeholder="Descreva aqui..."></textarea>
-
-    <label>Equipamentos disponíveis (marque o que você tem acesso)</label>
-    <span class="hint">Pode marcar vários</span>
-    <div class="pill" id="equipList">
-      <label class="opt"><input type="checkbox" name="equip" value="Halteres"> Halteres</label>
-      <label class="opt"><input type="checkbox" name="equip" value="Barras / Anilhas"> Barras / Anilhas</label>
-      <label class="opt"><input type="checkbox" name="equip" value="Banco regulável"> Banco regulável</label>
-      <label class="opt"><input type="checkbox" name="equip" value="Smith"> Smith</label>
-      <label class="opt"><input type="checkbox" name="equip" value="Cabos / Polias"> Cabos / Polias</label>
-      <label class="opt"><input type="checkbox" name="equip" value="Leg Press"> Leg Press</label>
-      <label class="opt"><input type="checkbox" name="equip" value="Máquinas em geral"> Máquinas em geral</label>
-      <label class="opt"><input type="checkbox" name="equip" value="Elásticos"> Elásticos</label>
-    </div>
-  </section>
-
-  <section class="card" data-sess="5">
-    <div class="title"><span>SESSÃO 5/11</span> — ❤️ Histórico de Saúde</div>
-    <div class="row">
-      <div>
-        <label>Você possui problemas cardíacos?</label>
-        <select id="card"><option value="Não">Não</option><option value="Sim">Sim</option></select>
-      </div>
-      <div>
-        <label>Você possui problemas respiratórios (ex.: asma, bronquite)?</label>
-        <select id="resp"><option value="Não">Não</option><option value="Sim">Sim</option></select>
-      </div>
-    </div>
-    <label>Problemas de pressão arterial?</label>
-    <select id="pressao"><option value="Normal">Normal</option><option value="Alta">Alta</option><option value="Baixa">Baixa</option><option value="Não sei">Não sei</option></select>
-
-    <label>Medicação contínua?</label>
-    <input id="med" type="text" placeholder="Se sim, qual? (ou 'Não')" />
-
-    <label>Cirurgias/doenças crônicas relevantes?</label>
-    <input id="cir" type="text" placeholder="Se sim, qual? (ou 'Não')" />
-
-    <label>Você já realizou parto cesariano (cesárea)?</label>
-    <select id="ces"><option value="Não se aplica">Não se aplica</option><option value="Não">Não</option><option value="Sim">Sim</option></select>
-  </section>
-
-  <section class="card" data-sess="6">
-    <div class="title"><span>SESSÃO 6/11</span> — 🧬 Tipo de Metabolismo</div>
-    <label>Você ganha peso com facilidade ou dificuldade?</label>
-    <select id="meta1"><option value="Com facilidade">Com facilidade</option><option value="Com dificuldade">Com dificuldade</option><option value="Não sei">Não sei</option></select>
-
-    <label>Seu corpo tende a ser mais magro, médio ou largo?</label>
-    <select id="meta2"><option value="Magro">Magro</option><option value="Médio">Médio</option><option value="Largo">Largo</option><option value="Não sei">Não sei</option></select>
-
-    <label>Tem facilidade para perder peso?</label>
-    <select id="meta3"><option value="Sim">Sim</option><option value="Não">Não</option><option value="Não sei">Não sei</option></select>
-
-    <label>Como é seu apetite?</label>
-    <select id="meta4"><option value="Baixo">Baixo</option><option value="Médio">Médio</option><option value="Alto">Alto</option><option value="Varia">Varia</option></select>
-
-    <label>Como é sua energia ao longo do dia?</label>
-    <select id="meta5"><option value="Baixa">Baixa</option><option value="Regular">Regular</option><option value="Alta">Alta</option><option value="Varia">Varia</option></select>
-  </section>
-
-  <section class="card" data-sess="7">
-    <div class="title"><span>SESSÃO 7/11</span> — 🧘 Mobilidade e Alongamento</div>
-    <div class="row">
-      <div>
-        <label>Deseja incluir mobilidade no seu treino?</label>
-        <select id="mob"><option value="Não">Não</option><option value="Sim">Sim</option></select>
-      </div>
-      <div>
-        <label>Deseja incluir alongamento no seu treino?</label>
-        <select id="along"><option value="Não">Não</option><option value="Sim">Sim</option></select>
-      </div>
-    </div>
-
-    <label>Por quê você quer mobilidade/alongamento?</label>
-    <select id="mobMotivo">
-      <option value="Não informado">Não informado</option>
-      <option value="Dor/rigidez">Dor/rigidez</option>
-      <option value="Performance">Performance</option>
-      <option value="Estética/postura">Estética/postura</option>
-      <option value="Recuperação">Recuperação</option>
-    </select>
-  </section>
-
-  <section class="card" data-sess="8">
-    <div class="title"><span>SESSÃO 8/11</span> — 💪 Foco Muscular (escolha única)</div>
-    <label>Selecione apenas uma opção</label>
-    <div class="pill">
-      <label class="opt"><input type="radio" name="foco" value="Dorsal"> Dorsal</label>
-      <label class="opt"><input type="radio" name="foco" value="Peitoral"> Peitoral</label>
-      <label class="opt"><input type="radio" name="foco" value="Ombro"> Ombro</label>
-      <label class="opt"><input type="radio" name="foco" value="Braço"> Braço</label>
-      <label class="opt"><input type="radio" name="foco" value="Abdômen"> Abdômen</label>
-      <label class="opt"><input type="radio" name="foco" value="Glúteos"> Glúteos</label>
-      <label class="opt"><input type="radio" name="foco" value="Perna completa"> Perna completa</label>
-      <label class="opt"><input type="radio" name="foco" value="Treino equilibrado"> Treino equilibrado</label>
-    </div>
-    <label>Se o músculo alvo não estiver aqui, descreva</label>
-    <span class="hint">Resposta curta — ex.: panturrilhas, posterior, glúteo médio, trapézio</span>
-    <input id="focoOutro" type="text" placeholder="Descreva aqui..." />
-  </section>
-
-  <section class="card" data-sess="9">
-    <div class="title"><span>SESSÃO 9/11</span> — 🦵 Condições Físicas e Limitações</div>
-    <label>Você possui alguma dor, lesão ou limitação física?</label>
-    <select id="dor"><option value="Não">Não</option><option value="Sim">Sim</option></select>
-
-    <div id="dorWrap" class="hidden">
-      <label>Onde é a limitação ou dor?</label>
-      <select id="dorLocal">
-        <option value="Joelho">Joelho</option>
-        <option value="Quadril">Quadril</option>
-        <option value="Tornozelo">Tornozelo</option>
-        <option value="Lombar">Lombar</option>
-        <option value="Cervical">Cervical</option>
-        <option value="Ombro">Ombro</option>
-        <option value="Cotovelo">Cotovelo</option>
-        <option value="Punho/Mão">Punho/Mão</option>
-        <option value="Outro">Outro</option>
-      </select>
-      <div id="dorLocalOutroWrap" class="hidden">
-        <label>Se marcou “Outro”, qual?</label>
-        <input id="dorLocalOutro" type="text" placeholder="Descreva a região" />
-      </div>
-
-      <div class="row">
-        <div>
-          <label>Já teve diagnóstico/exame para essa dor/lesão?</label>
-          <select id="diag"><option value="Não">Não</option><option value="Sim">Sim</option></select>
-        </div>
-        <div>
-          <label>Já fez fisioterapia para essa região?</label>
-          <select id="fisio"><option value="Não">Não</option><option value="Sim">Sim</option></select>
-        </div>
-      </div>
-
-      <label>Já realizou cirurgia nessa região?</label>
-      <select id="cirReg"><option value="Não">Não</option><option value="Sim">Sim</option></select>
-
-      <label>Dor atual (0–10)</label>
-      <input id="dorEscala" type="number" min="0" max="10" inputmode="numeric" placeholder="0 a 10" />
-
-      <div class="row">
-        <div>
-          <label>Quando a dor aparece mais?</label>
-          <select id="dorQuando">
-            <option value="Não sei / varia">Não sei / varia</option>
-            <option value="Durante o treino">Durante o treino</option>
-            <option value="Depois do treino (mesmo dia)">Depois do treino (mesmo dia)</option>
-            <option value="No dia seguinte">No dia seguinte</option>
-            <option value="Constante">Constante</option>
-          </select>
-        </div>
-        <div>
-          <label>Piora mais com carga ou com amplitude?</label>
-          <select id="pioraComo">
-            <option value="Não sei">Não sei</option>
-            <option value="Mais com carga">Mais com carga</option>
-            <option value="Mais com amplitude">Mais com amplitude</option>
-            <option value="Com ambos">Com ambos</option>
-          </select>
-        </div>
-      </div>
-
-      <label>Regra de segurança: você aceita parar/ajustar se a dor passar de 3/10?</label>
-      <select id="regraDor">
-        <option value="Sim">Sim</option>
-        <option value="Não">Não</option>
-      </select>
-
-      <label>Sinais vermelhos (marque se tiver)</label>
-      <span class="hint">Se marcar algum, o treino precisa ser adaptado com mais cautela</span>
-      <div class="pill" id="redFlags">
-        <label class="opt"><input type="checkbox" name="redflag" value="Formigamento"> Formigamento</label>
-        <label class="opt"><input type="checkbox" name="redflag" value="Perda de força"> Perda de força</label>
-        <label class="opt"><input type="checkbox" name="redflag" value="Dor irradiando"> Dor irradiando</label>
-        <label class="opt"><input type="checkbox" name="redflag" value="Travamento/estalo com dor"> Travamento/estalo com dor</label>
-      </div>
-
-      <label>Qual padrão de movimento tende a piorar?</label>
-      <select id="pioraMov">
-        <option value="Não sei / varia">Não sei / varia</option>
-        <option value="Agachar">Agachar</option>
-        <option value="Leg Press">Leg Press</option>
-        <option value="Avanço / Passada">Avanço / Passada</option>
-        <option value="Corrida / Saltos">Corrida / Saltos</option>
-        <option value="Empurrar (supino/ombro)">Empurrar (supino/ombro)</option>
-        <option value="Puxar (remadas/puxadas)">Puxar (remadas/puxadas)</option>
-        <option value="Outro">Outro</option>
-      </select>
-
-      <div id="pioraOutroWrap" class="hidden">
-        <label>Se marcou “Outro”, qual?</label>
-        <input id="pioraOutro" type="text" placeholder="Descreva o padrão/movimento" />
-      </div>
-
-      <label>Algum movimento ou exercício causa desconforto?</label>
-      <span class="hint">Opcional</span>
-      <textarea id="desconforto" placeholder="Descreva o movimento/exercício que incomoda"></textarea>
-    </div>
-  </section>
-
-  <section class="card" data-sess="10">
-    <div class="title"><span>SESSÃO 10/11</span> — 🚦 Semáforo de Recuperação</div>
-    <label>Deseja adicionar alguma observação ou preferência?</label>
-    <textarea id="obs" placeholder="Ex.: horários, preferências, limitações, etc."></textarea>
-
-    <div class="sep"></div>
-
-    <div class="row">
-      <div>
-        <label>Sono (horas/noite)</label>
-        <select id="sonoHoras">
-          <option value="Não informado">Não informado</option>
-          <option value="≤ 5h">≤ 5h</option>
-          <option value="6h">6h</option>
-          <option value="7h">7h</option>
-          <option value="8h">8h</option>
-          <option value="9h+">9h+</option>
-        </select>
-      </div>
-      <div>
-        <label>Qualidade do sono</label>
-        <select id="sonoQual">
-          <option value="Não informado">Não informado</option>
-          <option value="Ruim">Ruim</option>
-          <option value="Média">Média</option>
-          <option value="Boa">Boa</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="row">
-      <div>
-        <label>Estresse diário</label>
-        <select id="estresse">
-          <option value="Não informado">Não informado</option>
-          <option value="Baixo">Baixo</option>
-          <option value="Médio">Médio</option>
-          <option value="Alto">Alto</option>
-        </select>
-      </div>
-      <div>
-        <label>Fadiga pós-treino (dor muscular) costuma durar</label>
-        <select id="doms">
-          <option value="Não informado">Não informado</option>
-          <option value="1–2 dias">1–2 dias</option>
-          <option value="3–4 dias">3–4 dias</option>
-          <option value="5+ dias">5+ dias</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="badge" id="semaforoBadge" style="margin:10px 0 2px; width:fit-content;">Semáforo de recuperação: —</div>
-    <div class="foot" id="semaforoHint" style="margin-top:6px;">Preenchendo sono/estresse/DOMS, eu marco sua capacidade de volume (Verde/Amarelo/Vermelho).</div>
-</section>
-  <section class="card" data-sess="11">
-    <div class="title"><span>SESSÃO 11/11</span> — 📝 Observações Finais</div>
-    <label>Observações finais</label>
-    <textarea id="obs" rows="4" placeholder="Ex.: preferências, horários, desconfortos, histórico, recados importantes"></textarea>
-
-    <div class="row">
-      <div>
-        <label>Medidas (opcional)</label>
-        <input id="medidas" type="text" placeholder="Ex.: cintura/quadril/abdômen (cm)" />
-      </div>
-      <div>
-        <label>Fotos (opcional)</label>
-        <select id="fotos">
-          <option value="">Não informado</option>
-          <option value="Sim">Sim</option>
-          <option value="Não">Não</option>
-        </select>
-      </div>
-    </div>
-  
-
-    <div class="actions">
-      <button class="btn" id="sendBtn">💬 Enviar minhas respostas no WhatsApp</button>
-      <button class="btn2" id="clearBtn">🗑️ Limpar tudo</button>
-    </div>
-    <div class="foot">Dica: se o WhatsApp não abrir, atualize a página e tente de novo. Se persistir, abra no navegador (Chrome) e verifique se o WhatsApp está instalado.</div>
-  </section>
-
+<div class="hero">
+<div class="brand">
+<img alt="Logo" class="logo" id="brandLogo" src="https://tiagolima575.github.io/tiago-lima-treino-hub/logo.png"/>
+<div class="brand-text">
+<div class="brand-name">Avaliação Inicial</div>
 </div>
-
+</div>
+<h1>TREINO INICIANTE</h1>
+<p>Questionário estruturado para leitura técnica, segurança e prescrição personalizada.</p>
+<p>Preencha com sinceridade. Resposta bonita e falsa só serve para sabotar o treino.</p></div>
+<form>
+<section class="section">
+<h2>SESSÃO 1/11 — 👤 Dados Pessoais</h2>
+<p class="desc">Cadastro básico (pessoal).</p>
+<div class="grid">
+<div class="field col-6">
+<label class="label" for="nome">1. Nome completo *</label>
+<input id="nome" name="nome" placeholder="Ex.: Maria da Silva" required="" type="text"/>
+</div>
+<div class="field col-3">
+<label class="label" for="idade">2. Idade *</label>
+<input id="idade" min="0" name="idade" placeholder="Ex.: 28" required="" type="number"/>
+</div>
+<div class="field col-3">
+<label class="label" for="sexo">3. Sexo</label>
+<select id="sexo" name="sexo">
+<option value="">Selecione</option>
+<option>Masculino</option>
+<option>Feminino</option>
+<option>Prefiro não informar</option>
+</select>
+</div>
+<div class="field col-3">
+<label class="label" for="altura">4. Altura (cm)</label>
+<input id="altura" min="0" name="altura" placeholder="Ex.: 170" type="number"/>
+</div>
+<div class="field col-3">
+<label class="label" for="peso">5. Peso (kg)</label>
+<input id="peso" min="0" name="peso" placeholder="Ex.: 72" step="0.1" type="number"/>
+</div>
+<div class="field col-12">
+<label class="label" for="whats">6. WhatsApp (aluno)</label>
+<input id="whats" name="whats" placeholder="Ex.: (69) 99999-9999" type="tel"/>
+<span class="helper">Opcional. Se preencher, use DDD + número.</span>
+</div>
+</div>
+</section><section class="section"><h2>SESSÃO 2/11 — 🧑‍💼 Rotina de Trabalho</h2><p class="desc">Rotina profissional e nível de atividade no dia (impacta recuperação e aderência).</p><div class="grid"><div class="field col-8">
+<label class="label" for="profissao">7. Profissão/rotina</label>
+<input id="profissao" name="profissao" placeholder="Ex.: trabalho sentado, em pé, físico pesado, turnos" type="text"/>
+</div><div class="field col-6">
+<label class="label" for="atividade_trabalho">8. Atividade no trabalho (aprox.)</label>
+<select id="atividade_trabalho" name="atividade_trabalho">
+<option value="">Selecione</option>
+<option>Sentado(a) quase o dia todo</option>
+<option>Mais em pé do que sentado(a)</option>
+<option>Caminho bastante no trabalho</option>
+<option>Faço esforço físico / pego peso</option>
+<option>Varia muito</option>
+</select>
+</div></div></section>
+<section class="section">
+<h2>SESSÃO 3/11 — 🎯 Objetivo</h2>
+<p class="desc">O que a pessoa quer agora (sem complicar).</p>
+<div class="grid">
+<div class="field col-6">
+<label class="label" for="objetivo">9. Objetivo principal *</label>
+<select id="objetivo" name="objetivo" required="">
+<option value="">Selecione</option>
+<option>Perder peso</option>
+<option>Ganhar massa muscular</option>
+<option>Perder peso e ganhar massa muscular</option>
+<option>Ficar mais forte</option>
+<option>Melhorar condicionamento</option>
+<option value="Outro">Outro</option>
+</select>
+</div>
+<div class="field col-6 hidden" id="wrap_objetivo_outro">
+<label class="label" for="objetivo_outro">10. Se marcou “Outro”, especifique</label>
+<input id="objetivo_outro" name="objetivo_outro" placeholder="Ex.: melhorar postura, correr 5km..." type="text"/>
+</div>
+<div class="field col-6">
+<label class="label" for="prazo">11. Prazo de foco</label>
+<select id="prazo" name="prazo">
+<option value="">Selecione</option>
+<option>4 semanas</option>
+<option>8 semanas</option>
+<option>12 semanas</option>
+<option>16 semanas</option>
+</select>
+</div>
+<div class="field">
+<label class="label">12. Como você vai medir resultado?</label>
+<div class="options inline-2">
+<label class="option"><input name="resultado" type="checkbox" value="Peso (balança)"/><span>Peso (balança)</span></label>
+<label class="option"><input name="resultado" type="checkbox" value="Medidas"/><span>Medidas</span></label>
+<label class="option"><input name="resultado" type="checkbox" value="Performance"/><span>Performance</span></label>
+<label class="option"><input name="resultado" type="checkbox" value="Estética"/><span>Estética</span></label>
+</div>
+</div>
+</div>
+</section>
+<section class="section">
+<h2>SESSÃO 4/11 — 📅 Rotina de Treino</h2>
+<p class="desc">Aqui fica fácil: dias, tempo e cardio.</p>
+<div class="grid"><div class="field col-4">
+<label class="label" for="horario">13. Horário preferido de treino</label>
+<select id="horario" name="horario">
+<option value="">Selecione</option>
+<option>Manhã</option>
+<option>Tarde</option>
+<option>Noite</option>
+<option>Varia</option>
+</select>
+</div>
+<div class="field col-4">
+<label class="label" for="ja_treinou">14. Você já treinou musculação antes?</label>
+<select id="ja_treinou" name="ja_treinou">
+<option value="">Selecione</option>
+<option>Não</option>
+<option>Sim, já treinei e parei</option>
+<option>Sim, treino há um tempo (com pausas)</option>
+</select>
+</div>
+<div class="field col-4">
+<label class="label" for="dias_semana">15. Quantos dias por semana você consegue treinar? *</label>
+<select id="dias_semana" name="dias_semana" required="">
+<option value="">Selecione</option>
+<option>2 dias</option>
+<option>3 dias</option>
+<option>4 dias</option>
+<option>5 dias</option>
+<option>6 dias</option>
+</select>
+</div>
+<div class="field col-4">
+<label class="label" for="onde_treina">16. Onde você costuma treinar?</label>
+<select id="onde_treina" name="onde_treina">
+<option value="">Selecione</option>
+<option>Academia</option>
+<option>Casa</option>
+<option>Condomínio</option>
+<option>Ao ar livre</option>
+</select>
+</div>
+<div class="field col-4">
+<label class="label" for="tempo_treino_sel">17. Quanto tempo você tem por sessão?</label>
+<select id="tempo_treino_sel" name="tempo_treino_sel">
+<option value="">Selecione</option>
+<option>30 min</option>
+<option>45 min</option>
+<option>60 min</option>
+<option>75 min</option>
+<option>90+ min</option>
+<option>Outro</option>
+</select>
+<div class="hidden mt-8" id="wrap_tempo_treino_outro">
+<input id="tempo_treino" name="tempo_treino" placeholder="Se marcou 'Outro', escreva aqui (ex.: 50 min)" type="text"/>
+</div>
+</div>
+<div class="field col-4">
+<label class="label" for="cardio">18. Quer incluir cardio no plano?</label>
+<select id="cardio" name="cardio">
+<option value="">Selecione</option>
+<option>Não</option>
+<option>Sim</option>
+</select>
+</div>
+<div class="field col-4 hidden" id="wrap_cardio_tempo">
+<label class="label" for="cardio_tempo">19. Se sim, quanto tempo de cardio por sessão?</label>
+<select id="cardio_tempo" name="cardio_tempo">
+<option value="">Selecione</option>
+<option>10–15 min</option>
+<option>15–25 min</option>
+<option>25–35 min</option>
+<option>35+ min</option>
+</select>
+</div>
+<div class="field col-4 hidden" id="wrap_cardio_pref">
+<label class="label" for="cardio_pref">20. Preferência de cardio</label>
+<select id="cardio_pref" name="cardio_pref">
+<option value="">Selecione</option>
+<option>Esteira</option>
+<option>Bike</option>
+<option>Elíptico</option>
+<option>Escada</option>
+<option value="Outro">Outro</option>
+</select>
+</div>
+<div class="field col-4 hidden" id="wrap_cardio_outro">
+<label class="label" for="cardio_outro">21. Se marcou “Outro”, qual?</label>
+<input id="cardio_outro" name="cardio_outro" type="text"/>
+</div>
+<div class="field col-6">
+<label class="label" for="atividade_diaria">22. Seu dia a dia é mais:</label>
+<select id="atividade_diaria" name="atividade_diaria">
+<option value="">Selecione</option>
+<option>Sedentário (pouca atividade)</option>
+<option>Moderado (anda/ativa moderada)</option>
+<option>Ativo (anda muito / físico pesado)</option>
+</select>
+</div>
+<div class="field col-12">
+<label class="label">23. Equipamentos que você tem acesso (marque o que tiver)</label>
+<div class="options inline-2">
+<label class="option"><input name="equip" type="checkbox" value="Máquinas / Cabos (polias)"/><span>Máquinas / Cabos (polias)</span></label>
+<label class="option"><input name="equip" type="checkbox" value="Halteres"/><span>Halteres</span></label>
+<label class="option"><input name="equip" type="checkbox" value="Barra / Anilhas"/><span>Barra / Anilhas</span></label>
+<label class="option"><input name="equip" type="checkbox" value="Elásticos"/><span>Elásticos</span></label>
+<label class="option"><input name="equip" type="checkbox" value="Não sei / tanto faz"/><span>Não sei / tanto faz</span></label>
+</div>
+</div>
+</div>
+</section>
+<section class="section">
+<h2>SESSÃO 5/11 — ❤️ Saúde e Triagem</h2>
+<p class="desc">Segurança antes de qualquer treino.</p>
+<div class="grid">
+<div class="field col-4">
+<label class="label" for="cardiaco">24. Você possui problemas cardíacos?</label>
+<select id="cardiaco" name="cardiaco"><option value="">Selecione</option><option>Não</option><option>Sim</option></select>
+</div>
+<div class="field col-4">
+<label class="label" for="respiratorio">25. Problemas respiratórios? (asma/bronquite)</label>
+<select id="respiratorio" name="respiratorio"><option value="">Selecione</option><option>Não</option><option>Sim</option></select>
+</div>
+<div class="field col-4">
+<label class="label" for="pressao">26. Pressão arterial</label>
+<select id="pressao" name="pressao"><option value="">Selecione</option><option>Normal</option><option>Alta</option><option>Baixa</option><option>Não sei</option></select>
+</div><div class="field col-6 hidden" id="cesareaWrap"><label class="label" for="cesarea">27. Você já realizou parto cesariano (cesárea)?</label><select id="cesarea" name="cesarea"><option value="">Selecione</option><option>Não</option><option>Sim</option></select></div>
+<div class="field col-6">
+<label class="label" for="medicacao">28. Medicação contínua? (se sim, qual)</label>
+<input id="medicacao" name="medicacao" type="text"/>
+</div>
+<div class="field col-6">
+<label class="label" for="cirurgia_doenca">29. Cirurgias/doenças crônicas relevantes?</label>
+<input id="cirurgia_doenca" name="cirurgia_doenca" type="text"/>
+</div>
+<div class="field col-6">
+<label class="label" for="supervisao_medica">30. Médico já disse que você só deveria treinar supervisionado?</label>
+<select id="supervisao_medica" name="supervisao_medica"><option value="">Selecione</option><option>Não</option><option>Sim</option><option>Não sei</option></select>
+</div>
+<div class="field col-6">
+<label class="label" for="desmaio">31. Já perdeu a consciência / quase desmaiou / caiu por tontura?</label>
+<select id="desmaio" name="desmaio"><option value="">Selecione</option><option>Não</option><option>Sim</option></select>
+</div>
+<div class="field col-6">
+<label class="label" for="dor_peito_atividade">32. Dor no peito durante atividade?</label>
+<select id="dor_peito_atividade" name="dor_peito_atividade"><option value="">Selecione</option><option>Não</option><option>Sim</option></select>
+</div>
+<div class="field col-6">
+<label class="label" for="dor_peito_repouso">33. Dor no peito em repouso?</label>
+<select id="dor_peito_repouso" name="dor_peito_repouso"><option value="">Selecione</option><option>Não</option><option>Sim</option></select>
+</div>
+<div class="field col-6">
+<label class="label" for="fuma">34. Você fuma atualmente?</label>
+<select id="fuma" name="fuma"><option value="">Selecione</option><option>Não</option><option>Sim</option><option>Às vezes</option><option>Ex-fumante</option></select>
+</div>
+<div class="field col-6">
+<label class="label" for="alcool">35. Consome bebida alcoólica?</label>
+<select id="alcool" name="alcool"><option value="">Selecione</option><option>Não</option><option>Raramente</option><option>1–2x/semana</option><option>3x+ / semana</option></select>
+</div>
+</div>
+<div class="danger-note">Se marcar dor no peito, desmaio ou supervisão médica, isso precisa de atenção antes de aumentar intensidade/carga.</div>
+</section>
+<section class="section">
+<h2>SESSÃO 6/11 — 🧬 Metabolismo (rápido)</h2>
+<p class="desc">Quatro perguntas para ajustar estratégia.</p>
+<div class="grid">
+<div class="field col-6">
+<label class="label" for="ganha_peso">36. Você ganha peso com facilidade?</label>
+<select id="ganha_peso" name="ganha_peso"><option value="">Selecione</option><option>Sim</option><option>Não</option><option>Não sei</option></select>
+</div>
+<div class="field col-6">
+<label class="label" for="perde_peso">37. Você perde peso com facilidade?</label>
+<select id="perde_peso" name="perde_peso"><option value="">Selecione</option><option>Sim</option><option>Não</option><option>Não sei</option></select>
+</div>
+<div class="field col-6">
+<label class="label" for="apetite">38. Como é seu apetite?</label>
+<select id="apetite" name="apetite"><option value="">Selecione</option><option>Baixo</option><option>Médio</option><option>Alto</option><option>Varia</option></select>
+</div>
+<div class="field col-6">
+<label class="label" for="energia">39. Como é sua energia ao longo do dia?</label>
+<select id="energia" name="energia"><option value="">Selecione</option><option>Baixa</option><option>Regular</option><option>Alta</option><option>Varia</option></select>
+</div>
+</div>
+</section>
+<section class="section">
+<h2>SESSÃO 7/11 — 🧘 Mobilidade e Alongamento</h2>
+<p class="desc">Opcional. Use se fizer sentido para a pessoa.</p>
+<div class="grid">
+<div class="field col-4">
+<label class="label" for="mobilidade">40. Quer incluir mobilidade?</label>
+<select id="mobilidade" name="mobilidade"><option value="">Selecione</option><option>Não</option><option>Sim</option></select>
+</div>
+<div class="field col-4">
+<label class="label" for="alongamento">41. Quer incluir alongamento?</label>
+<select id="alongamento" name="alongamento"><option value="">Selecione</option><option>Não</option><option>Sim</option></select>
+</div>
+</div>
+</section><section class="section"><h2>SESSÃO 8/11 — 💪 Foco do Treino</h2><p class="desc">Uma prioridade principal para guiar a montagem.</p><div class="grid"><div class="field col-4">
+<label class="label" for="foco">42. O que você quer priorizar?</label>
+<select id="foco" name="foco">
+<option value="">Selecione</option>
+<option>Pernas/Glúteos</option>
+<option>Parte superior (peitoral/dorsal/braços)</option>
+<option>Abdômen</option>
+<option>Treino equilibrado</option>
+<option value="Outro">Outro</option>
+</select>
+</div></div></section>
+<section class="section">
+<h2>SESSÃO 9/11 — 🦵 Dor / Limitação (segurança)</h2>
+<p class="desc">Se não tem dor, ótimo. Se tem, a gente protege a articulação.</p>
+<div class="grid">
+<div class="field col-4">
+<label class="label" for="dor_lesao">43. Você tem alguma dor/limitação hoje?</label>
+<select id="dor_lesao" name="dor_lesao"><option value="">Selecione</option><option>Não</option><option>Sim</option></select>
+</div>
+<div class="field hidden" id="pain_block" style="grid-column:1/-1;">
+<div class="grid">
+<div class="field col-4">
+<label class="label" for="regiao_dor">44. Onde é?</label>
+<select id="regiao_dor" name="regiao_dor">
+<option value="">Selecione</option>
+<option>Joelho</option><option>Quadril</option><option>Tornozelo</option><option>Lombar</option>
+<option>Cervical</option><option>Ombro</option><option>Cotovelo</option><option>Punho/Mão</option>
+<option value="Outro">Outro</option>
+</select>
+</div>
+<div class="field col-4 hidden" id="wrap_regiao_outro">
+<label class="label" for="regiao_outro">45. Se marcou “Outro”, qual?</label>
+<input id="regiao_outro" name="regiao_outro" type="text"/>
+</div>
+<div class="field col-4">
+<label class="label" for="dor_atual">46. Dor atual (0–10)</label>
+<input id="dor_atual" max="10" min="0" name="dor_atual" type="number"/>
+</div>
+<div class="field col-6">
+<label class="label" for="piora_dor">47. Piora mais com:</label>
+<select id="piora_dor" name="piora_dor">
+<option value="">Selecione</option>
+<option>Carga</option>
+<option>Amplitude</option>
+<option>Ambos</option>
+<option>Não sei</option>
+</select>
+</div>
+<div class="field col-6">
+<label class="label" for="aceita_ajustar">48. Aceita ajustar/parar se passar de 3/10?</label>
+<select id="aceita_ajustar" name="aceita_ajustar"><option value="">Selecione</option><option>Sim</option><option>Não</option></select>
+</div>
+<div class="field col-12">
+<label class="label" for="obs_dor">49. Algo específico que piora ou exercício que incomoda?</label>
+<textarea id="obs_dor" name="obs_dor"></textarea>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="section">
+<h2>SESSÃO 10/11 — 🚦 Recuperação</h2>
+<p class="desc">Isso define volume/densidade para iniciante sem dar ruim.</p>
+<div class="grid">
+<div class="field col-6">
+<label class="label" for="dor_muscular">50. Depois do treino, por quantos dias você costuma ficar com dor muscular?</label>
+<select id="dor_muscular" name="dor_muscular">
+<option value="">Selecione</option>
+<option>0–1 dia</option>
+<option>1–2 dias</option>
+<option>3–4 dias</option>
+<option>5+ dias</option>
+<option>Não sei / Quase não sinto</option>
+</select>
+<span class="helper">Aquela dor ao mexer, sentar, abaixar ou subir escada no dia seguinte.</span>
+</div>
+<div class="field col-6">
+<label class="label" for="sono_horas">51. Quantas horas você costuma dormir por noite?</label>
+<select id="sono_horas" name="sono_horas">
+<option value="">Selecione</option>
+<option>Menos de 5h</option>
+<option>5–6h</option>
+<option>6–7h</option>
+<option>7–8h</option>
+<option>8h ou mais</option>
+</select>
+</div>
+<div class="field col-6">
+<label class="label" for="acorda">52. Quando você acorda, como normalmente se sente?</label>
+<select id="acorda" name="acorda">
+<option value="">Selecione</option>
+<option>Descansado(a)</option>
+<option>Mais ou menos</option>
+<option>Cansado(a)</option>
+<option>Muito cansado(a)</option>
+</select>
+</div>
+<div class="field col-6">
+<label class="label" for="estresse">53. Seu estresse no dia a dia é:</label>
+<select id="estresse" name="estresse">
+<option value="">Selecione</option>
+<option>Baixo</option>
+<option>Médio</option>
+<option>Alto</option>
+<option>Varia muito</option>
+</select>
+</div>
+</div>
+</section>
+<section class="section">
+<h2>SESSÃO 11/11 — 📝 Observações Finais</h2>
+<p class="desc">O que faltou e pode ajudar na montagem.</p>
+<div class="grid">
+<div class="field">
+<label class="label" for="obs_finais">54. Observações finais</label>
+<textarea id="obs_finais" name="obs_finais" placeholder="Ex.: preferências, rotina, insegurança com exercícios, algo importante..."></textarea>
+</div>
+<div class="field col-6">
+<label class="label" for="medidas">55. Medidas (opcional)</label>
+<textarea id="medidas" name="medidas" placeholder="Ex.: cintura, quadril, abdômen, braço, coxa..."></textarea>
+</div>
+<div class="field col-6">
+<label class="label" for="fotos">56. Fotos (opcional)</label>
+<select id="fotos" name="fotos">
+<option value="">Não informado</option>
+<option>Sim</option>
+<option>Não</option>
+</select>
+<span class="helper">Se marcar “Sim”, você combina o envio direto no WhatsApp.</span>
+</div>
+</div>
+</section>
+<div class="submit-bar">
+<div class="submit-left">
+<strong>Envio</strong>
+<div class="helper">Antes de enviar, confirme o consentimento.</div>
+<label class="consent">
+<input id="consent" name="consent" required="" type="checkbox"/>
+<span>Declaro que respondi com sinceridade e autorizo envio para o personal.</span>
+</label>
+</div>
+<div class="submit-right">
+<button class="btn btn-secondary" id="clearBtn" type="reset">🗑️ Limpar tudo</button>
+<button class="btn btn-primary" id="sendBtn" type="submit">💬 Enviar minhas respostas no WhatsApp</button>
+</div>
+</div>
+</form>
+</div>
 <script>
-(() => {
-  const KEY = 'mfit_treinoiniciante_v3';
-    const PERSONAL_PHONE = "5569992913628";
+    // Logo fallback (tentativas)
+    function setupLogo(){
+      const img = document.getElementById('brandLogo');
+      if(!img) return;
 
-  const $ = (id) => document.getElementById(id);
-  const show = (el, on) => el.classList.toggle('hidden', !on);
+      const params = new URLSearchParams(window.location.search);
+      const fromQuery = params.get('logo');
+      if (fromQuery) { img.src = fromQuery; return; }
 
-  function getVal(id){
-    const el = $(id);
-    if(!el) return '';
-    return (el.value ?? '').toString().trim();
-  }
-  function getSelect(id){
-    const el = $(id);
-    if(!el) return '';
-    return (el.value ?? '').toString().trim();
-  }
-  function getRadio(name){
-    const el = document.querySelector(`input[name="${name}"]:checked`);
-    return el ? el.value : '';
-  }
-  function getChecks(name){
-    return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(x=>x.value);
-  }
+      const tries = [
+        img.getAttribute('src'),
+        'logo-tiago.png','logo-tiago.PNG','logo-tiago.jpg','logo-tiago.jpeg',
+        'logo.png','logo.PNG','logo.jpg','logo.jpeg',
+        './logo-tiago.png','./logo.png'
+      ].filter(Boolean);
 
-  function applyConditional(){
-    show($('objetivoOutroWrap'), getSelect('objetivo') === 'Outro');
-    const cardioOn = getSelect('cardio') === 'Sim';
-    show($('cardioWrap'), cardioOn);
-    show($('cardioOutroWrap'), cardioOn && getSelect('cardioTipo') === 'Outro');
-
-    const dorOn = getSelect('dor') === 'Sim';
-    const dorLocalSel = getSelect('dorLocal');
-    const dorLocalFinal = (dorLocalSel === 'Outro') ? (getVal('dorLocalOutro') || 'Outro') : dorLocalSel;
-    show($('dorWrap'), dorOn);
-    show($('pioraOutroWrap'), dorOn && getSelect('pioraMov') === 'Outro');
-    show($('dorLocalOutroWrap'), dorOn && getSelect('dorLocal') === 'Outro');
-    updateSemaforo();
-  }
-
-
-  // ===== MFIT v3 helpers (máscaras, validações e semáforo) =====
-  const digitsOnly = (s) => (s || '').toString().replace(/\D+/g,'');
-  function maskBRPhone(rawDigits){
-    // Espera DDD + número (10 ou 11 dígitos). Ex.: 69 99999-9999
-    const d = rawDigits.slice(0,11);
-    if(d.length <= 2) return d;
-    const ddd = d.slice(0,2);
-    const rest = d.slice(2);
-    if(rest.length <= 4) return `(${ddd}) ${rest}`;
-    if(rest.length <= 8) return `(${ddd}) ${rest.slice(0,4)}-${rest.slice(4)}`;
-    // 9 dígitos (celular) ou 8 (fixo) com DDD
-    if(rest.length === 9) return `(${ddd}) ${rest.slice(0,5)}-${rest.slice(5)}`;
-    return `(${ddd}) ${rest.slice(0,4)}-${rest.slice(4,8)}` + (rest.length>8 ? rest.slice(8) : '');
-  }
-
-  function normalizeNumericField(id, {min=null,max=null}={}){
-    const el = $(id);
-    if(!el) return;
-    el.addEventListener('blur', ()=>{
-      let v = el.value;
-      if(v === '' || v == null) return;
-      v = v.toString().replace(',', '.');
-      const num = Number(v);
-      if(Number.isNaN(num)) { el.value=''; return; }
-      let out = num;
-      if(min!=null) out = Math.max(min,out);
-      if(max!=null) out = Math.min(max,out);
-      // sem casas decimais para altura/peso aqui
-      el.value = String(out).replace(/\.0+$/,'');
-    });
-  }
-
-  function computeSemaforo(){
-    const sonoQ = getSelect('sonoQual'); // Ruim/Média/Boa
-    const est = getSelect('estresse'); // Baixo/Médio/Alto
-    const doms = getSelect('doms'); // 1–2 / 3–4 / 5+
-    // score simples e robusto
-    let score = 0;
-    if(sonoQ === 'Ruim') score += 2;
-    if(sonoQ === 'Média') score += 1;
-
-    if(est === 'Alto') score += 2;
-    if(est === 'Médio') score += 1;
-
-    if(doms === '5+ dias') score += 2;
-    if(doms === '3–4 dias') score += 1;
-
-    if(score <= 1) return {label:'Verde', note:'Boa capacidade de volume. Dá pra progredir com segurança.'};
-    if(score <= 3) return {label:'Amarelo', note:'Volume moderado. Progressão controlada e foco em técnica.'};
-    return {label:'Vermelho', note:'Recuperação limitada. Volume baixo, mais cautela e prioridade em consistência.'};
-  }
-
-  function updateSemaforo(){
-    const badge = $('semaforoBadge');
-    const hint = $('semaforoHint');
-    if(!badge || !hint) return;
-    const sonoQ = getSelect('sonoQual');
-    const est = getSelect('estresse');
-    const doms = getSelect('doms');
-
-    if((sonoQ==='Não informado' || !sonoQ) && (est==='Não informado' || !est) && (doms==='Não informado' || !doms)){
-      badge.textContent = 'Semáforo de recuperação: —';
-      hint.textContent = 'Preenchendo sono/estresse/DOMS, eu marco sua capacidade de volume (Verde/Amarelo/Vermelho).';
-      return;
+      let i = 0;
+      img.onerror = () => {
+        i += 1;
+        if (i < tries.length) img.src = tries[i];
+        else img.style.display = 'none';
+      };
     }
-    const s = computeSemaforo();
-    badge.textContent = `Semáforo de recuperação: ${s.label}`;
-    hint.textContent = s.note;
-  }
 
-  function validateBeforeSend(){
-    // WhatsApp do aluno (opcional, mas se preencher, tem que estar certo)
-    const wEl = $('whats');
-    const wDigits = digitsOnly(wEl.value);
-    if(wEl.value.trim() && (wDigits.length < 10 || wDigits.length > 11)){
-      alert('WhatsApp do aluno inválido. Use DDD + número (10 ou 11 dígitos). Ex.: (69) 99999-9999');
-      wEl.focus();
+    function toggleByValue(selectId, targetId, expectedValue) {
+      const select = document.getElementById(selectId);
+      const target = document.getElementById(targetId);
+      if (!select || !target) return;
+      target.classList.toggle('hidden', select.value !== expectedValue);
+    }
+
+    function togglePainBlock(){
+      const select = document.getElementById('dor_lesao');
+      const block = document.getElementById('pain_block');
+      if(!select || !block) return;
+      block.classList.toggle('hidden', select.value !== 'Sim');
+    }
+
+    function getSelectedValues(container){
+      const checkboxes = container.querySelectorAll('input[type="checkbox"]');
+      if (checkboxes.length){
+        const vals = [];
+        checkboxes.forEach(cb => { if(cb.checked) vals.push(cb.value || cb.id); });
+        return vals.length ? vals.join(', ') : '';
+      }
+
+      const input = container.querySelector('input:not([type="checkbox"]):not([type="radio"])');
+      const select = container.querySelector('select');
+
+      // Prefer select unless it's "Outro" and there is an input available
+      if (select && input){
+        const sel = (select.value || '').trim();
+        if (sel && sel.toLowerCase() !== 'outro') return sel;
+        return (input.value || '').trim();
+      }
+      if (input) return (input.value || '').trim();
+      if (select) return (select.value || '').trim();
+
+      const ta = container.querySelector('textarea');
+      if (ta) return (ta.value || '').trim();
+      return '';
+    }
+
+    function buildWhatsAppMessage(){
+      const lines = [];
+      const stamp = new Date().toLocaleString('pt-BR');
+      lines.push('TREINO INICIANTE — AVALIAÇÃO INICIAL');
+      lines.push('Data/Hora: ' + stamp);
+      lines.push('');
+
+      document.querySelectorAll('.section').forEach(sec => {
+        const title = sec.querySelector('h2');
+        if (title) lines.push(title.textContent.trim());
+
+        sec.querySelectorAll('.field').forEach(field => {
+          const label = field.querySelector('.label');
+          if (!label) return;
+          const value = getSelectedValues(field);
+          if (!value) return;
+          const clean = label.textContent.replace(/\s+/g,' ').trim();
+          lines.push('• ' + clean + ': ' + value);
+        });
+
+        lines.push('');
+      });
+
+      while (lines.length && lines[lines.length-1] === '') lines.pop();
+      return lines.join('\n');
+    }
+
+    function openWhatsApp(message){
+      const phone = '5569992913628';
+      const url = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(message);
+      window.open(url, '_blank');
+    }
+
+    function validateAlunoWhats(){
+      const el = document.getElementById('whats');
+      if (!el) return true;
+      const raw = (el.value || '').trim();
+      if (!raw) return true;
+
+      // Keep only digits
+      const digits = raw.replace(/\D/g,'');
+      // Accept: 10 or 11 digits (DDD + number), or 12/13 if they included 55
+      if ([10,11,12,13].includes(digits.length)) return true;
+
+      alert('WhatsApp do aluno inválido. Use DDD + número (10 ou 11 dígitos).');
+      el.focus();
       return false;
     }
 
-    // Tempo por treino deve ser uma das opções
-    const tempo = getSelect('tempo');
-    const allowedTempo = new Set(['30','40','50','60','75','90']);
-    if(tempo && !allowedTempo.has(tempo)){
-      alert('Tempo por treino inválido. Selecione uma das opções (30/40/50/60/75/90).');
-      $('tempo').focus();
-      return false;
-    }
+    function bind(){
+      
+      const sexo = document.getElementById('sexo');
+      const cesareaWrap = document.getElementById('cesareaWrap');
+      const cesarea = document.getElementById('cesarea');
+const objetivo = document.getElementById('objetivo');
+      const tempoSel = document.getElementById('tempo_treino_sel');
+      const wrapTempoOutro = document.getElementById('wrap_tempo_treino_outro');
 
-    // Dor: se Sim, escala e local obrigatórios
-    if(getSelect('dor') === 'Sim'){
-      const esc = getVal('dorEscala');
-      const loc = getSelect('dorLocal');
-      if(esc === ''){
-        alert('Você marcou que tem dor/lesão. Preencha a escala de dor (0–10).');
-        $('dorEscala').focus();
-        return false;
-      }
-      const escN = Number(esc);
-      if(Number.isNaN(escN) || escN < 0 || escN > 10){
-        alert('Escala de dor inválida. Use um número de 0 a 10.');
-        $('dorEscala').focus();
-        return false;
-      }
-      if(!loc){
-        alert('Você marcou que tem dor/lesão. Selecione a região da dor.');
-        $('dorLocal').focus();
-        return false;
-      }
-    }
-    return true;
-  }
+      const cardio = document.getElementById('cardio');
+      const wrapTempo = document.getElementById('wrap_cardio_tempo');
+      const wrapPref = document.getElementById('wrap_cardio_pref');
+      const cardioPref = document.getElementById('cardio_pref');
 
-  ['objetivo','cardio','cardioTipo','dor','pioraMov','dorLocal','sonoQual','estresse','doms'].forEach(id=>{
-    const el = $(id);
-    if(el) el.addEventListener('change', applyConditional);
-  });
+      const foco = document.getElementById('foco');
+      const dor = document.getElementById('dor_lesao');
+      const regiao = document.getElementById('regiao_dor');
 
-  function formatLine(label, value){
-    if(!value) return '';
-    return `${label}: ${value}`;
-  }
+      if (objetivo) objetivo.addEventListener('change', () => toggleByValue('objetivo','wrap_objetivo_outro','Outro'));
+      if (foco) foco.addEventListener('change', () => toggleByValue('foco','wrap_foco_outro','Outro'));
 
-  function sessBlock(n, emoji, title, lines){
-    const hdr = `\n\nSESSÃO ${n}/10 — ${emoji} ${title}`;
-    const body = lines.length ? lines.join('\n') : '(sem resposta)';
-    return hdr + '\n' + body;
-  }
-
-  function buildText(){
-    const head = `TREINO INICIANTE — AVALIAÇÃO INICIAL`;
-
-    const foco = getRadio('foco');
-    const focoOutro = getVal('focoOutro');
-    const focoFinal = foco || focoOutro;
-
-    const cardioOn = getSelect('cardio') === 'Sim';
-    const cardioTipo = getSelect('cardioTipo');
-    const cardioTipoFinal = (cardioTipo === 'Outro') ? (getVal('cardioOutro') || 'Outro') : cardioTipo;
-
-    const dorOn = getSelect('dor') === 'Sim';
-    const piora = getSelect('pioraMov');
-    const pioraFinal = (piora === 'Outro') ? (getVal('pioraOutro') || 'Outro') : piora;
-
-    const equips = getChecks('equip');
-
-    const s1 = [
-      formatLine('Nome completo', getVal('nome')),
-      formatLine('Idade', getVal('idade')),
-      formatLine('Sexo', getSelect('sexo')),
-      formatLine('Altura', getVal('altura')),
-      formatLine('Peso', getVal('peso')),
-      formatLine('Rotina/Profissão', getVal('rotina')),
-      formatLine('Atividade no trabalho', getSelect('trabalhoAtiv')),
-      formatLine('Horário preferido de treino', getSelect('horario')),
-      formatLine('WhatsApp', getVal('whats')),
-    ].filter(Boolean);
-
-    const obj = (getSelect('objetivo') === 'Outro') ? (getVal('objetivoOutro') || 'Outro') : getSelect('objetivo');
-    const metricas = getChecks('metrica');
-    const s2 = [
-      formatLine('Qual é o seu principal objetivo?', obj),
-      formatLine('Objetivo secundário', getVal('objetivo2')),
-      formatLine('Prazo de foco', getSelect('prazo')),
-      formatLine('Métricas de resultado', metricas.length ? metricas.join(', ') : ''),
-    ].filter(Boolean);
-
-    const s3 = [
-      formatLine('Qual é o seu nível de experiência com treino?', getSelect('experiencia')),
-      formatLine('Já treinou antes (no passado)?', getSelect('treinouAntes')),
-      formatLine('Últimos 30 dias: consistência', getSelect('consistencia30')),
-      formatLine('Você treina perto da falha?', getSelect('falha')),
-      formatLine('Nível de técnica (autoavaliação)', getSelect('tecnica')),
-      formatLine('Preferência de estilo', getSelect('estilo')),
-      formatLine('Quantos dias por semana você pode treinar?', getSelect('dias')),
-      formatLine('Quanto tempo por treino? (min)', getVal('tempo')),
-      formatLine('Histórico de treino (real)', getSelect('histTreino')),
-      formatLine('Movimentos com desconforto', (getChecks('desconfMov').length? getChecks('desconfMov').join(', '):'')),
-      formatLine('Nível de segurança com carga', getSelect('segCarga')),
-      formatLine('Condição atual', getSelect('condAtual')),
-      formatLine('Qual divisão você prefere?', getSelect('divisao')),
-      formatLine('Quer incluir cardio no plano?', getSelect('cardio')),
-      ...(cardioOn ? [
-        formatLine('Tempo de cardio por sessão', getVal('cardioTempo')),
-        formatLine('Preferência de cardio', cardioTipoFinal),
-      ] : []),
-      formatLine('Passos por dia (média)', getSelect('passos')),
-      formatLine('Ênfase secundária (opcional)', getVal('enfase')),
-      formatLine('Chance real de cumprir (0–10)', getSelect('compliance')),
-      formatLine('Maior barreira', getSelect('barreira')),
-    ].filter(Boolean);
-
-    const s4 = [
-      formatLine('Onde você costuma treinar?', getSelect('local')),
-      formatLine('Preferência de Equipamentos', getSelect('prefEquip')),
-      formatLine('Exercícios que gosta', getVal('gosta')),
-      formatLine('Exercícios que odeia', getVal('odeia')),
-      formatLine('Exercícios que não pode (dor/limitação)', getVal('naoPode')),
-      formatLine('O que não tem acesso', getVal('naoTem')),
-      formatLine('Academia lotada no horário', getSelect('lotacao')),
-      formatLine('Preferência quando lota', getSelect('lotacaoPref')),
-      formatLine('Exercícios que NÃO quer fazer', getVal('naoQuer')),
-      formatLine('Equipamentos disponíveis', equips.length ? equips.join(', ') : ''),
-    ].filter(Boolean);
-
-    const s5 = [
-      formatLine('Problemas cardíacos?', getSelect('card')),
-      formatLine('Problemas respiratórios?', getSelect('resp')),
-      formatLine('Pressão arterial', getSelect('pressao')),
-      formatLine('Medicação contínua', getVal('med')),
-      formatLine('Cirurgias/doenças crônicas', getVal('cir')),
-      formatLine('Parto cesariano (cesárea)?', getSelect('ces')),
-    ].filter(Boolean);
-
-    const s6 = [
-      formatLine('Ganha peso com facilidade ou dificuldade?', getSelect('meta1')),
-      formatLine('Corpo tende a ser mais magro, médio ou largo?', getSelect('meta2')),
-      formatLine('Facilidade para perder peso?', getSelect('meta3')),
-      formatLine('Apetite', getSelect('meta4')),
-      formatLine('Energia ao longo do dia', getSelect('meta5')),
-    ].filter(Boolean);
-
-    const s7 = [
-      formatLine('Incluir mobilidade?', getSelect('mob')),
-      formatLine('Incluir alongamento?', getSelect('along')),
-      formatLine('Motivo (mobilidade/alongamento)', getSelect('mobMotivo')),
-    ].filter(Boolean);
-
-    const s8 = [formatLine('Foco muscular (escolha única)', focoFinal)].filter(Boolean);
-
-    const s9 = [
-      formatLine('Possui dor/lesão/limitação?', getSelect('dor')),
-      ...(dorOn ? [
-        formatLine('Onde é a limitação ou dor?', dorLocalFinal),
-        formatLine('Diagnóstico/exame?', getSelect('diag')),
-        formatLine('Fisioterapia?', getSelect('fisio')),
-        formatLine('Cirurgia na região?', getSelect('cirReg')),
-        formatLine('Dor atual (0–10)', getVal('dorEscala')),
-        formatLine('Quando a dor aparece mais?', getSelect('dorQuando')),
-        formatLine('Piora mais com carga ou amplitude?', getSelect('pioraComo')),
-        formatLine('Regra de segurança (parar se dor >3/10)', getSelect('regraDor')),
-        formatLine('Sinais vermelhos', (getChecks('redflag').length ? getChecks('redflag').join(', ') : '')),
-        formatLine('Padrão de movimento que piora', pioraFinal),
-        formatLine('Movimento/exercício que incomoda', getVal('desconforto')),
-      ] : []),
-    ].filter(Boolean);
-
-    const recAny = (() => {
-      const a = getSelect('sonoQual'), b = getSelect('estresse'), c = getSelect('doms');
-      return (a && a !== 'Não informado') || (b && b !== 'Não informado') || (c && c !== 'Não informado');
-    })();
-    const semaforo = recAny ? computeSemaforo().label : '';
-
-    const s10 = [
-      formatLine('Sono (horas/noite)', getSelect('sonoHoras')),
-      formatLine('Qualidade do sono', getSelect('sonoQual')),
-      formatLine('Estresse diário', getSelect('estresse')),
-      formatLine('Dor muscular costuma durar', getSelect('doms')),
-      formatLine('Semáforo de recuperação', semaforo),
-    ].filter(Boolean);
-
-    const s11 = [
-      formatLine('Observações finais', getVal('obs')),
-      formatLine('Medidas (opcional)', getVal('medidas')),
-      formatLine('Fotos (opcional)', getSelect('fotos')),
-    ].filter(Boolean);
-
-
-    const blocks = [
-      sessBlock(1,'👤','Dados Pessoais',s1),
-      sessBlock(2,'🎯','Objetivo',s2),
-      sessBlock(3,'📅','Experiência e Frequência',s3),
-      sessBlock(4,'🏋️','Local de Treino e Equipamentos',s4),
-      sessBlock(5,'❤️','Histórico de Saúde',s5),
-      sessBlock(6,'🧬','Tipo de Metabolismo',s6),
-      sessBlock(7,'🧘','Mobilidade e Alongamento',s7),
-      sessBlock(8,'💪','Foco Muscular',s8),
-      sessBlock(9,'🦵','Condições Físicas e Limitações',s9),
-      sessBlock(10,'🚦','Semáforo de Recuperação',s10),
-      sessBlock(11,'📝','Observações Finais',s11),
-    ];
-
-    return head + blocks.join('');
-  }
-
-  function save(){
-    const data = {};
-    document.querySelectorAll('input, textarea, select').forEach(el=>{
-      if(!el.id && !el.name) return;
-      if(el.type === 'radio'){
-        if(el.checked) data[`radio:${el.name}`] = el.value;
-      } else if(el.type === 'checkbox'){
-        const key = `check:${el.name}`;
-        data[key] = data[key] || [];
-        if(el.checked) data[key].push(el.value);
-      } else {
-        if(el.id) data[`id:${el.id}`] = el.value;
-      }
-    });
-    localStorage.setItem(KEY, JSON.stringify(data));
-  }
-
-  function load(){
-    const raw = localStorage.getItem(KEY);
-    if(!raw) return;
-    try{
-      const data = JSON.parse(raw);
-      Object.entries(data).forEach(([k,v])=>{
-        if(k.startsWith('id:')){
-          const id = k.slice(3);
-          const el = $(id);
-          if(el) el.value = v;
+      if (tempoSel) tempoSel.addEventListener('change', () => {
+        const show = tempoSel.value === 'Outro';
+        if (wrapTempoOutro) wrapTempoOutro.classList.toggle('hidden', !show);
+        if (!show) {
+          const i = document.getElementById('tempo_treino');
+          if (i) i.value = '';
         }
       });
-      Object.entries(data).forEach(([k,v])=>{
-        if(k.startsWith('radio:')){
-          const name = k.slice(6);
-          const el = document.querySelector(`input[name="${name}"][value="${CSS.escape(v)}"]`);
-          if(el) el.checked = true;
-        }
+
+      if (cardio) cardio.addEventListener('change', () => {
+        const show = cardio.value === 'Sim';
+        if (wrapTempo) wrapTempo.classList.toggle('hidden', !show);
+        if (wrapPref) wrapPref.classList.toggle('hidden', !show);
+        if (!show) document.getElementById('wrap_cardio_outro')?.classList.add('hidden');
       });
-      Object.entries(data).forEach(([k,v])=>{
-        if(k.startsWith('check:')){
-          const name = k.slice(6);
-          if(Array.isArray(v)){
-            v.forEach(val=>{
-              const el = document.querySelector(`input[name="${name}"][value="${CSS.escape(val)}"]`);
-              if(el) el.checked = true;
-            });
+
+      if (cardioPref) cardioPref.addEventListener('change', () => toggleByValue('cardio_pref','wrap_cardio_outro','Outro'));
+      if (dor) dor.addEventListener('change', togglePainBlock);
+      if (regiao) regiao.addEventListener('change', () => toggleByValue('regiao_dor','wrap_regiao_outro','Outro'));
+
+      
+      // Cesárea: só aparece se Sexo = Feminino
+      function toggleCesarea(){
+        if (!sexo || !cesareaWrap) return;
+        const show = (sexo.value || '').trim() === 'Feminino';
+        cesareaWrap.classList.toggle('hidden', !show);
+        if (!show && cesarea) cesarea.value = '';
+      }
+      if (sexo) sexo.addEventListener('change', toggleCesarea);
+// Initial state
+      toggleByValue('objetivo','wrap_objetivo_outro','Outro');
+      toggleByValue('foco','wrap_foco_outro','Outro');
+      if (tempoSel && wrapTempoOutro) wrapTempoOutro.classList.toggle('hidden', tempoSel.value !== 'Outro');
+      togglePainBlock();
+      if (cardio) {
+        const show = cardio.value === 'Sim';
+        if (wrapTempo) wrapTempo.classList.toggle('hidden', !show);
+        if (wrapPref) wrapPref.classList.toggle('hidden', !show);
+      }
+
+      toggleCesarea();
+      setupLogo();
+
+      const form = document.querySelector('form');
+      if (form){
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          if (!form.checkValidity()){
+            form.reportValidity();
+            return;
           }
-        }
-      });
-    }catch(e){}
-  }
+          if (!validateAlunoWhats()) return;
+          openWhatsApp(buildWhatsAppMessage());
+        });
+      }
+    }
 
-  document.addEventListener('input', (e)=>{
-    if(e.target && (e.target.matches('input') || e.target.matches('textarea') || e.target.matches('select'))) save();
-  });
-
-  // Envio WhatsApp (sem modo copiar) — primário: abrir WhatsApp com mensagem pronta
-function openWhatsApp(message){
-  const encoded = encodeURIComponent(message || '');
-  // wa.me funciona bem em mobile; api.whatsapp.com tende a ser mais compatível em desktop
-  const url1 = `https://wa.me/${PERSONAL_PHONE}?text=${encoded}`;
-  const url2 = `https://api.whatsapp.com/send?phone=${PERSONAL_PHONE}&text=${encoded}`;
-  const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || '');
-  const url = isMobile ? url1 : url2;
-
-  // Tenta abrir em nova aba; se bloqueado, redireciona na mesma aba
-  const w = window.open(url, '_blank');
-  if (!w) window.location.href = url;
-}
-
-$('sendBtn').addEventListener('click', (e)=>{
-  e.preventDefault();
-  if(!validateBeforeSend()) return;
-  const text = buildText();
-  if (!text || text.trim().length === 0) {
-    alert('Preencha pelo menos 1 campo antes de enviar.');
-    return;
-  }
-  openWhatsApp(text);
-});
-
-$('clearBtn').addEventListener('click', (e)=>{
-    e.preventDefault();
-    localStorage.removeItem(KEY);
-    location.reload();
-  });
-
-  // Máscaras e normalização
-  const wEl = $('whats');
-  if(wEl){
-    wEl.addEventListener('input', ()=>{
-      const d = digitsOnly(wEl.value);
-      wEl.value = maskBRPhone(d);
-    });
-  }
-  normalizeNumericField('altura', {min: 100, max: 230});
-  normalizeNumericField('peso', {min: 30, max: 250});
-  normalizeNumericField('idade', {min: 10, max: 99});
-
-  // Atualiza semáforo ao iniciar
-  updateSemaforo();
-
-  load();
-  applyConditional();
-})();
-</script>
-
-<script>
-(function(){
-  const candidates = [
-    'logo-tiago.png','logo-tiago.PNG','logo-tiago.jpg','logo-tiago.jpeg',
-    'logo.png','logo.PNG','logo.jpg','logo.jpeg',
-    './logo-tiago.png','./logo.png'
-  ];
-  function trySet(img, idx){
-    if(!img) return;
-    if(idx >= candidates.length){ img.style.display='none'; return; }
-    img.src = candidates[idx];
-    img.onerror = function(){ trySet(img, idx+1); };
-  }
-  document.addEventListener('DOMContentLoaded', function(){
-    trySet(document.getElementById('brandLogo'), 0);
-  });
-})();
-</script>
-
+    document.addEventListener('DOMContentLoaded', bind);
+  </script>
 </body>
 </html>
