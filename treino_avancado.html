@@ -25,11 +25,7 @@
       font-family: Arial, Helvetica, sans-serif;
       line-height: 1.45;
     }
-    .wrap {
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 24px 16px 56px;
-    }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 24px 16px 56px; }
     .hero {
       background: linear-gradient(135deg, rgba(0,204,102,.18), rgba(0,204,102,.04));
       border: 1px solid rgba(0,204,102,.28);
@@ -38,80 +34,23 @@
       margin-bottom: 20px;
       box-shadow: 0 10px 30px rgba(0,0,0,.35);
     }
-    .hero h1 {
-      margin: 0 0 8px;
-      font-size: clamp(1.6rem, 3vw, 2.4rem);
-      color: var(--green);
-      letter-spacing: .02em;
-    }
+    .hero h1 { margin: 0 0 8px; font-size: clamp(1.6rem, 3vw, 2.4rem); color: var(--green); letter-spacing: .02em; }
     .hero p { margin: 6px 0; color: var(--muted); }
-    .badge {
-      display: inline-block;
-      margin-bottom: 10px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(0,204,102,.12);
-      border: 1px solid rgba(0,204,102,.26);
-      color: var(--green);
-      font-size: .88rem;
-      font-weight: 700;
-    }
     form { display: grid; gap: 18px; }
-    .section {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 20px;
-      box-shadow: 0 6px 18px rgba(0,0,0,.22);
-    }
-    .section h2 {
-      margin: 0 0 8px;
-      color: var(--green);
-      font-size: 1.2rem;
-    }
-    .section .desc {
-      margin: 0 0 18px;
-      color: var(--muted);
-      font-size: .95rem;
-    }
-    .subhead {
-      margin: 18px 0 10px;
-      padding: 10px 12px;
-      border-left: 4px solid var(--green);
-      background: var(--card-2);
-      border-radius: 10px;
-      font-weight: 700;
-    }
-    .grid {
-      display: grid;
-      gap: 14px;
-      grid-template-columns: repeat(12, 1fr);
-    }
+    .section { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; box-shadow: 0 6px 18px rgba(0,0,0,.22); }
+    .section h2 { margin: 0 0 8px; color: var(--green); font-size: 1.2rem; }
+    .section .desc { margin: 0 0 18px; color: var(--muted); font-size: .95rem; }
+    .subhead { margin: 18px 0 10px; padding: 10px 12px; border-left: 4px solid var(--green); background: var(--card-2); border-radius: 10px; font-weight: 700; }
+    .grid { display: grid; gap: 14px; grid-template-columns: repeat(12, 1fr); }
     .field { grid-column: span 12; }
     .col-6 { grid-column: span 6; }
     .col-4 { grid-column: span 4; }
     .col-8 { grid-column: span 8; }
     .col-3 { grid-column: span 3; }
-    @media (max-width: 760px) {
-      .col-6, .col-4, .col-8, .col-3 { grid-column: span 12; }
-      .hero, .section { padding: 16px; }
-    }
-    label.label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 700;
-    }
-    .helper {
-      display: block;
-      margin-top: 6px;
-      color: var(--muted);
-      font-size: .88rem;
-    }
-    input[type="text"],
-    input[type="number"],
-    input[type="tel"],
-    textarea,
-    select {
+    @media (max-width: 760px) { .col-6, .col-4, .col-8, .col-3 { grid-column: span 12; } .hero, .section { padding: 16px; } }
+    label.label { display: block; margin-bottom: 8px; font-weight: 700; }
+    .helper { display: block; margin-top: 6px; color: var(--muted); font-size: .88rem; }
+    input[type="text"], input[type="number"], input[type="tel"], textarea, select {
       width: 100%;
       padding: 12px 14px;
       border-radius: 12px;
@@ -121,43 +60,22 @@
       outline: none;
       font-size: .98rem;
     }
-    input:focus, textarea:focus, select:focus {
-      border-color: rgba(0,204,102,.9);
-      box-shadow: 0 0 0 3px rgba(0,204,102,.12);
-    }
+    input:focus, textarea:focus, select:focus { border-color: rgba(0,204,102,.9); box-shadow: 0 0 0 3px rgba(0,204,102,.12); }
     textarea { min-height: 100px; resize: vertical; }
-    .options {
-      display: grid;
-      gap: 10px;
-    }
+    .options { display: grid; gap: 10px; }
     .options.inline-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .options.inline-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .options.inline-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-    @media (max-width: 760px) {
-      .options.inline-2, .options.inline-3, .options.inline-4 { grid-template-columns: 1fr; }
-    }
-    .option {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 12px;
-      border: 1px solid #2a2a2a;
-      border-radius: 12px;
-      background: #101010;
-    }
+    @media (max-width: 760px) { .options.inline-2 { grid-template-columns: 1fr; } }
+    .option { display: flex; align-items: flex-start; gap: 10px; padding: 12px; border: 1px solid #2a2a2a; border-radius: 12px; background: #101010; }
     .option input { margin-top: 2px; accent-color: var(--green); }
     .option span { flex: 1; }
     .hidden { display: none !important; }
     .mt-8 { margin-top: 8px; }
-    .consent { display:flex; gap:10px; align-items:flex-start; margin-top:10px; color: var(--muted); font-size:.92rem; }
-    .consent input { margin-top: 3px; accent-color: var(--green); }
-    .submit-left { display:flex; flex-direction:column; gap:6px; }
-    .submit-right { display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
-    .footer-note {
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: .88rem;
-    }
+
+    .brand { display: flex; align-items: center; justify-content: flex-start; gap: 12px; margin-bottom: 10px; }
+    .logo { max-height: 54px; width: auto; object-fit: contain; }
+    .brand-text { display: flex; flex-direction: column; line-height: 1.1; }
+    .brand-name { font-size: 18px; font-weight: 900; color: var(--green); letter-spacing: .2px; }
+
     .danger-note {
       margin-top: 10px;
       padding: 12px;
@@ -178,28 +96,15 @@
       background: var(--card);
       border: 1px solid var(--line);
     }
-    .btn {
-      border: 0;
-      border-radius: 12px;
-      padding: 12px 18px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .btn-primary {
-      background: var(--green);
-      color: #04150d;
-    }
-    .btn-secondary {
-      background: #151515;
-      color: var(--text);
-      border: 1px solid #2d2d2d;
-    }
-  
-    .brand { display: flex; align-items: center; justify-content: flex-start; gap: 12px; margin-bottom: 10px; }
-    .logo { max-height: 54px; width: auto; object-fit: contain; filter: drop-shadow(0 0 0 rgba(0,0,0,0)); }
-    .brand-text { display: flex; flex-direction: column; line-height: 1.1; }
-    .brand-name { font-size: 18px; font-weight: 900; color: var(--green); letter-spacing: .2px; }
-    </style>
+    .submit-left { display:flex; flex-direction:column; gap:6px; }
+    .submit-right { display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+    .consent { display:flex; gap:10px; align-items:flex-start; margin-top:10px; color: var(--muted); font-size:.92rem; }
+    .consent input { margin-top: 3px; accent-color: var(--green); }
+
+    .btn { border: 0; border-radius: 12px; padding: 12px 18px; font-weight: 700; cursor: pointer; }
+    .btn-primary { background: var(--green); color: #04150d; }
+    .btn-secondary { background: #151515; color: var(--text); border: 1px solid #2d2d2d; }
+  </style>
 </head>
 <body>
   <div class="wrap">
@@ -211,11 +116,12 @@
         </div>
       </div>
       <h1>TREINO AVANÇADO</h1>
-      <p>Questionário estruturado para leitura técnica, segurança e prescrição personalizada.</p>
-      <p>Preencha com sinceridade. Resposta bonita e falsa só serve para sabotar o treino.</p>
+      <p>Questionário estruturado para segurança e prescrição personalizada.</p>
+      <p>Preencha com sinceridade. Resposta chutada só atrasa resultado.</p>
     </div>
 
     <form>
+      <!-- SESSÃO 1 -->
       <section class="section">
         <h2>SESSÃO 1/11 - Dados Pessoais</h2>
         <p class="desc">Base de identificação e rotina.</p>
@@ -277,9 +183,10 @@
         </div>
       </section>
 
+      <!-- SESSÃO 2 -->
       <section class="section">
         <h2>SESSÃO 2/11 - Objetivo</h2>
-        <p class="desc">Onde a pessoa quer chegar. Sem confusão.</p>
+        <p class="desc">Onde a pessoa quer chegar.</p>
         <div class="grid">
           <div class="field">
             <label class="label" for="objetivo">10. Qual é o seu principal objetivo?</label>
@@ -324,9 +231,10 @@
         </div>
       </section>
 
+      <!-- SESSÃO 3 -->
       <section class="section">
         <h2>SESSÃO 3/11 - Experiência e Frequência</h2>
-        <p class="desc">Nível real, prática atual e aderência. Aqui o formulário separa discurso de realidade.</p>
+        <p class="desc">Nível real, prática atual e aderência.</p>
         <div class="grid">
           <div class="field col-4">
             <label class="label" for="nivel">15. Qual é o seu nível de experiência com treino?</label>
@@ -430,6 +338,8 @@
               <option>6 dias</option>
             </select>
           </div>
+
+          <!-- tempo por treino (opções fechadas + outro) -->
           <div class="field col-4">
             <label class="label" for="tempo_treino_sel">26. Quanto tempo você tem por treino?</label>
             <select id="tempo_treino_sel" name="tempo_treino_sel">
@@ -445,6 +355,7 @@
               <input id="tempo_treino" name="tempo_treino" type="text" placeholder="Se marcou 'Outro', escreva aqui (ex.: 50 min)" />
             </div>
           </div>
+
           <div class="field col-4">
             <label class="label" for="divisao">27. Qual divisão de treino você prefere?</label>
             <select id="divisao" name="divisao">
@@ -567,6 +478,7 @@
         </div>
       </section>
 
+      <!-- SESSÃO 4 -->
       <section class="section">
         <h2>SESSÃO 4/11 - Local de Treino e Equipamentos</h2>
         <p class="desc">O que a pessoa tem, o que prefere e o que deve ser evitado.</p>
@@ -647,9 +559,10 @@
         </div>
       </section>
 
+      <!-- SESSÃO 5 -->
       <section class="section">
         <h2>SESSÃO 5/11 - Histórico de Saúde e Triagem de Risco</h2>
-        <p class="desc">Parte séria. Aqui é segurança de verdade.</p>
+        <p class="desc">Parte séria. Segurança de verdade.</p>
         <div class="grid">
           <div class="field col-4">
             <label class="label" for="cardiaco">50. Você possui algum problema cardíaco?</label>
@@ -672,11 +585,19 @@
             <label class="label" for="cirurgia_doenca">54. Você já fez cirurgia ou tem alguma doença crônica importante?</label>
             <textarea id="cirurgia_doenca" name="cirurgia_doenca"></textarea>
           </div>
-          <div class="field col-4">
+
+          <!-- cesárea (somente Feminino) -->
+          <div class="field col-4 hidden" id="wrap_cesarea">
             <label class="label" for="cesarea">55. Você já realizou parto cesariano (cesárea)?</label>
-            <select id="cesarea" name="cesarea"><option value="">Selecione</option><option>Não se aplica</option><option>Não</option><option>Sim</option></select>
+            <select id="cesarea" name="cesarea">
+              <option value="">Selecione</option>
+              <option>Não se aplica</option>
+              <option>Não</option>
+              <option>Sim</option>
+            </select>
           </div>
         </div>
+
         <div class="subhead">Triagem de risco para exercício</div>
         <div class="grid">
           <div class="field col-4">
@@ -704,9 +625,10 @@
             <select id="alcool" name="alcool"><option value="">Selecione</option><option>Não</option><option>Raramente</option><option>1–2 vezes por semana</option><option>3 vezes ou mais por semana</option></select>
           </div>
         </div>
-        <div class="danger-note">Se a pessoa marcar supervisão médica, dor no peito em esforço/repouso ou desmaio, isso merece atenção redobrada antes da prescrição. Blindagem boa não é paranoia. É profissionalismo.</div>
+        <div class="danger-note">Se marcar supervisão médica, dor no peito (esforço/repouso) ou desmaio, atenção redobrada antes da prescrição.</div>
       </section>
 
+      <!-- SESSÃO 6 -->
       <section class="section">
         <h2>SESSÃO 6/11 - Tipo de Metabolismo</h2>
         <p class="desc">Leitura prática para personalização.</p>
@@ -734,9 +656,10 @@
         </div>
       </section>
 
+      <!-- SESSÃO 7 -->
       <section class="section">
         <h2>SESSÃO 7/11 - Mobilidade e Alongamento</h2>
-        <p class="desc">Só entra se fizer sentido para a pessoa.</p>
+        <p class="desc">Só entra se fizer sentido.</p>
         <div class="grid">
           <div class="field col-4">
             <label class="label" for="mobilidade">67. Você quer incluir mobilidade no seu plano?</label>
@@ -753,22 +676,17 @@
         </div>
       </section>
 
+      <!-- SESSÃO 8 -->
       <section class="section">
         <h2>SESSÃO 8/11 - Foco Muscular</h2>
-        <p class="desc">Uma prioridade principal para não virar lista de desejos de Natal.</p>
+        <p class="desc">Uma prioridade principal.</p>
         <div class="grid">
           <div class="field col-6">
             <label class="label" for="foco_muscular">70. Qual região você quer priorizar mais no treino?</label>
             <select id="foco_muscular" name="foco_muscular">
               <option value="">Selecione</option>
-              <option>Dorsal</option>
-              <option>Peitoral</option>
-              <option>Ombros</option>
-              <option>Braços</option>
-              <option>Abdômen</option>
-              <option>Glúteos</option>
-              <option>Pernas completas</option>
-              <option>Treino equilibrado</option>
+              <option>Dorsal</option><option>Peitoral</option><option>Ombros</option><option>Braços</option>
+              <option>Abdômen</option><option>Glúteos</option><option>Pernas completas</option><option>Treino equilibrado</option>
               <option value="Outro">Outro</option>
             </select>
           </div>
@@ -779,14 +697,16 @@
         </div>
       </section>
 
+      <!-- SESSÃO 9 -->
       <section class="section">
         <h2>SESSÃO 9/11 - Dores, Limitações e Segurança Articular</h2>
-        <p class="desc">Aqui o SAVRL-MFIT agradece.</p>
+        <p class="desc">Segurança articular e adaptação.</p>
         <div class="grid">
           <div class="field col-4">
             <label class="label" for="dor_lesao">72. Você possui alguma dor, lesão ou limitação física hoje?</label>
             <select id="dor_lesao" name="dor_lesao"><option value="">Selecione</option><option>Não</option><option>Sim</option></select>
           </div>
+
           <div id="pain_block" class="field hidden" style="grid-column: 1 / -1;">
             <div class="grid">
               <div class="field col-4">
@@ -843,14 +763,9 @@
                 <label class="label" for="mov_piora">83. Qual movimento costuma piorar mais?</label>
                 <select id="mov_piora" name="mov_piora">
                   <option value="">Selecione</option>
-                  <option>Agachar</option>
-                  <option>Leg Press</option>
-                  <option>Avanço / passada</option>
-                  <option>Corrida / saltos</option>
-                  <option>Empurrar (supino, desenvolvimento etc.)</option>
-                  <option>Puxar (remadas, puxadas etc.)</option>
-                  <option value="Outro">Outro</option>
-                  <option>Não sei / varia</option>
+                  <option>Agachar</option><option>Leg Press</option><option>Avanço / passada</option><option>Corrida / saltos</option>
+                  <option>Empurrar (supino, desenvolvimento etc.)</option><option>Puxar (remadas, puxadas etc.)</option>
+                  <option value="Outro">Outro</option><option>Não sei / varia</option>
                 </select>
               </div>
               <div class="field col-4 hidden" id="wrap_mov_outro">
@@ -866,19 +781,16 @@
         </div>
       </section>
 
+      <!-- SESSÃO 10 -->
       <section class="section">
         <h2>SESSÃO 10/11 - Recuperação</h2>
-        <p class="desc">Linguagem clara, sem sigla que só serve para confundir aluno.</p>
+        <p class="desc">Sem sigla técnica. Linguagem clara.</p>
         <div class="grid">
           <div class="field col-6">
             <label class="label" for="dor_muscular">86. Depois do treino, por quantos dias você costuma ficar com dor muscular?</label>
             <select id="dor_muscular" name="dor_muscular">
               <option value="">Selecione</option>
-              <option>0–1 dia</option>
-              <option>1–2 dias</option>
-              <option>3–4 dias</option>
-              <option>5+ dias</option>
-              <option>Não sei / Quase não sinto</option>
+              <option>0–1 dia</option><option>1–2 dias</option><option>3–4 dias</option><option>5+ dias</option><option>Não sei / Quase não sinto</option>
             </select>
             <span class="helper">Aquela dor ao mexer, sentar, abaixar ou subir escada no dia seguinte.</span>
           </div>
@@ -886,31 +798,21 @@
             <label class="label" for="sono_horas">87. Quantas horas você costuma dormir por noite?</label>
             <select id="sono_horas" name="sono_horas">
               <option value="">Selecione</option>
-              <option>Menos de 5h</option>
-              <option>5–6h</option>
-              <option>6–7h</option>
-              <option>7–8h</option>
-              <option>8h ou mais</option>
+              <option>Menos de 5h</option><option>5–6h</option><option>6–7h</option><option>7–8h</option><option>8h ou mais</option>
             </select>
           </div>
           <div class="field col-6">
             <label class="label" for="acorda">88. Quando você acorda, como normalmente se sente?</label>
             <select id="acorda" name="acorda">
               <option value="">Selecione</option>
-              <option>Descansado(a)</option>
-              <option>Mais ou menos</option>
-              <option>Cansado(a)</option>
-              <option>Muito cansado(a)</option>
+              <option>Descansado(a)</option><option>Mais ou menos</option><option>Cansado(a)</option><option>Muito cansado(a)</option>
             </select>
           </div>
           <div class="field col-6">
             <label class="label" for="estresse">89. Como está seu nível de estresse no dia a dia?</label>
             <select id="estresse" name="estresse">
               <option value="">Selecione</option>
-              <option>Baixo</option>
-              <option>Médio</option>
-              <option>Alto</option>
-              <option>Varia muito</option>
+              <option>Baixo</option><option>Médio</option><option>Alto</option><option>Varia muito</option>
             </select>
           </div>
           <div class="field">
@@ -920,6 +822,7 @@
         </div>
       </section>
 
+      <!-- SESSÃO 11 -->
       <section class="section">
         <h2>SESSÃO 11/11 - Observações Finais</h2>
         <p class="desc">Fechamento.</p>
@@ -941,7 +844,7 @@
 
       <div class="submit-bar">
         <div class="submit-left">
-          <strong>Arquivo pronto.</strong>
+          <strong>Pronto para enviar.</strong>
           <label class="consent">
             <input type="checkbox" id="consent" name="consent" required />
             <span>Declaro que respondi com sinceridade e autorizo envio para o personal.</span>
@@ -969,85 +872,35 @@
       const block = document.getElementById('pain_block');
       if (!select || !block) return;
       block.classList.toggle('hidden', select.value !== 'Sim');
-    }
-
-    function bind() {
-      const objective = document.getElementById('objetivo');
-      const atividade = document.getElementById('atividade_atual');
-      const cardio = document.getElementById('cardio');
-      const wrapTempo = document.getElementById('wrap_cardio_tempo');
-      const wrapPref = document.getElementById('wrap_cardio_pref');
-      const cardioPref = document.getElementById('cardio_pref');
-      const foco = document.getElementById('foco_muscular');
-      const regiao = document.getElementById('regiao_dor');
-      const mov = document.getElementById('mov_piora');
-      const dor = document.getElementById('dor_lesao');
-      const tempoSel = document.getElementById('tempo_treino_sel');
-      const wrapTempoTreino = document.getElementById('wrap_tempo_treino_outro');
-
-      if (objective) objective.addEventListener('change', () => toggleByValue('objetivo', 'wrap_objetivo_outro', 'Outro'));
-      if (atividade) atividade.addEventListener('change', () => toggleByValue('atividade_atual', 'wrap_atividade_outra', 'outra'));
-      if (cardio) cardio.addEventListener('change', () => {
-        const show = cardio.value === 'Sim';
-        if (wrapTempo) wrapTempo.classList.toggle('hidden', !show);
-        if (wrapPref) wrapPref.classList.toggle('hidden', !show);
-        if (!show) document.getElementById('wrap_cardio_outro').classList.add('hidden');
-      });
-      if (cardioPref) cardioPref.addEventListener('change', () => toggleByValue('cardio_pref', 'wrap_cardio_outro', 'Outro'));
-      if (tempoSel) tempoSel.addEventListener('change', () => {
-        const show = tempoSel.value === 'Outro';
-        if (wrapTempoTreino) wrapTempoTreino.classList.toggle('hidden', !show);
-        if (!show) {
-          const i = document.getElementById('tempo_treino');
-          if (i) i.value = '';
-        }
-      });
-      if (foco) foco.addEventListener('change', () => toggleByValue('foco_muscular', 'wrap_foco_outro', 'Outro'));
-      if (regiao) regiao.addEventListener('change', () => toggleByValue('regiao_dor', 'wrap_regiao_outro', 'Outro'));
-      if (mov) mov.addEventListener('change', () => toggleByValue('mov_piora', 'wrap_mov_outro', 'Outro'));
-      if (dor) dor.addEventListener('change', togglePainBlock);
-
-      toggleByValue('objetivo', 'wrap_objetivo_outro', 'Outro');
-      toggleByValue('atividade_atual', 'wrap_atividade_outra', 'outra');
-      if (tempoSel && wrapTempoTreino) {
-        const show = tempoSel.value === 'Outro';
-        wrapTempoTreino.classList.toggle('hidden', !show);
-      }
-      toggleByValue('cardio_pref', 'wrap_cardio_outro', 'Outro');
-      toggleByValue('foco_muscular', 'wrap_foco_outro', 'Outro');
-      toggleByValue('regiao_dor', 'wrap_regiao_outro', 'Outro');
-      toggleByValue('mov_piora', 'wrap_mov_outro', 'Outro');
-      togglePainBlock();
-      setupLogo();
-      setupSubmitToWhatsApp();
-      if (cardio) {
-        cardio.addEventListener('change', () => {
-          const show2 = cardio.value === 'Sim';
-          if (wrapTempo) wrapTempo.classList.toggle('hidden', !show2);
-          if (wrapPref) wrapPref.classList.toggle('hidden', !show2);
+      if (select.value !== 'Sim') {
+        // limpa campos principais de dor (para não enviar lixo)
+        ['regiao_dor','regiao_outro','diagnostico','fisioterapia','cirurgia_regiao','dor_atual','quando_dor','piora_dor','aceita_ajustar','mov_piora','mov_outro','ex_conforto'].forEach(id=>{
+          const el = document.getElementById(id);
+          if (!el) return;
+          if (el.tagName === 'SELECT' || el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') el.value = '';
         });
-        const show = cardio.value === 'Sim';
-        if (wrapTempo) wrapTempo.classList.toggle('hidden', !show);
-        if (wrapPref) wrapPref.classList.toggle('hidden', !show);
+        // limpa checkboxes de sinais
+        document.querySelectorAll('input[name="sinais"]').forEach(cb => cb.checked = false);
       }
     }
 
-    
     function getSelectedValues(container) {
       const checkboxes = container.querySelectorAll('input[type="checkbox"]');
+      // ignora consentimento no texto
+      if (container.querySelector('#consent')) return '';
       if (checkboxes.length) {
         const vals = [];
-        checkboxes.forEach(cb => { if (cb.checked) vals.push(cb.value || cb.getAttribute('data-label') || cb.id); });
+        checkboxes.forEach(cb => { if (cb.checked) vals.push(cb.value || cb.id); });
         return vals.length ? vals.join(', ') : '';
       }
       const radios = container.querySelectorAll('input[type="radio"]');
       if (radios.length) {
         const chosen = Array.from(radios).find(r => r.checked);
-        return chosen ? (chosen.value || chosen.getAttribute('data-label') || chosen.id) : '';
+        return chosen ? (chosen.value || chosen.id) : '';
       }
       const input = container.querySelector('input:not([type="checkbox"]):not([type="radio"])');
       const select = container.querySelector('select');
-      // If a field has both select + input (ex.: "Outro"), prefer select unless it's "Outro"
+      // Se tiver select+input (ex.: Outro), prefere select exceto "Outro"
       if (select && input) {
         const sel = (select.value || '').trim();
         if (sel && sel.toLowerCase() !== 'outro') return sel;
@@ -1064,28 +917,24 @@
       const lines = [];
       const now = new Date();
       const stamp = now.toLocaleString('pt-BR');
-      lines.push('TREINO AVANÇADO — AVALIAÇÃO INICIAL (MFIT)');
+      lines.push('AVALIAÇÃO INICIAL — TREINO AVANÇADO');
       lines.push('Data/Hora: ' + stamp);
       lines.push('');
 
-      // Iterate sections
       document.querySelectorAll('.section').forEach(sec => {
         const title = sec.querySelector('h2');
-        if (title) {
-          lines.push(title.textContent.trim());
-        }
+        if (title) lines.push(title.textContent.trim());
         sec.querySelectorAll('.field').forEach(field => {
           const label = field.querySelector('.label');
           const value = getSelectedValues(field);
           if (!label) return;
           const labelText = label.textContent.replace(/\s+/g, ' ').trim();
-          const clean = labelText.replace(/^\d+\.\s*/, ''); // remove numbering
+          const clean = labelText.replace(/^\d+\.\s*/, '');
           if (value) lines.push('• ' + clean + ': ' + value);
         });
         lines.push('');
       });
 
-      // Clean up extra blank lines at end
       while (lines.length && lines[lines.length - 1] === '') lines.pop();
       return lines.join('\n');
     }
@@ -1101,13 +950,8 @@
       if (!img) return;
       const params = new URLSearchParams(window.location.search);
       const fromQuery = params.get('logo');
-      const fromGlobal = window.MFIT_LOGO_URL;
-      const src = fromQuery || fromGlobal || img.getAttribute('src') || 'logo.png';
-      img.src = src;
-
-      img.onerror = () => {
-        img.style.display = 'none';
-      };
+      if (fromQuery) img.src = fromQuery;
+      img.onerror = () => { img.style.display = 'none'; };
     }
 
     function setupSubmitToWhatsApp() {
@@ -1115,16 +959,89 @@
       if (!form) return;
       form.addEventListener('submit', (e) => {
         e.preventDefault();
-
-        // Native validation (required fields, checkbox etc.)
         if (!form.checkValidity()) {
           form.reportValidity();
           return;
         }
-
         const msg = buildWhatsAppMessage();
         openWhatsApp(msg);
       });
+    }
+
+    function setupTempoTreino() {
+      const tempoSel = document.getElementById('tempo_treino_sel');
+      const wrapTempoTreino = document.getElementById('wrap_tempo_treino_outro');
+      const tempoOutro = document.getElementById('tempo_treino');
+      if (!tempoSel || !wrapTempoTreino) return;
+      const sync = () => {
+        const show = tempoSel.value === 'Outro';
+        wrapTempoTreino.classList.toggle('hidden', !show);
+        if (!show && tempoOutro) tempoOutro.value = '';
+      };
+      tempoSel.addEventListener('change', sync);
+      sync();
+    }
+
+    function setupCesareaBySexo() {
+      const sexo = document.getElementById('sexo');
+      const wrap = document.getElementById('wrap_cesarea');
+      const ces = document.getElementById('cesarea');
+      if (!sexo || !wrap || !ces) return;
+      const sync = () => {
+        const show = sexo.value === 'Feminino';
+        wrap.classList.toggle('hidden', !show);
+        if (!show) ces.value = '';
+      };
+      sexo.addEventListener('change', sync);
+      sync();
+    }
+
+    function bind() {
+      const objective = document.getElementById('objetivo');
+      const atividade = document.getElementById('atividade_atual');
+      const cardio = document.getElementById('cardio');
+      const wrapTempo = document.getElementById('wrap_cardio_tempo');
+      const wrapPref = document.getElementById('wrap_cardio_pref');
+      const cardioPref = document.getElementById('cardio_pref');
+      const foco = document.getElementById('foco_muscular');
+      const regiao = document.getElementById('regiao_dor');
+      const mov = document.getElementById('mov_piora');
+      const dor = document.getElementById('dor_lesao');
+
+      if (objective) objective.addEventListener('change', () => toggleByValue('objetivo', 'wrap_objetivo_outro', 'Outro'));
+      if (atividade) atividade.addEventListener('change', () => toggleByValue('atividade_atual', 'wrap_atividade_outra', 'outra'));
+
+      if (cardio) cardio.addEventListener('change', () => {
+        const show = cardio.value === 'Sim';
+        if (wrapTempo) wrapTempo.classList.toggle('hidden', !show);
+        if (wrapPref) wrapPref.classList.toggle('hidden', !show);
+        if (!show) document.getElementById('wrap_cardio_outro').classList.add('hidden');
+      });
+      if (cardioPref) cardioPref.addEventListener('change', () => toggleByValue('cardio_pref', 'wrap_cardio_outro', 'Outro'));
+
+      if (foco) foco.addEventListener('change', () => toggleByValue('foco_muscular', 'wrap_foco_outro', 'Outro'));
+      if (regiao) regiao.addEventListener('change', () => toggleByValue('regiao_dor', 'wrap_regiao_outro', 'Outro'));
+      if (mov) mov.addEventListener('change', () => toggleByValue('mov_piora', 'wrap_mov_outro', 'Outro'));
+      if (dor) dor.addEventListener('change', togglePainBlock);
+
+      // initial
+      toggleByValue('objetivo', 'wrap_objetivo_outro', 'Outro');
+      toggleByValue('atividade_atual', 'wrap_atividade_outra', 'outra');
+      toggleByValue('cardio_pref', 'wrap_cardio_outro', 'Outro');
+      toggleByValue('foco_muscular', 'wrap_foco_outro', 'Outro');
+      toggleByValue('regiao_dor', 'wrap_regiao_outro', 'Outro');
+      toggleByValue('mov_piora', 'wrap_mov_outro', 'Outro');
+      togglePainBlock();
+      if (cardio) {
+        const show = cardio.value === 'Sim';
+        if (wrapTempo) wrapTempo.classList.toggle('hidden', !show);
+        if (wrapPref) wrapPref.classList.toggle('hidden', !show);
+      }
+
+      setupLogo();
+      setupTempoTreino();
+      setupCesareaBySexo();
+      setupSubmitToWhatsApp();
     }
 
     document.addEventListener('DOMContentLoaded', bind);
