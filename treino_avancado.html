@@ -148,6 +148,11 @@
     .option input { margin-top: 2px; accent-color: var(--green); }
     .option span { flex: 1; }
     .hidden { display: none !important; }
+    .mt-8 { margin-top: 8px; }
+    .consent { display:flex; gap:10px; align-items:flex-start; margin-top:10px; color: var(--muted); font-size:.92rem; }
+    .consent input { margin-top: 3px; accent-color: var(--green); }
+    .submit-left { display:flex; flex-direction:column; gap:6px; }
+    .submit-right { display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
     .footer-note {
       margin-top: 8px;
       color: var(--muted);
@@ -426,8 +431,19 @@
             </select>
           </div>
           <div class="field col-4">
-            <label class="label" for="tempo_treino">26. Quanto tempo você tem por treino?</label>
-            <input id="tempo_treino" name="tempo_treino" type="text" placeholder="Ex.: 50 min" />
+            <label class="label" for="tempo_treino_sel">26. Quanto tempo você tem por treino?</label>
+            <select id="tempo_treino_sel" name="tempo_treino_sel">
+              <option value="">Selecione</option>
+              <option>30 min</option>
+              <option>45 min</option>
+              <option>60 min</option>
+              <option>75 min</option>
+              <option>90+ min</option>
+              <option>Outro</option>
+            </select>
+            <div id="wrap_tempo_treino_outro" class="hidden mt-8">
+              <input id="tempo_treino" name="tempo_treino" type="text" placeholder="Se marcou 'Outro', escreva aqui (ex.: 50 min)" />
+            </div>
           </div>
           <div class="field col-4">
             <label class="label" for="divisao">27. Qual divisão de treino você prefere?</label>
@@ -924,10 +940,14 @@
       </section>
 
       <div class="submit-bar">
-        <div>
+        <div class="submit-left">
           <strong>Arquivo pronto.</strong>
-          </div>
-        <div>
+          <label class="consent">
+            <input type="checkbox" id="consent" name="consent" required />
+            <span>Declaro que respondi com sinceridade e autorizo envio para o personal.</span>
+          </label>
+        </div>
+        <div class="submit-right">
           <button type="reset" class="btn btn-secondary">Limpar</button>
           <button type="submit" class="btn btn-primary">Enviar para WhatsApp</button>
         </div>
@@ -962,6 +982,8 @@
       const regiao = document.getElementById('regiao_dor');
       const mov = document.getElementById('mov_piora');
       const dor = document.getElementById('dor_lesao');
+      const tempoSel = document.getElementById('tempo_treino_sel');
+      const wrapTempoTreino = document.getElementById('wrap_tempo_treino_outro');
 
       if (objective) objective.addEventListener('change', () => toggleByValue('objetivo', 'wrap_objetivo_outro', 'Outro'));
       if (atividade) atividade.addEventListener('change', () => toggleByValue('atividade_atual', 'wrap_atividade_outra', 'outra'));
@@ -972,6 +994,14 @@
         if (!show) document.getElementById('wrap_cardio_outro').classList.add('hidden');
       });
       if (cardioPref) cardioPref.addEventListener('change', () => toggleByValue('cardio_pref', 'wrap_cardio_outro', 'Outro'));
+      if (tempoSel) tempoSel.addEventListener('change', () => {
+        const show = tempoSel.value === 'Outro';
+        if (wrapTempoTreino) wrapTempoTreino.classList.toggle('hidden', !show);
+        if (!show) {
+          const i = document.getElementById('tempo_treino');
+          if (i) i.value = '';
+        }
+      });
       if (foco) foco.addEventListener('change', () => toggleByValue('foco_muscular', 'wrap_foco_outro', 'Outro'));
       if (regiao) regiao.addEventListener('change', () => toggleByValue('regiao_dor', 'wrap_regiao_outro', 'Outro'));
       if (mov) mov.addEventListener('change', () => toggleByValue('mov_piora', 'wrap_mov_outro', 'Outro'));
@@ -979,6 +1009,10 @@
 
       toggleByValue('objetivo', 'wrap_objetivo_outro', 'Outro');
       toggleByValue('atividade_atual', 'wrap_atividade_outra', 'outra');
+      if (tempoSel && wrapTempoTreino) {
+        const show = tempoSel.value === 'Outro';
+        wrapTempoTreino.classList.toggle('hidden', !show);
+      }
       toggleByValue('cardio_pref', 'wrap_cardio_outro', 'Outro');
       toggleByValue('foco_muscular', 'wrap_foco_outro', 'Outro');
       toggleByValue('regiao_dor', 'wrap_regiao_outro', 'Outro');
@@ -1012,8 +1046,14 @@
         return chosen ? (chosen.value || chosen.getAttribute('data-label') || chosen.id) : '';
       }
       const input = container.querySelector('input:not([type="checkbox"]):not([type="radio"])');
-      if (input) return (input.value || '').trim();
       const select = container.querySelector('select');
+      // If a field has both select + input (ex.: "Outro"), prefer select unless it's "Outro"
+      if (select && input) {
+        const sel = (select.value || '').trim();
+        if (sel && sel.toLowerCase() !== 'outro') return sel;
+        return (input.value || '').trim();
+      }
+      if (input) return (input.value || '').trim();
       if (select) return (select.value || '').trim();
       const ta = container.querySelector('textarea');
       if (ta) return (ta.value || '').trim();
@@ -1075,6 +1115,13 @@
       if (!form) return;
       form.addEventListener('submit', (e) => {
         e.preventDefault();
+
+        // Native validation (required fields, checkbox etc.)
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+
         const msg = buildWhatsAppMessage();
         openWhatsApp(msg);
       });
