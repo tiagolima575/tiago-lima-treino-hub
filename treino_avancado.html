@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Treino Avançado - Avaliação Inicial MFIT</title>
+  <title>Avaliação Inicial - Treino Avançado</title>
   <style>
     :root {
       --bg: #050505;
@@ -190,17 +190,21 @@
       border: 1px solid #2d2d2d;
     }
   
-    .brand { display: flex; align-items: center; justify-content: flex-start; margin-bottom: 10px; }
+    .brand { display: flex; align-items: center; justify-content: flex-start; gap: 12px; margin-bottom: 10px; }
     .logo { max-height: 54px; width: auto; object-fit: contain; filter: drop-shadow(0 0 0 rgba(0,0,0,0)); }
-</style>
+    .brand-text { display: flex; flex-direction: column; line-height: 1.1; }
+    .brand-name { font-size: 18px; font-weight: 900; color: var(--green); letter-spacing: .2px; }
+    </style>
 </head>
 <body>
   <div class="wrap">
     <div class="hero">
-            <div class="brand">
-        <img id="brandLogo" class="logo" src="logo.png" alt="Logo" />
+      <div class="brand">
+        <img id="brandLogo" class="logo" src="https://tiagolima575.github.io/tiago-lima-treino-hub/logo.png" alt="Logo" onerror="this.onerror=null;this.src='logo.png';" />
+        <div class="brand-text">
+          <div class="brand-name">Avaliação Inicial</div>
+        </div>
       </div>
-<div class="badge">MFIT Premium - Avaliação Inicial</div>
       <h1>TREINO AVANÇADO</h1>
       <p>Questionário estruturado para leitura técnica, segurança e prescrição personalizada.</p>
       <p>Preencha com sinceridade. Resposta bonita e falsa só serve para sabotar o treino.</p>
