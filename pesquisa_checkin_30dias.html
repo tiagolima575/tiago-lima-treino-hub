@@ -71,16 +71,14 @@
   
 <div class="top">
   <div class="brand">
-    <h1>🟩 MFIT — Check-in 30 Dias</h1>
+    <h1>🟩 Check-in 30 Dias</h1>
     <p>Pesquisa rápida para medir <b>resposta ao estímulo</b> e sugerir ajustes (volume/densidade/nível).</p>
   </div>
   <div class="logoWrap">
-    <img id="brandLogo" src="logo-tiago.png" alt="Logo" style="display:block;" />
+    <img id="brandLogo" src="https://tiagolima575.github.io/tiago-lima-treino-hub/logo.png" onerror="this.onerror=null;this.src='logo-tiago.png';" alt="Logo" style="display:block;" />
   </div>
 </div>
 
-<!-- Logo do app (opcional): coloque o arquivo 'logo-mfit-app.png' na mesma pasta do site -->
-<img id="appLogo" src="logo-mfit-app.png" alt="MFIT" onerror="this.style.display='none'">
 <div class="progress"><div id="bar"></div></div>
 
   <form id="form">
@@ -191,7 +189,7 @@
 <option value="10">10</option></select></div>
       </div>
       <div class="grid grid-2">
-        <div><label>DOMS (dor muscular tardia) (0–10)</label><select id="doms" required><option value="">Selecione</option><option value="0">0</option>
+        <div><label>Dor muscular no dia seguinte (0–10)</label><select id="doms" required><option value="">Selecione</option><option value="0">0</option>
 <option value="1">1</option>
 <option value="2">2</option>
 <option value="3">3</option>
@@ -319,7 +317,7 @@
     </section>
 
     <section class="card session" data-step="5" style="display:none">
-      <h2>SESSÃO 5/7 — 🧩 Sinais de risco (SAVRL-MFIT)</h2>
+      <h2>SESSÃO 5/7 — 🧩 Sinais de risco (triagem)</h2>
       <p class="sub">Se teve dor/pinçamento, eu travo o risco e ajusto o plano.</p>
       <div class="grid grid-2">
         <div>
@@ -404,6 +402,15 @@
 </div>
 
 <script>
+  // Logo por URL (opcional): use ?logo=LINK_DO_LOGO
+  (function(){
+    const img = document.getElementById('brandLogo');
+    if(!img) return;
+    const p = new URLSearchParams(window.location.search);
+    const q = p.get('logo');
+    if(q) img.src = q;
+  })();
+
   const sessions = Array.from(document.querySelectorAll(".session"));
   let step = 1;
   const bar = document.getElementById("bar");
@@ -597,10 +604,10 @@
     const sem = calcSemaforo();
     const niv = sugestaoNivel();
 
-    return `CHECK-IN 30 DIAS — MFIT (Resposta ao Estímulo)\n\n` +
+    return `CHECK-IN 30 DIAS (Resposta ao Estímulo)\n\n` +
 `1) Identificação\nNome: ${nome}\nNível atual: ${nivelAtual}\nObjetivo: ${obj}\n\n` +
 `2) Aderência (30 dias)\nPlanejado/sem: ${planejado}\nFeito/sem (média): ${feito}\n% completos: ${pctCompleto}%\nMotivo faltas: ${motivoFalta}\nTempo cabe: ${tempoCabe}\n\n` +
-`3) Semáforo de recuperação\nSono: ${sono}/10\nEstresse: ${estresse}/10\nDOMS: ${doms}/10\nEnergia: ${energia}/10\nDor articular: ${dor}/10\nLocal: ${localDor}\n\n` +
+`3) Semáforo de recuperação\nSono: ${sono}/10\nEstresse: ${estresse}/10\nDor muscular (dia seguinte): ${doms}/10\nEnergia: ${energia}/10\nDor articular: ${dor}/10\nLocal: ${localDor}\n\n` +
 `4) Performance (3 marcadores)\n1) ${ex1} — ${res1}\n2) ${ex2} — ${res2}\n3) ${ex3} — ${res3}\nRIR médio: ${rir}\nTécnica estável: ${tecnica}\n\n` +
 `5) Risco (SAVRL)\nPinçamento/travamento: ${pinca}${pincaEx ? " | Ex.: "+pincaEx : ""}\nEvita exercício: ${evita}${evitaEx ? " | Ex.: "+evitaEx : ""}\nObs: ${obsRisco || "—"}\n\n` +
 `6) Percepção\nGostou: ${gostou}\nAtrapalhou: ${atrapalhou}\nMobilidade: ${mob}\nAlongamento: ${along}\nPreferência próximo mês: ${preferencia}\n\n` +
