@@ -56,6 +56,22 @@
     .btn{border:0;border-radius:12px;padding:12px 18px;font-weight:700;cursor:pointer;}
     .btn-primary{background:var(--green);color:#04150d;}
     .btn-secondary{background:#151515;color:var(--text);border:1px solid #2d2d2d;}
+
+    .image-picker{border:1px solid var(--line);border-radius:14px;background:#0d1116;overflow:hidden;}
+    .image-picker summary{list-style:none;cursor:pointer;padding:14px 16px;font-weight:700;color:var(--text);}
+    .image-picker summary::-webkit-details-marker{display:none;}
+    .image-picker summary::after{content:'▾';float:right;color:var(--muted);}
+    .image-picker[open] summary::after{content:'▴';}
+    .image-picker-body{padding:0 14px 14px;}
+    .image-grid{display:grid;gap:12px;grid-template-columns:repeat(3,minmax(0,1fr));}
+    @media (max-width:760px){.image-grid{grid-template-columns:1fr;}}
+    .image-option{display:block;cursor:pointer;}
+    .image-option input{position:absolute;opacity:0;pointer-events:none;}
+    .image-card{display:flex;flex-direction:column;gap:8px;padding:10px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(255,255,255,.02);transition:border-color .2s, box-shadow .2s, transform .2s;}
+    .image-card img{width:100%;height:auto;border-radius:10px;border:1px solid rgba(255,255,255,.06);background:#fff;object-fit:cover;}
+    .image-card strong{font-size:1rem;color:var(--text);}
+    .image-card small{color:var(--muted);font-size:.84rem;}
+    .image-option input:checked + .image-card{border-color:rgba(0,204,102,.9);box-shadow:0 0 0 3px rgba(0,204,102,.12);}
   </style>
 </head>
 <body>
@@ -149,6 +165,14 @@
 <div class="field hidden" id="wrap_foco_outro">
 <label class="label" for="foco_outro">13. Se marcou “Outro”, qual região?</label>
 <input id="foco_outro" name="foco_outro" type="text"/>
+</div>
+<div class="field col-6">
+<label class="label" for="foco_muscular_sec">13.1. Qual região do corpo você também gostaria de priorizar em segundo lugar? (opcional)</label>
+<select id="foco_muscular_sec" name="foco_muscular_sec"><option value="">Selecione</option><option>Glúteos</option><option>Pernas</option><option>Abdômen</option><option>Peitoral</option><option>Dorsal</option><option>Ombros</option><option>Braços</option><option>Corpo todo</option><option>Outro</option></select>
+</div>
+<div class="field col-6 hidden" id="wrap_foco_sec_outro">
+<label class="label" for="foco_sec_outro">13.2. Se marcou “Outro” no foco secundário, qual região?</label>
+<input id="foco_sec_outro" name="foco_sec_outro" type="text"/>
 </div>
 <div class="field">
 <label class="label">14. Qual resultado você gostaria de perceber primeiro?</label>
@@ -651,6 +675,43 @@
 <option>Varia bastante</option>
 </select>
 </div>
+
+<div class="field col-12">
+<label class="label">64.1 Como seu corpo costuma ser com mais facilidade?</label>
+<details class="image-picker">
+<summary>Toque para ver as opções com imagem</summary>
+<div class="image-picker-body">
+<div class="image-grid">
+<label class="image-option">
+<input type="radio" name="perfil_corporal_visual" value="Mais magro">
+<span class="image-card">
+<img src="https://tiagolima575.github.io/tiago-lima-treino-hub/biotipo_ectomorfo.jpg" alt="Referência visual de corpo mais magro" onerror="this.style.display='none';">
+<strong>Mais magro</strong>
+<small>Referência visual</small>
+</span>
+</label>
+<label class="image-option">
+<input type="radio" name="perfil_corporal_visual" value="Mais equilibrado">
+<span class="image-card">
+<img src="https://tiagolima575.github.io/tiago-lima-treino-hub/biotipo_mesomorfo.jpg" alt="Referência visual de corpo mais equilibrado" onerror="this.style.display='none';">
+<strong>Mais equilibrado</strong>
+<small>Referência visual</small>
+</span>
+</label>
+<label class="image-option">
+<input type="radio" name="perfil_corporal_visual" value="Mais encorpado">
+<span class="image-card">
+<img src="https://tiagolima575.github.io/tiago-lima-treino-hub/biotipo_endomorfo.jpg" alt="Referência visual de corpo mais encorpado" onerror="this.style.display='none';">
+<strong>Mais encorpado</strong>
+<small>Referência visual</small>
+</span>
+</label>
+</div>
+<span class="helper">Escolha a imagem que mais se aproxima do seu corpo hoje. É só uma referência visual.</span>
+</div>
+</details>
+</div>
+
 </div>
 </section>
 <section class="section">
@@ -963,25 +1024,35 @@
     function buildWhatsAppMessage() {
       const lines = [];
       const now = new Date();
+      const separator = '━━━━━━━━━━━━━━━━━━';
 
-      lines.push('TREINO PERSONALIZADO — AVALIAÇÃO INICIAL');
-      lines.push('Data/Hora: ' + now.toLocaleString('pt-BR'));
+      lines.push('📋 TREINO PERSONALIZADO — AVALIAÇÃO INICIAL');
+      lines.push('🕒 Data/Hora: ' + now.toLocaleString('pt-BR'));
       lines.push('');
 
       document.querySelectorAll('.section').forEach(sec => {
         const title = sec.querySelector('h2');
-        if (title) lines.push(title.textContent.trim());
+        const sectionLines = [];
 
         sec.querySelectorAll('.field').forEach(field => {
           if (isFieldHidden(field)) return;
           const label = field.querySelector(':scope > .label');
           if (!label) return;
+
           const value = getSelectedValues(field);
+          if (!value) return;
+
           const labelText = label.textContent.replace(/\s+/g, ' ').trim();
-          const clean = labelText.replace(/^\d+\.\s*/, '');
-          if (value) lines.push('• ' + clean + ': ' + value);
+          const clean = labelText.replace(/^\d+(?:\.\d+)*\.?\s*/, '');
+          sectionLines.push('• ' + clean + ': ' + value);
         });
 
+        if (!sectionLines.length) return;
+
+        lines.push(separator);
+        lines.push((title ? title.textContent.trim() : 'BLOCO').toUpperCase());
+        lines.push(separator);
+        sectionLines.forEach(line => lines.push(line));
         lines.push('');
       });
 
@@ -1060,6 +1131,7 @@
       const cardio = document.getElementById('cardio');
       const cardioPref = document.getElementById('cardio_pref');
       const foco = document.getElementById('foco_muscular');
+      const focoSec = document.getElementById('foco_muscular_sec');
       const regiao = document.getElementById('regiao_dor');
       const mov = document.getElementById('mov_piora');
       const dor = document.getElementById('dor_lesao');
@@ -1073,6 +1145,7 @@
       if (objective) objective.addEventListener('change', () => toggleByValue('objetivo', 'wrap_objetivo_outro', 'Outro'));
       if (atividade) atividade.addEventListener('change', () => toggleByValue('atividade_atual', 'wrap_atividade_outra', 'outra'));
       if (foco) foco.addEventListener('change', () => toggleByValue('foco_muscular', 'wrap_foco_outro', 'Outro'));
+      if (focoSec) focoSec.addEventListener('change', () => toggleByValue('foco_muscular_sec', 'wrap_foco_sec_outro', 'Outro'));
       if (regiao) regiao.addEventListener('change', () => toggleByValue('regiao_dor', 'wrap_regiao_outro', 'Outro'));
       if (mov) mov.addEventListener('change', () => toggleByValue('mov_piora', 'wrap_mov_outro', 'Outro'));
       if (dor) dor.addEventListener('change', togglePainBlock);
@@ -1114,6 +1187,7 @@
       toggleByValue('objetivo', 'wrap_objetivo_outro', 'Outro');
       toggleByValue('atividade_atual', 'wrap_atividade_outra', 'outra');
       toggleByValue('foco_muscular', 'wrap_foco_outro', 'Outro');
+      toggleByValue('foco_muscular_sec', 'wrap_foco_sec_outro', 'Outro');
       toggleByValue('regiao_dor', 'wrap_regiao_outro', 'Outro');
       toggleByValue('mov_piora', 'wrap_mov_outro', 'Outro');
       toggleByValue('cardio_pref', 'wrap_cardio_outro', 'Outro');
