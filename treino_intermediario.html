@@ -7,14 +7,14 @@
 <title>Avaliação Inicial - Treino Intermediário</title>
 <style>
     :root {
-      --bg: #050505;
+      --bg: #000000;
       --card: #0d0d0d;
       --card-2: #121212;
       --text: #ffffff;
       --muted: #b8b8b8;
       --line: #242424;
-      --green: #00cc66;
-      --green-2: #00a955;
+      --purple: #A359DA;
+      --purple-2: #E49EF7;
       --danger: #ff5e5e;
       --radius: 16px;
     }
@@ -32,8 +32,8 @@
       padding: 24px 16px 56px;
     }
     .hero {
-      background: linear-gradient(135deg, rgba(0,204,102,.18), rgba(0,204,102,.04));
-      border: 1px solid rgba(0,204,102,.28);
+      background: #000000;
+      border: 1px solid rgba(163,89,218,.46);
       border-radius: 22px;
       padding: 24px;
       margin-bottom: 20px;
@@ -50,18 +50,20 @@
       max-height: 54px;
       width: auto;
       object-fit: contain;
+      display: block;
+      background: #000000;
     }
     .brand-name {
       font-size: 18px;
       font-weight: 900;
-      color: var(--green);
+      color: var(--purple);
       letter-spacing: .2px;
       line-height: 1.1;
     }
     .hero h1 {
       margin: 10px 0 8px;
       font-size: clamp(1.6rem, 3vw, 2.4rem);
-      color: var(--green);
+      color: var(--purple);
       letter-spacing: .02em;
     }
     .hero p { margin: 6px 0; color: var(--muted); }
@@ -76,7 +78,7 @@
     }
     .section h2 {
       margin: 0 0 8px;
-      color: var(--green);
+      color: var(--purple);
       font-size: 1.2rem;
     }
     .section .desc {
@@ -124,8 +126,8 @@
       font-size: .98rem;
     }
     input:focus, textarea:focus, select:focus {
-      border-color: rgba(0,204,102,.9);
-      box-shadow: 0 0 0 3px rgba(0,204,102,.12);
+      border-color: rgba(163,89,218,.9);
+      box-shadow: 0 0 0 3px rgba(163,89,218,.16);
     }
     textarea { min-height: 100px; resize: vertical; }
 
@@ -146,7 +148,7 @@
       border-radius: 12px;
       background: #101010;
     }
-    .option input { margin-top: 2px; accent-color: var(--green); }
+    .option input { margin-top: 2px; accent-color: var(--purple); }
     .option span { flex: 1; }
 
     .hidden { display:none !important; }
@@ -174,7 +176,7 @@
       color: var(--muted);
       font-size:.92rem;
     }
-    .consent input { margin-top: 3px; accent-color: var(--green); }
+    .consent input { margin-top: 3px; accent-color: var(--purple); }
 
     .btn {
       border: 0;
@@ -184,8 +186,9 @@
       cursor: pointer;
     }
     .btn-primary {
-      background: var(--green);
-      color: #04150d;
+      background: linear-gradient(135deg, var(--purple), var(--purple-2));
+      color: #050505;
+      box-shadow: 0 0 18px rgba(163,89,218,.28);
     }
     .btn-secondary {
       background: #151515;
