@@ -3,67 +3,67 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title> Check-in 30 Dias (Resposta ao Estímulo)</title>
+  <title>Check-in 30 Dias (Resposta ao Estímulo)</title>
+  <meta name="theme-color" content="#A359DA" />
   <style>
     :root{
-      --bg:#0b0b0b;--card:#141414;--card2:#101010;--text:#ffffff;--muted:#b8b8b8;
-      --green:#00CC66;--line:#242424;--danger:#ff4d4d;--warn:#ffd24d;
+      --bg:#000000;
+      --card:#000000;
+      --field:#000000;
+      --purple:#A359DA;
+      --purpleSoft:rgba(163,89,218,.58);
+      --purpleStrong:rgba(163,89,218,.86);
+      --text:#F7F0FF;
+      --muted:rgba(247,240,255,.74);
+      --line:rgba(163,89,218,.52);
+      --danger:#ff4d4d;
+      --warn:#ffd24d;
     }
     *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif}
-    body{margin:0;background:var(--bg);color:var(--text);padding:18px}
-    .wrap{max-width:820px;margin:0 auto}
-    .top{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:14px}
-    .brand{display:flex;flex-direction:column;gap:4px}
-    .brand h1{margin:0;font-size:18px;letter-spacing:.4px}
-    .brand p{margin:0;color:var(--muted);font-size:13px}
-    .pill{background:rgba(0,204,102,.12);border:1px solid rgba(0,204,102,.35);color:var(--green);
-      padding:8px 10px;border-radius:12px;font-weight:700;font-size:12px}
-    .progress{height:10px;background:var(--card2);border:1px solid var(--line);border-radius:999px;overflow:hidden}
-    .progress>div{height:100%;width:0;background:var(--green);transition:width .2s ease}
-    .card{background:linear-gradient(180deg,rgba(20,20,20,1),rgba(14,14,14,1));
-      border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0}
-    .card h2{margin:0 0 10px 0;font-size:16px}
-    .sub{color:var(--muted);font-size:13px;margin:0 0 12px 0}
+    body{margin:0;background:#000;color:var(--text);padding:18px}
+    .wrap{max-width:860px;margin:0 auto;padding:4px 0 20px}
+    .top{display:flex;gap:14px;align-items:center;justify-content:space-between;margin:6px 0 18px}
+    .brand{display:flex;flex-direction:column;gap:6px;min-width:0}
+    .brand h1{margin:0;font-size:26px;line-height:1.05;letter-spacing:.2px;color:var(--purple)}
+    .brand p{margin:0;color:var(--muted);font-size:14px;line-height:1.35}
+    .brand b{color:rgba(247,240,255,.95)}
+    .pill{background:#000;border:1.5px solid var(--line);color:var(--purple);padding:8px 10px;border-radius:12px;font-weight:800;font-size:12px}
+    .progress{height:10px;background:#000;border:1.5px solid var(--line);border-radius:999px;overflow:hidden}
+    .progress>div{height:100%;width:0;background:var(--purple);transition:width .2s ease}
+    .card{background:#000;border:2px solid var(--line);border-radius:22px;padding:18px;margin:14px 0}
+    .card:hover{border-color:var(--purpleStrong)}
+    .card h2{margin:0 0 10px 0;font-size:17px;line-height:1.25;color:rgba(247,240,255,.96)}
+    .sub{color:var(--muted);font-size:13px;margin:0 0 12px 0;line-height:1.35}
     .grid{display:grid;grid-template-columns:1fr;gap:12px}
     @media (min-width:720px){ .grid-2{grid-template-columns:1fr 1fr} }
     label{display:block;font-size:13px;color:var(--muted);margin:0 0 6px 2px}
-    input,select,textarea{width:100%;background:#0f0f0f;color:var(--text);border:1px solid var(--line);
-      border-radius:14px;padding:12px 12px;font-size:15px;outline:none}
+    input,select,textarea{width:100%;background:#000;color:var(--text);border:1.5px solid var(--line);border-radius:14px;padding:12px 12px;font-size:15px;outline:none}
+    input:focus,select:focus,textarea:focus{border-color:var(--purpleStrong)}
+    input::placeholder,textarea::placeholder{color:rgba(247,240,255,.38)}
     textarea{min-height:100px;resize:vertical}
     .row{display:flex;gap:10px;flex-wrap:wrap}
-    .btn{border:1px solid var(--line);background:#0f0f0f;color:var(--text);
-      padding:12px 14px;border-radius:14px;font-weight:700;cursor:pointer;user-select:none}
-    .btn.primary{background:rgba(0,204,102,.16);border:1px solid rgba(0,204,102,.45);color:#eafff3}
-    .btn.primary:hover{filter:brightness(1.06)}
-    .btn:disabled{opacity:.45;cursor:not-allowed}
+    .btn{border:1.5px solid var(--line);background:#000;color:var(--purple);padding:12px 14px;border-radius:14px;font-weight:900;cursor:pointer;user-select:none}
+    .btn.primary{background:#000;border:1.5px solid var(--purpleStrong);color:var(--purple)}
+    .btn:hover,.btn.primary:hover{border-color:var(--purpleStrong);filter:none}
+    .btn:active{transform:translateY(1px)}
+    .btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
     .nav{display:flex;gap:10px;justify-content:space-between;margin-top:10px}
     .hint{color:var(--muted);font-size:12px;margin-top:10px;line-height:1.35}
     .divider{height:1px;background:var(--line);margin:12px 0}
-    .resultBox{border-radius:16px;padding:12px;border:1px solid var(--line);background:#0f0f0f}
-    .ok{border-color:rgba(0,204,102,.45)}
-    .warn{border-color:rgba(255,210,77,.45)}
-    .bad{border-color:rgba(255,77,77,.45)}
-    .small{font-size:12px;color:var(--muted);margin:6px 0 0 0}
+    .resultBox{border-radius:16px;padding:12px;border:1.5px solid var(--line);background:#000}
+    .ok{border-color:var(--purpleStrong)}
+    .warn{border-color:rgba(255,210,77,.62)}
+    .bad{border-color:rgba(255,77,77,.62)}
+    .small{font-size:12px;color:var(--muted);margin:6px 0 0 0;line-height:1.35}
     .kpi{display:grid;grid-template-columns:1fr;gap:10px}
     @media (min-width:720px){ .kpi{grid-template-columns:1fr 1fr 1fr} }
-    .kpi .box{background:#0f0f0f;border:1px solid var(--line);border-radius:16px;padding:12px}
+    .kpi .box{background:#000;border:1.5px solid var(--line);border-radius:16px;padding:12px}
     .kpi .box .t{font-size:12px;color:var(--muted);margin:0 0 6px 0}
-    .kpi .box .v{font-size:16px;font-weight:900;margin:0}
-  
-    .logoWrap{
-      width:56px;height:56px;border-radius:14px;
-      border:1px solid var(--line);background:#0f0f0f;
-      display:flex;align-items:center;justify-content:center;overflow:hidden
-    }
-    .logoWrap img{width:100%;height:100%;object-fit:cover}
-    #appLogo{
-      position:fixed;top:12px;left:12px;
-      width:34px;height:34px;border-radius:10px;
-      border:1px solid rgba(0,204,102,.35);
-      background:#0f0f0f;object-fit:contain;
-      padding:4px;z-index:9999
-    }
-
+    .kpi .box .v{font-size:16px;font-weight:900;margin:0;color:var(--purple)}
+    .logoWrap{width:64px;height:64px;border-radius:18px;border:2px solid var(--line);background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden;flex:0 0 auto}
+    .logoWrap img{width:100%;height:100%;object-fit:contain;display:block}
+    #appLogo{position:fixed;top:12px;left:12px;width:34px;height:34px;border-radius:10px;border:1.5px solid var(--line);background:#000;object-fit:contain;padding:4px;z-index:9999}
+    @media (max-width:420px){body{padding:14px}.brand h1{font-size:23px}.logoWrap{width:58px;height:58px}.card{padding:16px}.nav{flex-direction:column}.nav .btn{width:100%}}
   </style>
 </head>
 <body>
@@ -71,7 +71,7 @@
   
 <div class="top">
   <div class="brand">
-    <h1>🟩 Check-in 30 Dias</h1>
+    <h1>Check-in 30 Dias</h1>
     <p>Pesquisa rápida para medir <b>resposta ao estímulo</b> e sugerir ajustes (volume/densidade/nível).</p>
   </div>
   <div class="logoWrap">
@@ -85,9 +85,8 @@
     <section class="card session" data-step="1">
       <h2>SESSÃO 1/7 — 👤 Identificação</h2>
       <p class="sub">Só o necessário para cruzar com seu plano atual.</p>
-      <div class="grid grid-2">
+      <div class="grid">
         <div><label>Nome completo</label><input id="nome" placeholder="Ex.: Maria Silva" required /></div>
-        <div><label>WhatsApp (com DDD)</label><input id="whats" inputmode="numeric" placeholder="Ex.: 69999999999" required /></div>
       </div>
       <div class="grid grid-2">
         <div>
@@ -394,7 +393,7 @@
         💬 Enviar minhas respostas no WhatsApp
       </button>
 
-      <p class="hint">Dica: se o WhatsApp não abrir, atualize a página e tente de novo. Se persistir, abra no navegador (Chrome) e verifique se o WhatsApp está instalado.</p>
+      <p class="hint">Dica: o WhatsApp abrirá com a mensagem pronta. O aluno escolhe o contato de envio sem precisar informar número no formulário.</p>
 
       <div class="nav"><button type="button" class="btn" onclick="prev()">Voltar</button><span></span></div>
     </section>
@@ -447,11 +446,6 @@
         alert("Preencha todos os campos obrigatórios desta sessão.");
         return false;
       }
-    }
-    if(step===1){
-      const w = onlyDigits(document.getElementById("whats").value);
-      if(w.length<10 || w.length>11){ alert("WhatsApp inválido. Use apenas números com DDD (10–11 dígitos)."); return false; }
-      document.getElementById("whats").value = w;
     }
     if(step===2){
       const p = Number(onlyDigits(document.getElementById("pctCompleto").value));
@@ -615,13 +609,11 @@
   }
 
   function enviarWhats(){
-    const w = onlyDigits(document.getElementById("whats").value);
-    const phone55 = "55" + w;
     const text = buildMessage();
     const encoded = encodeURIComponent(text);
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    const url = isMobile ? `https://wa.me/${phone55}?text=${encoded}`
-                         : `https://api.whatsapp.com/send?phone=${phone55}&text=${encoded}`;
+    const url = isMobile ? `https://wa.me/?text=${encoded}`
+                         : `https://api.whatsapp.com/send?text=${encoded}`;
     const win = window.open(url, "_blank");
     if(!win) window.location.href = url;
   }
