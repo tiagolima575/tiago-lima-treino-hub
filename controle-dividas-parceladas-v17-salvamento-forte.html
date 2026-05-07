@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Controle de Dívidas Parceladas v17 Salvamento Forte</title>
+  <style>
+    :root {
+      --bg: #050505;
+      --card: #111111;
+      --card2: #181818;
+      --field: #070707;
+      --green: #00cc66;
+      --green2: #00994d;
+      --red: #ff4d4d;
+      --yellow: #ffc857;
+      --blue: #4da3ff;
+      --text: #ffffff;
+      --muted: #b7b7b7;
+      --border: #2a2a2a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #050505, #111111);
+      color: var(--text);
+      padding: 16px;
+    }
+
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    header, .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.30);
+    }
+
+    header { margin-bottom: 16px; }
+
+    header h1 {
+      color: var(--green);
+      font-size: 26px;
+      margin-bottom: 8px;
+    }
+
+    header p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 14px;
+    }
+
+    .span-4 { grid-column: span 4; }
+    .span-5 { grid-column: span 5; }
+    .span-6 { grid-column: span 6; }
+    .span-7 { grid-column: span 7; }
+    .span-8 { grid-column: span 8; }
+    .span-12 { grid-column: span 12; }
+
+    h2 {
+      color: var(--green);
+      font-size: 19px;
+      margin-bottom: 14px;
+    }
+
+    h3 {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    label {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      background: var(--field);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 15px;
+      margin-bottom: 12px;
+      outline: none;
+      -webkit-user-select: text;
+      user-select: text;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--green);
+    }
+
+    textarea {
+      min-height: 70px;
+      resize: vertical;
+    }
+
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .btn-primary { background: var(--green); color: #001a0d; width: 100%; }
+    .btn-green { background: var(--green2); color: #fff; }
+    .btn-red { background: var(--red); color: #fff; }
+    .btn-yellow { background: var(--yellow); color: #1a1a1a; }
+    .btn-blue { background: var(--blue); color: #001120; }
+    .btn-small { padding: 9px 10px; font-size: 12px; }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+    }
+
+    .summary-box {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 14px;
+      min-height: 108px;
+    }
+
+    .summary-box span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+
+    .summary-box strong {
+      font-size: 21px;
+      word-break: break-word;
+    }
+
+    .positive { color: var(--green); }
+    .negative { color: var(--red); }
+    .warning { color: var(--yellow); }
+
+    .note, .alert-box {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      margin-top: 10px;
+    }
+
+    .alert-box {
+      background: rgba(0,204,102,.08);
+      border: 1px solid rgba(0,204,102,.34);
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .footer-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .footer-actions button {
+      flex: 1;
+      min-width: 150px;
+    }
+
+    .extra-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: end;
+    }
+
+    .extra-row input { margin-bottom: 12px; }
+    .extra-row button {
+      margin-bottom: 12px;
+      height: 43px;
+      min-width: 48px;
+    }
+
+    .fixed-row {
+      display: grid;
+      grid-template-columns: 1fr 130px auto;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .fixed-row input { margin-bottom: 0; }
+
+    .debt-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .debt-card {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 15px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .mini-box {
+      background: var(--field);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+    }
+
+    .mini-box span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      margin-bottom: 4px;
+    }
+
+    .mini-box strong { font-size: 15px; }
+
+    .debt-card p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .debt-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(108px, 1fr));
+      gap: 8px;
+    }
+
+    .progress-wrap {
+      height: 10px;
+      background: #050505;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--green);
+      width: 0%;
+    }
+
+    .edit-panel {
+      background: var(--field);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .edit-panel h4 {
+      color: var(--green);
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    .edit-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .edit-grid .full { grid-column: 1 / -1; }
+
+    .edit-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .edit-actions button {
+      flex: 1;
+      min-width: 130px;
+    }
+
+    .empty {
+      color: var(--muted);
+      background: var(--card2);
+      border: 1px dashed var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .history-item {
+      border-left: 4px solid var(--green);
+      opacity: .88;
+    }
+
+    .hidden { display: none; }
+
+    @media (max-width: 1000px) {
+      .summary { grid-template-columns: repeat(2, 1fr); }
+      .mini-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 850px) {
+      .span-4, .span-5, .span-6, .span-7, .span-8, .span-12 { grid-column: span 12; }
+      .debt-card { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 520px) {
+      body { padding: 12px; }
+      header h1 { font-size: 23px; }
+      .summary, .mini-grid, .edit-grid { grid-template-columns: 1fr; }
+      .fixed-row { grid-template-columns: 1fr; }
+      .debt-actions { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>Controle de Dívidas Parceladas v17</h1>
+      <p>Versão com salvamento reforçado: salva no navegador e também permite baixar o próprio HTML atualizado com os dados dentro.</p>
+    </header>
+
+    <section class="grid">
+      <div class="card span-4">
+        <h2>1. Salário / Entrada</h2>
+
+        <label>Valor recebido no mês</label>
+        <input type="text" id="salary" inputmode="decimal" placeholder="Ex: 4.600,00">
+
+        <div id="extraIncomeBlocks"></div>
+
+        <button type="button" class="btn-yellow" style="width:100%; margin-bottom:12px;" data-action="addExtra">+ Adicionar outra entrada extra</button>
+
+        <button type="button" class="btn-primary" data-action="saveIncome">Salvar salário</button>
+      </div>
+
+      <div class="card span-8">
+        <h2>2. Resumo automático</h2>
+
+        <div class="summary">
+          <div class="summary-box"><span>Total recebido no mês</span><strong id="totalIncome">R$ 0,00</strong></div>
+          <div class="summary-box"><span>Gastos fixos do mês</span><strong id="totalFixed">R$ 0,00</strong></div>
+          <div class="summary-box"><span>Parcelas do mês</span><strong id="monthlyInstallments">R$ 0,00</strong></div>
+          <div class="summary-box"><span>Total a pagar no mês</span><strong id="monthlyPayable">R$ 0,00</strong></div>
+          <div class="summary-box"><span>Sobra real do mês</span><strong id="monthlyBalance">R$ 0,00</strong></div>
+          <div class="summary-box"><span>Total geral das dívidas</span><strong id="totalDebt">R$ 0,00</strong></div>
+        </div>
+
+        <div class="alert-box">
+          <strong>Cálculo:</strong><br>
+          Total recebido = salário + entradas extras.<br>
+          Total a pagar no mês = gastos fixos + parcelas do mês.<br>
+          Total geral das dívidas = soma do saldo pendente das dívidas abertas.
+        </div>
+
+        <div class="footer-actions">
+          <button type="button" class="btn-primary" data-action="manualSave">Salvar agora</button>
+          <button type="button" class="btn-blue" data-action="saveHtmlFile">Salvar arquivo atualizado</button>
+          <button type="button" class="btn-yellow" data-action="exportBackup">Baixar backup</button>
+          <button type="button" class="btn-yellow" data-action="triggerImport">Importar backup</button>
+          <input type="file" id="backupFile" accept="application/json" style="display:none">
+        </div>
+
+        <p id="saveStatus" class="note">Salvamento automático ativo.</p>
+      </div>
+
+      <div class="card span-5">
+        <h2>3. Gastos fixos</h2>
+
+        <div id="fixedList"></div>
+
+        <label>Nome do gasto fixo</label>
+        <input type="text" id="fixedName" placeholder="Ex: Pensão, aluguel, energia">
+
+        <label>Valor mensal</label>
+        <input type="text" id="fixedValue" inputmode="decimal" placeholder="Ex: 400,00">
+
+        <button type="button" class="btn-primary" data-action="addFixed">Adicionar gasto fixo</button>
+      </div>
+
+      <div class="card span-7">
+        <h2>4. Adicionar dívida</h2>
+
+        <label>Nome da dívida</label>
+        <input type="text" id="debtName" placeholder="Ex: Geladeira, motor, empréstimo">
+
+        <label>Forma de cadastro</label>
+        <select id="debtMode">
+          <option value="total">Tenho o valor total da dívida</option>
+          <option value="parcel">Tenho o valor da parcela</option>
+        </select>
+
+        <div id="addModeTotal">
+          <div class="grid" style="gap:10px">
+            <div class="span-6">
+              <label>Valor total da dívida</label>
+              <input type="text" id="totalAmount" inputmode="decimal" placeholder="Ex: 6.325,00">
+            </div>
+            <div class="span-6">
+              <label>Total de parcelas</label>
+              <input type="number" id="totalInstallments" min="1" step="1" placeholder="Ex: 11">
+            </div>
+            <div class="span-6">
+              <label>Parcelas já pagas</label>
+              <input type="number" id="paidFromTotal" min="0" step="1" placeholder="Ex: 0">
+            </div>
+          </div>
+        </div>
+
+        <div id="addModeParcel" class="hidden">
+          <div class="grid" style="gap:10px">
+            <div class="span-6">
+              <label>Valor da parcela</label>
+              <input type="text" id="installmentAmount" inputmode="decimal" placeholder="Ex: 490,00">
+            </div>
+            <div class="span-6">
+              <label>Parcelas faltando</label>
+              <input type="number" id="remainingFromParcel" min="1" step="1" placeholder="Ex: 9">
+            </div>
+            <div class="span-6">
+              <label>Parcelas já pagas</label>
+              <input type="number" id="paidFromParcel" min="0" step="1" placeholder="Ex: 1">
+            </div>
+          </div>
+        </div>
+
+        <label>Vencimento</label>
+        <input type="date" id="dueDate">
+
+        <label>Observação opcional</label>
+        <textarea id="note" placeholder="Ex: pagar todo dia 10, prioridade alta..."></textarea>
+
+        <button type="button" class="btn-primary" data-action="addDebt">Adicionar dívida</button>
+      </div>
+
+      <div class="card span-12">
+        <h2>5. Dívidas para pagar ainda</h2>
+        <div id="debtList" class="debt-list"></div>
+      </div>
+
+      <div class="card span-12">
+        <h2>6. Dívidas concluídas</h2>
+        <div id="historyList" class="debt-list"></div>
+
+        <div class="footer-actions">
+          <button type="button" class="btn-red" data-action="clearHistory">Limpar histórico concluído</button>
+          <button type="button" class="btn-red" data-action="resetAll">Zerar tudo</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script id="embeddedData" type="application/json">
+{"salary":0,"extraIncomes":[{"id":"inicial_extra_1","value":0}],"fixedExpenses":[{"id":"inicial_fixo_1","name":"Pensão","value":0},{"id":"inicial_fixo_2","name":"Gasto de casa 1","value":0},{"id":"inicial_fixo_3","name":"Gasto de casa 2","value":0}],"debts":[],"completed":[],"updatedAt":0}
+  </script>
+
+  <script>
+    (function () {
+      var STORAGE_KEY = "controle_dividas_parceladas_v17";
+
+      var state = {
+        salary: 0,
+        extraIncomes: [{ id: makeId(), value: 0 }],
+        fixedExpenses: [
+          { id: makeId(), name: "Pensão", value: 0 },
+          { id: makeId(), name: "Gasto de casa 1", value: 0 },
+          { id: makeId(), name: "Gasto de casa 2", value: 0 }
+        ],
+        debts: [],
+        completed: [],
+        updatedAt: 0
+      };
+
+      var editingId = null;
+
+      function makeId() {
+        return "id_" + Date.now() + "_" + Math.floor(Math.random() * 1000000);
+      }
+
+      function byId(id) {
+        return document.getElementById(id);
+      }
+
+      function escapeHtml(text) {
+        return String(text == null ? "" : text)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function parseMoney(value) {
+        var raw = String(value || "").trim().replace(/\s/g, "").replace(/R\$/gi, "");
+        if (!raw) return 0;
+
+        var hasComma = raw.indexOf(",") >= 0;
+        var hasDot = raw.indexOf(".") >= 0;
+        var digits = raw.replace(/\D/g, "");
+        if (!digits) return 0;
+
+        if (hasComma && hasDot) {
+          return Number(raw.replace(/\./g, "").replace(",", ".")) || 0;
+        }
+
+        if (hasComma && !hasDot) {
+          var partsComma = raw.split(",");
+          var left = (partsComma[0] || "").replace(/\D/g, "");
+          var right = (partsComma[1] || "").replace(/\D/g, "");
+          if (!right) return Number(left) || 0;
+          if (right.length <= 2) return Number(left + "." + right.padEnd(2, "0")) || 0;
+          var all = left + right;
+          return Number(all.slice(0, -2) + "." + all.slice(-2)) || 0;
+        }
+
+        if (!hasComma && hasDot) {
+          var partsDot = raw.split(".");
+          var last = partsDot[partsDot.length - 1];
+          if (last.length === 2) return Number(partsDot.slice(0, -1).join("") + "." + last) || 0;
+          return Number(raw.replace(/\./g, "")) || 0;
+        }
+
+        return Number(digits) || 0;
+      }
+
+      function parseIntSafe(value) {
+        var n = parseInt(String(value || "0").replace(/\D/g, ""), 10);
+        return isFinite(n) ? n : 0;
+      }
+
+      function brl(value) {
+        return Number(value || 0).toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL"
+        });
+      }
+
+      function moneyText(value) {
+        if (!value) return "";
+        return Number(value).toLocaleString("pt-BR", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+      }
+
+      function normalizeDate(value) {
+        var raw = String(value || "").trim();
+        if (!raw) return "";
+        if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return raw;
+
+        if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(raw)) {
+          var parts = raw.split("/");
+          return parts[2] + "-" + parts[1].padStart(2, "0") + "-" + parts[0].padStart(2, "0");
+        }
+
+        return raw;
+      }
+
+      function displayDate(value) {
+        var raw = String(value || "").trim();
+        if (!raw) return "Não informado";
+        if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+          var parts = raw.split("-");
+          return parts[2] + "/" + parts[1] + "/" + parts[0];
+        }
+        return raw;
+      }
+
+      function readEmbeddedData() {
+        try {
+          var el = byId("embeddedData");
+          if (!el) return null;
+          var txt = (el.textContent || "").trim();
+          if (!txt) return null;
+          return JSON.parse(txt);
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function hasUsefulData(data) {
+        if (!data) return false;
+        if (Number(data.salary || 0) > 0) return true;
+        if (Array.isArray(data.extraIncomes)) {
+          for (var i = 0; i < data.extraIncomes.length; i++) {
+            if (Number(data.extraIncomes[i].value || 0) > 0) return true;
+          }
+        }
+        if (Array.isArray(data.fixedExpenses)) {
+          for (var f = 0; f < data.fixedExpenses.length; f++) {
+            if (Number(data.fixedExpenses[f].value || 0) > 0) return true;
+          }
+        }
+        if (Array.isArray(data.debts) && data.debts.length) return true;
+        if (Array.isArray(data.completed) && data.completed.length) return true;
+        return false;
+      }
+
+      function safeLoad() {
+        var keys = [
+          STORAGE_KEY,
+          "controle_dividas_parceladas_v16",
+          "controle_dividas_parceladas_v15",
+          "controle_dividas_parceladas_v14",
+          "controle_dividas_parceladas_v13",
+          "controle_dividas_parceladas_v12",
+          "controle_dividas_parceladas_v11",
+          "controle_dividas_parceladas_v10",
+          "controle_dividas_parceladas_v9",
+          "controle_dividas_parceladas_v8",
+          "controle_dividas_parceladas_v7",
+          "controle_dividas_parceladas_v6",
+          "controle_dividas_parceladas_v5",
+          "controle_dividas_parceladas_v4",
+          "controle_dividas_parceladas_v3"
+        ];
+
+        var embeddedData = readEmbeddedData();
+        var localData = null;
+
+        try {
+          for (var i = 0; i < keys.length; i++) {
+            var saved = localStorage.getItem(keys[i]);
+            if (saved) {
+              localData = JSON.parse(saved);
+              break;
+            }
+          }
+        } catch (e) {
+          localData = null;
+        }
+
+        var chosen = null;
+
+        if (hasUsefulData(embeddedData) && hasUsefulData(localData)) {
+          chosen = Number(embeddedData.updatedAt || 0) >= Number(localData.updatedAt || 0) ? embeddedData : localData;
+        } else if (hasUsefulData(embeddedData)) {
+          chosen = embeddedData;
+        } else if (hasUsefulData(localData)) {
+          chosen = localData;
+        }
+
+        if (chosen) {
+          applyLoadedData(chosen);
+        }
+      }
+
+      function safeSave() {
+        try {
+          state.updatedAt = Date.now();
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+          setStatus("Salvo no navegador.");
+        } catch (e) {
+          setStatus("Aviso: não salvou no navegador. Use Baixar backup para guardar.");
+        }
+      }
+
+      function setStatus(text) {
+        var el = byId("saveStatus");
+        if (el) el.textContent = text + " Última atualização: " + new Date().toLocaleString("pt-BR");
+      }
+
+      function applyLoadedData(data) {
+        var extras = [];
+
+        if (Array.isArray(data.extraIncomes) && data.extraIncomes.length) {
+          for (var i = 0; i < data.extraIncomes.length; i++) {
+            extras.push({
+              id: data.extraIncomes[i].id || makeId(),
+              value: Number(data.extraIncomes[i].value || 0)
+            });
+          }
+        } else if (Number(data.extraIncome || 0) > 0) {
+          extras = [{ id: makeId(), value: Number(data.extraIncome || 0) }];
+        } else {
+          extras = [{ id: makeId(), value: 0 }];
+        }
+
+        state.salary = Number(data.salary || 0);
+        state.extraIncomes = extras;
+        state.fixedExpenses = Array.isArray(data.fixedExpenses) ? data.fixedExpenses : state.fixedExpenses;
+        state.debts = Array.isArray(data.debts) ? data.debts.map(normalizeDebt) : [];
+        state.completed = Array.isArray(data.completed) ? data.completed : [];
+        state.updatedAt = Number(data.updatedAt || 0);
+      }
+
+      function syncIncomeFromScreen() {
+        var salaryInput = byId("salary");
+        if (salaryInput) state.salary = parseMoney(salaryInput.value);
+
+        var inputs = document.querySelectorAll(".extra-income-input");
+        var extras = [];
+
+        for (var i = 0; i < inputs.length; i++) {
+          extras.push({
+            id: inputs[i].getAttribute("data-id") || makeId(),
+            value: parseMoney(inputs[i].value)
+          });
+        }
+
+        if (!extras.length) extras = [{ id: makeId(), value: 0 }];
+        state.extraIncomes = extras;
+      }
+
+      function totalExtras() {
+        var total = 0;
+        for (var i = 0; i < state.extraIncomes.length; i++) {
+          total += Number(state.extraIncomes[i].value || 0);
+        }
+        return total;
+      }
+
+      function buildDebtFromTotal(data) {
+        var totalAmount = Math.max(Number(data.totalAmount || 0), 0);
+        var totalInstallments = Math.max(Number(data.totalInstallments || 1), 1);
+        var paidInstallments = Math.min(Math.max(Number(data.paidInstallments || 0), 0), totalInstallments);
+        var installmentAmount = totalAmount / totalInstallments;
+        var remainingInstallments = Math.max(totalInstallments - paidInstallments, 0);
+
+        return {
+          id: data.id || makeId(),
+          name: data.name || "Dívida",
+          totalAmount: totalAmount,
+          installmentAmount: installmentAmount,
+          totalInstallments: totalInstallments,
+          paidInstallments: paidInstallments,
+          remainingInstallments: remainingInstallments,
+          paidAmount: installmentAmount * paidInstallments,
+          pendingAmount: installmentAmount * remainingInstallments,
+          dueDate: normalizeDate(data.dueDate || ""),
+          note: data.note || "",
+          createdAt: data.createdAt || new Date().toISOString(),
+          mode: "total"
+        };
+      }
+
+      function buildDebtFromParcel(data) {
+        var installmentAmount = Math.max(Number(data.installmentAmount || 0), 0);
+        var remainingInstallments = Math.max(Number(data.remainingInstallments || 0), 0);
+        var paidInstallments = Math.max(Number(data.paidInstallments || 0), 0);
+        var totalInstallments = paidInstallments + remainingInstallments;
+        var totalAmount = installmentAmount * totalInstallments;
+
+        return {
+          id: data.id || makeId(),
+          name: data.name || "Dívida",
+          totalAmount: totalAmount,
+          installmentAmount: installmentAmount,
+          totalInstallments: totalInstallments,
+          paidInstallments: paidInstallments,
+          remainingInstallments: remainingInstallments,
+          paidAmount: installmentAmount * paidInstallments,
+          pendingAmount: installmentAmount * remainingInstallments,
+          dueDate: normalizeDate(data.dueDate || ""),
+          note: data.note || "",
+          createdAt: data.createdAt || new Date().toISOString(),
+          mode: "parcel"
+        };
+      }
+
+      function normalizeDebt(old) {
+        if (!old) return buildDebtFromParcel({});
+
+        if (old.installmentAmount !== undefined && old.remainingInstallments !== undefined) {
+          return buildDebtFromParcel({
+            id: old.id,
+            name: old.name,
+            installmentAmount: Number(old.installmentAmount || 0),
+            remainingInstallments: Number(old.remainingInstallments || 0),
+            paidInstallments: Number(old.paidInstallments || 0),
+            dueDate: old.dueDate,
+            note: old.note,
+            createdAt: old.createdAt
+          });
+        }
+
+        if (old.installmentValue !== undefined && old.remainingInstallments !== undefined) {
+          return buildDebtFromParcel({
+            id: old.id,
+            name: old.name,
+            installmentAmount: Number(old.installmentValue || 0),
+            remainingInstallments: Number(old.remainingInstallments || 0),
+            paidInstallments: Number(old.paidInstallments || 0),
+            dueDate: old.dueDate,
+            note: old.note,
+            createdAt: old.createdAt
+          });
+        }
+
+        if (old.total !== undefined && old.months !== undefined) {
+          return buildDebtFromTotal({
+            id: old.id,
+            name: old.name,
+            totalAmount: Number(old.total || 0),
+            totalInstallments: Number(old.months || 1),
+            paidInstallments: Number(old.paidInstallments || 0),
+            dueDate: old.dueDate,
+            note: old.note,
+            createdAt: old.createdAt
+          });
+        }
+
+        return buildDebtFromParcel({
+          id: old.id,
+          name: old.name,
+          installmentAmount: Number(old.installmentAmount || 0),
+          remainingInstallments: Number(old.remainingInstallments || 0),
+          paidInstallments: Number(old.paidInstallments || 0),
+          dueDate: old.dueDate,
+          note: old.note,
+          createdAt: old.createdAt
+        });
+      }
+
+      function addExtra() {
+        syncIncomeFromScreen();
+        state.extraIncomes.push({ id: makeId(), value: 0 });
+        renderIncome();
+        renderSummary();
+        safeSave();
+
+        setTimeout(function () {
+          var inputs = document.querySelectorAll(".extra-income-input");
+          if (inputs.length) {
+            inputs[inputs.length - 1].focus();
+          }
+        }, 50);
+      }
+
+      function removeExtra(id) {
+        syncIncomeFromScreen();
+        state.extraIncomes = state.extraIncomes.filter(function (item) {
+          return item.id !== id;
+        });
+        if (!state.extraIncomes.length) state.extraIncomes = [{ id: makeId(), value: 0 }];
+        renderIncome();
+        renderSummary();
+        safeSave();
+      }
+
+      function saveIncome() {
+        syncIncomeFromScreen();
+        renderIncome();
+        renderSummary();
+        safeSave();
+      }
+
+      function manualSave() {
+        syncIncomeFromScreen();
+        renderSummary();
+        safeSave();
+        alert("Dados salvos no navegador. Para não perder no celular, use também: Salvar arquivo atualizado.");
+      }
+
+      function addFixed() {
+        var name = byId("fixedName").value.trim();
+        var value = parseMoney(byId("fixedValue").value);
+
+        if (!name || value <= 0) {
+          alert("Preencha nome e valor do gasto fixo.");
+          return;
+        }
+
+        state.fixedExpenses.push({ id: makeId(), name: name, value: value });
+        byId("fixedName").value = "";
+        byId("fixedValue").value = "";
+
+        renderFixed();
+        renderSummary();
+        safeSave();
+      }
+
+      function updateFixed(id, field, value) {
+        for (var i = 0; i < state.fixedExpenses.length; i++) {
+          if (state.fixedExpenses[i].id === id) {
+            if (field === "value") state.fixedExpenses[i].value = parseMoney(value);
+            else state.fixedExpenses[i].name = value;
+            break;
+          }
+        }
+
+        renderSummary();
+        safeSave();
+      }
+
+      function removeFixed(id) {
+        state.fixedExpenses = state.fixedExpenses.filter(function (item) {
+          return item.id !== id;
+        });
+
+        renderFixed();
+        renderSummary();
+        safeSave();
+      }
+
+      function toggleAddMode() {
+        var mode = byId("debtMode").value;
+        byId("addModeTotal").classList.toggle("hidden", mode !== "total");
+        byId("addModeParcel").classList.toggle("hidden", mode !== "parcel");
+      }
+
+      function addDebt() {
+        syncIncomeFromScreen();
+
+        var name = byId("debtName").value.trim();
+        var mode = byId("debtMode").value;
+        var dueDate = byId("dueDate").value;
+        var note = byId("note").value.trim();
+
+        if (!name) {
+          alert("Preencha o nome da dívida.");
+          return;
+        }
+
+        var debt;
+
+        if (mode === "total") {
+          var totalAmount = parseMoney(byId("totalAmount").value);
+          var totalInstallments = parseIntSafe(byId("totalInstallments").value);
+          var paidInstallments = parseIntSafe(byId("paidFromTotal").value);
+
+          if (totalAmount <= 0 || totalInstallments <= 0) {
+            alert("Preencha o valor total da dívida e o total de parcelas.");
+            return;
+          }
+
+          if (paidInstallments > totalInstallments) {
+            alert("Parcelas pagas não pode ser maior que o total de parcelas.");
+            return;
+          }
+
+          debt = buildDebtFromTotal({
+            name: name,
+            totalAmount: totalAmount,
+            totalInstallments: totalInstallments,
+            paidInstallments: paidInstallments,
+            dueDate: dueDate,
+            note: note
+          });
+        } else {
+          var installmentAmount = parseMoney(byId("installmentAmount").value);
+          var remainingInstallments = parseIntSafe(byId("remainingFromParcel").value);
+          var paidParcel = parseIntSafe(byId("paidFromParcel").value);
+
+          if (installmentAmount <= 0 || remainingInstallments <= 0) {
+            alert("Preencha o valor da parcela e as parcelas faltando.");
+            return;
+          }
+
+          debt = buildDebtFromParcel({
+            name: name,
+            installmentAmount: installmentAmount,
+            remainingInstallments: remainingInstallments,
+            paidInstallments: paidParcel,
+            dueDate: dueDate,
+            note: note
+          });
+        }
+
+        state.debts.push(debt);
+
+        var clearIds = ["debtName", "totalAmount", "totalInstallments", "paidFromTotal", "installmentAmount", "remainingFromParcel", "paidFromParcel", "dueDate", "note"];
+        for (var i = 0; i < clearIds.length; i++) {
+          if (byId(clearIds[i])) byId(clearIds[i]).value = "";
+        }
+
+        renderDebts();
+        renderSummary();
+        safeSave();
+      }
+
+      function startEdit(id) {
+        editingId = id;
+        renderDebts();
+
+        setTimeout(function () {
+          var panel = byId("edit-" + id);
+          if (panel) panel.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 50);
+      }
+
+      function cancelEdit() {
+        editingId = null;
+        renderDebts();
+      }
+
+      function changeEditMode(id) {
+        var mode = byId("editMode-" + id).value;
+        byId("editTotalBox-" + id).classList.toggle("hidden", mode !== "total");
+        byId("editParcelBox-" + id).classList.toggle("hidden", mode !== "parcel");
+      }
+
+      function saveEdit(id) {
+        var oldDebt = null;
+        for (var i = 0; i < state.debts.length; i++) {
+          if (state.debts[i].id === id) oldDebt = state.debts[i];
+        }
+        if (!oldDebt) return;
+
+        var name = byId("editName-" + id).value.trim();
+        var mode = byId("editMode-" + id).value;
+        var dueDate = byId("editDate-" + id).value;
+        var note = byId("editNote-" + id).value.trim();
+
+        if (!name) {
+          alert("Preencha o nome da dívida.");
+          return;
+        }
+
+        var updated;
+
+        if (mode === "total") {
+          var totalAmount = parseMoney(byId("editTotalAmount-" + id).value);
+          var totalInstallments = parseIntSafe(byId("editTotalInstallments-" + id).value);
+          var paidInstallments = parseIntSafe(byId("editPaidTotal-" + id).value);
+
+          if (totalAmount <= 0 || totalInstallments <= 0) {
+            alert("Preencha valor total e total de parcelas.");
+            return;
+          }
+
+          if (paidInstallments > totalInstallments) {
+            alert("Parcelas pagas não pode ser maior que o total de parcelas.");
+            return;
+          }
+
+          updated = buildDebtFromTotal({
+            id: id,
+            name: name,
+            totalAmount: totalAmount,
+            totalInstallments: totalInstallments,
+            paidInstallments: paidInstallments,
+            dueDate: dueDate,
+            note: note,
+            createdAt: oldDebt.createdAt
+          });
+        } else {
+          var installmentAmount = parseMoney(byId("editInstallmentAmount-" + id).value);
+          var remainingInstallments = parseIntSafe(byId("editRemaining-" + id).value);
+          var paidParcel = parseIntSafe(byId("editPaidParcel-" + id).value);
+
+          if (installmentAmount <= 0) {
+            alert("Preencha o valor da parcela.");
+            return;
+          }
+
+          updated = buildDebtFromParcel({
+            id: id,
+            name: name,
+            installmentAmount: installmentAmount,
+            remainingInstallments: remainingInstallments,
+            paidInstallments: paidParcel,
+            dueDate: dueDate,
+            note: note,
+            createdAt: oldDebt.createdAt
+          });
+        }
+
+        for (var j = 0; j < state.debts.length; j++) {
+          if (state.debts[j].id === id) {
+            state.debts[j] = updated;
+            break;
+          }
+        }
+
+        editingId = null;
+
+        if (updated.remainingInstallments <= 0) {
+          completeDebt(id);
+          return;
+        }
+
+        renderDebts();
+        renderSummary();
+        safeSave();
+      }
+
+      function payOne(id) {
+        for (var i = 0; i < state.debts.length; i++) {
+          if (state.debts[i].id === id) {
+            var d = state.debts[i];
+            d.paidInstallments = Number(d.paidInstallments || 0) + 1;
+            d.remainingInstallments = Math.max(Number(d.remainingInstallments || 0) - 1, 0);
+
+            state.debts[i] = buildDebtFromParcel({
+              id: d.id,
+              name: d.name,
+              installmentAmount: d.installmentAmount,
+              remainingInstallments: d.remainingInstallments,
+              paidInstallments: d.paidInstallments,
+              dueDate: d.dueDate,
+              note: d.note,
+              createdAt: d.createdAt
+            });
+
+            if (state.debts[i].remainingInstallments <= 0) {
+              completeDebt(id);
+              return;
+            }
+
+            break;
+          }
+        }
+
+        renderDebts();
+        renderSummary();
+        safeSave();
+      }
+
+      function completeDebt(id) {
+        var debt = null;
+        var nextDebts = [];
+
+        for (var i = 0; i < state.debts.length; i++) {
+          if (state.debts[i].id === id) debt = state.debts[i];
+          else nextDebts.push(state.debts[i]);
+        }
+
+        if (!debt) return;
+
+        var item = normalizeDebt(debt);
+        item.restoreRemainingInstallments = debt.remainingInstallments;
+        item.restorePaidInstallments = debt.paidInstallments;
+        item.completedAt = new Date().toISOString();
+
+        state.completed.unshift(item);
+        state.debts = nextDebts;
+        editingId = null;
+
+        renderDebts();
+        renderHistory();
+        renderSummary();
+        safeSave();
+      }
+
+      function restoreDebt(id) {
+        var item = null;
+        var nextCompleted = [];
+
+        for (var i = 0; i < state.completed.length; i++) {
+          if (state.completed[i].id === id) item = state.completed[i];
+          else nextCompleted.push(state.completed[i]);
+        }
+
+        if (!item) return;
+
+        var restored = buildDebtFromParcel({
+          id: item.id,
+          name: item.name,
+          installmentAmount: item.installmentAmount,
+          remainingInstallments: item.restoreRemainingInstallments || item.remainingInstallments || 1,
+          paidInstallments: item.restorePaidInstallments || item.paidInstallments || 0,
+          dueDate: item.dueDate,
+          note: item.note,
+          createdAt: item.createdAt
+        });
+
+        state.debts.push(restored);
+        state.completed = nextCompleted;
+
+        renderDebts();
+        renderHistory();
+        renderSummary();
+        safeSave();
+      }
+
+      function removeDebt(id) {
+        if (!confirm("Remover essa dívida sem concluir?")) return;
+
+        state.debts = state.debts.filter(function (item) {
+          return item.id !== id;
+        });
+
+        renderDebts();
+        renderSummary();
+        safeSave();
+      }
+
+      function clearHistory() {
+        if (!confirm("Limpar histórico concluído?")) return;
+        state.completed = [];
+        renderHistory();
+        safeSave();
+      }
+
+      function resetAll() {
+        if (!confirm("Apagar tudo? Essa ação não pode ser desfeita.")) return;
+
+        var keys = [
+          STORAGE_KEY,
+          "controle_dividas_parceladas_v16",
+          "controle_dividas_parceladas_v15",
+          "controle_dividas_parceladas_v14",
+          "controle_dividas_parceladas_v13",
+          "controle_dividas_parceladas_v12",
+          "controle_dividas_parceladas_v11",
+          "controle_dividas_parceladas_v10",
+          "controle_dividas_parceladas_v9",
+          "controle_dividas_parceladas_v8",
+          "controle_dividas_parceladas_v7",
+          "controle_dividas_parceladas_v6",
+          "controle_dividas_parceladas_v5",
+          "controle_dividas_parceladas_v4",
+          "controle_dividas_parceladas_v3"
+        ];
+
+        try {
+          for (var i = 0; i < keys.length; i++) localStorage.removeItem(keys[i]);
+        } catch (e) {}
+
+        state = {
+          salary: 0,
+          extraIncomes: [{ id: makeId(), value: 0 }],
+          fixedExpenses: [
+            { id: makeId(), name: "Pensão", value: 0 },
+            { id: makeId(), name: "Gasto de casa 1", value: 0 },
+            { id: makeId(), name: "Gasto de casa 2", value: 0 }
+          ],
+          debts: [],
+          completed: [],
+          updatedAt: Date.now()
+        };
+
+        editingId = null;
+        renderAll();
+        safeSave();
+      }
+
+
+      function saveHtmlFile() {
+        syncIncomeFromScreen();
+        safeSave();
+
+        try {
+          var currentState = JSON.stringify(state).replace(/</g, "\\u003c");
+          var page = "<!DOCTYPE html>\\n" + document.documentElement.outerHTML;
+
+          page = page.replace(
+            /<script id="embeddedData" type="application\/json">[\s\S]*?<\/script>/,
+            '<script id="embeddedData" type="application/json">\\n' + currentState + '\\n  <\\/script>'
+          );
+
+          var now = new Date();
+          var stamp = now.getFullYear()
+            + String(now.getMonth() + 1).padStart(2, "0")
+            + String(now.getDate()).padStart(2, "0")
+            + "-"
+            + String(now.getHours()).padStart(2, "0")
+            + String(now.getMinutes()).padStart(2, "0");
+
+          var blob = new Blob([page], { type: "text/html;charset=utf-8" });
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement("a");
+          a.href = url;
+          a.download = "controle-dividas-salvo-" + stamp + ".html";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+
+          setStatus("Arquivo HTML atualizado baixado. Use esse último arquivo como salvo permanente.");
+        } catch (e) {
+          alert("Não consegui gerar o HTML atualizado neste navegador. Use Baixar backup como alternativa.");
+        }
+      }
+
+      function exportBackup() {
+        syncIncomeFromScreen();
+        safeSave();
+
+        var blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = "backup-controle-dividas-" + new Date().toISOString().slice(0, 10) + ".json";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      function triggerImport() {
+        byId("backupFile").click();
+      }
+
+      function importBackup(file) {
+        if (!file) return;
+
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          try {
+            var imported = JSON.parse(e.target.result);
+            if (!confirm("Importar backup vai substituir os dados atuais. Continuar?")) return;
+
+            applyLoadedData(imported);
+            renderAll();
+            safeSave();
+            alert("Backup importado.");
+          } catch (err) {
+            alert("Arquivo inválido.");
+          }
+        };
+
+        reader.readAsText(file);
+      }
+
+      function renderIncome() {
+        byId("salary").value = state.salary ? moneyText(state.salary) : "";
+
+        if (!Array.isArray(state.extraIncomes) || !state.extraIncomes.length) {
+          state.extraIncomes = [{ id: makeId(), value: 0 }];
+        }
+
+        var html = "";
+
+        for (var i = 0; i < state.extraIncomes.length; i++) {
+          var item = state.extraIncomes[i];
+          var canRemove = state.extraIncomes.length > 1;
+
+          html += '<div>';
+          html += '<label>Entrada extra ' + (i + 1) + '</label>';
+          html += '<div class="extra-row">';
+          html += '<input type="text" class="extra-income-input" data-id="' + item.id + '" inputmode="decimal" value="' + moneyText(item.value) + '" placeholder="Ex: 300,00">';
+          if (canRemove) {
+            html += '<button type="button" class="btn-red btn-small" data-action="removeExtra" data-id="' + item.id + '">X</button>';
+          }
+          html += '</div>';
+          html += '</div>';
+        }
+
+        byId("extraIncomeBlocks").innerHTML = html;
+      }
+
+      function renderSummary() {
+        for (var i = 0; i < state.debts.length; i++) {
+          state.debts[i] = normalizeDebt(state.debts[i]);
+        }
+
+        var totalIncome = Number(state.salary || 0) + totalExtras();
+        var totalFixed = 0;
+        var monthlyInstallments = 0;
+        var totalDebt = 0;
+
+        for (var f = 0; f < state.fixedExpenses.length; f++) {
+          totalFixed += Number(state.fixedExpenses[f].value || 0);
+        }
+
+        for (var d = 0; d < state.debts.length; d++) {
+          monthlyInstallments += Number(state.debts[d].installmentAmount || 0);
+          totalDebt += Number(state.debts[d].pendingAmount || 0);
+        }
+
+        var monthlyPayable = totalFixed + monthlyInstallments;
+        var monthlyBalance = totalIncome - monthlyPayable;
+
+        byId("totalIncome").textContent = brl(totalIncome);
+        byId("totalFixed").textContent = brl(totalFixed);
+        byId("monthlyInstallments").textContent = brl(monthlyInstallments);
+        byId("monthlyPayable").textContent = brl(monthlyPayable);
+        byId("totalDebt").textContent = brl(totalDebt);
+
+        var balance = byId("monthlyBalance");
+        balance.textContent = brl(monthlyBalance);
+        balance.className = monthlyBalance >= 0 ? "positive" : "negative";
+      }
+
+      function renderFixed() {
+        var box = byId("fixedList");
+
+        if (!state.fixedExpenses.length) {
+          box.innerHTML = '<div class="empty">Nenhum gasto fixo cadastrado.</div>';
+          return;
+        }
+
+        var html = "";
+
+        for (var i = 0; i < state.fixedExpenses.length; i++) {
+          var item = state.fixedExpenses[i];
+
+          html += '<div class="fixed-row">';
+          html += '<input value="' + escapeHtml(item.name) + '" data-action="fixedName" data-id="' + item.id + '">';
+          html += '<input type="text" inputmode="decimal" value="' + moneyText(item.value) + '" data-action="fixedValue" data-id="' + item.id + '">';
+          html += '<button type="button" class="btn-red btn-small" data-action="removeFixed" data-id="' + item.id + '">Excluir</button>';
+          html += '</div>';
+        }
+
+        box.innerHTML = html;
+      }
+
+      function renderDebts() {
+        var box = byId("debtList");
+
+        if (!state.debts.length) {
+          box.innerHTML = '<div class="empty">Nenhuma dívida aberta. Quando adicionar, ela aparece aqui.</div>';
+          return;
+        }
+
+        var html = "";
+
+        for (var i = 0; i < state.debts.length; i++) {
+          var debt = normalizeDebt(state.debts[i]);
+          state.debts[i] = debt;
+
+          var percent = debt.totalInstallments > 0 ? Math.min((debt.paidInstallments / debt.totalInstallments) * 100, 100) : 0;
+          var editMode = debt.mode || "total";
+
+          html += '<div class="debt-card">';
+          html += '<div>';
+          html += '<h3>' + escapeHtml(debt.name) + '</h3>';
+
+          if (editingId === debt.id) {
+            html += renderDebtEdit(debt, editMode);
+          } else {
+            html += renderDebtView(debt, percent);
+          }
+
+          html += '</div>';
+
+          html += '<div class="debt-actions">';
+          html += '<button type="button" class="btn-blue btn-small" data-action="startEdit" data-id="' + debt.id + '">Editar dívida</button>';
+          html += '<button type="button" class="btn-yellow btn-small" data-action="startEdit" data-id="' + debt.id + '">Atualizar pagas</button>';
+          html += '<button type="button" class="btn-green btn-small" data-action="payOne" data-id="' + debt.id + '">Paguei +1</button>';
+          html += '<button type="button" class="btn-green btn-small" data-action="completeDebt" data-id="' + debt.id + '">Concluir</button>';
+          html += '<button type="button" class="btn-red btn-small" data-action="removeDebt" data-id="' + debt.id + '">Excluir</button>';
+          html += '</div>';
+
+          html += '</div>';
+        }
+
+        box.innerHTML = html;
+      }
+
+      function renderDebtView(debt, percent) {
+        var html = "";
+
+        html += '<div class="mini-grid">';
+        html += '<div class="mini-box"><span>Parcela</span><strong class="warning">' + brl(debt.installmentAmount) + '</strong></div>';
+        html += '<div class="mini-box"><span>Total parcelas</span><strong>' + debt.totalInstallments + '</strong></div>';
+        html += '<div class="mini-box"><span>Pagas</span><strong class="positive">' + debt.paidInstallments + '</strong></div>';
+        html += '<div class="mini-box"><span>Faltam</span><strong class="negative">' + debt.remainingInstallments + '</strong></div>';
+        html += '</div>';
+
+        html += '<p>';
+        html += 'Total original estimado: <strong>' + brl(debt.totalAmount) + '</strong><br>';
+        html += 'Total já pago: <strong class="positive">' + brl(debt.paidAmount) + '</strong> | Falta pagar: <strong class="negative">' + brl(debt.pendingAmount) + '</strong><br>';
+        html += 'Vencimento: <strong>' + escapeHtml(displayDate(debt.dueDate)) + '</strong>';
+        html += '</p>';
+
+        if (debt.note) html += '<p>Obs: ' + escapeHtml(debt.note) + '</p>';
+
+        html += '<div class="progress-wrap"><div class="progress-bar" style="width:' + percent + '%"></div></div>';
+
+        return html;
+      }
+
+      function renderDebtEdit(debt, editMode) {
+        var html = "";
+
+        html += '<div class="edit-panel" id="edit-' + debt.id + '">';
+        html += '<h4>Editar esta dívida</h4>';
+
+        html += '<div class="edit-grid">';
+        html += '<div class="full">';
+        html += '<label>Nome da dívida</label>';
+        html += '<input id="editName-' + debt.id + '" value="' + escapeHtml(debt.name) + '">';
+        html += '</div>';
+
+        html += '<div class="full">';
+        html += '<label>Forma de edição</label>';
+        html += '<select id="editMode-' + debt.id + '" data-action="editModeChange" data-id="' + debt.id + '">';
+        html += '<option value="total"' + (editMode === "total" ? " selected" : "") + '>Editar pelo valor total</option>';
+        html += '<option value="parcel"' + (editMode === "parcel" ? " selected" : "") + '>Editar pelo valor da parcela</option>';
+        html += '</select>';
+        html += '</div>';
+        html += '</div>';
+
+        html += '<div id="editTotalBox-' + debt.id + '" class="' + (editMode === "total" ? "" : "hidden") + '">';
+        html += '<div class="edit-grid">';
+        html += '<div><label>Valor total da dívida</label><input id="editTotalAmount-' + debt.id + '" type="text" inputmode="decimal" value="' + moneyText(debt.totalAmount) + '"></div>';
+        html += '<div><label>Total de parcelas</label><input id="editTotalInstallments-' + debt.id + '" type="number" min="1" step="1" value="' + debt.totalInstallments + '"></div>';
+        html += '<div><label>Parcelas já pagas</label><input id="editPaidTotal-' + debt.id + '" type="number" min="0" step="1" value="' + debt.paidInstallments + '"></div>';
+        html += '</div>';
+        html += '</div>';
+
+        html += '<div id="editParcelBox-' + debt.id + '" class="' + (editMode === "parcel" ? "" : "hidden") + '">';
+        html += '<div class="edit-grid">';
+        html += '<div><label>Valor da parcela</label><input id="editInstallmentAmount-' + debt.id + '" type="text" inputmode="decimal" value="' + moneyText(debt.installmentAmount) + '"></div>';
+        html += '<div><label>Parcelas faltando</label><input id="editRemaining-' + debt.id + '" type="number" min="0" step="1" value="' + debt.remainingInstallments + '"></div>';
+        html += '<div><label>Parcelas já pagas</label><input id="editPaidParcel-' + debt.id + '" type="number" min="0" step="1" value="' + debt.paidInstallments + '"></div>';
+        html += '</div>';
+        html += '</div>';
+
+        html += '<div class="edit-grid">';
+        html += '<div class="full"><label>Vencimento</label><input id="editDate-' + debt.id + '" type="date" value="' + escapeHtml(normalizeDate(debt.dueDate || "")) + '"></div>';
+        html += '<div class="full"><label>Observação</label><textarea id="editNote-' + debt.id + '">' + escapeHtml(debt.note || "") + '</textarea></div>';
+        html += '</div>';
+
+        html += '<div class="edit-actions">';
+        html += '<button type="button" class="btn-green btn-small" data-action="saveEdit" data-id="' + debt.id + '">Salvar alteração</button>';
+        html += '<button type="button" class="btn-red btn-small" data-action="cancelEdit">Cancelar</button>';
+        html += '</div>';
+
+        html += '</div>';
+
+        return html;
+      }
+
+      function renderHistory() {
+        var box = byId("historyList");
+
+        if (!state.completed.length) {
+          box.innerHTML = '<div class="empty">Nenhuma dívida concluída ainda.</div>';
+          return;
+        }
+
+        var html = "";
+
+        for (var i = 0; i < state.completed.length; i++) {
+          var debt = state.completed[i];
+          var date = debt.completedAt ? new Date(debt.completedAt).toLocaleDateString("pt-BR") : "Data não informada";
+          var faltavam = debt.restoreRemainingInstallments != null ? debt.restoreRemainingInstallments : (debt.remainingInstallments || 0);
+
+          html += '<div class="debt-card history-item">';
+          html += '<div>';
+          html += '<h3>' + escapeHtml(debt.name) + '</h3>';
+          html += '<p>Parcela: <strong>' + brl(debt.installmentAmount) + '</strong> | Faltavam antes: <strong>' + faltavam + '</strong><br>';
+          html += 'Concluída em: <strong>' + date + '</strong></p>';
+          html += '</div>';
+          html += '<div class="debt-actions">';
+          html += '<button type="button" class="btn-blue btn-small" data-action="restoreDebt" data-id="' + debt.id + '">Voltar para abertas</button>';
+          html += '</div>';
+          html += '</div>';
+        }
+
+        box.innerHTML = html;
+      }
+
+      function renderAll() {
+        renderIncome();
+        renderSummary();
+        renderFixed();
+        renderDebts();
+        renderHistory();
+        toggleAddMode();
+      }
+
+      function handleClick(e) {
+        var btn = e.target.closest("[data-action]");
+        if (!btn) return;
+
+        var action = btn.getAttribute("data-action");
+        var id = btn.getAttribute("data-id");
+
+        if (action === "addExtra") addExtra();
+        else if (action === "removeExtra") removeExtra(id);
+        else if (action === "saveIncome") saveIncome();
+        else if (action === "manualSave") manualSave();
+        else if (action === "saveHtmlFile") saveHtmlFile();
+        else if (action === "exportBackup") exportBackup();
+        else if (action === "triggerImport") triggerImport();
+        else if (action === "addFixed") addFixed();
+        else if (action === "removeFixed") removeFixed(id);
+        else if (action === "addDebt") addDebt();
+        else if (action === "startEdit") startEdit(id);
+        else if (action === "payOne") payOne(id);
+        else if (action === "completeDebt") completeDebt(id);
+        else if (action === "removeDebt") removeDebt(id);
+        else if (action === "saveEdit") saveEdit(id);
+        else if (action === "cancelEdit") cancelEdit();
+        else if (action === "restoreDebt") restoreDebt(id);
+        else if (action === "clearHistory") clearHistory();
+        else if (action === "resetAll") resetAll();
+      }
+
+      function handleChange(e) {
+        var el = e.target;
+        var action = el.getAttribute("data-action");
+        var id = el.getAttribute("data-id");
+
+        if (el.id === "debtMode") {
+          toggleAddMode();
+          return;
+        }
+
+        if (action === "fixedName") {
+          updateFixed(id, "name", el.value);
+          return;
+        }
+
+        if (action === "fixedValue") {
+          updateFixed(id, "value", el.value);
+          return;
+        }
+
+        if (action === "editModeChange") {
+          changeEditMode(id);
+          return;
+        }
+      }
+
+      function init() {
+        safeLoad();
+        renderAll();
+
+        document.addEventListener("click", handleClick);
+        document.addEventListener("change", handleChange);
+
+        byId("backupFile").addEventListener("change", function (e) {
+          var file = e.target.files && e.target.files[0] ? e.target.files[0] : null;
+          importBackup(file);
+          e.target.value = "";
+        });
+
+        setStatus("Sistema carregado.");
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>
