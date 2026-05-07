@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <title>Controle de Dívidas Parceladas v17 Salvamento Forte</title>
+  <title>Controle de Dívidas Parceladas v18 PDF</title>
   <style>
     :root {
       --bg: #050505;
@@ -352,8 +352,8 @@
 <body>
   <div class="container">
     <header>
-      <h1>Controle de Dívidas Parceladas v17</h1>
-      <p>Versão com salvamento reforçado: salva no navegador e também permite baixar o próprio HTML atualizado com os dados dentro.</p>
+      <h1>Controle de Dívidas Parceladas v18</h1>
+      <p>Versão com salvamento reforçado: salva no navegador, baixa o HTML atualizado e também gera relatório em PDF.</p>
     </header>
 
     <section class="grid">
@@ -391,7 +391,8 @@
 
         <div class="footer-actions">
           <button type="button" class="btn-primary" data-action="manualSave">Salvar agora</button>
-          <button type="button" class="btn-blue" data-action="saveHtmlFile">Salvar arquivo atualizado</button>
+          <button type="button" class="btn-blue" data-action="saveHtmlFile">Salvar HTML atualizado</button>
+          <button type="button" class="btn-green" data-action="savePdfFile">Salvar PDF atualizado</button>
           <button type="button" class="btn-yellow" data-action="exportBackup">Baixar backup</button>
           <button type="button" class="btn-yellow" data-action="triggerImport">Importar backup</button>
           <input type="file" id="backupFile" accept="application/json" style="display:none">
@@ -736,6 +737,26 @@
 
         if (!extras.length) extras = [{ id: makeId(), value: 0 }];
         state.extraIncomes = extras;
+      }
+
+
+      function syncFixedFromScreen() {
+        var rows = document.querySelectorAll("[data-action='fixedName'], [data-action='fixedValue']");
+        if (!rows.length) return;
+
+        for (var i = 0; i < state.fixedExpenses.length; i++) {
+          var item = state.fixedExpenses[i];
+          var nameInput = document.querySelector("[data-action='fixedName'][data-id='" + item.id + "']");
+          var valueInput = document.querySelector("[data-action='fixedValue'][data-id='" + item.id + "']");
+
+          if (nameInput) item.name = nameInput.value.trim() || item.name;
+          if (valueInput) item.value = parseMoney(valueInput.value);
+        }
+      }
+
+      function syncBeforeExport() {
+        syncIncomeFromScreen();
+        syncFixedFromScreen();
       }
 
       function totalExtras() {
@@ -1263,8 +1284,112 @@
       }
 
 
+
+      function escReport(text) {
+        return escapeHtml(text == null ? "" : text);
+      }
+
+      function pdfRow(label, value, cls) {
+        return '<div class="box"><span>' + escReport(label) + '</span><strong class="' + (cls || '') + '">' + escReport(value) + '</strong></div>';
+      }
+
+      function savePdfFile() {
+        syncBeforeExport();
+        for (var i = 0; i < state.debts.length; i++) {
+          state.debts[i] = normalizeDebt(state.debts[i]);
+        }
+        safeSave();
+
+        var totals = getTotals();
+        var now = new Date();
+        var dateText = now.toLocaleString("pt-BR");
+
+        var fixedHtml = "";
+        if (state.fixedExpenses.length) {
+          for (var f = 0; f < state.fixedExpenses.length; f++) {
+            fixedHtml += "<tr><td>" + escReport(state.fixedExpenses[f].name) + "</td><td>" + brl(state.fixedExpenses[f].value) + "</td></tr>";
+          }
+        } else {
+          fixedHtml = '<tr><td colspan="2">Nenhum gasto fixo cadastrado.</td></tr>';
+        }
+
+        var debtsHtml = "";
+        if (state.debts.length) {
+          for (var d = 0; d < state.debts.length; d++) {
+            var debt = normalizeDebt(state.debts[d]);
+            debtsHtml += "<tr>"
+              + "<td>" + escReport(debt.name) + "</td>"
+              + "<td>" + brl(debt.installmentAmount) + "</td>"
+              + "<td>" + debt.totalInstallments + "</td>"
+              + "<td>" + debt.paidInstallments + "</td>"
+              + "<td>" + debt.remainingInstallments + "</td>"
+              + "<td>" + brl(debt.pendingAmount) + "</td>"
+              + "<td>" + escReport(displayDate(debt.dueDate)) + "</td>"
+              + "</tr>";
+          }
+        } else {
+          debtsHtml = '<tr><td colspan="7">Nenhuma dívida aberta.</td></tr>';
+        }
+
+        var completedHtml = "";
+        if (state.completed.length) {
+          for (var c = 0; c < state.completed.length; c++) {
+            var item = state.completed[c];
+            var completedAt = item.completedAt ? new Date(item.completedAt).toLocaleDateString("pt-BR") : "Data não informada";
+            completedHtml += "<tr><td>" + escReport(item.name) + "</td><td>" + brl(item.installmentAmount) + "</td><td>" + escReport(completedAt) + "</td></tr>";
+          }
+        } else {
+          completedHtml = '<tr><td colspan="3">Nenhuma dívida concluída.</td></tr>';
+        }
+
+        var report = '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">'
+          + '<meta name="viewport" content="width=device-width, initial-scale=1.0">'
+          + '<title>Relatório de Dívidas - PDF</title>'
+          + '<style>'
+          + 'body{font-family:Arial,Helvetica,sans-serif;background:#fff;color:#111;margin:0;padding:24px;}'
+          + 'h1{font-size:24px;margin:0 0 6px;color:#007a3d;} h2{font-size:17px;margin:24px 0 10px;color:#007a3d;}'
+          + 'p{margin:0 0 14px;color:#444;font-size:12px;}'
+          + '.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0;}'
+          + '.box{border:1px solid #ddd;border-radius:10px;padding:12px;background:#f7f7f7;}'
+          + '.box span{display:block;font-size:11px;color:#555;margin-bottom:6px;} .box strong{font-size:17px;}'
+          + '.positive{color:#007a3d}.negative{color:#d00000}.warning{color:#b36b00}'
+          + 'table{width:100%;border-collapse:collapse;margin-bottom:14px;font-size:11px;}'
+          + 'th,td{border:1px solid #ddd;padding:7px;text-align:left;vertical-align:top;} th{background:#efefef;}'
+          + '.small{font-size:11px;color:#555;margin-top:18px;}'
+          + '@page{size:A4;margin:12mm;} @media print{body{padding:0}.no-print{display:none}}'
+          + '</style></head><body>'
+          + '<h1>Relatório de Controle de Dívidas</h1>'
+          + '<p>Gerado em: ' + escReport(dateText) + '</p>'
+          + '<div class="grid">'
+          + pdfRow("Total recebido no mês", brl(totals.totalIncome))
+          + pdfRow("Gastos fixos do mês", brl(totals.totalFixed))
+          + pdfRow("Parcelas do mês", brl(totals.monthlyInstallments), "warning")
+          + pdfRow("Total a pagar no mês", brl(totals.monthlyPayable), "warning")
+          + pdfRow("Sobra real do mês", brl(totals.monthlyBalance), totals.monthlyBalance >= 0 ? "positive" : "negative")
+          + pdfRow("Total geral das dívidas", brl(totals.totalDebt), "negative")
+          + '</div>'
+          + '<h2>Gastos fixos</h2><table><thead><tr><th>Nome</th><th>Valor mensal</th></tr></thead><tbody>' + fixedHtml + '</tbody></table>'
+          + '<h2>Dívidas abertas</h2><table><thead><tr><th>Dívida</th><th>Parcela</th><th>Total parcelas</th><th>Pagas</th><th>Faltam</th><th>Falta pagar</th><th>Vencimento</th></tr></thead><tbody>' + debtsHtml + '</tbody></table>'
+          + '<h2>Dívidas concluídas</h2><table><thead><tr><th>Dívida</th><th>Parcela</th><th>Concluída em</th></tr></thead><tbody>' + completedHtml + '</tbody></table>'
+          + '<p class="small">PDF é relatório de consulta. Para continuar editando, use o HTML atualizado ou o backup JSON.</p>'
+          + '<button class="no-print" onclick="window.print()" style="padding:12px 18px;border:0;border-radius:10px;background:#00a651;color:#fff;font-weight:bold;">Salvar / imprimir PDF</button>'
+          + '<script>setTimeout(function(){ window.print(); }, 500);<\/script>'
+          + '</body></html>';
+
+        var win = window.open("", "_blank");
+        if (!win) {
+          alert("O navegador bloqueou a janela do PDF. Libere pop-ups ou use o botão novamente.");
+          return;
+        }
+
+        win.document.open();
+        win.document.write(report);
+        win.document.close();
+        setStatus("Relatório PDF aberto. No celular, escolha Salvar como PDF.");
+      }
+
       function saveHtmlFile() {
-        syncIncomeFromScreen();
+        syncBeforeExport();
         safeSave();
 
         try {
@@ -1294,14 +1419,14 @@
           document.body.removeChild(a);
           URL.revokeObjectURL(url);
 
-          setStatus("Arquivo HTML atualizado baixado. Use esse último arquivo como salvo permanente.");
+          setStatus("Arquivo HTML atualizado baixado. Use esse último arquivo como salvo permanente e editável.");
         } catch (e) {
           alert("Não consegui gerar o HTML atualizado neste navegador. Use Baixar backup como alternativa.");
         }
       }
 
       function exportBackup() {
-        syncIncomeFromScreen();
+        syncBeforeExport();
         safeSave();
 
         var blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
@@ -1367,11 +1492,8 @@
         byId("extraIncomeBlocks").innerHTML = html;
       }
 
-      function renderSummary() {
-        for (var i = 0; i < state.debts.length; i++) {
-          state.debts[i] = normalizeDebt(state.debts[i]);
-        }
 
+      function getTotals() {
         var totalIncome = Number(state.salary || 0) + totalExtras();
         var totalFixed = 0;
         var monthlyInstallments = 0;
@@ -1382,22 +1504,40 @@
         }
 
         for (var d = 0; d < state.debts.length; d++) {
-          monthlyInstallments += Number(state.debts[d].installmentAmount || 0);
-          totalDebt += Number(state.debts[d].pendingAmount || 0);
+          var debt = normalizeDebt(state.debts[d]);
+          monthlyInstallments += Number(debt.installmentAmount || 0);
+          totalDebt += Number(debt.pendingAmount || 0);
         }
 
         var monthlyPayable = totalFixed + monthlyInstallments;
         var monthlyBalance = totalIncome - monthlyPayable;
 
-        byId("totalIncome").textContent = brl(totalIncome);
-        byId("totalFixed").textContent = brl(totalFixed);
-        byId("monthlyInstallments").textContent = brl(monthlyInstallments);
-        byId("monthlyPayable").textContent = brl(monthlyPayable);
-        byId("totalDebt").textContent = brl(totalDebt);
+        return {
+          totalIncome: totalIncome,
+          totalFixed: totalFixed,
+          monthlyInstallments: monthlyInstallments,
+          monthlyPayable: monthlyPayable,
+          monthlyBalance: monthlyBalance,
+          totalDebt: totalDebt
+        };
+      }
+
+      function renderSummary() {
+        for (var i = 0; i < state.debts.length; i++) {
+          state.debts[i] = normalizeDebt(state.debts[i]);
+        }
+
+        var totals = getTotals();
+
+        byId("totalIncome").textContent = brl(totals.totalIncome);
+        byId("totalFixed").textContent = brl(totals.totalFixed);
+        byId("monthlyInstallments").textContent = brl(totals.monthlyInstallments);
+        byId("monthlyPayable").textContent = brl(totals.monthlyPayable);
+        byId("totalDebt").textContent = brl(totals.totalDebt);
 
         var balance = byId("monthlyBalance");
-        balance.textContent = brl(monthlyBalance);
-        balance.className = monthlyBalance >= 0 ? "positive" : "negative";
+        balance.textContent = brl(totals.monthlyBalance);
+        balance.className = totals.monthlyBalance >= 0 ? "positive" : "negative";
       }
 
       function renderFixed() {
@@ -1592,6 +1732,7 @@
         else if (action === "saveIncome") saveIncome();
         else if (action === "manualSave") manualSave();
         else if (action === "saveHtmlFile") saveHtmlFile();
+        else if (action === "savePdfFile") savePdfFile();
         else if (action === "exportBackup") exportBackup();
         else if (action === "triggerImport") triggerImport();
         else if (action === "addFixed") addFixed();
