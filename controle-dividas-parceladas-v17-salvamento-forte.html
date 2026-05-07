@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <title>Controle de Dívidas Parceladas v18 PDF</title>
+  <title>Controle de Dívidas Parceladas v20 Editável</title>
   <style>
     :root {
       --bg: #050505;
@@ -352,8 +352,8 @@
 <body>
   <div class="container">
     <header>
-      <h1>Controle de Dívidas Parceladas v18</h1>
-      <p>Versão com salvamento reforçado: salva no navegador, baixa o HTML atualizado e também gera relatório em PDF.</p>
+      <h1>Controle de Dívidas Parceladas v20</h1>
+      <p>Versão editável pelo link do GitHub Pages: salva no navegador do celular, mantém os dados ao sair e permite backup/importação.</p>
     </header>
 
     <section class="grid">
@@ -386,12 +386,13 @@
           <strong>Cálculo:</strong><br>
           Total recebido = salário + entradas extras.<br>
           Total a pagar no mês = gastos fixos + parcelas do mês.<br>
-          Total geral das dívidas = soma do saldo pendente das dívidas abertas.
+          Total geral das dívidas = soma do saldo pendente das dívidas abertas.<br><br>
+          <strong>Como não perder os dados:</strong><br>
+          Use pelo link do GitHub Pages. Clique em <strong>Salvar no aparelho</strong>. O HTML continua editável porque os dados ficam salvos no navegador do celular. Para segurança, use também <strong>Baixar backup</strong>.
         </div>
 
         <div class="footer-actions">
-          <button type="button" class="btn-primary" data-action="manualSave">Salvar agora</button>
-          <button type="button" class="btn-blue" data-action="saveHtmlFile">Salvar HTML atualizado</button>
+          <button type="button" class="btn-primary" data-action="manualSave">Salvar no aparelho</button>
           <button type="button" class="btn-green" data-action="savePdfFile">Salvar PDF atualizado</button>
           <button type="button" class="btn-yellow" data-action="exportBackup">Baixar backup</button>
           <button type="button" class="btn-yellow" data-action="triggerImport">Importar backup</button>
@@ -493,7 +494,7 @@
 
   <script>
     (function () {
-      var STORAGE_KEY = "controle_dividas_parceladas_v17";
+      var STORAGE_KEY = "controle_dividas_mfit_dados_fixos";
 
       var state = {
         salary: 0,
@@ -633,9 +634,36 @@
         return false;
       }
 
+      function pickNewestData(list) {
+        var chosen = null;
+        for (var i = 0; i < list.length; i++) {
+          var item = list[i];
+          if (!hasUsefulData(item)) continue;
+          if (!chosen || Number(item.updatedAt || 0) >= Number(chosen.updatedAt || 0)) {
+            chosen = item;
+          }
+        }
+        return chosen;
+      }
+
+      function readStorageData(key, storage) {
+        try {
+          var saved = storage.getItem(key);
+          if (!saved) return null;
+          return JSON.parse(saved);
+        } catch (e) {
+          return null;
+        }
+      }
+
       function safeLoad() {
         var keys = [
           STORAGE_KEY,
+          "controle_dividas_mfit_dados_fixos",
+          "controle_dividas_parceladas_ultimo",
+          "controle_dividas_parceladas_v19",
+          "controle_dividas_parceladas_v18",
+          "controle_dividas_parceladas_v17",
           "controle_dividas_parceladas_v16",
           "controle_dividas_parceladas_v15",
           "controle_dividas_parceladas_v14",
@@ -652,44 +680,43 @@
           "controle_dividas_parceladas_v3"
         ];
 
-        var embeddedData = readEmbeddedData();
-        var localData = null;
+        var candidates = [readEmbeddedData()];
 
-        try {
-          for (var i = 0; i < keys.length; i++) {
-            var saved = localStorage.getItem(keys[i]);
-            if (saved) {
-              localData = JSON.parse(saved);
-              break;
-            }
-          }
-        } catch (e) {
-          localData = null;
+        for (var i = 0; i < keys.length; i++) {
+          candidates.push(readStorageData(keys[i], localStorage));
+          try { candidates.push(readStorageData(keys[i], sessionStorage)); } catch (e) {}
         }
 
-        var chosen = null;
-
-        if (hasUsefulData(embeddedData) && hasUsefulData(localData)) {
-          chosen = Number(embeddedData.updatedAt || 0) >= Number(localData.updatedAt || 0) ? embeddedData : localData;
-        } else if (hasUsefulData(embeddedData)) {
-          chosen = embeddedData;
-        } else if (hasUsefulData(localData)) {
-          chosen = localData;
-        }
+        var chosen = pickNewestData(candidates);
 
         if (chosen) {
           applyLoadedData(chosen);
         }
       }
 
-      function safeSave() {
+      function safeSave(silent) {
         try {
           state.updatedAt = Date.now();
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-          setStatus("Salvo no navegador.");
+          var payload = JSON.stringify(state);
+
+          localStorage.setItem(STORAGE_KEY, payload);
+          localStorage.setItem("controle_dividas_mfit_dados_fixos", payload);
+          localStorage.setItem("controle_dividas_parceladas_ultimo", payload);
+
+          try {
+            sessionStorage.setItem(STORAGE_KEY, payload);
+            sessionStorage.setItem("controle_dividas_mfit_dados_fixos", payload);
+            sessionStorage.setItem("controle_dividas_parceladas_ultimo", payload);
+          } catch (e) {}
+
+          if (!silent) setStatus("Salvo no navegador e em cópia de segurança local.");
         } catch (e) {
-          setStatus("Aviso: não salvou no navegador. Use Baixar backup para guardar.");
+          if (!silent) setStatus("Aviso: o navegador não aceitou salvamento interno. Use Salvar agora + baixar HTML.");
         }
+      }
+
+      function safeSaveSilent() {
+        safeSave(true);
       }
 
       function setStatus(text) {
@@ -903,10 +930,14 @@
       }
 
       function manualSave() {
-        syncIncomeFromScreen();
+        try {
+          syncBeforeExport();
+        } catch (e) {
+          try { syncIncomeFromScreen(); } catch (err) {}
+        }
         renderSummary();
-        safeSave();
-        alert("Dados salvos no navegador. Para não perder no celular, use também: Salvar arquivo atualizado.");
+        safeSave(false);
+        alert("Salvo no aparelho. Abra sempre pelo mesmo link do GitHub Pages neste mesmo navegador.");
       }
 
       function addFixed() {
@@ -1245,6 +1276,11 @@
 
         var keys = [
           STORAGE_KEY,
+          "controle_dividas_mfit_dados_fixos",
+          "controle_dividas_parceladas_ultimo",
+          "controle_dividas_parceladas_v19",
+          "controle_dividas_parceladas_v18",
+          "controle_dividas_parceladas_v17",
           "controle_dividas_parceladas_v16",
           "controle_dividas_parceladas_v15",
           "controle_dividas_parceladas_v14",
@@ -1413,13 +1449,13 @@
           var url = URL.createObjectURL(blob);
           var a = document.createElement("a");
           a.href = url;
-          a.download = "controle-dividas-salvo-" + stamp + ".html";
+          a.download = "controle-dividas-salvo-v19-" + stamp + ".html";
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
           URL.revokeObjectURL(url);
 
-          setStatus("Arquivo HTML atualizado baixado. Use esse último arquivo como salvo permanente e editável.");
+          setStatus("HTML atualizado baixado com seus dados dentro. Para continuar sem perder, abra sempre esse último arquivo baixado.");
         } catch (e) {
           alert("Não consegui gerar o HTML atualizado neste navegador. Use Baixar backup como alternativa.");
         }
@@ -1433,7 +1469,7 @@
         var url = URL.createObjectURL(blob);
         var a = document.createElement("a");
         a.href = url;
-        a.download = "backup-controle-dividas-" + new Date().toISOString().slice(0, 10) + ".json";
+        a.download = "backup-controle-dividas-mfit-" + new Date().toISOString().slice(0, 10) + ".json";
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -1731,7 +1767,6 @@
         else if (action === "removeExtra") removeExtra(id);
         else if (action === "saveIncome") saveIncome();
         else if (action === "manualSave") manualSave();
-        else if (action === "saveHtmlFile") saveHtmlFile();
         else if (action === "savePdfFile") savePdfFile();
         else if (action === "exportBackup") exportBackup();
         else if (action === "triggerImport") triggerImport();
@@ -1775,12 +1810,51 @@
         }
       }
 
+
+      var autoSaveTimer = null;
+
+      function scheduleAutoSave() {
+        clearTimeout(autoSaveTimer);
+        autoSaveTimer = setTimeout(function () {
+          try {
+            syncBeforeExport();
+            renderSummary();
+            safeSaveSilent();
+            setStatus("Salvo automaticamente.");
+          } catch (e) {}
+        }, 500);
+      }
+
+      function handleInput(e) {
+        var el = e.target;
+        if (!el) return;
+
+        if (
+          el.id === "salary" ||
+          el.classList.contains("extra-income-input") ||
+          el.getAttribute("data-action") === "fixedName" ||
+          el.getAttribute("data-action") === "fixedValue"
+        ) {
+          scheduleAutoSave();
+        }
+      }
+
+      function saveBeforeExit() {
+        try {
+          syncBeforeExport();
+          safeSaveSilent();
+        } catch (e) {}
+      }
+
       function init() {
         safeLoad();
         renderAll();
 
         document.addEventListener("click", handleClick);
         document.addEventListener("change", handleChange);
+        document.addEventListener("input", handleInput);
+        window.addEventListener("pagehide", saveBeforeExit);
+        window.addEventListener("beforeunload", saveBeforeExit);
 
         byId("backupFile").addEventListener("change", function (e) {
           var file = e.target.files && e.target.files[0] ? e.target.files[0] : null;
