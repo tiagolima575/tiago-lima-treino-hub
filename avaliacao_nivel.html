@@ -690,12 +690,12 @@
         display:flex;
         justify-content:center;
         align-items:flex-start;
-        overflow:hidden;
+        overflow:visible;
       }
 
       .finalGraphShell{
         width:100vw;
-        min-height:100svh;
+        min-height:200svh;
         align-items:flex-start;
       }
 
@@ -1146,7 +1146,7 @@
         </div>
         <div id="scanPanel" class="scanPanel" style="display:none">
           <div class="finalGraphShell">
-            <canvas id="graficoFinalCanvas" width="1229" height="2184" aria-label="Gráfico final da avaliação de resultado e nível"></canvas>
+            <canvas id="graficoFinalCanvas" width="1229" height="4368" aria-label="Gráfico final da avaliação de resultado e nível"></canvas>
           </div>
         </div>
 
@@ -1198,8 +1198,8 @@
     let step = 1;
     let ultimoScanData = null;
     const LOGICAL_W = 1229;
-    const LOGICAL_H = 2184;
-    const EXPORT_SCALE = 2;
+    const LOGICAL_H = 4368;
+    const EXPORT_SCALE = 1.35;
     const bar = document.getElementById('bar');
 
     const TEMPLATE_SOURCES = {
@@ -1734,18 +1734,16 @@
       ultimoScanData = scanData();
 
       const preview = document.getElementById('graficoFinalCanvas');
-      const generated = gerarCanvasGrafico();
+      const generated = gerarCanvasGrafico(1);
 
       if(preview){
-        const ratio = Math.max(window.devicePixelRatio || 1, 1);
-        preview.width = Math.round(LOGICAL_W * ratio);
-        preview.height = Math.round(LOGICAL_H * ratio);
+        preview.width = LOGICAL_W;
+        preview.height = LOGICAL_H;
         const ctx = preview.getContext('2d');
         ctx.setTransform(1,0,0,1,0,0);
         ctx.clearRect(0,0,preview.width,preview.height);
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
-        ctx.scale(ratio, ratio);
         ctx.drawImage(generated,0,0,LOGICAL_W,LOGICAL_H);
       }
 
@@ -2627,267 +2625,6 @@
       ctx.restore();
     }
 
-    function clearPanel(ctx,x,y,w,h,r=18,stroke='rgba(185,84,255,.86)'){
-      ctx.save();
-      ctx.shadowBlur = 0;
-      ctx.globalAlpha = 1;
-      drawRoundRect(ctx,x,y,w,h,r,'rgba(2,0,5,0.985)',stroke,1.8);
-      ctx.restore();
-    }
-
-    function drawProfileOverlay(ctx,sexo,nome,objetivo,nivel){
-      const female = String(sexo).toLowerCase().includes('femin');
-      ctx.save(); ctx.fillStyle = '#020005'; ctx.fillRect(30,562,340,255); ctx.restore();
-      const x = 49, y = 590, w = 304, h = 202;
-      clearPanel(ctx,x,y,w,h,14,'rgba(185,84,255,.70)');
-      const rows = [
-        ['PERFIL:', String(sexo || (female ? 'Feminino' : 'Masculino')).toUpperCase(), female ? 'female' : 'user'],
-        ['NOME:', nome || 'Aluno', 'user'],
-        ['OBJETIVO:', objetivo || '—', 'target'],
-        ['NÍVEL ATUAL:', nivel || '—', 'bars']
-      ];
-      rows.forEach((r,i)=>{
-        const yy = y + 40 + i*43;
-        drawIcon(ctx,r[2],x+32,yy-3,13,'#D88BFF');
-        ctx.save();
-        ctx.strokeStyle = 'rgba(185,84,255,.25)';
-        ctx.beginPath(); ctx.moveTo(x+66,yy+20); ctx.lineTo(x+w-24,yy+20); ctx.stroke();
-        ctx.restore();
-        neonText(ctx,r[0],x+66,yy,{font:'900 16px Arial, sans-serif',color:'#FFFFFF',blur:4});
-        fitText(ctx,r[1],x+214,yy,w-230,'800 17px Arial, sans-serif','#FFFFFF','left');
-      });
-    }
-
-    function drawRadarOverlay(ctx,data){
-      // Área redesenhada com folga maior para não cortar porcentagens/legendas.
-      ctx.save();
-      ctx.fillStyle = '#020005';
-      ctx.fillRect(330,126,884,682);
-      ctx.restore();
-
-      const px = 340, py = 140, pw = 860, ph = 660;
-      clearPanel(ctx,px,py,pw,ph,16,'rgba(185,84,255,.34)');
-
-      const cx = px + pw/2, cy = py + ph/2 + 5, maxR = 156;
-      const iconTypes = ['target','bars','calendar','heart','body','trend','dumbbell','shield'];
-      const angle = i => -Math.PI/2 + i*2*Math.PI/data.length;
-      const pt = (i,r) => [cx + Math.cos(angle(i))*r, cy + Math.sin(angle(i))*r];
-
-      // Glow central limpo, sem manchas/pontos soltos.
-      ctx.save();
-      const halo = ctx.createRadialGradient(cx,cy,20,cx,cy,310);
-      halo.addColorStop(0,'rgba(185,84,255,.24)');
-      halo.addColorStop(.52,'rgba(91,22,143,.08)');
-      halo.addColorStop(1,'rgba(0,0,0,0)');
-      ctx.fillStyle = halo;
-      ctx.fillRect(px+8,py+8,pw-16,ph-16);
-      ctx.restore();
-
-      ctx.save();
-      for(let lvl=1; lvl<=6; lvl++){
-        const r = maxR*lvl/6;
-        ctx.beginPath();
-        data.forEach((_,i)=>{ const [x,y] = pt(i,r); i ? ctx.lineTo(x,y) : ctx.moveTo(x,y); });
-        ctx.closePath();
-        ctx.strokeStyle = lvl === 6 ? 'rgba(196,94,255,.58)' : 'rgba(255,255,255,.13)';
-        ctx.lineWidth = lvl === 6 ? 2 : 1;
-        ctx.stroke();
-      }
-
-      data.forEach((_,i)=>{
-        const [x,y] = pt(i,maxR);
-        ctx.beginPath();
-        ctx.moveTo(cx,cy);
-        ctx.lineTo(x,y);
-        ctx.strokeStyle = 'rgba(255,255,255,.16)';
-        ctx.lineWidth = 1;
-        ctx.stroke();
-      });
-      ctx.restore();
-
-      const points = data.map((d,i)=>pt(i,maxR*Math.max(0,Math.min(100,d.value))/100));
-      ctx.save();
-      ctx.beginPath();
-      points.forEach(([x,y],i)=> i ? ctx.lineTo(x,y) : ctx.moveTo(x,y));
-      ctx.closePath();
-      const grad = ctx.createRadialGradient(cx,cy,10,cx,cy,maxR);
-      grad.addColorStop(0,'rgba(255,255,255,.18)');
-      grad.addColorStop(.44,'rgba(181,70,255,.45)');
-      grad.addColorStop(1,'rgba(118,35,196,.72)');
-      ctx.fillStyle = grad;
-      ctx.shadowColor = '#B955FF';
-      ctx.shadowBlur = 20;
-      ctx.fill();
-      ctx.strokeStyle = '#F1C8FF';
-      ctx.lineWidth = 4.5;
-      ctx.stroke();
-      ctx.shadowBlur = 0;
-      points.forEach(([x,y])=>{
-        ctx.beginPath();
-        ctx.arc(x,y,5.6,0,Math.PI*2);
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fill();
-        ctx.strokeStyle = '#E9B7FF';
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-      });
-      ctx.restore();
-
-      data.forEach((d,i)=>{
-        const [ix,iy] = pt(i,maxR+62);
-        ctx.save();
-        ctx.shadowColor = '#B955FF';
-        ctx.shadowBlur = 17;
-        ctx.beginPath();
-        ctx.arc(ix,iy,34,0,Math.PI*2);
-        ctx.fillStyle = 'rgba(0,0,0,.86)';
-        ctx.fill();
-        ctx.strokeStyle = 'rgba(218,139,255,.94)';
-        ctx.lineWidth = 3;
-        ctx.stroke();
-        ctx.restore();
-        drawIcon(ctx,iconTypes[i],ix,iy,37,'#F0C4FF');
-
-        let lx = ix, ly = iy, align = 'center';
-        if(i===0){ lx = ix; ly = iy - 78; align = 'center'; }
-        if(i===1){ lx = ix + 82; ly = iy - 27; align = 'left'; }
-        if(i===2){ lx = ix + 86; ly = iy + 1; align = 'left'; }
-        if(i===3){ lx = ix + 82; ly = iy + 25; align = 'left'; }
-        if(i===4){ lx = ix; ly = iy + 54; align = 'center'; }
-        if(i===5){ lx = ix - 82; ly = iy + 25; align = 'right'; }
-        if(i===6){ lx = ix - 86; ly = iy + 1; align = 'right'; }
-        if(i===7){ lx = ix - 82; ly = iy - 27; align = 'right'; }
-
-        neonText(ctx,`${i+1}. ${d.label}`,lx,ly,{align,font:'900 16px Arial, sans-serif',color:'#FFFFFF',blur:4});
-        neonText(ctx,`${d.value}%`,lx,ly+31,{align,font:'900 32px Arial, sans-serif',color:'#C55FFF',blur:8,shadow:'#B955FF'});
-      });
-    }
-
-    function drawBarsOverlay(ctx,data){
-      // Deslocado para baixo para dar respiro ao radar e evitar corte do item 5.
-      ctx.save();
-      ctx.fillStyle = '#020005';
-      ctx.fillRect(14,804,1198,398);
-      ctx.restore();
-
-      const x = 28, y = 828, w = 1172, h = 352;
-      clearPanel(ctx,x,y,w,h,18,'rgba(185,84,255,.72)');
-      neonText(ctx,'RESULTADO DA ANÁLISE',x+w/2,y+42,{align:'center',font:'900 31px Arial, sans-serif',color:'#FFFFFF',blur:6});
-
-      const iconTypes = ['target','bars','calendar','heart','body','trend','dumbbell','shield'];
-      const labelX = x + 98, barX = x + 338, pctX = x + w - 54, top = y + 92, rowH = 31, barW = w - 490;
-
-      data.forEach((d,i)=>{
-        const yy = top + i*rowH;
-        drawIcon(ctx,iconTypes[i],x+46,yy-5,11,'#F0C4FF');
-        neonText(ctx,`${i+1}. ${d.label}`,labelX,yy,{font:'900 19px Arial, sans-serif',color:'#FFFFFF',blur:3});
-        drawRoundRect(ctx,barX,yy-14,barW,16,8,'rgba(255,255,255,.08)','rgba(185,84,255,.22)',1);
-
-        const grad = ctx.createLinearGradient(barX,0,barX+barW,0);
-        grad.addColorStop(0,'#7A20C7');
-        grad.addColorStop(.50,'#B955FF');
-        grad.addColorStop(1,'#F1C8FF');
-
-        ctx.save();
-        ctx.shadowColor = '#B955FF';
-        ctx.shadowBlur = 14;
-        drawRoundRect(ctx,barX,yy-14,barW*Math.max(0,Math.min(100,d.value))/100,16,8,grad,null,0);
-        ctx.restore();
-
-        neonText(ctx,`${d.value}%`,pctX,yy,{align:'right',font:'900 29px Arial, sans-serif',color:'#C55FFF',blur:7,shadow:'#B955FF'});
-      });
-    }
-
-    function cardFrame(ctx,x,y,w,h,stroke){
-      clearPanel(ctx,x,y,w,h,18,stroke || 'rgba(185,84,255,.78)');
-      ctx.save();
-      ctx.strokeStyle = stroke || 'rgba(185,84,255,.78)';
-      ctx.lineWidth = 2;
-      ctx.shadowColor = stroke || '#B955FF';
-      ctx.shadowBlur = 13;
-      ctx.beginPath(); ctx.moveTo(x+26,y+16); ctx.lineTo(x+92,y+16); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(x+w-92,y+16); ctx.lineTo(x+w-26,y+16); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(x+26,y+h-16); ctx.lineTo(x+92,y+h-16); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(x+w-92,y+h-16); ctx.lineTo(x+w-26,y+h-16); ctx.stroke();
-      ctx.restore();
-    }
-
-    function drawFooterOverlay(ctx,final,approved,nivelAtual){
-      // Rodapé redesenhado com altura maior para não esmagar textos.
-      ctx.save();
-      ctx.fillStyle = '#020005';
-      ctx.fillRect(10,1180,1208,432);
-      ctx.restore();
-
-      const y = 1206, h = 368;
-      cardFrame(ctx,38,y,336,h,'rgba(185,84,255,.80)');
-      cardFrame(ctx,404,y,420,h,approved ? 'rgba(91,255,91,.84)' : 'rgba(255,180,58,.86)');
-      cardFrame(ctx,854,y,336,h,'rgba(185,84,255,.80)');
-
-      neonText(ctx,'CLASSIFICAÇÃO',206,y+48,{align:'center',font:'900 24px Arial, sans-serif',color:'#FFFFFF',blur:6});
-      drawIcon(ctx,approved ? 'shield' : 'star',206,y+112,48,'#D88BFF');
-      const classLines = approved
-        ? [String(final.novoNivel || 'INTERMEDIÁRIO').toUpperCase(), 'CONTROLADO']
-        : [String(nivelAtual || 'INICIANTE').toUpperCase(), 'EM', 'CONSOLIDAÇÃO'];
-      const startY = approved ? y+198 : y+182;
-      classLines.forEach((ln,i)=>neonText(ctx,ln,206,startY+i*34,{align:'center',font:'900 28px Arial, sans-serif',color:i===0||approved?'#C55FFF':'#FFFFFF',blur:12}));
-      wrapCenter(ctx,approved ? 'Perfil equilibrado. Continue focado e com consistência.' : 'Perfil precisa consolidar aderência e técnica antes de avançar.',206,y+298,270,22,'600 16px Arial, sans-serif','#FFFFFF');
-
-      neonText(ctx,'STATUS DE NÍVEL',614,y+42,{align:'center',font:'900 25px Arial, sans-serif',color:'#FFFFFF',blur:6});
-      const statusColor = approved ? '#65FF5A' : '#FFB43A';
-      drawIcon(ctx,approved ? 'check' : 'alert',614,y+116,64,statusColor);
-      const statusLines = approved ? ['APROVADO PARA','SUBIR DE NÍVEL'] : ['MANTER NÍVEL','ATUAL'];
-      statusLines.forEach((ln,i)=>neonText(ctx,ln,614,y+198+i*40,{align:'center',font:'900 37px Arial, sans-serif',color:statusColor,shadow:statusColor,blur:11}));
-      const sub1 = approved ? `Novo nível sugerido: ${final.novoNivel}` : `Nível sugerido: Permanecer em ${nivelAtual}`;
-      fitText(ctx,sub1,614,y+288,356,'800 17px Arial, sans-serif',approved ? '#B7FF9A' : '#FFD278','center');
-      wrapCenter(ctx,approved ? 'Aderência, técnica e evolução compatíveis com progressão.' : 'Ainda não atingiu os critérios para progressão.',614,y+312,348,20,'600 15px Arial, sans-serif','#FFFFFF');
-
-      neonText(ctx,'RECOMENDAÇÃO',1022,y+48,{align:'center',font:'900 24px Arial, sans-serif',color:'#FFFFFF',blur:6});
-      drawIcon(ctx,'clipboard',1022,y+116,60,'#D88BFF');
-      wrapCenter(ctx,approved ? 'Manter progressão, ajustar recuperação e seguir treino conforme o próximo nível.' : 'Ajustar frequência, melhorar recuperação e consolidar técnica antes de subir de nível.',1022,y+214,266,27,'600 19px Arial, sans-serif','#FFFFFF');
-    }
-
-    function gerarCanvasGrafico(scale = EXPORT_SCALE){
-      const data = ultimoScanData || scanData();
-      const sexo = selectedText('sexoPerfil') || 'Masculino';
-      const nome = document.getElementById('nome').value.trim() || (String(sexo).toLowerCase().includes('femin') ? 'Maria Exemplo' : 'João Exemplo');
-      const objetivo = selectedText('objetivo') || 'Hipertrofia';
-      const nivel = selectedText('nivelAtual') || 'Iniciante';
-      const final = getStatusFinal();
-      const approved = !!final.status.aprovado;
-
-      const c = document.createElement('canvas');
-      c.width = Math.round(LOGICAL_W * scale);
-      c.height = Math.round(LOGICAL_H * scale);
-      const ctx = c.getContext('2d');
-      ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = 'high';
-      ctx.scale(scale, scale);
-
-      // Base maior: evita que textos do radar e rodapé sejam cortados no celular.
-      drawHudBackground(ctx,LOGICAL_W,LOGICAL_H);
-
-      // Versão ultra limpa: redesenha a base inteira em canvas vetorial,
-      // sem depender do template raster original, evitando borrões e fantasmas.
-      drawHeader(ctx,LOGICAL_W);
-      drawSilhouette(ctx,sexo,32,150,330,640);
-
-      // Apaga 100% dos textos/valores antigos antes de redesenhar. Sem fantasma/sobreposição.
-      drawFinalHeaderOverlay(ctx);
-      drawProfileOverlay(ctx,sexo,nome,objetivo,nivel);
-      drawRadarOverlay(ctx,data);
-      drawBarsOverlay(ctx,data);
-      drawFooterOverlay(ctx,final,approved,nivel);
-
-      ctx.save();
-      ctx.textAlign = 'right';
-      ctx.fillStyle = 'rgba(255,255,255,.30)';
-      ctx.font = '700 10px Arial, sans-serif';
-      ctx.fillText('MFIT PREMIUM • AVALIAÇÃO DE NÍVEL', LOGICAL_W - 32, LOGICAL_H - 18);
-      ctx.restore();
-      return c;
-    }
-
     async function baixarGrafico(){
       if(!ultimoScanData){
         await renderScanPanel();
@@ -2961,7 +2698,7 @@
       const jpegBlob = await new Promise(resolve => canvas.toBlob(resolve,'image/jpeg',0.94));
       const imgBytes = new Uint8Array(await jpegBlob.arrayBuffer());
       const pageW = 614.5;
-      const pageH = 768;
+      const pageH = Math.round((pageW * canvas.height / canvas.width) * 100) / 100;
       const content = `q ${pageW} 0 0 ${pageH} 0 0 cm /Im1 Do Q\n`;
 
       const bodyParts = [];
@@ -3051,23 +2788,24 @@
     }
 
     /* =========================================================
-       MFIT PREMIUM — GRÁFICO FINAL PADRÃO DASHBOARD 1229x2184
-       Base visual idêntica aos templates enviados + cálculo vivo.
+       MFIT PREMIUM — GRÁFICO FINAL EXPANDIDO 1229x4368
+       Layout dobrado na altura para evitar sobreposição, cortes e
+       textos espremidos no resultado final salvo/compartilhado.
        ========================================================= */
 
-    function clearPanel(ctx,x,y,w,h,r=18,stroke='rgba(185,84,255,.86)'){
+    function clearPanel(ctx,x,y,w,h,r=20,stroke='rgba(185,84,255,.86)'){
       ctx.save();
       const g = ctx.createLinearGradient(x,y,x,y+h);
-      g.addColorStop(0,'#06020B');
+      g.addColorStop(0,'#07020D');
       g.addColorStop(.52,'#020005');
       g.addColorStop(1,'#050109');
       ctx.shadowColor = stroke || '#B955FF';
-      ctx.shadowBlur = 10;
-      drawRoundRect(ctx,x,y,w,h,r,g,stroke,1.8);
+      ctx.shadowBlur = 12;
+      drawRoundRect(ctx,x,y,w,h,r,g,stroke,2);
       ctx.shadowBlur = 0;
       ctx.strokeStyle = 'rgba(255,255,255,.06)';
       ctx.lineWidth = 1;
-      drawRoundRect(ctx,x+7,y+7,w-14,h-14,Math.max(6,r-6),null,'rgba(255,255,255,.055)',1);
+      drawRoundRect(ctx,x+8,y+8,w-16,h-16,Math.max(8,r-7),null,'rgba(255,255,255,.055)',1);
       ctx.restore();
     }
 
@@ -3077,29 +2815,67 @@
       ctx.lineWidth = 3;
       ctx.shadowColor = color;
       ctx.shadowBlur = 12;
-      const l = 52, o = 16;
+      const l = 58, o = 17;
       ctx.beginPath();
-      ctx.moveTo(x+o,y+34); ctx.lineTo(x+o,y+o); ctx.lineTo(x+34,y+o); ctx.lineTo(x+l,y+o);
-      ctx.moveTo(x+w-o,y+34); ctx.lineTo(x+w-o,y+o); ctx.lineTo(x+w-34,y+o); ctx.lineTo(x+w-l,y+o);
-      ctx.moveTo(x+o,y+h-34); ctx.lineTo(x+o,y+h-o); ctx.lineTo(x+34,y+h-o); ctx.lineTo(x+l,y+h-o);
-      ctx.moveTo(x+w-o,y+h-34); ctx.lineTo(x+w-o,y+h-o); ctx.lineTo(x+w-34,y+h-o); ctx.lineTo(x+w-l,y+h-o);
+      ctx.moveTo(x+o,y+38); ctx.lineTo(x+o,y+o); ctx.lineTo(x+38,y+o); ctx.lineTo(x+l,y+o);
+      ctx.moveTo(x+w-o,y+38); ctx.lineTo(x+w-o,y+o); ctx.lineTo(x+w-38,y+o); ctx.lineTo(x+w-l,y+o);
+      ctx.moveTo(x+o,y+h-38); ctx.lineTo(x+o,y+h-o); ctx.lineTo(x+38,y+h-o); ctx.lineTo(x+l,y+h-o);
+      ctx.moveTo(x+w-o,y+h-38); ctx.lineTo(x+w-o,y+h-o); ctx.lineTo(x+w-38,y+h-o); ctx.lineTo(x+w-l,y+h-o);
       ctx.stroke();
       ctx.restore();
     }
 
+    function drawMetricPill(ctx,x,y,w,h,label,value,color='#C55FFF'){
+      clearPanel(ctx,x,y,w,h,18,'rgba(185,84,255,.48)');
+      ctx.save();
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#D8D0E2';
+      ctx.font = '800 18px Arial, sans-serif';
+      ctx.fillText(label,x+w/2,y+31);
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 10;
+      ctx.fillStyle = color;
+      ctx.font = '900 38px Arial, sans-serif';
+      ctx.fillText(value,x+w/2,y+76);
+      ctx.restore();
+    }
 
-    
+    function drawWrappedLeft(ctx,text,x,y,maxWidth,lineHeight,font,color,maxLines=6){
+      ctx.save();
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      ctx.font = font;
+      ctx.fillStyle = color;
+      const words = String(text || '').trim().split(/\s+/).filter(Boolean);
+      const lines = [];
+      let line = '';
+      for(const word of words){
+        const test = line ? line + ' ' + word : word;
+        if(ctx.measureText(test).width > maxWidth && line){
+          lines.push(line);
+          line = word;
+        }else{
+          line = test;
+        }
+      }
+      if(line) lines.push(line);
+      lines.slice(0,maxLines).forEach((ln,i)=>ctx.fillText(ln,x,y+i*lineHeight));
+      ctx.restore();
+      return y + Math.min(lines.length,maxLines)*lineHeight;
+    }
+
     function drawFinalHeaderOverlay(ctx){
       ctx.save();
-      const g = ctx.createLinearGradient(88,34,1142,148);
+      const g = ctx.createLinearGradient(88,34,1142,154);
       g.addColorStop(0,'#020005');
       g.addColorStop(.52,'#06010A');
       g.addColorStop(1,'#020005');
       ctx.fillStyle = g;
-      ctx.fillRect(92,34,1044,118);
-      ctx.strokeStyle = 'rgba(185,84,255,.24)';
-      ctx.lineWidth = 1.4;
-      ctx.strokeRect(118,44,992,96);
+      ctx.fillRect(88,32,1052,126);
+      ctx.strokeStyle = 'rgba(185,84,255,.28)';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(116,44,998,98);
       ctx.restore();
 
       neonText(ctx,'AVALIAÇÃO FINAL DE NÍVEL',LOGICAL_W/2,84,{
@@ -3110,9 +2886,9 @@
         shadow:'rgba(255,255,255,.76)'
       });
 
-      neonText(ctx,'Resultado visual gerado com base nas respostas do aluno',LOGICAL_W/2,128,{
+      neonText(ctx,'Resultado visual gerado com base nas respostas do aluno',LOGICAL_W/2,130,{
         align:'center',
-        font:'600 22px Arial, sans-serif',
+        font:'600 23px Arial, sans-serif',
         color:'#D8D0E2',
         blur:4,
         shadow:'rgba(185,84,255,.35)'
@@ -3121,14 +2897,14 @@
 
     function drawProfileOverlay(ctx,sexo,nome,objetivo,nivel){
       const female = String(sexo || '').toLowerCase().includes('femin');
-      const panelX = 44, panelY = 572, panelW = 308, panelH = 220;
+      const panelX = 42, panelY = 564, panelW = 314, panelH = 238;
 
       ctx.save();
       ctx.fillStyle = '#020005';
-      ctx.fillRect(28,548,344,254);
+      ctx.fillRect(26,542,352,276);
       ctx.restore();
 
-      clearPanel(ctx,panelX,panelY,panelW,panelH,14,'rgba(185,84,255,.74)');
+      clearPanel(ctx,panelX,panelY,panelW,panelH,16,'rgba(185,84,255,.74)');
       mfitHudCorners(ctx,panelX,panelY,panelW,panelH,'rgba(185,84,255,.80)');
 
       const rows = [
@@ -3139,25 +2915,25 @@
       ];
 
       rows.forEach((r,i)=>{
-        const yy = panelY + 42 + i*46;
-        drawIcon(ctx,r[2],panelX+30,yy-1,14,'#D88BFF');
+        const yy = panelY + 46 + i*49;
+        drawIcon(ctx,r[2],panelX+31,yy-1,14,'#D88BFF');
         ctx.save();
         ctx.strokeStyle = 'rgba(185,84,255,.30)';
-        ctx.beginPath(); ctx.moveTo(panelX+62,yy+22); ctx.lineTo(panelX+panelW-20,yy+22); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(panelX+64,yy+23); ctx.lineTo(panelX+panelW-22,yy+23); ctx.stroke();
         ctx.restore();
-        neonText(ctx,r[0],panelX+60,yy,{font:'900 16px Arial, sans-serif',color:'#FFFFFF',blur:4});
-        fitText(ctx,r[1],panelX+156,yy,panelW-172,'800 17px Arial, sans-serif','#FFFFFF','left');
+        neonText(ctx,r[0],panelX+64,yy,{font:'900 16px Arial, sans-serif',color:'#FFFFFF',blur:4});
+        fitText(ctx,r[1],panelX+162,yy,panelW-178,'800 17px Arial, sans-serif','#FFFFFF','left');
       });
     }
 
     function drawRadarOverlay(ctx,data){
       ctx.save();
       ctx.fillStyle = '#020005';
-      ctx.fillRect(330,126,886,686);
+      ctx.fillRect(326,122,892,696);
       ctx.restore();
 
-      const px = 340, py = 138, pw = 864, ph = 664;
-      clearPanel(ctx,px,py,pw,ph,18,'rgba(185,84,255,.40)');
+      const px = 338, py = 138, pw = 868, ph = 668;
+      clearPanel(ctx,px,py,pw,ph,20,'rgba(185,84,255,.40)');
 
       const cx = px + pw/2 + 2;
       const cy = py + ph/2 + 8;
@@ -3167,8 +2943,8 @@
       const pt = (i,r) => [cx + Math.cos(angle(i))*r, cy + Math.sin(angle(i))*r];
 
       ctx.save();
-      const halo = ctx.createRadialGradient(cx,cy,18,cx,cy,340);
-      halo.addColorStop(0,'rgba(185,84,255,.28)');
+      const halo = ctx.createRadialGradient(cx,cy,18,cx,cy,342);
+      halo.addColorStop(0,'rgba(185,84,255,.30)');
       halo.addColorStop(.48,'rgba(116,35,185,.14)');
       halo.addColorStop(1,'rgba(0,0,0,0)');
       ctx.fillStyle = halo;
@@ -3254,7 +3030,7 @@
       const w = LOGICAL_W;
       const g = ctx.createLinearGradient(0,startY,0,h);
       g.addColorStop(0,'#030207');
-      g.addColorStop(.46,'#06020B');
+      g.addColorStop(.40,'#06020B');
       g.addColorStop(1,'#010103');
       ctx.fillStyle = g;
       ctx.fillRect(0,startY,w,h-startY);
@@ -3266,9 +3042,9 @@
       for(let y=startY+12; y<h; y+=42){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke(); }
       ctx.globalAlpha = 1;
 
-      const rg = ctx.createRadialGradient(w*.52,startY+360,60,w*.52,startY+360,760);
-      rg.addColorStop(0,'rgba(163,89,218,.18)');
-      rg.addColorStop(.50,'rgba(88,20,145,.10)');
+      const rg = ctx.createRadialGradient(w*.52,startY+1100,80,w*.52,startY+1100,1560);
+      rg.addColorStop(0,'rgba(163,89,218,.20)');
+      rg.addColorStop(.48,'rgba(88,20,145,.10)');
       rg.addColorStop(1,'rgba(0,0,0,0)');
       ctx.fillStyle = rg;
       ctx.fillRect(0,startY,w,h-startY);
@@ -3289,78 +3065,171 @@
     function drawBarsOverlay(ctx,data){
       ctx.save();
       ctx.fillStyle = '#020005';
-      ctx.fillRect(18,820,1192,500);
+      ctx.fillRect(18,860,1192,690);
       ctx.restore();
 
-      const x = 32, y = 846, w = 1164, h = 420;
-      clearPanel(ctx,x,y,w,h,20,'rgba(185,84,255,.72)');
+      const x = 32, y = 900, w = 1164, h = 610;
+      clearPanel(ctx,x,y,w,h,24,'rgba(185,84,255,.72)');
       mfitHudCorners(ctx,x,y,w,h,'rgba(185,84,255,.76)');
-      neonText(ctx,'RESULTADO DA ANÁLISE',x+w/2,y+50,{align:'center',font:'900 34px Arial, sans-serif',color:'#FFFFFF',blur:7});
+      neonText(ctx,'RESULTADO DA ANÁLISE',x+w/2,y+64,{align:'center',font:'900 40px Arial, sans-serif',color:'#FFFFFF',blur:8});
 
       const iconTypes = ['target','bars','calendar','heart','body','trend','dumbbell','shield'];
-      const labelX = x + 98, barX = x + 358, pctX = x + w - 42, top = y + 108, rowH = 36, barW = w - 518;
+      const labelX = x + 112, barX = x + 390, pctX = x + w - 48, top = y + 138, rowH = 55, barW = w - 565;
 
       data.forEach((d,i)=>{
         const yy = top + i*rowH;
-        drawIcon(ctx,iconTypes[i],x+48,yy-4,13,'#F0C4FF');
-        neonText(ctx,`${i+1}. ${d.label}`,labelX,yy,{font:'900 20px Arial, sans-serif',color:'#FFFFFF',blur:4});
-        drawRoundRect(ctx,barX,yy-16,barW,19,9,'rgba(255,255,255,.08)','rgba(185,84,255,.24)',1);
+        drawIcon(ctx,iconTypes[i],x+54,yy-4,17,'#F0C4FF');
+        neonText(ctx,`${i+1}. ${d.label}`,labelX,yy,{font:'900 24px Arial, sans-serif',color:'#FFFFFF',blur:4});
+        drawRoundRect(ctx,barX,yy-19,barW,24,12,'rgba(255,255,255,.08)','rgba(185,84,255,.24)',1);
 
         const grad = ctx.createLinearGradient(barX,0,barX+barW,0);
         grad.addColorStop(0,'#7A20C7');
         grad.addColorStop(.52,'#B955FF');
         grad.addColorStop(1,'#F1C8FF');
         ctx.save();
-        ctx.shadowColor = '#B955FF'; ctx.shadowBlur = 15;
-        drawRoundRect(ctx,barX,yy-16,barW*Math.max(0,Math.min(100,d.value))/100,19,9,grad,null,0);
+        ctx.shadowColor = '#B955FF'; ctx.shadowBlur = 16;
+        drawRoundRect(ctx,barX,yy-19,barW*Math.max(0,Math.min(100,d.value))/100,24,12,grad,null,0);
         ctx.restore();
 
-        neonText(ctx,`${d.value}%`,pctX,yy,{align:'right',font:'900 30px Arial, sans-serif',color:'#C55FFF',blur:8,shadow:'#B955FF'});
+        neonText(ctx,`${d.value}%`,pctX,yy,{align:'right',font:'900 34px Arial, sans-serif',color:'#C55FFF',blur:8,shadow:'#B955FF'});
       });
     }
 
     function cardFrame(ctx,x,y,w,h,stroke){
-      clearPanel(ctx,x,y,w,h,18,stroke || 'rgba(185,84,255,.78)');
+      clearPanel(ctx,x,y,w,h,24,stroke || 'rgba(185,84,255,.78)');
       mfitHudCorners(ctx,x,y,w,h,stroke || 'rgba(185,84,255,.78)');
     }
 
     function drawFooterOverlay(ctx,final,approved,nivelAtual){
+      const ader = calcAderencia();
+      const sem = calcSemaforo();
+      const rec = scoreRecuperacao();
+      const dor = +document.getElementById('dor').value || 0;
+      const {up, down} = perfScore();
+      const tecnica = selectedText('tecnica') || '—';
+      const rir = selectedText('rir') || '—';
+      const statusColor = approved ? '#65FF5A' : '#FFB43A';
+      const safeNivelAtual = String(nivelAtual || 'Iniciante');
+
       ctx.save();
       ctx.fillStyle = '#020005';
-      ctx.fillRect(18,1290,1192,790);
+      ctx.fillRect(18,1550,1192,2680);
       ctx.restore();
 
-      const y = 1334, h = 700;
-      cardFrame(ctx,38,y,336,h,'rgba(185,84,255,.82)');
-      cardFrame(ctx,404,y,420,h,approved ? 'rgba(91,255,91,.88)' : 'rgba(255,180,58,.90)');
-      cardFrame(ctx,854,y,336,h,'rgba(185,84,255,.82)');
+      // Card principal: decisão técnica
+      const sx = 38, sy = 1600, sw = 1153, sh = 720;
+      cardFrame(ctx,sx,sy,sw,sh,approved ? 'rgba(91,255,91,.88)' : 'rgba(255,180,58,.90)');
+      neonText(ctx,'STATUS DE NÍVEL',sx+sw/2,sy+70,{align:'center',font:'900 42px Arial, sans-serif',color:'#FFFFFF',blur:8});
+      drawIcon(ctx,approved ? 'check' : 'alert',sx+sw/2,sy+188,106,statusColor);
 
-      neonText(ctx,'CLASSIFICAÇÃO',206,y+62,{align:'center',font:'900 27px Arial, sans-serif',color:'#FFFFFF',blur:7});
-      drawIcon(ctx,approved ? 'shield' : 'star',206,y+156,64,'#D88BFF');
-      const safeNivelAtual = String(nivelAtual || 'Iniciante').toUpperCase();
+      const statusLines = approved ? ['APROVADO PARA','SUBIR DE NÍVEL'] : ['MANTER NÍVEL','ATUAL'];
+      statusLines.forEach((ln,i)=>fitText(ctx,ln,sx+sw/2,sy+350+i*66,920,'900 66px Arial, sans-serif',statusColor,'center'));
+
+      const sub1 = approved ? `Novo nível sugerido: ${final.novoNivel}` : `Nível sugerido: permanecer em ${safeNivelAtual}`;
+      fitText(ctx,sub1,sx+sw/2,sy+506,900,'800 34px Arial, sans-serif',approved ? '#B7FF9A' : '#FFD278','center');
+
+      wrapCenter(
+        ctx,
+        approved
+          ? 'Os critérios mínimos de aderência, técnica, recuperação e evolução estão compatíveis com progressão controlada.'
+          : 'A progressão foi bloqueada porque ainda há critérios técnicos que precisam ser consolidados antes de subir de nível.',
+        sx+sw/2,
+        sy+558,
+        940,
+        36,
+        '600 27px Arial, sans-serif',
+        '#FFFFFF'
+      );
+
+      // Cards secundários: classificação e recomendação
+      const cy = 2390, ch = 650;
+      cardFrame(ctx,38,cy,550,ch,'rgba(185,84,255,.82)');
+      neonText(ctx,'CLASSIFICAÇÃO',313,cy+66,{align:'center',font:'900 34px Arial, sans-serif',color:'#FFFFFF',blur:7});
+      drawIcon(ctx,approved ? 'shield' : 'star',313,cy+180,78,'#D88BFF');
+
       const classLines = approved
         ? [String(final.novoNivel || 'Intermediário').toUpperCase(), 'CONTROLADO']
-        : [`${safeNivelAtual} EM`, 'CONSOLIDAÇÃO'];
-      const classY = approved ? y+292 : y+286;
-      classLines.forEach((ln,i)=>fitText(ctx,ln,206,classY+i*44,286,'900 36px Arial, sans-serif',approved || i===0 ? '#C55FFF' : '#FFFFFF','center'));
-      wrapCenter(ctx,approved ? 'Perfil equilibrado. Continue focado e com consistência.' : 'Perfil precisa consolidar aderência e técnica antes de avançar.',206,y+444,272,30,'600 23px Arial, sans-serif','#FFFFFF');
+        : [`${safeNivelAtual.toUpperCase()} EM`, 'CONSOLIDAÇÃO'];
 
-      neonText(ctx,'STATUS DE NÍVEL',614,y+60,{align:'center',font:'900 28px Arial, sans-serif',color:'#FFFFFF',blur:7});
-      const statusColor = approved ? '#65FF5A' : '#FFB43A';
-      drawIcon(ctx,approved ? 'check' : 'alert',614,y+162,84,statusColor);
-      const statusLines = approved ? ['APROVADO PARA','SUBIR DE NÍVEL'] : ['MANTER NÍVEL','ATUAL'];
-      statusLines.forEach((ln,i)=>fitText(ctx,ln,614,y+308+i*52,370,'900 44px Arial, sans-serif',statusColor,'center'));
-      const sub1 = approved ? `Novo nível sugerido: ${final.novoNivel}` : `Nível sugerido: Permanecer em ${nivelAtual}`;
-      fitText(ctx,sub1,614,y+456,370,'800 23px Arial, sans-serif',approved ? '#B7FF9A' : '#FFD278','center');
-      wrapCenter(ctx,approved ? 'Aderência, técnica e evolução compatíveis com progressão.' : 'Ainda não atingiu os critérios para progressão.',614,y+500,360,28,'600 21px Arial, sans-serif','#FFFFFF');
+      classLines.forEach((ln,i)=>fitText(ctx,ln,313,cy+336+i*54,460,'900 48px Arial, sans-serif',approved || i===0 ? '#C55FFF' : '#FFFFFF','center'));
+      wrapCenter(
+        ctx,
+        approved
+          ? 'Manter evolução com controle de carga e monitoramento de recuperação.'
+          : 'Priorizar consistência, técnica e recuperação antes de aumentar exigência.',
+        313,
+        cy+492,
+        450,
+        32,
+        '600 24px Arial, sans-serif',
+        '#FFFFFF'
+      );
 
-      neonText(ctx,'RECOMENDAÇÃO',1022,y+62,{align:'center',font:'900 27px Arial, sans-serif',color:'#FFFFFF',blur:7});
-      drawIcon(ctx,'clipboard',1022,y+162,74,'#D88BFF');
+      cardFrame(ctx,638,cy,550,ch,'rgba(185,84,255,.82)');
+      neonText(ctx,'RECOMENDAÇÃO',913,cy+66,{align:'center',font:'900 34px Arial, sans-serif',color:'#FFFFFF',blur:7});
+      drawIcon(ctx,'clipboard',913,cy+180,82,'#D88BFF');
+
       const planejadoSemana = Number(document.getElementById('planejado')?.value || 4) || 4;
-      const rec = approved
-        ? `Manter progressão, ajustar recuperação e seguir treino ${planejadoSemana}x/semana.`
-        : 'Ajustar frequência, melhorar recuperação e consolidar técnica antes de subir de nível.';
-      wrapCenter(ctx,rec,1022,y+350,270,35,'600 25px Arial, sans-serif','#FFFFFF');
+      const recomendacao = approved
+        ? `Subir nível com progressão controlada, mantendo ${planejadoSemana}x/semana e ajuste por recuperação.`
+        : 'Manter nível atual, corrigir os limitadores e reavaliar em 30 dias.';
+      wrapCenter(ctx,recomendacao,913,cy+340,430,42,'600 30px Arial, sans-serif','#FFFFFF');
+
+      // Painel de critérios: mais espaço para leitura e sem texto espremido
+      const dx = 38, dy = 3120, dw = 1153, dh = 880;
+      cardFrame(ctx,dx,dy,dw,dh,'rgba(185,84,255,.82)');
+      neonText(ctx,'CRITÉRIOS TÉCNICOS DA DECISÃO',dx+dw/2,dy+68,{align:'center',font:'900 38px Arial, sans-serif',color:'#FFFFFF',blur:7});
+
+      drawMetricPill(ctx,74,dy+120,245,120,'ADERÊNCIA',`${ader}%`,ader >= 75 ? '#65FF5A' : '#FFB43A');
+      drawMetricPill(ctx,348,dy+120,245,120,'RECUPERAÇÃO',`${rec}%`,rec >= 70 ? '#65FF5A' : '#FFB43A');
+      drawMetricPill(ctx,622,dy+120,245,120,'SEMÁFORO',sem,sem === 'Verde' ? '#65FF5A' : sem === 'Amarelo' ? '#FFB43A' : '#FF5555');
+      drawMetricPill(ctx,896,dy+120,245,120,'DOR',`${dor}/10`,dor <= 2 ? '#65FF5A' : '#FF5555');
+
+      const checklist = [
+        {
+          icon:'calendar',
+          titulo:'Frequência e aderência',
+          texto: ader >= 75 ? 'Aderência suficiente para sustentar progressão.' : 'Aderência abaixo do mínimo técnico de 75%.'
+        },
+        {
+          icon:'heart',
+          titulo:'Recuperação',
+          texto: sem === 'Verde' ? 'Sono, energia, dor e estresse compatíveis com avanço.' : `Semáforo ${sem.toLowerCase()}; ajustar recuperação antes de aumentar exigência.`
+        },
+        {
+          icon:'dumbbell',
+          titulo:'Técnica e RIR',
+          texto: `Técnica informada: ${tecnica}. RIR percebido: ${rir}.`
+        },
+        {
+          icon:'trend',
+          titulo:'Evolução dos exercícios',
+          texto: `${up} marcador(es) melhoraram e ${down} marcador(es) pioraram nos exercícios-chave.`
+        },
+        {
+          icon:'body',
+          titulo:'Dor / limitação',
+          texto: dor <= 2 ? 'Dor articular dentro do limite de segurança do Protocolo Zero.' : 'Dor articular acima de 2/10 bloqueia promoção pelo critério de segurança.'
+        }
+      ];
+
+      const leftX = dx + 72;
+      const rightX = dx + 604;
+      checklist.forEach((item,i)=>{
+        const colX = i < 3 ? leftX : rightX;
+        const rowY = dy + 306 + (i % 3) * 166;
+        drawIcon(ctx,item.icon,colX,rowY+40,28,'#F0C4FF');
+        neonText(ctx,item.titulo,colX+70,rowY+24,{font:'900 26px Arial, sans-serif',color:'#FFFFFF',blur:4});
+        drawWrappedLeft(ctx,item.texto,colX+70,rowY+58,420,28,'600 21px Arial, sans-serif','#D8D0E2',3);
+      });
+
+      const nx = 62, ny = 4060, nw = 1105, nh = 190;
+      cardFrame(ctx,nx,ny,nw,nh,approved ? 'rgba(91,255,91,.70)' : 'rgba(255,180,58,.76)');
+      neonText(ctx,'CONDUTA MFIT PREMIUM',nx+40,ny+56,{font:'900 28px Arial, sans-serif',color:'#FFFFFF',blur:6});
+      const conduta = approved
+        ? `Liberar progressão para ${final.novoNivel}, sem romper técnica, amplitude e recuperação. Monitorar resposta na primeira semana.`
+        : `Manter ${safeNivelAtual}, corrigir o principal limitador e repetir avaliação após novo bloco de treino.`;
+      drawWrappedLeft(ctx,conduta,nx+40,ny+94,nw-80,34,'700 25px Arial, sans-serif',approved ? '#B7FF9A' : '#FFD278',3);
     }
 
     function gerarCanvasGrafico(scale = EXPORT_SCALE){
@@ -3387,7 +3256,7 @@
         ctx.drawImage(template,0,0,LOGICAL_W,1536);
       }else{
         drawHeader(ctx,LOGICAL_W);
-        drawSilhouette(ctx,sexo,32,150,330,610);
+        drawSilhouette(ctx,sexo,32,150,330,640);
       }
 
       drawLowerExtensionBackground(ctx,820);
@@ -3399,10 +3268,11 @@
 
       ctx.save();
       ctx.textAlign = 'right';
-      ctx.fillStyle = 'rgba(255,255,255,.34)';
-      ctx.font = '700 10px Arial, sans-serif';
-      ctx.fillText('MFIT PREMIUM • AVALIAÇÃO DE NÍVEL', LOGICAL_W - 32, LOGICAL_H - 16);
+      ctx.fillStyle = 'rgba(255,255,255,.36)';
+      ctx.font = '700 13px Arial, sans-serif';
+      ctx.fillText('MFIT PREMIUM • AVALIAÇÃO DE NÍVEL', LOGICAL_W - 32, LOGICAL_H - 18);
       ctx.restore();
+
       return c;
     }
 
