@@ -1023,6 +1023,11 @@
               <select id="res1" required></select>
             </div>
           </div>
+
+          <div style="margin-top:12px">
+            <label>Carga/peso atual ou evolução no exercício</label>
+            <input type="text" id="carga1" placeholder="Ex.: 20kg → 25kg / +5kg / 10 reps → 12 reps">
+          </div>
         </div>
 
         <div class="divider"></div>
@@ -1041,6 +1046,11 @@
               <select id="res2" required></select>
             </div>
           </div>
+
+          <div style="margin-top:12px">
+            <label>Carga/peso atual ou evolução no exercício</label>
+            <input type="text" id="carga2" placeholder="Ex.: 20kg → 25kg / +5kg / 10 reps → 12 reps">
+          </div>
         </div>
 
         <div class="divider"></div>
@@ -1058,6 +1068,11 @@
               <label>O que aconteceu?</label>
               <select id="res3" required></select>
             </div>
+          </div>
+
+          <div style="margin-top:12px">
+            <label>Carga/peso atual ou evolução no exercício</label>
+            <input type="text" id="carga3" placeholder="Ex.: 20kg → 25kg / +5kg / 10 reps → 12 reps">
           </div>
         </div>
 
@@ -1251,27 +1266,12 @@
 
         <div class="divider"></div>
 
-        <button type="button" id="sendBtn" class="btn primary" style="width:100%;padding:14px 16px;font-size:16px" onclick="enviarWhats()" disabled>
-          Enviar somente o gráfico no WhatsApp
+        <button type="button" id="pdfGraphBtn" class="btn primary" style="width:100%;padding:14px 16px;font-size:16px" onclick="baixarPDFGrafico()" disabled>
+          Gerar PDF do gráfico
         </button>
 
-        <div class="row" style="margin-top:12px">
-          <button type="button" id="shareGraphBtn" class="btn" onclick="compartilharGrafico()" disabled>
-            Compartilhar gráfico em imagem
-          </button>
-
-          <button type="button" id="downloadGraphBtn" class="btn" onclick="baixarGrafico()" disabled>
-            Baixar gráfico PNG
-          </button>
-
-          <button type="button" id="pdfGraphBtn" class="btn" onclick="baixarPDFGrafico()" disabled>
-            Baixar gráfico PDF
-          </button>
-        </div>
-
         <p class="hint">
-          Envio configurado para mandar somente o gráfico final. Em celulares compatíveis, o botão envia o PNG direto pelo compartilhamento do aparelho.
-          Se o navegador bloquear o compartilhamento, baixe o PNG ou o PDF e anexe manualmente no WhatsApp.
+          Ao clicar, o sistema gera e baixa somente o PDF do gráfico final. Depois a pessoa envia o arquivo manualmente para você pelo WhatsApp.
         </p>
 
         <div class="nav">
@@ -1287,7 +1287,7 @@
     let step = 1;
     let ultimoScanData = null;
     const LOGICAL_W = 1229;
-    const LOGICAL_H = 4368;
+    const LOGICAL_H = 5780;
     const EXPORT_SCALE = 1.35;
     const bar = document.getElementById('bar');
 
@@ -1473,6 +1473,11 @@
       }
 
       return (select?.value || '').trim();
+    }
+
+    function getCargaValue(n){
+      const el = document.getElementById(`carga${n}`);
+      return (el?.value || '').trim() || 'não informado';
     }
 
     function popularExerciciosChave(){
@@ -1889,8 +1894,10 @@
 
       panel.style.display = 'flex';
 
-      document.getElementById('shareGraphBtn').disabled = false;
-      document.getElementById('downloadGraphBtn').disabled = false;
+      const shareBtn = document.getElementById('shareGraphBtn');
+      const downloadBtn = document.getElementById('downloadGraphBtn');
+      if(shareBtn) shareBtn.disabled = false;
+      if(downloadBtn) downloadBtn.disabled = false;
       const pdfBtn = document.getElementById('pdfGraphBtn');
       if(pdfBtn) pdfBtn.disabled = false;
     }
@@ -1921,7 +1928,6 @@
         `• Sugestão: <b>${niv.sug}</b><br>` +
         `• Motivo: <span style="color:var(--muted)">${niv.motivo}</span>`;
 
-      document.getElementById('sendBtn').disabled = false;
 
       showStep(7);
       await renderScanPanel();
@@ -1957,13 +1963,6 @@
 `7) Resultado\nFrequência estimada: ${ader}%\nSemáforo: ${sem}\nSugestão: ${niv.sug}\nMotivo: ${niv.motivo}\n`;
     }
 
-
-    async function enviarWhats(){
-      if(!ultimoScanData){
-        await renderScanPanel();
-      }
-      await compartilharGrafico();
-    }
 
     function safeFileName(str){
       return (str || 'aluno')
@@ -2815,7 +2814,7 @@
       return new Blob([finalBytes],{type:'application/pdf'});
     }
 
-    async function baixarPDFGrafico(){
+    async function gerarPDFGrafico(){
       if(!ultimoScanData){
         await renderScanPanel();
       }
@@ -2823,24 +2822,38 @@
       const canvas = gerarCanvasGrafico();
       const nome = safeFileName(document.getElementById('nome').value.trim());
       const pdfBlob = await canvasToPdfBlob(canvas);
-      const a = document.createElement('a');
+      const fileName = `grafico-avaliacao-nivel-${nome}.pdf`;
 
-      a.download = `grafico-avaliacao-nivel-${nome}.pdf`;
-      a.href = URL.createObjectURL(pdfBlob);
-      a.click();
-
-      setTimeout(() => URL.revokeObjectURL(a.href),1500);
+      return {pdfBlob, fileName};
     }
 
+    function baixarBlobPDF(pdfBlob,fileName){
+      const a = document.createElement('a');
+      const url = URL.createObjectURL(pdfBlob);
+
+      a.download = fileName;
+      a.href = url;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      setTimeout(() => URL.revokeObjectURL(url),1500);
+    }
+
+    async function baixarPDFGrafico(){
+      const {pdfBlob,fileName} = await gerarPDFGrafico();
+      baixarBlobPDF(pdfBlob,fileName);
+    }
 
     function limpar(){
       if(!confirm('Limpar tudo?')) return;
 
       document.getElementById('form').reset();
       document.getElementById('objOutroWrap').style.display = 'none';
-      document.getElementById('sendBtn').disabled = true;
-      document.getElementById('shareGraphBtn').disabled = true;
-      document.getElementById('downloadGraphBtn').disabled = true;
+      const shareBtn = document.getElementById('shareGraphBtn');
+      const downloadBtn = document.getElementById('downloadGraphBtn');
+      if(shareBtn) shareBtn.disabled = true;
+      if(downloadBtn) downloadBtn.disabled = true;
       const pdfBtn = document.getElementById('pdfGraphBtn');
       if(pdfBtn) pdfBtn.disabled = true;
       document.getElementById('kpiAder').textContent = '—';
@@ -3000,7 +3013,7 @@
       ctx.fillRect(334,122,874,696);
       ctx.restore();
 
-      const px = 346, py = 138, pw = 850, ph = 668;
+      const px = 352, py = 144, pw = 836, ph = 656;
       clearPanel(ctx,px,py,pw,ph,24,'rgba(185,84,255,.46)');
       mfitHudCorners(ctx,px,py,pw,ph,'rgba(185,84,255,.62)');
 
@@ -3135,22 +3148,22 @@
     function drawBarsOverlay(ctx,data){
       ctx.save();
       ctx.fillStyle = '#020005';
-      ctx.fillRect(18,860,1192,700);
+      ctx.fillRect(18,860,1192,760);
       ctx.restore();
 
-      const x = 32, y = 900, w = 1164, h = 622;
+      const x = 40, y = 912, w = 1148, h = 660;
       clearPanel(ctx,x,y,w,h,24,'rgba(185,84,255,.72)');
       mfitHudCorners(ctx,x,y,w,h,'rgba(185,84,255,.76)');
       neonText(ctx,'RESULTADO DA ANÁLISE',x+w/2,y+64,{align:'center',font:'900 42px Arial, sans-serif',color:'#FFFFFF',blur:8});
       neonText(ctx,'Leitura objetiva dos 8 marcadores da avaliação',x+w/2,y+102,{align:'center',font:'600 18px Arial, sans-serif',color:'#D9D0E8',blur:4});
 
       const iconTypes = ['target','bars','calendar','heart','body','trend','dumbbell','shield'];
-      const labelX = x + 112, barX = x + 370, pctX = x + w - 46, top = y + 160, rowH = 55, barW = w - 548;
+      const labelX = x + 118, barX = x + 400, pctX = x + w - 52, top = y + 166, rowH = 60, barW = w - 560;
 
       data.forEach((d,i)=>{
         const yy = top + i*rowH;
         drawIcon(ctx,iconTypes[i],x+54,yy-4,17,'#F0C4FF');
-        neonText(ctx,`${i+1}. ${d.label}`,labelX,yy,{font:'900 24px Arial, sans-serif',color:'#FFFFFF',blur:4});
+        fitText(ctx,`${i+1}. ${d.label}`,labelX,yy,260,'900 22px Arial, sans-serif','#FFFFFF','left');
         drawRoundRect(ctx,barX,yy-19,barW,24,12,'rgba(255,255,255,.07)','rgba(185,84,255,.22)',1);
 
         const grad = ctx.createLinearGradient(barX,0,barX+barW,0);
@@ -3193,6 +3206,115 @@
       mfitHudCorners(ctx,x,y,w,h,stroke || 'rgba(185,84,255,.78)');
     }
 
+    function drawTechnicalInfoCard(ctx,x,y,w,h){
+      cardFrame(ctx,x,y,w,h,'rgba(185,84,255,.82)');
+      neonText(ctx,'DADOS TÉCNICOS DO ALUNO',x+w/2,y+58,{align:'center',font:'900 34px Arial, sans-serif',color:'#FFFFFF',blur:7});
+      neonText(ctx,'Evolução dos exercícios, carga/peso e conduta de mobilidade',x+w/2,y+94,{align:'center',font:'600 18px Arial, sans-serif',color:'#D9D0E8',blur:4});
+
+      const leftW = 545;
+      const gap = 18;
+      const rightW = w - leftW - gap - 84;
+      const leftX = x + 42;
+      const rightX = leftX + leftW + gap;
+      const boxY = y + 128;
+      const boxH = h - 158;
+
+      clearPanel(ctx,leftX,boxY,leftW,boxH,18,'rgba(185,84,255,.38)');
+      clearPanel(ctx,rightX,boxY,rightW,boxH,18,'rgba(185,84,255,.38)');
+
+      // --- Lado esquerdo: exercícios ---
+      neonText(ctx,'EVOLUÇÃO NOS EXERCÍCIOS',leftX+24,boxY+42,{font:'900 21px Arial, sans-serif',color:'#FFFFFF',blur:5});
+      const exRowH = Math.floor((boxH - 80) / 3);
+      [1,2,3].forEach((n,i)=>{
+        const ex = getExercicioValue(n) || 'Exercício ' + n;
+        const res = selectedText('res'+n) || '—';
+        const carga = getCargaValue(n);
+        const yy = boxY + 76 + i * exRowH;
+        drawIcon(ctx,'dumbbell',leftX+28,yy+20,20,'#F0C4FF');
+        fitText(ctx,n+'. '+ex,leftX+62,yy+6,leftW-82,'900 21px Arial, sans-serif','#FFFFFF','left');
+        drawWrappedLeft(ctx,res+'. Carga/peso: '+carga+'.',leftX+62,yy+32,leftW-82,23,'600 16px Arial, sans-serif','#D8D0E2',2);
+      });
+
+      // --- Lado direito: mobilidade ---
+      neonText(ctx,'MOBILIDADE E AJUSTE',rightX+24,boxY+42,{font:'900 21px Arial, sans-serif',color:'#FFFFFF',blur:5});
+      const mob = selectedText('mob') || '—';
+      const along = selectedText('along') || '—';
+      const preferencia = selectedText('preferencia') || '—';
+      const atrapalhou = selectedText('atrapalhou') || '—';
+      const conduta = (mob === 'Não' || along === 'Não')
+        ? 'Inserir bloco curto de mobilidade/alongamento conforme limitação e padrão de movimento.'
+        : 'Manter mobilidade e alongamento como suporte de amplitude, recuperação e prevenção.';
+
+      const pillW = Math.floor((rightW - 56) / 2);
+      drawMetricPill(ctx,rightX+24,boxY+70,pillW,100,'MOBILIDADE',mob,mob==='Sim'?'#65FF5A':'#FFB43A');
+      drawMetricPill(ctx,rightX+28+pillW,boxY+70,pillW,100,'ALONGAMENTO',along,along==='Sim'?'#65FF5A':'#FFB43A');
+      drawWrappedLeft(ctx,'Preferência: '+preferencia+'.',rightX+26,boxY+196,rightW-68,25,'700 18px Arial, sans-serif','#FFFFFF',2);
+      drawWrappedLeft(ctx,'Limitador percebido: '+atrapalhou+'.',rightX+26,boxY+252,rightW-68,25,'600 17px Arial, sans-serif','#D8D0E2',2);
+      drawWrappedLeft(ctx,conduta,rightX+26,boxY+310,rightW-68,26,'700 17px Arial, sans-serif','#CFA7FF',3);
+    }
+
+    function calcScoreTotal(){
+      return Math.round(
+        scoreObjetivo()     * 0.10 +
+        scoreNivel()        * 0.20 +
+        calcAderencia()     * 0.20 +
+        scoreRecuperacao()  * 0.15 +
+        scoreDorLimitacao() * 0.10 +
+        scoreEvolucao()     * 0.10 +
+        scoreTecnica()      * 0.10 +
+        scoreSeguranca()    * 0.05
+      );
+    }
+
+    function drawScoreMeter(ctx,cx,cy,score,approved){
+      const R = 110;
+      const startA = Math.PI * 0.75;
+      const endA   = Math.PI * 2.25;
+      const scoreA = startA + (endA - startA) * score / 100;
+      const color  = score >= 70 ? '#65FF5A' : score >= 50 ? '#FFB43A' : '#FF5555';
+
+      // Track
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx,cy,R,startA,endA);
+      ctx.strokeStyle = 'rgba(255,255,255,.10)';
+      ctx.lineWidth = 18;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+
+      // Fill
+      const grad = ctx.createLinearGradient(cx-R,cy,cx+R,cy);
+      grad.addColorStop(0,'#7A20C7');
+      grad.addColorStop(0.5,color);
+      grad.addColorStop(1,'#FFFFFF');
+      ctx.beginPath();
+      ctx.arc(cx,cy,R,startA,scoreA);
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 18;
+      ctx.lineCap = 'round';
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 22;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      // Score number
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = color;
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 16;
+      ctx.font = '900 72px Arial, sans-serif';
+      ctx.fillText(score, cx, cy - 10);
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = 'rgba(255,255,255,.70)';
+      ctx.font = '700 22px Arial, sans-serif';
+      ctx.fillText('SCORE GERAL', cx, cy + 52);
+      ctx.fillStyle = color;
+      ctx.font = '800 18px Arial, sans-serif';
+      ctx.fillText('/100', cx, cy + 78);
+      ctx.restore();
+    }
+
     function drawFooterOverlay(ctx,final,approved,nivelAtual){
       const ader = calcAderencia();
       const sem = calcSemaforo();
@@ -3203,111 +3325,276 @@
       const rir = selectedText('rir') || '—';
       const statusColor = approved ? '#65FF5A' : '#FFB43A';
       const safeNivelAtual = String(nivelAtual || 'Iniciante');
+      const scoreTotal = calcScoreTotal();
+
+      // Data atual
+      const hoje = new Date();
+      const dataStr = hoje.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});
+      const reavaStr = (() => {
+        const d = new Date(hoje);
+        d.setDate(d.getDate() + 30);
+        return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});
+      })();
 
       ctx.save();
       ctx.fillStyle = '#020005';
-      ctx.fillRect(18,1550,1192,2680);
+      ctx.fillRect(18,1550,1192,LOGICAL_H-1530);
       ctx.restore();
 
-      // Card principal: decisão técnica
-      const sx = 38, sy = 1600, sw = 1153, sh = 720;
+      // ── Card STATUS DE NÍVEL (maior, mais destaque) ─────────────────────
+      const sx = 38, sy = 1600, sw = 1153, sh = 800;
       cardFrame(ctx,sx,sy,sw,sh,approved ? 'rgba(91,255,91,.88)' : 'rgba(255,180,58,.90)');
-      neonText(ctx,'STATUS DE NÍVEL',sx+sw/2,sy+70,{align:'center',font:'900 42px Arial, sans-serif',color:'#FFFFFF',blur:8});
-      drawIcon(ctx,approved ? 'check' : 'alert',sx+sw/2,sy+188,106,statusColor);
+      neonText(ctx,'STATUS DE NÍVEL',sx+sw/2,sy+70,{align:'center',font:'900 46px Arial, sans-serif',color:'#FFFFFF',blur:10});
 
+      // Score meter — lado esquerdo
+      drawScoreMeter(ctx,sx+260,sy+310,scoreTotal,approved);
+
+      // Ícone e status — centro
+      drawIcon(ctx,approved ? 'check' : 'alert',sx+sw/2,sy+210,110,statusColor);
       const statusLines = approved ? ['APROVADO PARA','SUBIR DE NÍVEL'] : ['MANTER NÍVEL','ATUAL'];
-      statusLines.forEach((ln,i)=>fitText(ctx,ln,sx+sw/2,sy+350+i*66,920,'900 66px Arial, sans-serif',statusColor,'center'));
+      statusLines.forEach((ln,i)=>fitText(ctx,ln,sx+sw/2,sy+370+i*72,640,'900 68px Arial, sans-serif',statusColor,'center'));
 
-      const sub1 = approved ? `Novo nível sugerido: ${final.novoNivel}` : `Nível sugerido: permanecer em ${safeNivelAtual}`;
-      fitText(ctx,sub1,sx+sw/2,sy+506,900,'800 34px Arial, sans-serif',approved ? '#B7FF9A' : '#FFD278','center');
-
-      wrapCenter(
-        ctx,
+      const sub1 = approved ? 'Novo nível: ' + final.novoNivel : 'Permanecer em: ' + safeNivelAtual;
+      fitText(ctx,sub1,sx+sw/2,sy+536,700,'800 34px Arial, sans-serif',approved ? '#B7FF9A' : '#FFD278','center');
+      wrapCenter(ctx,
         approved
-          ? 'Os critérios mínimos de aderência, técnica, recuperação e evolução estão compatíveis com progressão controlada.'
-          : 'A progressão foi bloqueada porque ainda há critérios técnicos que precisam ser consolidados antes de subir de nível.',
-        sx+sw/2,
-        sy+558,
-        940,
-        36,
-        '600 27px Arial, sans-serif',
-        '#FFFFFF'
-      );
+          ? 'Critérios de aderência, técnica, recuperação e evolução compatíveis com progressão controlada.'
+          : 'Progressão bloqueada: critérios técnicos ainda precisam ser consolidados antes de subir de nível.',
+        sx+sw/2, sy+596, 760, 38, '600 27px Arial, sans-serif', '#FFFFFF');
 
-      // Cards secundários: perfil do aluno e recomendação
-      const cy = 2390, ch = 650;
-      drawBottomProfileCard(ctx, selectedText('sexoPerfil') || 'Masculino', document.getElementById('nome').value.trim() || 'Aluno', selectedText('objetivo') || '—', safeNivelAtual, 38, cy, 550, ch);
+      // Data + Reavaliação — lado direito
+      const dx2 = sx+sw-290, dy2 = sy+160;
+      clearPanel(ctx,dx2,dy2,240,110,16,'rgba(185,84,255,.55)');
+      neonText(ctx,'DATA DA AVALIAÇÃO',dx2+120,dy2+28,{align:'center',font:'700 15px Arial, sans-serif',color:'#CFA7FF',blur:3});
+      neonText(ctx,dataStr,dx2+120,dy2+72,{align:'center',font:'900 30px Arial, sans-serif',color:'#FFFFFF',blur:6});
 
-      cardFrame(ctx,638,cy,550,ch,'rgba(185,84,255,.82)');
+      clearPanel(ctx,dx2,dy2+128,240,110,16,'rgba(185,84,255,.55)');
+      neonText(ctx,'PRÓXIMA REAVALIAÇÃO',dx2+120,dy2+128+28,{align:'center',font:'700 15px Arial, sans-serif',color:'#CFA7FF',blur:3});
+      neonText(ctx,reavaStr,dx2+120,dy2+128+72,{align:'center',font:'900 30px Arial, sans-serif',color:'#FFB43A',blur:6});
+
+      // ── Cards: perfil + recomendação ─────────────────────────────────────
+      const cy = 2470, ch = 650;
+      drawBottomProfileCard(ctx, selectedText('sexoPerfil') || 'Masculino', document.getElementById('nome').value.trim() || 'Aluno', selectedText('objetivo') || '—', safeNivelAtual, 44, cy, 542, ch);
+
+      cardFrame(ctx,646,cy,542,ch,'rgba(185,84,255,.82)');
       neonText(ctx,'RECOMENDAÇÃO',913,cy+66,{align:'center',font:'900 34px Arial, sans-serif',color:'#FFFFFF',blur:7});
       drawIcon(ctx,'clipboard',913,cy+170,82,'#D88BFF');
 
       const planejadoSemana = Number(document.getElementById('planejado')?.value || 4) || 4;
       const recomendacao = approved
-        ? `Subir nível com progressão controlada, mantendo ${planejadoSemana}x/semana e ajuste por recuperação.`
+        ? 'Subir nível com progressão controlada, mantendo ' + planejadoSemana + 'x/semana e ajuste por recuperação.'
         : 'Manter nível atual, corrigir os limitadores e reavaliar em 30 dias.';
       wrapCenter(ctx,recomendacao,913,cy+308,430,40,'600 28px Arial, sans-serif','#FFFFFF');
 
       const classLines = approved
         ? [String(final.novoNivel || 'Intermediário').toUpperCase(), 'CONTROLADO']
-        : [`${safeNivelAtual.toUpperCase()} EM`, 'CONSOLIDAÇÃO'];
+        : [safeNivelAtual.toUpperCase() + ' EM', 'CONSOLIDAÇÃO'];
       classLines.forEach((ln,i)=>fitText(ctx,ln,913,cy+492+i*46,430,'900 42px Arial, sans-serif',approved || i===0 ? '#C55FFF' : '#FFFFFF','center'));
 
-      // Painel de critérios: mais espaço para leitura e sem texto espremido
-      const dx = 38, dy = 3120, dw = 1153, dh = 880;
-      cardFrame(ctx,dx,dy,dw,dh,'rgba(185,84,255,.82)');
-      neonText(ctx,'CRITÉRIOS TÉCNICOS DA DECISÃO',dx+dw/2,dy+68,{align:'center',font:'900 38px Arial, sans-serif',color:'#FFFFFF',blur:7});
+      // ── Dados técnicos ───────────────────────────────────────────────────
+      drawTechnicalInfoCard(ctx,38,3190,1153,500);
 
-      drawMetricPill(ctx,74,dy+120,245,120,'ADERÊNCIA',`${ader}%`,ader >= 75 ? '#65FF5A' : '#FFB43A');
-      drawMetricPill(ctx,348,dy+120,245,120,'RECUPERAÇÃO',`${rec}%`,rec >= 70 ? '#65FF5A' : '#FFB43A');
-      drawMetricPill(ctx,622,dy+120,245,120,'SEMÁFORO',sem,sem === 'Verde' ? '#65FF5A' : sem === 'Amarelo' ? '#FFB43A' : '#FF5555');
-      drawMetricPill(ctx,896,dy+120,245,120,'DOR',`${dor}/10`,dor <= 2 ? '#65FF5A' : '#FF5555');
+      // ── Critérios técnicos ───────────────────────────────────────────────
+      const ex = 38, ey = 3760, ew = 1153, eh = 820;
+      cardFrame(ctx,ex,ey,ew,eh,'rgba(185,84,255,.82)');
+      neonText(ctx,'CRITÉRIOS TÉCNICOS DA DECISÃO',ex+ew/2,ey+68,{align:'center',font:'900 38px Arial, sans-serif',color:'#FFFFFF',blur:7});
+
+      drawMetricPill(ctx,74,ey+120,245,130,'ADERÊNCIA',ader+'%',ader >= 75 ? '#65FF5A' : '#FFB43A');
+      drawMetricPill(ctx,348,ey+120,245,130,'RECUPERAÇÃO',rec+'%',rec >= 70 ? '#65FF5A' : '#FFB43A');
+      drawMetricPill(ctx,622,ey+120,245,130,'SEMÁFORO',sem,sem==='Verde'?'#65FF5A':sem==='Amarelo'?'#FFB43A':'#FF5555');
+      drawMetricPill(ctx,896,ey+120,245,130,'DOR',dor+'/10',dor <= 2 ? '#65FF5A' : '#FF5555');
 
       const checklist = [
-        {
-          icon:'calendar',
-          titulo:'Frequência e aderência',
-          texto: ader >= 75 ? 'Aderência suficiente para sustentar progressão.' : 'Aderência abaixo do mínimo técnico de 75%.'
-        },
-        {
-          icon:'heart',
-          titulo:'Recuperação',
-          texto: sem === 'Verde' ? 'Sono, energia, dor e estresse compatíveis com avanço.' : `Semáforo ${sem.toLowerCase()}; ajustar recuperação antes de aumentar exigência.`
-        },
-        {
-          icon:'dumbbell',
-          titulo:'Técnica e RIR',
-          texto: `Técnica informada: ${tecnica}. RIR percebido: ${rir}.`
-        },
-        {
-          icon:'trend',
-          titulo:'Evolução dos exercícios',
-          texto: `${up} marcador(es) melhoraram e ${down} marcador(es) pioraram nos exercícios-chave.`
-        },
-        {
-          icon:'body',
-          titulo:'Dor / limitação',
-          texto: dor <= 2 ? 'Dor articular dentro do limite de segurança do Protocolo Zero.' : 'Dor articular acima de 2/10 bloqueia promoção pelo critério de segurança.'
-        }
+        {icon:'calendar',titulo:'Frequência e aderência',
+          texto: ader >= 75 ? 'Aderência suficiente para sustentar progressão.' : 'Aderência abaixo do mínimo técnico de 75%.'},
+        {icon:'heart',titulo:'Recuperação',
+          texto: sem==='Verde' ? 'Sono, energia, dor e estresse compatíveis com avanço.' : 'Semáforo '+sem.toLowerCase()+'; ajustar recuperação antes de aumentar exigência.'},
+        {icon:'dumbbell',titulo:'Técnica e RIR',
+          texto: 'Técnica informada: '+tecnica+'. RIR percebido: '+rir+'.'},
+        {icon:'trend',titulo:'Evolução dos exercícios',
+          texto: up+' marcador(es) melhoraram e '+down+' marcador(es) pioraram nos exercícios-chave.'},
+        {icon:'body',titulo:'Dor / limitação',
+          texto: dor <= 2 ? 'Dor articular dentro do limite de segurança do Protocolo Zero.' : 'Dor articular acima de 2/10 bloqueia promoção pelo critério de segurança.'}
       ];
 
-      const leftX = dx + 72;
-      const rightX = dx + 604;
+      const clX = ex + 72, crX = ex + 618;
       checklist.forEach((item,i)=>{
-        const colX = i < 3 ? leftX : rightX;
-        const rowY = dy + 306 + (i % 3) * 166;
+        const colX = i < 3 ? clX : crX;
+        const rowY = ey + 320 + (i % 3) * 180;
         drawIcon(ctx,item.icon,colX,rowY+40,28,'#F0C4FF');
-        neonText(ctx,item.titulo,colX+70,rowY+24,{font:'900 26px Arial, sans-serif',color:'#FFFFFF',blur:4});
-        drawWrappedLeft(ctx,item.texto,colX+70,rowY+58,420,28,'600 21px Arial, sans-serif','#D8D0E2',3);
+        neonText(ctx,item.titulo,colX+70,rowY+24,{font:'900 25px Arial, sans-serif',color:'#FFFFFF',blur:4});
+        drawWrappedLeft(ctx,item.texto,colX+70,rowY+58,430,28,'600 20px Arial, sans-serif','#D8D0E2',3);
       });
 
-      const nx = 62, ny = 4060, nw = 1105, nh = 190;
+      // ── Conduta MFIT ─────────────────────────────────────────────────────
+      const nx = 62, ny = 4644, nw = 1105, nh = 210;
       cardFrame(ctx,nx,ny,nw,nh,approved ? 'rgba(91,255,91,.70)' : 'rgba(255,180,58,.76)');
       neonText(ctx,'CONDUTA MFIT PREMIUM',nx+40,ny+56,{font:'900 28px Arial, sans-serif',color:'#FFFFFF',blur:6});
       const conduta = approved
-        ? `Liberar progressão para ${final.novoNivel}, sem romper técnica, amplitude e recuperação. Monitorar resposta na primeira semana.`
-        : `Manter ${safeNivelAtual}, corrigir o principal limitador e repetir avaliação após novo bloco de treino.`;
-      drawWrappedLeft(ctx,conduta,nx+40,ny+94,nw-80,34,'700 25px Arial, sans-serif',approved ? '#B7FF9A' : '#FFD278',3);
+        ? 'Liberar progressão para '+final.novoNivel+', sem romper técnica, amplitude e recuperação. Monitorar resposta na primeira semana.'
+        : 'Manter '+safeNivelAtual+', corrigir o principal limitador e repetir avaliação após novo bloco de treino.';
+      drawWrappedLeft(ctx,conduta,nx+40,ny+102,nw-80,34,'700 25px Arial, sans-serif',approved ? '#B7FF9A' : '#FFD278',3);
+
+      // ── Rodapé: Score + Data + Reavaliação ───────────────────────────────
+      const ry = 4920, rh = 380;
+      cardFrame(ctx,38,ry,1153,rh,'rgba(185,84,255,.72)');
+      neonText(ctx,'RESUMO FINAL DA AVALIAÇÃO',38+1153/2,ry+60,{align:'center',font:'900 36px Arial, sans-serif',color:'#FFFFFF',blur:8});
+
+      // Score grande no centro
+      drawScoreMeter(ctx,614,ry+220,scoreTotal,approved);
+
+      // Card data — esquerda
+      clearPanel(ctx,74,ry+110,280,130,18,'rgba(185,84,255,.50)');
+      drawIcon(ctx,'calendar',74+46,ry+110+65,32,'#CFA7FF');
+      neonText(ctx,'DATA DA AVALIAÇÃO',74+155,ry+110+32,{align:'center',font:'700 16px Arial, sans-serif',color:'#CFA7FF',blur:3});
+      neonText(ctx,dataStr,74+155,ry+110+82,{align:'center',font:'900 32px Arial, sans-serif',color:'#FFFFFF',blur:6});
+
+      // Card reavaliação — direita
+      clearPanel(ctx,800,ry+110,280,130,18,'rgba(185,84,255,.50)');
+      drawIcon(ctx,'calendar',800+46,ry+110+65,32,'#FFB43A');
+      neonText(ctx,'PRÓXIMA REAVALIAÇÃO',800+155,ry+110+32,{align:'center',font:'700 16px Arial, sans-serif',color:'#FFB43A',blur:3});
+      neonText(ctx,reavaStr,800+155,ry+110+82,{align:'center',font:'900 32px Arial, sans-serif',color:'#FFB43A',blur:6});
+
+      // Card score texto — abaixo do medidor
+      const scoreLabel = scoreTotal >= 70 ? 'EXCELENTE DESEMPENHO' : scoreTotal >= 50 ? 'DESEMPENHO MODERADO' : 'PRECISA MELHORAR';
+      const scoreLabelColor = scoreTotal >= 70 ? '#65FF5A' : scoreTotal >= 50 ? '#FFB43A' : '#FF5555';
+      neonText(ctx,scoreLabel,614,ry+330,{align:'center',font:'800 22px Arial, sans-serif',color:scoreLabelColor,blur:8});
+
+      // ── Mensagem motivacional ─────────────────────────────────────────────
+      const sexoMotiv = (selectedText('sexoPerfil') || 'Masculino').toLowerCase().includes('femin') ? 'F' : 'M';
+      const motivMsg = getMotivMessage(approved, sexoMotiv);
+      drawMotivCard(ctx, 38, ry + rh + 28, 1153, motivMsg, approved);
+    }
+
+    // ── Banco de mensagens motivacionais ─────────────────────────────────────
+    const MOTIV_MSGS = {
+      aprovado: {
+        M: [
+          "Você provou que consistência vence talento. Agora é hora de subir o peso e subir o nível — você está pronto.",
+          "Treino a treino, semana a semana, você construiu isso. O novo nível não é um presente, é uma conquista merecida.",
+          "Poucos chegam aqui. Você foi frequente, focado e evoluiu. Agora vai para o próximo desafio com tudo.",
+          "Seu corpo respondeu, sua técnica evoluiu e sua aderência foi acima da média. Isso é disciplina de elite.",
+          "A evolução não mente. Você mostrou nos exercícios, na recuperação e na consistência. Agora vai mais forte.",
+          "Subir de nível não é só sobre carga — é sobre mentalidade. A sua está no lugar certo. Vamos nessa!",
+          "Você fez o que muitos prometem e poucos entregam: apareceu, treinou e evoluiu. O próximo nível é seu.",
+          "Os números não mentem: você está pronto. Agora é honrar esse resultado com ainda mais dedicação.",
+          "Cada treino que você não faltou, cada carga que você aumentou, construiu esse momento. Aproveite.",
+          "Aprovado não por acaso — por trabalho. Continue assim e os resultados vão continuar chegando."
+        ],
+        F: [
+          "Você foi consistente quando poderia ter desistido. Esse resultado é seu e ninguém pode te tirar.",
+          "Força não é só o que você levanta — é aparecer mesmo nos dias difíceis. Você fez isso. Parabéns.",
+          "Sua evolução foi real, mensurável e conquistada. O novo nível é o reflexo do que você construiu.",
+          "Técnica, frequência e dedicação: você entregou os três. Agora o treino fica mais forte porque você ficou.",
+          "Você mostrou que resultados vêm de dentro. Sua consistência te trouxe até aqui. Continue assim.",
+          "Aprovada não por sorte — por esforço real. Cada treino valeu. Agora vai buscar ainda mais.",
+          "Seu corpo evoluiu porque sua mente não deixou você parar. Isso é o que separa quem chega de quem desiste.",
+          "Nível conquistado. Agora você sabe como funciona: foca, treina, evolui. Repete no próximo bloco.",
+          "A disciplina que você mostrou aqui vai te levar muito além do treino. Tá aprovada e merecendo.",
+          "Os números confirmaram o que seu esforço já sabia: você está pronta para mais. Vamos lá!"
+        ]
+      },
+      reprovado: {
+        M: [
+          "Esse resultado é um mapa, não uma sentença. Ele mostra exatamente onde focar para chegar lá da próxima vez.",
+          "Manter o nível não é fracasso — é honestidade técnica. Você vai sair daqui mais preparado do que entrou.",
+          "Os melhores atletas do mundo já ficaram no mesmo nível por meses. O que importa é não parar.",
+          "O treino ficou pesado em algum ponto — e tudo bem. Agora você sabe o que ajustar. Isso é inteligência esportiva.",
+          "Consistência bate talento no longo prazo. Ajusta o que precisa, mantém a frequência e o próximo resultado vai ser diferente.",
+          "Você chegou até aqui e isso já diz muito. Agora é usar esse feedback para voltar mais forte na próxima avaliação.",
+          "Nenhuma evolução é linear. Esse bloco vai te fortalecer para o próximo nível. Foca no processo.",
+          "A avaliação mostrou os pontos que precisam de atenção. Quem enxerga os próprios limites consegue superá-los.",
+          "Treino é construção. Às vezes a fundação precisa de mais tempo. Você está no caminho certo.",
+          "Manter o nível com consciência é melhor do que subir sem preparo. Você vai chegar lá — e vai durar."
+        ],
+        F: [
+          "Essa avaliação não define você — ela te direciona. Use cada informação aqui para chegar mais forte na próxima.",
+          "Manter o nível é uma decisão técnica feita pra te proteger. Você merece subir preparada, não apressada.",
+          "Cada bloco de treino te ensina algo. Esse te mostrou onde crescer. Isso é crescimento também.",
+          "O resultado de hoje é o combustível de amanhã. Foca nos pontos de melhora e volta mais forte.",
+          "Você não regrediu — você identificou. Isso é maturidade esportiva. O próximo bloco vai ser diferente.",
+          "As melhores transformações vêm de quem respeita o processo. Você está no caminho certo, continue.",
+          "Nenhuma atleta chegou ao topo sem passar por blocos de consolidação. Esse é o seu. Aproveita.",
+          "O treino vai ficar mais forte quando você estiver mais forte. E você vai chegar lá — com trabalho.",
+          "Esse não é o fim da jornada, é um ponto de ajuste. Quem se ajusta, evolui. Você vai evoluir.",
+          "Manter o nível com foco vale mais do que subir sem base. Na próxima avaliação, você vai colher isso."
+        ]
+      }
+    };
+
+    // Anti-repeat engine usando localStorage
+    function getMotivMessage(approved, sexo){
+      const key = 'mfit_motiv_' + (approved ? 'ap' : 're') + '_' + sexo;
+      const pool = approved ? MOTIV_MSGS.aprovado[sexo] : MOTIV_MSGS.reprovado[sexo];
+
+      let used = [];
+      try { used = JSON.parse(localStorage.getItem(key) || '[]'); } catch(e){ used = []; }
+
+      // Se já usou todas, reinicia embaralhado
+      const available = pool.map((_,i)=>i).filter(i => !used.includes(i));
+      const finalPool = available.length > 0 ? available : pool.map((_,i)=>i);
+
+      // Pega índice aleatório dos disponíveis
+      const pick = finalPool[Math.floor(Math.random() * finalPool.length)];
+
+      // Atualiza histórico
+      const newUsed = available.length > 0 ? [...used, pick] : [pick];
+      try { localStorage.setItem(key, JSON.stringify(newUsed)); } catch(e){}
+
+      return pool[pick];
+    }
+
+    function drawMotivCard(ctx, x, y, w, msg, approved){
+      const h = 240;
+      const color = approved ? 'rgba(109,255,122,.72)' : 'rgba(163,89,218,.82)';
+      const textColor = approved ? '#B7FF9A' : '#E9C6FF';
+      const accentColor = approved ? '#65FF5A' : '#C55FFF';
+
+      // Fundo do card
+      ctx.save();
+      const g = ctx.createLinearGradient(x, y, x, y+h);
+      g.addColorStop(0, approved ? '#021A04' : '#0A0214');
+      g.addColorStop(1, approved ? '#010D02' : '#060110');
+      ctx.shadowColor = accentColor;
+      ctx.shadowBlur = 22;
+      drawRoundRect(ctx, x, y, w, h, 24, g, color, 2.5);
+      ctx.shadowBlur = 0;
+      ctx.restore();
+
+      // Cantos HUD
+      mfitHudCorners(ctx, x, y, w, h, color);
+
+      // Ícone estrela/alvo
+      ctx.save();
+      ctx.shadowColor = accentColor;
+      ctx.shadowBlur = 18;
+      ctx.beginPath();
+      ctx.arc(x+74, y+h/2, 38, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(0,0,0,.55)';
+      ctx.fill();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+      ctx.restore();
+      drawIcon(ctx, approved ? 'star' : 'target', x+74, y+h/2, 42, accentColor);
+
+      // Label "MENSAGEM DO DIA"
+      neonText(ctx, approved ? '🏆  MENSAGEM DO DIA' : '🎯  MENSAGEM DO DIA',
+        x+138, y+46,
+        {font:'800 18px Arial, sans-serif', color: accentColor, blur:5});
+
+      // Linha separadora
+      ctx.save();
+      ctx.strokeStyle = 'rgba(255,255,255,.12)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x+138, y+62);
+      ctx.lineTo(x+w-42, y+62);
+      ctx.stroke();
+      ctx.restore();
+
+      // Texto da mensagem — com quebra de linha automática
+      drawWrappedLeft(ctx, msg, x+138, y+82, w-210, 36, '600 26px Arial, sans-serif', textColor, 4);
     }
 
     function gerarCanvasGrafico(scale = EXPORT_SCALE){
@@ -3330,9 +3617,9 @@
       drawHudBackground(ctx,LOGICAL_W,LOGICAL_H);
 
       drawFinalHeaderOverlay(ctx);
-      drawSilhouette(ctx,sexo,34,164,286,638);
+      drawSilhouette(ctx,sexo,42,170,292,632);
       drawRadarOverlay(ctx,data);
-      drawLowerExtensionBackground(ctx,820);
+      drawLowerExtensionBackground(ctx,874);
       drawBarsOverlay(ctx,data);
       drawFooterOverlay(ctx,final,approved,nivel);
 
