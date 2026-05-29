@@ -801,6 +801,18 @@
         background:#000;
       }
     }
+
+    @media print {
+      body { background: #000 !important; margin: 0; padding: 0; }
+      .wrap, .top, .step, nav, .nav, .btn-area, button { display: none !important; }
+      .final-session { display: block !important; padding: 0 !important; }
+      #graficoFinalCanvas {
+        display: block !important;
+        width: 100% !important;
+        height: auto !important;
+        page-break-inside: avoid;
+      }
+    }
   </style>
 </head>
 
@@ -1287,7 +1299,7 @@
     let step = 1;
     let ultimoScanData = null;
     const LOGICAL_W = 1229;
-    const LOGICAL_H = 5780;
+    const LOGICAL_H = 5900;
     const EXPORT_SCALE = 1.35;
     const bar = document.getElementById('bar');
 
@@ -3007,51 +3019,226 @@
       });
     }
 
+    // Ícones refinados SVG-style para o radar
+    function drawRefinedIcon(ctx, type, cx, cy, r, color){
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineWidth = Math.max(2, r * 0.09);
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      const s = r * 0.72; // escala base
+
+      if(type === 'target'){ // Objetivo — alvo com flecha
+        ctx.beginPath(); ctx.arc(cx,cy,s*0.90,0,Math.PI*2); ctx.stroke();
+        ctx.beginPath(); ctx.arc(cx,cy,s*0.55,0,Math.PI*2); ctx.stroke();
+        ctx.beginPath(); ctx.arc(cx,cy,s*0.20,0,Math.PI*2); ctx.fill();
+        // flecha diagonal
+        ctx.beginPath();
+        ctx.moveTo(cx+s*0.30,cy-s*0.30);
+        ctx.lineTo(cx+s*0.88,cy-s*0.88);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(cx+s*0.88,cy-s*0.88);
+        ctx.lineTo(cx+s*0.60,cy-s*0.88);
+        ctx.moveTo(cx+s*0.88,cy-s*0.88);
+        ctx.lineTo(cx+s*0.88,cy-s*0.60);
+        ctx.stroke();
+      }
+
+      if(type === 'bars'){ // Nível — barras de gráfico
+        [[0,0.45],[1,0.70],[2,0.95]].forEach(([col,h])=>{
+          const bx = cx - s*0.50 + col*s*0.50;
+          const by = cy + s*0.50;
+          const bh = s * h;
+          const bw = s * 0.28;
+          ctx.beginPath();
+          ctx.roundRect(bx, by - bh, bw, bh, bw*0.3);
+          ctx.fill();
+        });
+      }
+
+      if(type === 'calendar'){ // Frequência — calendário
+        ctx.beginPath();
+        ctx.roundRect(cx-s*0.70,cy-s*0.58,s*1.40,s*1.22,s*0.18);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(cx-s*0.70,cy-s*0.20);
+        ctx.lineTo(cx+s*0.70,cy-s*0.20);
+        ctx.stroke();
+        [-s*0.28, s*0.28].forEach(dx=>{
+          ctx.beginPath();
+          ctx.moveTo(cx+dx, cy-s*0.70);
+          ctx.lineTo(cx+dx, cy-s*0.38);
+          ctx.stroke();
+        });
+        // pontos dias
+        [-s*0.30,0,s*0.30].forEach(dx=>{
+          [s*0.08, s*0.40].forEach(dy=>{
+            ctx.beginPath();
+            ctx.arc(cx+dx, cy+dy, s*0.07, 0, Math.PI*2);
+            ctx.fill();
+          });
+        });
+      }
+
+      if(type === 'heart'){ // Recuperação — coração com ECG
+        ctx.beginPath();
+        ctx.moveTo(cx, cy+s*0.52);
+        ctx.bezierCurveTo(cx-s*0.80,cy+s*0.10, cx-s*0.90,cy-s*0.55, cx-s*0.26,cy-s*0.52);
+        ctx.bezierCurveTo(cx-s*0.06,cy-s*0.52, cx,cy-s*0.30, cx,cy-s*0.18);
+        ctx.bezierCurveTo(cx,cy-s*0.30, cx+s*0.06,cy-s*0.52, cx+s*0.26,cy-s*0.52);
+        ctx.bezierCurveTo(cx+s*0.90,cy-s*0.55, cx+s*0.80,cy+s*0.10, cx,cy+s*0.52);
+        ctx.stroke();
+        // linha ECG dentro
+        ctx.beginPath();
+        ctx.moveTo(cx-s*0.40,cy+s*0.08);
+        ctx.lineTo(cx-s*0.18,cy+s*0.08);
+        ctx.lineTo(cx-s*0.06,cy-s*0.22);
+        ctx.lineTo(cx+s*0.06,cy+s*0.28);
+        ctx.lineTo(cx+s*0.20,cy+s*0.08);
+        ctx.lineTo(cx+s*0.40,cy+s*0.08);
+        ctx.lineWidth = Math.max(1.5, r*0.07);
+        ctx.stroke();
+      }
+
+      if(type === 'body'){ // Dor/limitação — corpo humano estilizado
+        ctx.beginPath(); ctx.arc(cx,cy-s*0.58,s*0.22,0,Math.PI*2); ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(cx,cy-s*0.34);
+        ctx.lineTo(cx,cy+s*0.18);
+        ctx.stroke();
+        // braços
+        ctx.beginPath();
+        ctx.moveTo(cx-s*0.38,cy-s*0.12);
+        ctx.lineTo(cx,cy-s*0.20);
+        ctx.lineTo(cx+s*0.38,cy-s*0.12);
+        ctx.stroke();
+        // pernas
+        ctx.beginPath();
+        ctx.moveTo(cx,cy+s*0.18);
+        ctx.lineTo(cx-s*0.28,cy+s*0.62);
+        ctx.moveTo(cx,cy+s*0.18);
+        ctx.lineTo(cx+s*0.28,cy+s*0.62);
+        ctx.stroke();
+        // ponto dor
+        ctx.save();
+        ctx.fillStyle = '#FF6B6B';
+        ctx.shadowColor = '#FF6B6B';
+        ctx.shadowBlur = 8;
+        ctx.beginPath(); ctx.arc(cx+s*0.38,cy-s*0.08,s*0.12,0,Math.PI*2); ctx.fill();
+        ctx.restore();
+      }
+
+      if(type === 'trend'){ // Evolução — seta crescente com pontos
+        ctx.beginPath();
+        ctx.moveTo(cx-s*0.68,cy+s*0.42);
+        ctx.lineTo(cx-s*0.30,cy+s*0.12);
+        ctx.lineTo(cx+s*0.02,cy+s*0.26);
+        ctx.lineTo(cx+s*0.40,cy-s*0.18);
+        ctx.lineTo(cx+s*0.68,cy-s*0.48);
+        ctx.stroke();
+        // ponta da seta
+        ctx.beginPath();
+        ctx.moveTo(cx+s*0.40,cy-s*0.48);
+        ctx.lineTo(cx+s*0.68,cy-s*0.48);
+        ctx.lineTo(cx+s*0.68,cy-s*0.20);
+        ctx.stroke();
+        // pontos nos dados
+        [[cx-s*0.30,cy+s*0.12],[cx+s*0.02,cy+s*0.26],[cx+s*0.40,cy-s*0.18]].forEach(([px,py])=>{
+          ctx.beginPath(); ctx.arc(px,py,s*0.09,0,Math.PI*2); ctx.fill();
+        });
+      }
+
+      if(type === 'dumbbell'){ // Técnica — halter mais detalhado
+        // barra central
+        ctx.beginPath();
+        ctx.moveTo(cx-s*0.58,cy);
+        ctx.lineTo(cx+s*0.58,cy);
+        ctx.lineWidth = Math.max(2, r*0.07);
+        ctx.stroke();
+        // anilhas
+        [-1,1].forEach(side=>{
+          const bx = cx + side*s*0.38;
+          ctx.beginPath();
+          ctx.roundRect(bx-s*0.10,cy-s*0.36,s*0.20,s*0.72,s*0.06);
+          ctx.fill();
+          ctx.beginPath();
+          ctx.roundRect(cx+side*s*0.58-s*0.10,cy-s*0.46,s*0.20,s*0.92,s*0.06);
+          ctx.fill();
+        });
+      }
+
+      if(type === 'shield'){ // Segurança — escudo com check
+        ctx.beginPath();
+        ctx.moveTo(cx, cy-s*0.72);
+        ctx.lineTo(cx+s*0.58,cy-s*0.42);
+        ctx.lineTo(cx+s*0.52,cy+s*0.20);
+        ctx.quadraticCurveTo(cx+s*0.30,cy+s*0.70, cx,cy+s*0.80);
+        ctx.quadraticCurveTo(cx-s*0.30,cy+s*0.70, cx-s*0.52,cy+s*0.20);
+        ctx.lineTo(cx-s*0.58,cy-s*0.42);
+        ctx.closePath();
+        ctx.stroke();
+        // check dentro
+        ctx.beginPath();
+        ctx.moveTo(cx-s*0.24,cy+s*0.08);
+        ctx.lineTo(cx-s*0.04,cy+s*0.28);
+        ctx.lineTo(cx+s*0.30,cy-s*0.16);
+        ctx.lineWidth = Math.max(2.5, r*0.10);
+        ctx.stroke();
+      }
+
+      ctx.restore();
+    }
+
     function drawRadarOverlay(ctx,data){
       ctx.save();
       ctx.fillStyle = '#020005';
-      ctx.fillRect(334,122,874,696);
+      ctx.fillRect(330,118,882,710);
       ctx.restore();
 
-      const px = 352, py = 144, pw = 836, ph = 656;
+      // Painel maior para dar espaço aos labels
+      const px = 348, py = 138, pw = 862, ph = 690;
       clearPanel(ctx,px,py,pw,ph,24,'rgba(185,84,255,.46)');
       mfitHudCorners(ctx,px,py,pw,ph,'rgba(185,84,255,.62)');
 
-      const cx = px + pw/2 + 8;
-      const cy = py + ph/2 + 10;
-      const maxR = 154;
+      const cx = px + pw/2;
+      const cy = py + ph/2 + 8;
+      const maxR = 148; // radar ligeiramente menor para caber os ícones+labels
       const iconTypes = ['target','bars','calendar','heart','body','trend','dumbbell','shield'];
       const angle = i => -Math.PI/2 + i*2*Math.PI/data.length;
       const pt = (i,r) => [cx + Math.cos(angle(i))*r, cy + Math.sin(angle(i))*r];
 
+      // Halo de fundo
       ctx.save();
-      const halo = ctx.createRadialGradient(cx,cy,18,cx,cy,336);
-      halo.addColorStop(0,'rgba(185,84,255,.30)');
-      halo.addColorStop(.48,'rgba(116,35,185,.14)');
+      const halo = ctx.createRadialGradient(cx,cy,18,cx,cy,320);
+      halo.addColorStop(0,'rgba(185,84,255,.28)');
+      halo.addColorStop(.50,'rgba(116,35,185,.12)');
       halo.addColorStop(1,'rgba(0,0,0,0)');
       ctx.fillStyle = halo;
       ctx.fillRect(px+10,py+10,pw-20,ph-20);
       ctx.restore();
 
+      // Grades concêntricas
       for(let lvl=1; lvl<=6; lvl++){
         const r = maxR*lvl/6;
         ctx.beginPath();
         data.forEach((_,i)=>{ const [x,y] = pt(i,r); i ? ctx.lineTo(x,y) : ctx.moveTo(x,y); });
         ctx.closePath();
-        ctx.strokeStyle = lvl === 6 ? 'rgba(196,94,255,.58)' : 'rgba(255,255,255,.12)';
-        ctx.lineWidth = lvl === 6 ? 2 : 1;
+        ctx.strokeStyle = lvl===6 ? 'rgba(196,94,255,.58)' : 'rgba(255,255,255,.10)';
+        ctx.lineWidth = lvl===6 ? 2 : 1;
         ctx.stroke();
       }
 
+      // Linhas radiais
       data.forEach((_,i)=>{
         const [x,y] = pt(i,maxR);
-        ctx.beginPath();
-        ctx.moveTo(cx,cy); ctx.lineTo(x,y);
-        ctx.strokeStyle = 'rgba(255,255,255,.14)';
-        ctx.lineWidth = 1;
-        ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(x,y);
+        ctx.strokeStyle = 'rgba(255,255,255,.12)';
+        ctx.lineWidth = 1; ctx.stroke();
       });
 
+      // Área preenchida
       const points = data.map((d,i)=>pt(i,maxR*Math.max(0,Math.min(100,d.value))/100));
       ctx.save();
       ctx.beginPath();
@@ -3059,50 +3246,48 @@
       ctx.closePath();
       const grad = ctx.createRadialGradient(cx,cy,10,cx,cy,maxR);
       grad.addColorStop(0,'rgba(255,255,255,.18)');
-      grad.addColorStop(.42,'rgba(181,70,255,.42)');
-      grad.addColorStop(1,'rgba(118,35,196,.74)');
+      grad.addColorStop(.42,'rgba(181,70,255,.44)');
+      grad.addColorStop(1,'rgba(118,35,196,.76)');
       ctx.fillStyle = grad;
-      ctx.shadowColor = '#B955FF';
-      ctx.shadowBlur = 24;
+      ctx.shadowColor = '#B955FF'; ctx.shadowBlur = 26;
       ctx.fill();
-      ctx.strokeStyle = '#F1C8FF';
-      ctx.lineWidth = 4.5;
+      ctx.strokeStyle = '#F1C8FF'; ctx.lineWidth = 4.5;
       ctx.stroke();
       ctx.shadowBlur = 0;
       points.forEach(([x,y])=>{
-        ctx.beginPath();
-        ctx.arc(x,y,5.8,0,Math.PI*2);
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fill();
-        ctx.strokeStyle = '#E9B7FF';
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
+        ctx.beginPath(); ctx.arc(x,y,6,0,Math.PI*2);
+        ctx.fillStyle = '#FFFFFF'; ctx.fill();
+        ctx.strokeStyle = '#E9B7FF'; ctx.lineWidth = 1.5; ctx.stroke();
       });
       ctx.restore();
 
+      // Ícones e labels — posicionamento calculado para nunca sair do card
+      const iconR = maxR + 68;   // distância centro → ícone
+      const labelR = maxR + 116; // distância centro → texto
+
       data.forEach((d,i)=>{
-        const [ix,iy] = pt(i,maxR+70);
+        const ang = angle(i);
+        const [ix,iy] = pt(i,iconR);
+
+        // Círculo de fundo do ícone
         ctx.save();
-        ctx.shadowColor = '#B955FF';
-        ctx.shadowBlur = 18;
-        ctx.beginPath(); ctx.arc(ix,iy,34,0,Math.PI*2);
-        ctx.fillStyle = 'rgba(0,0,0,.92)'; ctx.fill();
-        ctx.strokeStyle = 'rgba(218,139,255,.95)'; ctx.lineWidth = 3; ctx.stroke();
+        ctx.shadowColor = '#B955FF'; ctx.shadowBlur = 16;
+        ctx.beginPath(); ctx.arc(ix,iy,30,0,Math.PI*2);
+        ctx.fillStyle = 'rgba(4,0,12,.92)'; ctx.fill();
+        ctx.strokeStyle = 'rgba(218,139,255,.90)'; ctx.lineWidth = 2.5; ctx.stroke();
         ctx.restore();
-        drawIcon(ctx,iconTypes[i],ix,iy,36,'#F0C4FF');
 
-        let lx = ix, ly = iy, align = 'center';
-        if(i===0){ lx = ix; ly = iy - 80; align = 'center'; }
-        if(i===1){ lx = ix + 82; ly = iy - 24; align = 'left'; }
-        if(i===2){ lx = ix + 86; ly = iy + 2; align = 'left'; }
-        if(i===3){ lx = ix + 82; ly = iy + 28; align = 'left'; }
-        if(i===4){ lx = ix; ly = iy + 58; align = 'center'; }
-        if(i===5){ lx = ix - 82; ly = iy + 28; align = 'right'; }
-        if(i===6){ lx = ix - 86; ly = iy + 2; align = 'right'; }
-        if(i===7){ lx = ix - 82; ly = iy - 24; align = 'right'; }
+        drawRefinedIcon(ctx,iconTypes[i],ix,iy,28,'#F0C4FF');
 
-        neonText(ctx,`${i+1}. ${d.label}`,lx,ly,{align,font:'900 15px Arial, sans-serif',color:'#FFFFFF',blur:4});
-        neonText(ctx,`${d.value}%`,lx,ly+29,{align,font:'900 30px Arial, sans-serif',color:'#C55FFF',blur:8,shadow:'#B955FF'});
+        // Posição do label — empurra para longe do centro
+        const lx = cx + Math.cos(ang)*labelR;
+        const ly = cy + Math.sin(ang)*labelR;
+
+        // Alinhamento baseado no quadrante
+        const align = Math.cos(ang) > 0.2 ? 'left' : Math.cos(ang) < -0.2 ? 'right' : 'center';
+
+        neonText(ctx,`${i+1}. ${d.label}`,lx,ly - 12,{align,font:'900 14px Arial, sans-serif',color:'#FFFFFF',blur:3});
+        neonText(ctx,`${d.value}%`,lx,ly + 18,{align,font:'900 28px Arial, sans-serif',color:'#C55FFF',blur:8,shadow:'#B955FF'});
       });
     }
 
@@ -3184,19 +3369,47 @@
       cardFrame(ctx,x,y,w,h,'rgba(185,84,255,.82)');
       neonText(ctx,'PERFIL DO ALUNO',x+w/2,y+66,{align:'center',font:'900 34px Arial, sans-serif',color:'#FFFFFF',blur:7});
       neonText(ctx,'Dados centrais da avaliação',x+w/2,y+102,{align:'center',font:'600 18px Arial, sans-serif',color:'#D9D0E8',blur:4});
+
+      // ── Avatar com iniciais ──────────────────────────────────────────
+      const nomeTrim = String(nome || 'A').trim();
+      const parts = nomeTrim.split(/\s+/).filter(Boolean);
+      const initials = parts.length >= 2
+        ? (parts[0][0] + parts[parts.length-1][0]).toUpperCase()
+        : nomeTrim.slice(0,2).toUpperCase();
+      const avX = x + w/2, avY = y + 196, avR = 58;
+
+      // Círculo de fundo com gradiente
+      ctx.save();
+      const avGrad = ctx.createRadialGradient(avX,avY-10,8,avX,avY,avR);
+      avGrad.addColorStop(0,'#2A0A4A');
+      avGrad.addColorStop(1,'#0A0114');
+      ctx.shadowColor = '#C55FFF'; ctx.shadowBlur = 22;
+      ctx.beginPath(); ctx.arc(avX,avY,avR,0,Math.PI*2);
+      ctx.fillStyle = avGrad; ctx.fill();
+      ctx.strokeStyle = 'rgba(196,94,255,.90)'; ctx.lineWidth = 3; ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      // Iniciais
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.font = '900 44px Arial, sans-serif';
+      ctx.fillStyle = '#FFFFFF';
+      ctx.shadowColor = '#C55FFF'; ctx.shadowBlur = 14;
+      ctx.fillText(initials, avX, avY + 2);
+      ctx.restore();
+
       const female = String(sexo || '').toLowerCase().includes('femin');
       const rows = [
         ['PERFIL', String(sexo || (female ? 'Feminino' : 'Masculino')).toUpperCase(), female ? 'female' : 'user'],
-        ['NOME', nome || 'Aluno', 'user'],
+        ['NOME', nomeTrim || 'Aluno', 'user'],
         ['OBJETIVO', objetivo || '—', 'target'],
         ['NÍVEL ATUAL', nivel || '—', 'bars']
       ];
       rows.forEach((r,i)=>{
-        const yy = y + 156 + i*106;
+        const yy = y + 296 + i*88;
         drawIcon(ctx,r[2],x+58,yy-2,22,'#F0C4FF');
         neonText(ctx,r[0],x+102,yy-18,{font:'900 17px Arial, sans-serif',color:'#CFA7FF',blur:4});
-        drawRoundRect(ctx,x+96,yy+6,w-150,46,15,'rgba(255,255,255,.045)','rgba(185,84,255,.18)',1);
-        fitText(ctx,r[1],x+120,yy+37,w-190,'800 25px Arial, sans-serif','#FFFFFF','left');
+        drawRoundRect(ctx,x+96,yy+6,w-150,40,15,'rgba(255,255,255,.045)','rgba(185,84,255,.18)',1);
+        fitText(ctx,r[1],x+120,yy+32,w-190,'800 22px Arial, sans-serif','#FFFFFF','left');
       });
     }
 
@@ -3248,9 +3461,10 @@
       const pillW = Math.floor((rightW - 56) / 2);
       drawMetricPill(ctx,rightX+24,boxY+70,pillW,100,'MOBILIDADE',mob,mob==='Sim'?'#65FF5A':'#FFB43A');
       drawMetricPill(ctx,rightX+28+pillW,boxY+70,pillW,100,'ALONGAMENTO',along,along==='Sim'?'#65FF5A':'#FFB43A');
-      drawWrappedLeft(ctx,'Preferência: '+preferencia+'.',rightX+26,boxY+196,rightW-68,25,'700 18px Arial, sans-serif','#FFFFFF',2);
-      drawWrappedLeft(ctx,'Limitador percebido: '+atrapalhou+'.',rightX+26,boxY+252,rightW-68,25,'600 17px Arial, sans-serif','#D8D0E2',2);
-      drawWrappedLeft(ctx,conduta,rightX+26,boxY+310,rightW-68,26,'700 17px Arial, sans-serif','#CFA7FF',3);
+      const safeMaxW = Math.min(rightW - 90, (x + w) - (rightX + 52));
+      drawWrappedLeft(ctx,'Preferência: '+preferencia+'.',rightX+26,boxY+196,safeMaxW,25,'700 17px Arial, sans-serif','#FFFFFF',2);
+      drawWrappedLeft(ctx,'Limitador percebido: '+atrapalhou+'.',rightX+26,boxY+252,safeMaxW,25,'600 16px Arial, sans-serif','#D8D0E2',2);
+      drawWrappedLeft(ctx,conduta,rightX+26,boxY+310,safeMaxW,26,'700 16px Arial, sans-serif','#CFA7FF',3);
     }
 
     function calcScoreTotal(){
@@ -3341,26 +3555,141 @@
       ctx.fillRect(18,1550,1192,LOGICAL_H-1530);
       ctx.restore();
 
-      // ── Card STATUS DE NÍVEL (maior, mais destaque) ─────────────────────
-      const sx = 38, sy = 1600, sw = 1153, sh = 800;
+      // ── Funções extras ───────────────────────────────────────────────────
+
+      // Badge coroa (aprovado) ou escudo (manteve)
+      function drawBadge(ctx,cx,cy,type,color){
+        ctx.save();
+        ctx.shadowColor = color; ctx.shadowBlur = 28;
+        if(type === 'crown'){
+          // base
+          ctx.beginPath();
+          ctx.moveTo(cx-54,cy+28); ctx.lineTo(cx-54,cy-18);
+          ctx.lineTo(cx-28,cy+8); ctx.lineTo(cx,cy-42);
+          ctx.lineTo(cx+28,cy+8); ctx.lineTo(cx+54,cy-18);
+          ctx.lineTo(cx+54,cy+28); ctx.closePath();
+          ctx.fillStyle = color; ctx.globalAlpha = .18; ctx.fill();
+          ctx.globalAlpha = 1;
+          ctx.strokeStyle = color; ctx.lineWidth = 4; ctx.stroke();
+          // joias
+          [[cx,cy-42],[cx-54,cy-18],[cx+54,cy-18]].forEach(([px,py])=>{
+            ctx.beginPath(); ctx.arc(px,py,7,0,Math.PI*2);
+            ctx.fillStyle = color; ctx.fill();
+          });
+        } else {
+          // escudo
+          ctx.beginPath();
+          ctx.moveTo(cx,cy-46); ctx.lineTo(cx+40,cy-24);
+          ctx.lineTo(cx+36,cy+14);
+          ctx.quadraticCurveTo(cx+20,cy+48,cx,cy+56);
+          ctx.quadraticCurveTo(cx-20,cy+48,cx-36,cy+14);
+          ctx.lineTo(cx-40,cy-24); ctx.closePath();
+          ctx.fillStyle = color; ctx.globalAlpha = .18; ctx.fill();
+          ctx.globalAlpha = 1;
+          ctx.strokeStyle = color; ctx.lineWidth = 4; ctx.stroke();
+          // check
+          ctx.beginPath();
+          ctx.moveTo(cx-18,cy+6); ctx.lineTo(cx-4,cy+20); ctx.lineTo(cx+22,cy-12);
+          ctx.strokeStyle = color; ctx.lineWidth = 5; ctx.lineCap = 'round'; ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      // Barra de progresso para o próximo nível
+      function drawProgressBar(ctx,x,y,w,scoreTotal,approved,nivelAtual,novoNivel){
+        const NIVEIS = ['Iniciante','Intermediário','Avançado','Elite'];
+        const idx = NIVEIS.findIndex(n => String(nivelAtual).toLowerCase().includes(n.toLowerCase()));
+        const cur = Math.max(0,idx);
+        const next = Math.min(NIVEIS.length-1, cur+1);
+        const nextName = NIVEIS[next];
+
+        // Calcular pontos faltantes: limiar = 75
+        const limiar = 75;
+        const falta = Math.max(0, limiar - scoreTotal);
+        const progPct = approved ? 1 : Math.min(1, scoreTotal / limiar);
+
+        const bh = 36, br = 18;
+        // Track
+        drawRoundRect(ctx,x,y,w,bh,br,'rgba(255,255,255,.07)','rgba(185,84,255,.30)',1.5);
+        // Fill
+        if(progPct > 0){
+          const fillW = Math.max(br*2, w * progPct);
+          const fg = ctx.createLinearGradient(x,0,x+fillW,0);
+          fg.addColorStop(0,'#7A20C7');
+          fg.addColorStop(0.5, approved ? '#65FF5A' : '#B955FF');
+          fg.addColorStop(1, approved ? '#B7FF9A' : '#F1C8FF');
+          ctx.save();
+          ctx.shadowColor = approved ? '#65FF5A' : '#B955FF'; ctx.shadowBlur = 14;
+          drawRoundRect(ctx,x,y,fillW,bh,br,fg,null,0);
+          ctx.restore();
+        }
+        // Labels
+        neonText(ctx, approved
+          ? '✓ Pronto para ' + nextName
+          : 'Faltam ~' + falta + 'pts para ' + nextName,
+          x + w/2, y + bh/2 + 1,
+          {align:'center', font:'800 17px Arial, sans-serif',
+           color: approved ? '#B7FF9A' : '#FFFFFF', blur:4});
+      }
+
+      // Destaques melhor/pior critério
+      function drawHighlights(ctx,x,y,w,data){
+        const sorted = [...data].sort((a,b)=>b.value-a.value);
+        const best = sorted[0], worst = sorted[sorted.length-1];
+        const hw = Math.floor((w-40)/2);
+
+        // Melhor — verde
+        clearPanel(ctx,x,y,hw,88,16,'rgba(101,255,90,.55)');
+        drawIcon(ctx,'trend',x+36,y+44,22,'#65FF5A');
+        neonText(ctx,'⭐ PONTO MAIS FORTE',x+72,y+26,{font:'800 16px Arial, sans-serif',color:'#65FF5A',blur:4});
+        neonText(ctx,best.label+' — '+best.value+'%',x+72,y+58,{font:'700 19px Arial, sans-serif',color:'#FFFFFF',blur:3});
+
+        // Pior — vermelho/laranja
+        clearPanel(ctx,x+hw+40,y,hw,88,16,'rgba(255,80,80,.40)');
+        drawIcon(ctx,'alert',x+hw+40+36,y+44,22,'#FF6B6B');
+        neonText(ctx,'⚠️ MAIOR LIMITADOR',x+hw+40+72,y+26,{font:'800 16px Arial, sans-serif',color:'#FF8080',blur:4});
+        neonText(ctx,worst.label+' — '+worst.value+'%',x+hw+40+72,y+58,{font:'700 19px Arial, sans-serif',color:'#FFFFFF',blur:3});
+      }
+
+      // ── Card STATUS DE NÍVEL ──────────────────────────────────────────────
+      const sx = 38, sy = 1600, sw = 1153, sh = 900;
       cardFrame(ctx,sx,sy,sw,sh,approved ? 'rgba(91,255,91,.88)' : 'rgba(255,180,58,.90)');
       neonText(ctx,'STATUS DE NÍVEL',sx+sw/2,sy+70,{align:'center',font:'900 46px Arial, sans-serif',color:'#FFFFFF',blur:10});
 
+      // Badge (coroa ou escudo) — canto superior esquerdo do card
+      drawBadge(ctx, sx+100, sy+120, approved ? 'crown' : 'shield', statusColor);
+
       // Score meter — lado esquerdo
-      drawScoreMeter(ctx,sx+260,sy+310,scoreTotal,approved);
+      drawScoreMeter(ctx,sx+260,sy+340,scoreTotal,approved);
 
       // Ícone e status — centro
       drawIcon(ctx,approved ? 'check' : 'alert',sx+sw/2,sy+210,110,statusColor);
       const statusLines = approved ? ['APROVADO PARA','SUBIR DE NÍVEL'] : ['MANTER NÍVEL','ATUAL'];
-      statusLines.forEach((ln,i)=>fitText(ctx,ln,sx+sw/2,sy+370+i*72,640,'900 68px Arial, sans-serif',statusColor,'center'));
+      statusLines.forEach((ln,i)=>fitText(ctx,ln,sx+sw/2,sy+390+i*72,640,'900 68px Arial, sans-serif',statusColor,'center'));
 
       const sub1 = approved ? 'Novo nível: ' + final.novoNivel : 'Permanecer em: ' + safeNivelAtual;
-      fitText(ctx,sub1,sx+sw/2,sy+536,700,'800 34px Arial, sans-serif',approved ? '#B7FF9A' : '#FFD278','center');
+      fitText(ctx,sub1,sx+sw/2,sy+556,700,'800 34px Arial, sans-serif',approved ? '#B7FF9A' : '#FFD278','center');
       wrapCenter(ctx,
         approved
           ? 'Critérios de aderência, técnica, recuperação e evolução compatíveis com progressão controlada.'
           : 'Progressão bloqueada: critérios técnicos ainda precisam ser consolidados antes de subir de nível.',
-        sx+sw/2, sy+596, 760, 38, '600 27px Arial, sans-serif', '#FFFFFF');
+        sx+sw/2, sy+614, 760, 38, '600 27px Arial, sans-serif', '#FFFFFF');
+
+      // Barra de progresso para próximo nível
+      drawProgressBar(ctx, sx+160, sy+710, sw-320, scoreTotal, approved, safeNivelAtual, final.novoNivel);
+
+      // Destaques: melhor e pior critério
+      const radarData = [
+        {label:'Objetivo',   value: scoreObjetivo()},
+        {label:'Nível',      value: scoreNivel()},
+        {label:'Frequência', value: calcAderencia()},
+        {label:'Recuperação',value: scoreRecuperacao()},
+        {label:'Dor/Limit.', value: scoreDorLimitacao()},
+        {label:'Evolução',   value: scoreEvolucao()},
+        {label:'Técnica',    value: scoreTecnica()},
+        {label:'Segurança',  value: scoreSeguranca()}
+      ];
+      drawHighlights(ctx, sx+40, sy+780, sw-80, radarData);
 
       // Data + Reavaliação — lado direito
       const dx2 = sx+sw-290, dy2 = sy+160;
@@ -3373,7 +3702,7 @@
       neonText(ctx,reavaStr,dx2+120,dy2+128+72,{align:'center',font:'900 30px Arial, sans-serif',color:'#FFB43A',blur:6});
 
       // ── Cards: perfil + recomendação ─────────────────────────────────────
-      const cy = 2470, ch = 650;
+      const cy = 2580, ch = 680;
       drawBottomProfileCard(ctx, selectedText('sexoPerfil') || 'Masculino', document.getElementById('nome').value.trim() || 'Aluno', selectedText('objetivo') || '—', safeNivelAtual, 44, cy, 542, ch);
 
       cardFrame(ctx,646,cy,542,ch,'rgba(185,84,255,.82)');
@@ -3392,10 +3721,10 @@
       classLines.forEach((ln,i)=>fitText(ctx,ln,913,cy+492+i*46,430,'900 42px Arial, sans-serif',approved || i===0 ? '#C55FFF' : '#FFFFFF','center'));
 
       // ── Dados técnicos ───────────────────────────────────────────────────
-      drawTechnicalInfoCard(ctx,38,3190,1153,500);
+      drawTechnicalInfoCard(ctx,38,3340,1153,500);
 
       // ── Critérios técnicos ───────────────────────────────────────────────
-      const ex = 38, ey = 3760, ew = 1153, eh = 820;
+      const ex = 38, ey = 3910, ew = 1153, eh = 820;
       cardFrame(ctx,ex,ey,ew,eh,'rgba(185,84,255,.82)');
       neonText(ctx,'CRITÉRIOS TÉCNICOS DA DECISÃO',ex+ew/2,ey+68,{align:'center',font:'900 38px Arial, sans-serif',color:'#FFFFFF',blur:7});
 
@@ -3427,7 +3756,7 @@
       });
 
       // ── Conduta MFIT ─────────────────────────────────────────────────────
-      const nx = 62, ny = 4644, nw = 1105, nh = 210;
+      const nx = 62, ny = 4800, nw = 1105, nh = 210;
       cardFrame(ctx,nx,ny,nw,nh,approved ? 'rgba(91,255,91,.70)' : 'rgba(255,180,58,.76)');
       neonText(ctx,'CONDUTA MFIT PREMIUM',nx+40,ny+56,{font:'900 28px Arial, sans-serif',color:'#FFFFFF',blur:6});
       const conduta = approved
@@ -3436,7 +3765,7 @@
       drawWrappedLeft(ctx,conduta,nx+40,ny+102,nw-80,34,'700 25px Arial, sans-serif',approved ? '#B7FF9A' : '#FFD278',3);
 
       // ── Rodapé: Score + Data + Reavaliação ───────────────────────────────
-      const ry = 4920, rh = 380;
+      const ry = 5080, rh = 380;
       cardFrame(ctx,38,ry,1153,rh,'rgba(185,84,255,.72)');
       neonText(ctx,'RESUMO FINAL DA AVALIAÇÃO',38+1153/2,ry+60,{align:'center',font:'900 36px Arial, sans-serif',color:'#FFFFFF',blur:8});
 
