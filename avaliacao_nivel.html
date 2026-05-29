@@ -831,7 +831,7 @@
 
     <form id="form">
       <section class="card session" data-step="1">
-        <h2>SESSÃO 1/7 — Identificação</h2>
+        <h2>SESSÃO 1/8 — Identificação</h2>
         <p class="sub">Dados básicos para cruzar com o plano atual.</p>
 
         <div class="grid">
@@ -887,7 +887,7 @@
       </section>
 
       <section class="card session" data-step="2" style="display:none">
-        <h2>SESSÃO 2/7 — Frequência nos últimos 30 dias</h2>
+        <h2>SESSÃO 2/8 — Frequência nos últimos 30 dias</h2>
         <p class="sub">Responda com base no que realmente aconteceu.</p>
 
         <div class="grid grid-2">
@@ -963,7 +963,7 @@
       </section>
 
       <section class="card session" data-step="3" style="display:none">
-        <h2>SESSÃO 3/7 — Semáforo de recuperação</h2>
+        <h2>SESSÃO 3/8 — Semáforo de recuperação</h2>
         <p class="sub">Preencha de 0 a 10.</p>
 
         <div class="grid grid-2">
@@ -1018,7 +1018,7 @@
       </section>
 
       <section class="card session" data-step="4" style="display:none">
-        <h2>SESSÃO 4/7 — Evolução no treino</h2>
+        <h2>SESSÃO 4/8 — Evolução no treino</h2>
         <p class="sub">Selecione 1 exercício por bloco. Os blocos mudam automaticamente conforme o sexo/perfil visual informado na sessão 1.</p>
 
         <div class="resultBox">
@@ -1125,7 +1125,7 @@
       </section>
 
       <section class="card session" data-step="5" style="display:none">
-        <h2>SESSÃO 5/7 — Sinais de risco</h2>
+        <h2>SESSÃO 5/8 — Sinais de risco</h2>
         <p class="sub">Se teve dor/pinçamento, o sistema trava o risco e recomenda ajuste.</p>
 
         <div class="grid grid-2">
@@ -1172,7 +1172,7 @@
       </section>
 
       <section class="card session" data-step="6" style="display:none">
-        <h2>SESSÃO 6/7 — Percepção e logística</h2>
+        <h2>SESSÃO 6/8 — Percepção e logística</h2>
         <p class="sub">Marque se mobilidade ou alongamento devem entrar no próximo mês.</p>
 
         <div class="grid grid-2">
@@ -1240,8 +1240,91 @@
         </div>
       </section>
 
-      <section class="card session final-session" data-step="7" style="display:none">
-        <h2>SESSÃO 7/7 — Gráfico final</h2>
+      <section class="card session" data-step="7" style="display:none">
+        <h2>SESSÃO 7/8 — Bem-estar e corpo</h2>
+        <p class="sub">Dados que ajudam a calibrar recuperação, treino e evolução física.</p>
+
+        <div class="grid grid-2">
+          <div>
+            <label>Qualidade do sono essa semana (1 = péssimo / 10 = ótimo)</label>
+            <select id="sono2" required>
+              <option value="">Selecione</option>
+              <option value="1">1 — Muito ruim</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5 — Regular</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10 — Excelente</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Nível de estresse essa semana (1 = tranquilo / 10 = muito estressado)</label>
+            <select id="estresse2" required>
+              <option value="">Selecione</option>
+              <option value="1">1 — Muito tranquilo</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5 — Moderado</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10 — Muito estressado</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-2">
+          <div>
+            <label>Como você avalia sua alimentação essa semana?</label>
+            <select id="alimentacao" required>
+              <option value="">Selecione</option>
+              <option value="100">Muito boa — comi bem e no horário certo</option>
+              <option value="75">Boa — me alimentei bem na maioria dos dias</option>
+              <option value="50">Regular — alguns dias foram difíceis</option>
+              <option value="25">Ruim — comi mal ou pulei refeições</option>
+              <option value="10">Muito ruim — alimentação fora de controle</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Como você se sentiu durante os treinos essa semana?</label>
+            <select id="sensacaoTreino" required>
+              <option value="">Selecione</option>
+              <option value="100">Ótimo — cheio de energia e foco</option>
+              <option value="80">Bem — treinei bem na maioria dos dias</option>
+              <option value="60">Regular — alguns dias sem energia</option>
+              <option value="40">Cansado — força e disposição abaixo do normal</option>
+              <option value="20">Muito cansado — treino pesado e difícil</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-2">
+          <div>
+            <label>Peso atual (kg) — opcional</label>
+            <input id="pesoAtual" type="number" step="0.1" placeholder="Ex.: 78.5">
+          </div>
+          <div>
+            <label>Peso na última avaliação (kg) — opcional</label>
+            <input id="pesoAnterior" type="number" step="0.1" placeholder="Ex.: 80.0">
+          </div>
+        </div>
+
+        <div class="nav">
+          <button type="button" class="btn" onclick="prev()">Voltar</button>
+          <button type="button" class="btn primary" onclick="next()">Próximo</button>
+        </div>
+      </section>
+
+            <section class="card session final-session" data-step="8" style="display:none">
+        <h2>SESSÃO 8/8 — Gráfico final</h2>
         <p class="sub">A tela final mostra somente o gráfico premium gerado com base nas respostas.</p>
 
         <div class="kpi" style="margin-bottom:10px">
@@ -1299,7 +1382,7 @@
     let step = 1;
     let ultimoScanData = null;
     const LOGICAL_W = 1229;
-    const LOGICAL_H = 5900;
+    const LOGICAL_H = 5980;
     const EXPORT_SCALE = 1.35;
     const bar = document.getElementById('bar');
 
@@ -3194,103 +3277,132 @@
     function drawRadarOverlay(ctx,data){
       ctx.save();
       ctx.fillStyle = '#020005';
-      ctx.fillRect(330,118,882,710);
+      ctx.fillRect(326,114,890,778);
       ctx.restore();
 
-      // Painel maior para dar espaço aos labels
-      const px = 348, py = 138, pw = 862, ph = 690;
+      // Card ocupa praticamente toda a largura direita
+      const px = 336, py = 130, pw = 886, ph = 756;
       clearPanel(ctx,px,py,pw,ph,24,'rgba(185,84,255,.46)');
       mfitHudCorners(ctx,px,py,pw,ph,'rgba(185,84,255,.62)');
 
-      const cx = px + pw/2;
+      // Centro ligeiramente deslocado para direita para dar espaço aos labels esquerdos
+      const cx = px + pw/2 + 18;
       const cy = py + ph/2 + 8;
-      const maxR = 148; // radar ligeiramente menor para caber os ícones+labels
-      const iconTypes = ['target','bars','calendar','heart','body','trend','dumbbell','shield'];
-      const angle = i => -Math.PI/2 + i*2*Math.PI/data.length;
-      const pt = (i,r) => [cx + Math.cos(angle(i))*r, cy + Math.sin(angle(i))*r];
 
-      // Halo de fundo
+      // Radar compacto — margem generosa para ícones e labels em todos os lados
+      const maxR  = 106;
+      const iconR  = maxR + 56;   // centro → ícone
+      const labelR = maxR + 96;   // centro → texto (mais próximo = nunca corta)
+
+      const iconTypes = ['target','bars','calendar','heart','body','trend','dumbbell','shield'];
+      const angle = i => -Math.PI/2 + i * 2*Math.PI / data.length;
+      const pt    = (i,r) => [cx + Math.cos(angle(i))*r, cy + Math.sin(angle(i))*r];
+
+      // Halo
       ctx.save();
-      const halo = ctx.createRadialGradient(cx,cy,18,cx,cy,320);
-      halo.addColorStop(0,'rgba(185,84,255,.28)');
-      halo.addColorStop(.50,'rgba(116,35,185,.12)');
+      const halo = ctx.createRadialGradient(cx,cy,16,cx,cy,260);
+      halo.addColorStop(0,'rgba(185,84,255,.30)');
+      halo.addColorStop(.55,'rgba(116,35,185,.12)');
       halo.addColorStop(1,'rgba(0,0,0,0)');
       ctx.fillStyle = halo;
       ctx.fillRect(px+10,py+10,pw-20,ph-20);
       ctx.restore();
 
-      // Grades concêntricas
+      // Grades
       for(let lvl=1; lvl<=6; lvl++){
         const r = maxR*lvl/6;
         ctx.beginPath();
-        data.forEach((_,i)=>{ const [x,y] = pt(i,r); i ? ctx.lineTo(x,y) : ctx.moveTo(x,y); });
+        data.forEach((_,i)=>{ const [x,y]=pt(i,r); i?ctx.lineTo(x,y):ctx.moveTo(x,y); });
         ctx.closePath();
-        ctx.strokeStyle = lvl===6 ? 'rgba(196,94,255,.58)' : 'rgba(255,255,255,.10)';
+        ctx.strokeStyle = lvl===6 ? 'rgba(196,94,255,.58)' : 'rgba(255,255,255,.09)';
         ctx.lineWidth = lvl===6 ? 2 : 1;
         ctx.stroke();
       }
 
       // Linhas radiais
       data.forEach((_,i)=>{
-        const [x,y] = pt(i,maxR);
+        const [x,y]=pt(i,maxR);
         ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(x,y);
-        ctx.strokeStyle = 'rgba(255,255,255,.12)';
-        ctx.lineWidth = 1; ctx.stroke();
+        ctx.strokeStyle='rgba(255,255,255,.11)'; ctx.lineWidth=1; ctx.stroke();
       });
 
       // Área preenchida
       const points = data.map((d,i)=>pt(i,maxR*Math.max(0,Math.min(100,d.value))/100));
       ctx.save();
       ctx.beginPath();
-      points.forEach(([x,y],i)=> i ? ctx.lineTo(x,y) : ctx.moveTo(x,y));
+      points.forEach(([x,y],i)=> i?ctx.lineTo(x,y):ctx.moveTo(x,y));
       ctx.closePath();
       const grad = ctx.createRadialGradient(cx,cy,10,cx,cy,maxR);
-      grad.addColorStop(0,'rgba(255,255,255,.18)');
-      grad.addColorStop(.42,'rgba(181,70,255,.44)');
-      grad.addColorStop(1,'rgba(118,35,196,.76)');
+      grad.addColorStop(0,'rgba(255,255,255,.20)');
+      grad.addColorStop(.42,'rgba(181,70,255,.48)');
+      grad.addColorStop(1,'rgba(118,35,196,.80)');
       ctx.fillStyle = grad;
-      ctx.shadowColor = '#B955FF'; ctx.shadowBlur = 26;
+      ctx.shadowColor='#B955FF'; ctx.shadowBlur=28;
       ctx.fill();
-      ctx.strokeStyle = '#F1C8FF'; ctx.lineWidth = 4.5;
+      ctx.strokeStyle='#F1C8FF'; ctx.lineWidth=4;
       ctx.stroke();
-      ctx.shadowBlur = 0;
+      ctx.shadowBlur=0;
       points.forEach(([x,y])=>{
-        ctx.beginPath(); ctx.arc(x,y,6,0,Math.PI*2);
-        ctx.fillStyle = '#FFFFFF'; ctx.fill();
-        ctx.strokeStyle = '#E9B7FF'; ctx.lineWidth = 1.5; ctx.stroke();
+        ctx.beginPath(); ctx.arc(x,y,5.5,0,Math.PI*2);
+        ctx.fillStyle='#FFFFFF'; ctx.fill();
+        ctx.strokeStyle='#E9B7FF'; ctx.lineWidth=1.5; ctx.stroke();
       });
       ctx.restore();
 
-      // Ícones e labels — posicionamento calculado para nunca sair do card
-      const iconR = maxR + 68;   // distância centro → ícone
-      const labelR = maxR + 116; // distância centro → texto
-
+      // Ícones + labels
       data.forEach((d,i)=>{
-        const ang = angle(i);
-        const [ix,iy] = pt(i,iconR);
+        const ang  = angle(i);
+        const cosA = Math.cos(ang);
+        const sinA = Math.sin(ang);
+        const ix   = cx + cosA * iconR;
+        const iy   = cy + sinA * iconR;
 
-        // Círculo de fundo do ícone
+        // --- ícone refinado com cor temática ---
+        const iconColors = ['#FF8C55','#A78BFF','#55D4FF','#FF6B9D','#FF7070','#55FF9D','#FFD655','#80FFEA'];
+        const iconGlows  = ['#FF6A20','#7C5FFF','#20BAFF','#FF3B7A','#FF3030','#20FF7A','#FFB800','#40FFD0'];
+        const icColor = iconColors[i];
+        const icGlow  = iconGlows[i];
+
         ctx.save();
-        ctx.shadowColor = '#B955FF'; ctx.shadowBlur = 16;
+        // Círculo exterior — glow suave
+        ctx.shadowColor = icGlow; ctx.shadowBlur = 18;
         ctx.beginPath(); ctx.arc(ix,iy,30,0,Math.PI*2);
-        ctx.fillStyle = 'rgba(4,0,12,.92)'; ctx.fill();
-        ctx.strokeStyle = 'rgba(218,139,255,.90)'; ctx.lineWidth = 2.5; ctx.stroke();
+        ctx.fillStyle = 'rgba(4,0,14,.96)'; ctx.fill();
+        // Anel duplo: externo fino + interno colorido
+        ctx.strokeStyle = 'rgba(255,255,255,.10)'; ctx.lineWidth = 4; ctx.stroke();
+        ctx.beginPath(); ctx.arc(ix,iy,26,0,Math.PI*2);
+        ctx.strokeStyle = icColor; ctx.lineWidth = 2; ctx.stroke();
+        ctx.shadowBlur = 0;
+        ctx.restore();
+        drawRefinedIcon(ctx,iconTypes[i],ix,iy,23,icColor);
+
+        // --- label (número.nome + %) ---
+        // Separar número e nome para tamanhos diferentes
+        const lx = cx + cosA * labelR;
+        const ly = cy + sinA * labelR;
+        const align = cosA > 0.28 ? 'left' : cosA < -0.28 ? 'right' : 'center';
+
+        // Fundo semitransparente para legibilidade
+        ctx.save();
+        ctx.font = '800 13px Arial, sans-serif';
+        ctx.textAlign = align;
+        const labelStr = (i+1)+'. '+d.label;
+        const lw = ctx.measureText(labelStr).width;
+        const bx = align==='center' ? lx - lw/2 - 6 : align==='left' ? lx - 6 : lx - lw - 6;
+        ctx.fillStyle = 'rgba(2,0,8,.72)';
+        ctx.fillRect(bx, ly - 28, lw + 12, 56);
         ctx.restore();
 
-        drawRefinedIcon(ctx,iconTypes[i],ix,iy,28,'#F0C4FF');
+        // Clamp lx/ly para nunca sair do card
+        const clampedLx = Math.max(px + 56, Math.min(px + pw - 56, lx));
+        const clampedLy = Math.max(py + 22, Math.min(py + ph - 22, ly));
 
-        // Posição do label — empurra para longe do centro
-        const lx = cx + Math.cos(ang)*labelR;
-        const ly = cy + Math.sin(ang)*labelR;
-
-        // Alinhamento baseado no quadrante
-        const align = Math.cos(ang) > 0.2 ? 'left' : Math.cos(ang) < -0.2 ? 'right' : 'center';
-
-        neonText(ctx,`${i+1}. ${d.label}`,lx,ly - 12,{align,font:'900 14px Arial, sans-serif',color:'#FFFFFF',blur:3});
-        neonText(ctx,`${d.value}%`,lx,ly + 18,{align,font:'900 28px Arial, sans-serif',color:'#C55FFF',blur:8,shadow:'#B955FF'});
+        neonText(ctx, labelStr, clampedLx, clampedLy - 12,
+          {align, font:'800 13px Arial, sans-serif', color:'#E8E0FF', blur:2});
+        neonText(ctx, d.value+'%', clampedLx, clampedLy + 14,
+          {align, font:'900 27px Arial, sans-serif', color:'#C55FFF', blur:9, shadow:'#B955FF'});
       });
     }
-
 
     function drawLowerExtensionBackground(ctx,startY=820){
       ctx.save();
@@ -3430,7 +3542,7 @@
       const leftX = x + 42;
       const rightX = leftX + leftW + gap;
       const boxY = y + 128;
-      const boxH = h - 158;
+      const boxH = h - 148;
 
       clearPanel(ctx,leftX,boxY,leftW,boxH,18,'rgba(185,84,255,.38)');
       clearPanel(ctx,rightX,boxY,rightW,boxH,18,'rgba(185,84,255,.38)');
@@ -3461,10 +3573,10 @@
       const pillW = Math.floor((rightW - 56) / 2);
       drawMetricPill(ctx,rightX+24,boxY+70,pillW,100,'MOBILIDADE',mob,mob==='Sim'?'#65FF5A':'#FFB43A');
       drawMetricPill(ctx,rightX+28+pillW,boxY+70,pillW,100,'ALONGAMENTO',along,along==='Sim'?'#65FF5A':'#FFB43A');
-      const safeMaxW = Math.min(rightW - 90, (x + w) - (rightX + 52));
-      drawWrappedLeft(ctx,'Preferência: '+preferencia+'.',rightX+26,boxY+196,safeMaxW,25,'700 17px Arial, sans-serif','#FFFFFF',2);
-      drawWrappedLeft(ctx,'Limitador percebido: '+atrapalhou+'.',rightX+26,boxY+252,safeMaxW,25,'600 16px Arial, sans-serif','#D8D0E2',2);
-      drawWrappedLeft(ctx,conduta,rightX+26,boxY+310,safeMaxW,26,'700 16px Arial, sans-serif','#CFA7FF',3);
+      const safeMaxW = Math.min(rightW - 100, (x + w) - (rightX + 60));
+      drawWrappedLeft(ctx,'Preferência: '+preferencia+'.',rightX+26,boxY+196,safeMaxW,28,'700 17px Arial, sans-serif','#FFFFFF',2);
+      drawWrappedLeft(ctx,'Limitador percebido: '+atrapalhou+'.',rightX+26,boxY+256,safeMaxW,28,'600 16px Arial, sans-serif','#D8D0E2',2);
+      drawWrappedLeft(ctx,conduta,rightX+26,boxY+318,safeMaxW,28,'700 16px Arial, sans-serif','#CFA7FF',3);
     }
 
     function calcScoreTotal(){
@@ -3721,10 +3833,10 @@
       classLines.forEach((ln,i)=>fitText(ctx,ln,913,cy+492+i*46,430,'900 42px Arial, sans-serif',approved || i===0 ? '#C55FFF' : '#FFFFFF','center'));
 
       // ── Dados técnicos ───────────────────────────────────────────────────
-      drawTechnicalInfoCard(ctx,38,3340,1153,500);
+      drawTechnicalInfoCard(ctx,38,3340,1153,580);
 
       // ── Critérios técnicos ───────────────────────────────────────────────
-      const ex = 38, ey = 3910, ew = 1153, eh = 820;
+      const ex = 38, ey = 3970, ew = 1153, eh = 820;
       cardFrame(ctx,ex,ey,ew,eh,'rgba(185,84,255,.82)');
       neonText(ctx,'CRITÉRIOS TÉCNICOS DA DECISÃO',ex+ew/2,ey+68,{align:'center',font:'900 38px Arial, sans-serif',color:'#FFFFFF',blur:7});
 
@@ -3756,7 +3868,7 @@
       });
 
       // ── Conduta MFIT ─────────────────────────────────────────────────────
-      const nx = 62, ny = 4800, nw = 1105, nh = 210;
+      const nx = 62, ny = 4860, nw = 1105, nh = 210;
       cardFrame(ctx,nx,ny,nw,nh,approved ? 'rgba(91,255,91,.70)' : 'rgba(255,180,58,.76)');
       neonText(ctx,'CONDUTA MFIT PREMIUM',nx+40,ny+56,{font:'900 28px Arial, sans-serif',color:'#FFFFFF',blur:6});
       const conduta = approved
@@ -3765,7 +3877,7 @@
       drawWrappedLeft(ctx,conduta,nx+40,ny+102,nw-80,34,'700 25px Arial, sans-serif',approved ? '#B7FF9A' : '#FFD278',3);
 
       // ── Rodapé: Score + Data + Reavaliação ───────────────────────────────
-      const ry = 5080, rh = 380;
+      const ry = 5140, rh = 380;
       cardFrame(ctx,38,ry,1153,rh,'rgba(185,84,255,.72)');
       neonText(ctx,'RESUMO FINAL DA AVALIAÇÃO',38+1153/2,ry+60,{align:'center',font:'900 36px Arial, sans-serif',color:'#FFFFFF',blur:8});
 
@@ -3957,11 +4069,284 @@
       ctx.fillStyle = 'rgba(255,255,255,.36)';
       ctx.font = '700 13px Arial, sans-serif';
       ctx.fillText('MFIT PREMIUM • AVALIAÇÃO DE NÍVEL', LOGICAL_W - 32, LOGICAL_H - 18);
+
+      // ── Branding personal ──
+      ctx.save();
+      const bx = 38, by = LOGICAL_H - 68, bw = 480, bh = 50;
+      ctx.fillStyle = 'rgba(20,0,40,.70)';
+      ctx.beginPath();
+      ctx.roundRect(bx, by, bw, bh, 12);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(185,84,255,.40)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // Avatar iniciais do personal
+      ctx.beginPath(); ctx.arc(bx+28, by+25, 18, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(185,84,255,.30)'; ctx.fill();
+      ctx.strokeStyle = '#C55FFF'; ctx.lineWidth = 1.5; ctx.stroke();
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.font = '900 14px Arial, sans-serif'; ctx.fillStyle = '#fff';
+      ctx.fillText('TL', bx+28, by+26);
+
+      ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+      ctx.shadowColor = '#C55FFF'; ctx.shadowBlur = 6;
+      ctx.font = '800 18px Arial, sans-serif'; ctx.fillStyle = '#FFFFFF';
+      ctx.fillText(window.PERSONAL_NAME || 'Tiago Lima', bx+54, by+22);
+      ctx.shadowBlur = 0;
+      ctx.font = '600 13px Arial, sans-serif'; ctx.fillStyle = '#CFA7FF';
+      ctx.fillText(window.PERSONAL_LABEL || 'Personal Trainer • MFIT Premium', bx+54, by+40);
       ctx.restore();
+      ctx.restore();
+
+      // Salvar avaliação no JSONBin após gerar o canvas
+      if(scale === EXPORT_SCALE){
+        try {
+          const final2 = getStatusFinal();
+          salvarAvaliacao({
+            scoreTotal: calcScoreTotal(),
+            nivelAtual: document.getElementById('nivelAtual')?.value || 'Iniciante',
+            aprovado: !!final2.status.aprovado,
+            novoNivel: final2.final?.novoNivel || '',
+            aderencia: calcAderencia(),
+            recuperacao: scoreRecuperacao()
+          });
+        } catch(e){ console.warn('JSONBin save error:', e); }
+      }
 
       return c;
     }
 
   </script>
+
+<!-- ═══ DASHBOARD MODAL ══════════════════════════════════════ -->
+<div id="dashModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9999;overflow-y:auto;padding:20px">
+  <div style="max-width:960px;margin:auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <h2 style="color:#fff;margin:0;font-size:26px">📊 Dashboard — Alunos</h2>
+      <button onclick="document.getElementById('dashModal').style.display='none'"
+        style="background:#1a1a2e;color:#fff;border:1px solid #6b33c4;padding:10px 20px;border-radius:12px;cursor:pointer;font-size:16px">✕ Fechar</button>
+    </div>
+    <div id="dashContent" style="color:#ccc;font-size:15px">Carregando...</div>
+  </div>
+</div>
+
+<script>
+// ═══ CONFIG ════════════════════════════════════════════════════
+const JSONBIN_KEY  = '$2a$10$pQ1WST.3KHCEMP90Rg50BuF/rlnmNHcDq0phhdgi1kqovBbMau2SC';
+const JSONBIN_BIN  = 'mfit-tiago-lima';
+const PERSONAL_NAME = 'Tiago Lima';
+const PERSONAL_LABEL = 'Personal Trainer • MFIT Premium';
+
+// ═══ JSONBIN HELPERS ═══════════════════════════════════════════
+let _binId = null;
+
+async function getBinId(){
+  if(_binId) return _binId;
+
+  // 1. Try stored ID first
+  const stored = localStorage.getItem('mfit_bin_id');
+  if(stored){ _binId = stored; return _binId; }
+
+  // 2. Try to create a new bin
+  try {
+    const r = await fetch('https://api.jsonbin.io/v3/b', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Master-Key': JSONBIN_KEY,
+        'X-Bin-Name': JSONBIN_BIN,
+        'X-Bin-Private': 'false'
+      },
+      body: JSON.stringify({alunos:[]})
+    });
+    const d = await r.json();
+    if(d.metadata && d.metadata.id){
+      _binId = d.metadata.id;
+      localStorage.setItem('mfit_bin_id', _binId);
+      return _binId;
+    }
+  } catch(e){ console.warn('getBinId error:', e); }
+
+  return null;
+}
+
+async function loadBin(){
+  try {
+    const id = await getBinId();
+    if(!id) return {alunos:[]};
+    const r = await fetch('https://api.jsonbin.io/v3/b/'+id+'/latest',{
+      headers:{'X-Master-Key': JSONBIN_KEY}
+    });
+    const d = await r.json();
+    return d.record || {alunos:[]};
+  } catch(e){ return {alunos:[]}; }
+}
+
+async function saveBin(data){
+  try {
+    const id = await getBinId();
+    if(!id) return false;
+    const r = await fetch('https://api.jsonbin.io/v3/b/'+id,{
+      method:'PUT',
+      headers:{
+        'Content-Type':'application/json',
+        'X-Master-Key': JSONBIN_KEY
+      },
+      body: JSON.stringify(data)
+    });
+    return r.ok;
+  } catch(e){ return false; }
+}
+
+// ═══ SAVE AVALIAÇÃO ════════════════════════════════════════════
+async function salvarAvaliacao(resultado){
+  const db = await loadBin();
+  if(!db.alunos) db.alunos = [];
+
+  const nome = document.getElementById('nome')?.value.trim() || 'Aluno';
+  const agora = new Date().toISOString();
+
+  // Find existing aluno
+  let aluno = db.alunos.find(a => a.nome.toLowerCase() === nome.toLowerCase());
+  if(!aluno){
+    aluno = {nome, avaliacoes:[]};
+    db.alunos.push(aluno);
+  }
+
+  // Keep last 3 evaluations
+  aluno.avaliacoes.unshift({
+    data: agora,
+    score: resultado.scoreTotal,
+    nivel: resultado.nivelAtual,
+    aprovado: resultado.aprovado,
+    novoNivel: resultado.novoNivel,
+    aderencia: resultado.aderencia,
+    recuperacao: resultado.recuperacao,
+    sono: +document.getElementById('sono')?.value || 0,
+    estresse: +document.getElementById('estresse')?.value || 0,
+    alimentacao: +document.getElementById('alimentacao')?.value || 0,
+    sensacao: +document.getElementById('sensacaoTreino')?.value || 0,
+    pesoAtual: +document.getElementById('pesoAtual')?.value || null,
+    pesoAnterior: +document.getElementById('pesoAnterior')?.value || null,
+  });
+  if(aluno.avaliacoes.length > 3) aluno.avaliacoes = aluno.avaliacoes.slice(0,3);
+
+  await saveBin(db);
+  return aluno.avaliacoes;
+}
+
+// ═══ DASHBOARD ══════════════════════════════════════════════════
+async function abrirDashboard(){
+  document.getElementById('dashModal').style.display = 'block';
+  document.getElementById('dashContent').innerHTML = '<p style="color:#aaa">Carregando dados...</p>';
+
+  const db = await loadBin();
+  const alunos = (db.alunos || []).sort((a,b)=> {
+    const la = a.avaliacoes?.[0];
+    const lb = b.avaliacoes?.[0];
+    return (lb?.score||0) - (la?.score||0);
+  });
+
+  if(!alunos.length){
+    document.getElementById('dashContent').innerHTML = '<p style="color:#aaa;text-align:center;padding:40px">Nenhuma avaliação salva ainda.</p>';
+    return;
+  }
+
+  const html = alunos.map(a => {
+    const last = a.avaliacoes?.[0];
+    const prev = a.avaliacoes?.[1];
+    if(!last) return '';
+    const score = last.score || 0;
+    const delta = prev ? score - (prev.score||0) : null;
+    const deltaStr = delta !== null ? (delta >= 0 ? `<span style="color:#65FF5A">▲ +${delta}</span>` : `<span style="color:#FF6B6B">▼ ${delta}</span>`) : '<span style="color:#888">—</span>';
+    const statusColor = last.aprovado ? '#65FF5A' : '#FFB43A';
+    const statusLabel = last.aprovado ? '✅ APROVADO' : '🔄 MANTEVE';
+    const dataStr = new Date(last.data).toLocaleDateString('pt-BR');
+    const scoreColor = score >= 70 ? '#65FF5A' : score >= 50 ? '#FFB43A' : '#FF6B6B';
+
+    const hist = (a.avaliacoes || []).map((av,i) => {
+      const d = new Date(av.data).toLocaleDateString('pt-BR');
+      const sc = av.score || 0;
+      const sc_color = sc >= 70 ? '#65FF5A' : sc >= 50 ? '#FFB43A' : '#FF6B6B';
+      return `<span style="font-size:12px;color:#aaa">${d}: <b style="color:${sc_color}">${sc}pts</b> • ${av.nivel}</span>`;
+    }).join(' &nbsp;|&nbsp; ');
+
+    return `<div style="background:#0d0d1a;border:1px solid #3a1a6e;border-radius:16px;padding:18px;margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+        <div>
+          <div style="font-size:20px;font-weight:800;color:#fff">${a.nome}</div>
+          <div style="font-size:13px;color:#888;margin-top:3px">Última avaliação: ${dataStr} • Nível: ${last.nivel}</div>
+        </div>
+        <div style="display:flex;gap:14px;align-items:center">
+          <div style="text-align:center">
+            <div style="font-size:30px;font-weight:900;color:${scoreColor}">${score}</div>
+            <div style="font-size:11px;color:#888">SCORE</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:16px;font-weight:700">${deltaStr}</div>
+            <div style="font-size:11px;color:#888">EVOLUÇÃO</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:14px;font-weight:800;color:${statusColor}">${statusLabel}</div>
+            <div style="font-size:11px;color:#888">STATUS</div>
+          </div>
+        </div>
+      </div>
+      ${hist ? `<div style="margin-top:10px;padding-top:10px;border-top:1px solid #2a1a4e;display:flex;flex-wrap:wrap;gap:6px">${hist}</div>` : ''}
+    </div>`;
+  }).join('');
+
+  document.getElementById('dashContent').innerHTML = html;
+}
+
+// ═══ LINK PERSONALIZADO ════════════════════════════════════════
+function gerarLinkAluno(){
+  const nome = prompt('Nome do aluno para o link:');
+  if(!nome || !nome.trim()) return;
+  const base = window.location.href.split('?')[0];
+  const link = base + '?aluno=' + encodeURIComponent(nome.trim());
+  navigator.clipboard.writeText(link).then(()=>{
+    alert('✅ Link copiado!
+
+' + link + '
+
+Mande pelo WhatsApp para o aluno preencher.');
+  }).catch(()=>{
+    prompt('Copie o link abaixo:', link);
+  });
+}
+
+// Pre-fill nome from URL param
+(function(){
+  const p = new URLSearchParams(window.location.search);
+  const aluno = p.get('aluno');
+  if(aluno){
+    const el = document.getElementById('nome');
+    if(el){ el.value = aluno; el.readOnly = true; }
+  }
+})();
+
+// Expose to canvas branding
+window.PERSONAL_NAME  = PERSONAL_NAME;
+window.PERSONAL_LABEL = PERSONAL_LABEL;
+</script>
+
+<!-- ═══ PERSONAL TOOLBAR — RODAPÉ ════════════════════════════ -->
+<div style="position:fixed;bottom:0;left:0;right:0;z-index:1000;background:rgba(6,2,16,.96);border-top:1px solid rgba(185,84,255,.25);backdrop-filter:blur(10px);padding:10px 16px;display:flex;align-items:center;justify-content:space-between">
+  <span style="color:#6b33c4;font-size:12px;font-weight:700;letter-spacing:1px">⚡ MFIT</span>
+  <div style="display:flex;gap:10px">
+    <button onclick="abrirDashboard()"
+      style="background:linear-gradient(135deg,#4a0e8f,#7c3aed);color:#fff;border:none;padding:9px 16px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:800;box-shadow:0 2px 14px rgba(124,58,237,.45)">
+      📊 Dashboard
+    </button>
+    <button onclick="gerarLinkAluno()"
+      style="background:linear-gradient(135deg,#064e3b,#059669);color:#fff;border:none;padding:9px 16px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:800;box-shadow:0 2px 14px rgba(5,150,105,.35)">
+      🔗 Link do Aluno
+    </button>
+  </div>
+</div>
+<div style="height:58px"></div>
+
 </body>
 </html>
