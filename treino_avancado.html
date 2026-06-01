@@ -675,6 +675,7 @@
 <option>8–12 mil</option>
 <option>Mais de 12 mil</option>
 </select>
+<span class="helper">Se não sabe, consulte o app de saúde do celular. Referência: 6.000–10.000 passos/dia é considerado ativo.</span>
 </div>
 <div class="field col-4">
 <label class="label" for="cardio">26. Você quer incluir cardio no plano?</label>
@@ -823,6 +824,9 @@
 <option>Não sei dizer</option>
 </select>
 </div>
+<div class="field col-12">
+<div class="subhead">Como você se comporta no treino hoje</div>
+</div>
 <div class="field col-6">
 <label class="label" for="controle_serie">43. Quando a série fica pesada, você normalmente:</label>
 <select id="controle_serie" name="controle_serie">
@@ -855,7 +859,7 @@
 </select>
 </div>
 <div class="field col-12">
-<label class="label" for="aguenta_treino_forte">46. Hoje, você sente que consegue seguir um treino mais exigente sem piorar dores e sem perder a qualidade dos movimentos?</label>
+<label class="label" for="aguenta_treino_forte">46. Você se sente pronto(a) para um treino mais puxado sem piorar dores ou perder a execução?</label>
 <select id="aguenta_treino_forte" name="aguenta_treino_forte">
 <option value="">Selecione</option>
 <option>Não</option>
@@ -865,6 +869,111 @@
 </div>
 </div>
 </section>
+
+<!-- BLOCO AVANÇADO — aparece quando os 3 sinais: anota cargas + constância longa + recupera bem -->
+<section class="section hidden" id="wrap_bloco_avancado_adv">
+<h2>BLOCO 5B/11 — 🔬 Estratégia Avançada de Treino</h2>
+<p class="desc">Suas respostas confirmam experiência sólida. Esse bloco permite uma prescrição com nível de detalhe máximo.</p>
+<div class="grid">
+  <div class="field col-6">
+    <label class="label" for="adv_periodizacao">Qual modelo de periodização você prefere ou já usou?</label>
+    <select id="adv_periodizacao" name="adv_periodizacao">
+      <option value="">Selecione</option>
+      <option>Sem preferência — o personal decide</option>
+      <option>Linear — progressão direta de carga semana a semana</option>
+      <option>Ondulação diária — muda rep/carga a cada sessão</option>
+      <option>Ondulação semanal — muda rep/carga a cada semana</option>
+      <option>Blocos — fases distintas (hipertrofia, força, potência...)</option>
+    </select>
+    <span class="helper">Se não tiver preferência clara, escolha "Sem preferência".</span>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="adv_deload">Como você costuma tratar o deload (semana de descarga — redução proposital de carga e volume para recuperar melhor)?</label>
+    <select id="adv_deload" name="adv_deload">
+      <option value="">Selecione</option>
+      <option>Nunca faço deload</option>
+      <option>Faço por intuição quando sinto que preciso</option>
+      <option>Sigo deload planejado a cada 4–6 semanas</option>
+      <option>Prefiro semanas de volume reduzido em vez de deload total</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="adv_divisao">Qual divisão de treino você prefere?</label>
+    <select id="adv_divisao" name="adv_divisao">
+      <option value="">Selecione</option>
+      <option>Full body — corpo todo em cada sessão</option>
+      <option>A/B — dois treinos alternados</option>
+      <option>Upper/Lower — parte superior / inferior em dias alternados</option>
+      <option>Push/Pull/Legs — empurrar / puxar / pernas</option>
+      <option>Grupos musculares — cada dia um grupo muscular</option>
+      <option>Sem preferência</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="adv_rir">Como você costuma trabalhar o RIR (Reps in Reserve — quantas repetições sobraram ao parar a série)?</label>
+    <select id="adv_rir" name="adv_rir">
+      <option value="">Selecione</option>
+      <option>Não uso essa referência</option>
+      <option>RIR 3–4 — paro com bastante reserva (esforço moderado)</option>
+      <option>RIR 1–2 — paro perto do limite (esforço alto)</option>
+      <option>RIR 0 — vou até a falha técnica ou muscular</option>
+      <option>Varia conforme o exercício e a fase do treino</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="adv_rpe">Você usa RPE (Rate of Perceived Exertion — escala de esforço de 1 a 10, onde 10 é o máximo possível) para regular a intensidade?</label>
+    <select id="adv_rpe" name="adv_rpe">
+      <option value="">Selecione</option>
+      <option>Não uso</option>
+      <option>Conheço mas não aplico no dia a dia</option>
+      <option>Uso como referência nas séries principais</option>
+      <option>Uso sistematicamente em todo o treino</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="adv_semana_teste">Você aceita incluir uma semana de teste (semana de avaliação de carga — para calibrar o ponto real de cada exercício antes de progredir)?</label>
+    <select id="adv_semana_teste" name="adv_semana_teste">
+      <option value="">Selecione</option>
+      <option>Sim, prefiro calibrar antes</option>
+      <option>Não, prefiro começar direto com estimativa</option>
+    </select>
+  </div>
+  <div class="field col-12">
+    <label class="label" for="adv_tecnicas">Quais técnicas de intensidade você usa ou já usou?</label>
+    <div class="options inline-2">
+      <label class="option"><input name="adv_tecnicas" type="checkbox" value="Drop set — reduz a carga e continua sem parar"/><span>Drop set — reduz a carga e continua sem parar</span></label>
+      <label class="option"><input name="adv_tecnicas" type="checkbox" value="Rest-pause — pausa curta de 10–20s dentro da própria série"/><span>Rest-pause — pausa curta de 10–20s dentro da própria série</span></label>
+      <label class="option"><input name="adv_tecnicas" type="checkbox" value="Myo-reps — acumula repetições com minirepousos de 3–5s"/><span>Myo-reps — acumula repetições com minirepousos de 3–5s</span></label>
+      <label class="option"><input name="adv_tecnicas" type="checkbox" value="Bi-set — dois exercícios seguidos sem descanso"/><span>Bi-set — dois exercícios seguidos sem descanso</span></label>
+      <label class="option"><input name="adv_tecnicas" type="checkbox" value="Cluster set — séries fragmentadas com pausa entre mini-blocos"/><span>Cluster set — séries fragmentadas com pausa entre mini-blocos</span></label>
+      <label class="option"><input name="adv_tecnicas" type="checkbox" value="Nenhuma dessas"/><span>Nenhuma dessas</span></label>
+    </div>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="adv_progressao_pref">Como você prefere ver a progressão?</label>
+    <select id="adv_progressao_pref" name="adv_progressao_pref">
+      <option value="">Selecione</option>
+      <option>Carga primeiro — aumentar peso quando as reps ficarem fáceis</option>
+      <option>Volume primeiro — mais séries antes de aumentar carga</option>
+      <option>Dupla progressão — aumenta reps até o teto, depois sobe carga</option>
+      <option>Misturar conforme o exercício</option>
+      <option>Sem preferência</option>
+    </select>
+    <span class="helper">Dupla progressão: ex. alvo 8–12 reps → faz 8 → sobe até 12 → aumenta carga → recomeça em 8.</span>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="adv_velocidade_exec">Você controla a velocidade de execução (tempo de subida, descida e pausa)?</label>
+    <select id="adv_velocidade_exec" name="adv_velocidade_exec">
+      <option value="">Selecione</option>
+      <option>Não controlo, executo no ritmo natural</option>
+      <option>Controlo a descida (excêntrico) — faço mais devagar</option>
+      <option>Controlo os dois — descida lenta e subida controlada</option>
+      <option>Uso tempo prescrito (ex.: 3-1-2 — 3s descer, 1s pausa, 2s subir)</option>
+    </select>
+  </div>
+</div>
+</section>
+
 <section class="section">
 <h2>BLOCO 6/11 - Local de Treino e Preferências</h2>
 <p class="desc">Onde você treina, o que costuma ter disponível e o que você prefere evitar.</p>
@@ -1672,6 +1781,29 @@
       const ces = document.getElementById('cesarea');
 
       if (objective) objective.addEventListener('change', () => toggleByValue('objetivo', 'wrap_objetivo_outro', 'Outro'));
+
+      // ── Bloco avançado (avançado) ────────────────────────────────────────
+      // Gatilho: os 3 sinais → anota cargas + constância ≥ 6 meses + recupera bem
+      function toggleBlocoAvancadoAdv(){
+        const anotaTreino = document.getElementById('anota_treino');
+        const tempoConstancia = document.getElementById('tempo_constancia');
+        const recuperaBem = document.getElementById('recupera_bem');
+        const bloco = document.getElementById('wrap_bloco_avancado_adv');
+        if (!bloco) return;
+        const anota = ['Às vezes','Na maioria das vezes','Sempre'].includes((anotaTreino?.value||'').trim());
+        const constancia = ['6 a 12 meses','1 a 2 anos','Mais de 2 anos'].includes((tempoConstancia?.value||'').trim());
+        const recupera = ['Sim, na maioria das vezes','Sim, recupero muito bem'].includes((recuperaBem?.value||'').trim());
+        const show = anota && constancia && recupera;
+        bloco.classList.toggle('hidden', !show);
+        if (!show) bloco.querySelectorAll('select, input').forEach(el => {
+          if (el.type === 'checkbox') el.checked = false; else el.value = '';
+        });
+      }
+      ['anota_treino','tempo_constancia','recupera_bem'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('change', toggleBlocoAvancadoAdv);
+      });
+      toggleBlocoAvancadoAdv();
       if (atividade) atividade.addEventListener('change', () => toggleByValue('atividade_atual', 'wrap_atividade_outra', 'outra'));
       if (foco) foco.addEventListener('change', () => toggleByValue('foco_muscular', 'wrap_foco_outro', 'Outro'));
       if (focoSec) focoSec.addEventListener('change', () => toggleByValue('foco_muscular_sec', 'wrap_foco_sec_outro', 'Outro'));
@@ -1724,6 +1856,7 @@
       toggleByValue('cardio_pref', 'wrap_cardio_outro', 'Outro');
       togglePainBlock();
       toggleMobAlongTriage();
+      toggleBlocoAvancadoAdv();
 
       if (tempoSel && wrapTempoTreino) wrapTempoTreino.classList.toggle('hidden', tempoSel.value !== 'Outro');
 

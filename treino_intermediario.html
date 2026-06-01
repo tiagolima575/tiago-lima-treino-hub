@@ -624,23 +624,23 @@
 <input id="profissao" name="profissao" placeholder="Ex.: sentado grande parte do dia, em pé, andando bastante, pegando peso..." type="text"/>
 </div>
 <div class="field col-4">
-<label class="label" for="falha">16. Quando a série fica pesada, você normalmente:</label>
-<select id="falha" name="falha">
-<option value="">Selecione</option>
-<option>Paro antes de perder a execução</option>
-<option>Às vezes perco a execução no final</option>
-<option>Quase sempre vou até perder a execução</option>
-<option>Não sei dizer</option>
-</select>
-</div>
-<div class="field col-4">
-<label class="label" for="tecnica">17. Na maioria dos exercícios, você se sente:</label>
+<label class="label" for="tecnica">16. Na maioria dos exercícios, você se sente:</label>
 <select id="tecnica" name="tecnica">
 <option value="">Selecione</option>
 <option>Inseguro(a)</option>
 <option>Mais ou menos seguro(a)</option>
 <option>Seguro(a)</option>
 <option>Depende do exercício</option>
+</select>
+</div>
+<div class="field col-4">
+<label class="label" for="falha">17. Quando a série fica pesada, você normalmente:</label>
+<select id="falha" name="falha">
+<option value="">Selecione</option>
+<option>Paro antes de perder a execução</option>
+<option>Às vezes perco a execução no final</option>
+<option>Quase sempre vou até perder a execução</option>
+<option>Não sei dizer</option>
 </select>
 </div>
 <div class="field col-4">
@@ -685,7 +685,7 @@
 <option value="">Selecione</option>
 <option>Sem preferência</option>
 <option>Treino do corpo todo</option>
-<option>Treino dividido por grupos (ex.: A/B/C)</option>
+<option>Treino separado por grupos musculares (pernas, costas, peito...)</option>
 </select>
 </div>
 <div class="field col-4">
@@ -721,7 +721,6 @@
 <label class="label" for="barreira">26. Qual é sua maior dificuldade hoje para treinar bem?</label>
 <select id="barreira" name="barreira">
 <option value="">Selecione</option>
-<option>Não informado</option>
 <option>Tempo</option>
 <option>Cansaço</option>
 <option>Dor</option>
@@ -743,6 +742,97 @@
 
 </div>
 </section>
+
+<!-- BLOCO AVANÇADO — aparece quando 2 de 3 sinais: consistência + técnica segura + histórico de treino -->
+<section class="section hidden" id="wrap_bloco_avancado_int">
+<h2>SESSÃO 3B/11 — 🔬 Estratégia de Treino</h2>
+<p class="desc">Suas respostas indicam bom histórico de treino. Essas perguntas permitem uma prescrição mais refinada.</p>
+<div class="grid">
+  <div class="field col-6">
+    <label class="label" for="adv_periodizacao">Como você prefere organizar a evolução do treino ao longo das semanas?</label>
+    <select id="adv_periodizacao" name="adv_periodizacao">
+      <option value="">Selecione</option>
+      <option>Sem preferência — o personal decide</option>
+      <option>Linear — aumentar carga gradualmente toda semana</option>
+      <option>Ondulação — variar carga e repetições entre as semanas</option>
+      <option>Blocos — fases diferentes (volume, força, definição...)</option>
+    </select>
+    <span class="helper">Se não souber a diferença, escolha "Sem preferência".</span>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="adv_deload">Você costuma fazer semana de deload (semana de descarga — redução proposital de carga e volume para recuperar)?</label>
+    <select id="adv_deload" name="adv_deload">
+      <option value="">Selecione</option>
+      <option>Não, nunca fiz</option>
+      <option>Faço quando sinto que preciso</option>
+      <option>Sigo uma programação com deload planejado</option>
+      <option>Não sei o que é</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="adv_divisao">Qual divisão de treino você já usou ou prefere?</label>
+    <select id="adv_divisao" name="adv_divisao">
+      <option value="">Selecione</option>
+      <option>Full body — treino o corpo todo em cada sessão</option>
+      <option>A/B — alterno dois treinos diferentes</option>
+      <option>Grupos musculares — cada dia um grupo (pernas, costas, peito...)</option>
+      <option>Upper/Lower — parte superior um dia, inferior no outro</option>
+      <option>Push/Pull/Legs — empurrar / puxar / pernas</option>
+      <option>Sem preferência</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="adv_rir">Você costuma controlar o RIR (Reps in Reserve — quantas repetições você ainda conseguiria fazer ao parar a série)?</label>
+    <select id="adv_rir" name="adv_rir">
+      <option value="">Selecione</option>
+      <option>Não uso isso</option>
+      <option>Paro com 3–4 repetições sobrando (esforço moderado)</option>
+      <option>Paro com 1–2 repetições sobrando (esforço alto)</option>
+      <option>Vou até a falha ou quase (RIR 0–1)</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="adv_rpe">Você já usou RPE (Rate of Perceived Exertion — escala de esforço de 1 a 10, onde 10 é o máximo) para controlar a intensidade?</label>
+    <select id="adv_rpe" name="adv_rpe">
+      <option value="">Selecione</option>
+      <option>Não, nunca usei</option>
+      <option>Conheço mas não uso</option>
+      <option>Uso às vezes</option>
+      <option>Uso com frequência</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="adv_tecnicas">Você usa ou já usou técnicas de intensidade?</label>
+    <div class="options inline-2">
+      <label class="option"><input name="adv_tecnicas" type="checkbox" value="Drop set — reduz a carga e continua sem parar"/><span>Drop set — reduz a carga e continua sem parar</span></label>
+      <label class="option"><input name="adv_tecnicas" type="checkbox" value="Rest-pause — pausa curta dentro da própria série"/><span>Rest-pause — pausa curta dentro da própria série</span></label>
+      <label class="option"><input name="adv_tecnicas" type="checkbox" value="Bi-set — dois exercícios seguidos sem descanso"/><span>Bi-set — dois exercícios seguidos sem descanso</span></label>
+      <label class="option"><input name="adv_tecnicas" type="checkbox" value="Myo-reps — acumula repetições com pausas muito curtas"/><span>Myo-reps — acumula repetições com pausas muito curtas</span></label>
+      <label class="option"><input name="adv_tecnicas" type="checkbox" value="Nenhuma dessas"/><span>Nenhuma dessas</span></label>
+    </div>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="adv_semana_teste">Você aceita incluir uma semana de teste (semana de avaliação de carga — para mapear o ponto de partida real de cada exercício)?</label>
+    <select id="adv_semana_teste" name="adv_semana_teste">
+      <option value="">Selecione</option>
+      <option>Sim</option>
+      <option>Não, prefiro começar direto</option>
+      <option>Não sei o que é</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="adv_progressao_pref">Como você prefere ver a progressão no treino?</label>
+    <select id="adv_progressao_pref" name="adv_progressao_pref">
+      <option value="">Selecione</option>
+      <option>Aumentar carga quando as repetições ficarem fáceis</option>
+      <option>Aumentar volume (mais séries) antes de aumentar carga</option>
+      <option>Misturar os dois conforme o exercício</option>
+      <option>Sem preferência</option>
+    </select>
+  </div>
+</div>
+</section>
+
 <!-- SESSÃO 4 -->
 <section class="section">
 <h2>SESSÃO 4/11 - Local de Treino e Equipamentos</h2>
@@ -1066,6 +1156,7 @@
 <label class="option"><input name="sinais" type="checkbox" value="Perda de força"/><span>Perda de força</span></label>
 <label class="option"><input name="sinais" type="checkbox" value="Dor irradiando"/><span>Dor irradiando</span></label>
 <label class="option"><input name="sinais" type="checkbox" value="Travamento/estalo com dor"/><span>Travamento/estalo com dor</span></label>
+<label class="option"><input name="sinais" type="checkbox" value="Nenhum"/><span>Nenhum desses</span></label>
 </div>
 </div>
 <div class="field col-4">
@@ -1340,6 +1431,32 @@
       const cesarea = document.getElementById('cesarea');
 
       if (objetivo) objetivo.addEventListener('change', () => toggle('wrap_objetivo_outro', objetivo.value === 'Outro'));
+
+      // ── Bloco avançado (intermediário) ──────────────────────────────────
+      // Gatilho: 2 de 3 sinais → consistência boa + segurança na execução + já treinou há tempo
+      function toggleBlocoAvancadoInt(){
+        const consistencia = document.getElementById('consistencia');
+        const tecnica = document.getElementById('tecnica');
+        const jaTreinou = document.getElementById('ja_treinou');
+        const bloco = document.getElementById('wrap_bloco_avancado_int');
+        if (!bloco) return;
+        const sinais = [
+          ['Consistente'].includes((consistencia?.value||'').trim()),
+          ['Seguro(a)','Depende do exercício'].includes((tecnica?.value||'').trim()),
+          ['Sim, treino há bastante tempo (com pausas)'].includes((jaTreinou?.value||'').trim())
+        ];
+        const score = sinais.filter(Boolean).length;
+        const show = score >= 2;
+        bloco.classList.toggle('hidden', !show);
+        if (!show) bloco.querySelectorAll('select, input').forEach(el => {
+          if (el.type === 'checkbox') el.checked = false; else el.value = '';
+        });
+      }
+      ['consistencia','tecnica','ja_treinou'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('change', toggleBlocoAvancadoInt);
+      });
+      toggleBlocoAvancadoInt();
       if (cardio) cardio.addEventListener('change', () => {
         const show = cardio.value === 'Sim';
         toggle('wrap_cardio_tempo', show);
@@ -1396,6 +1513,7 @@
 
       // initial toggles
       if (objetivo) toggle('wrap_objetivo_outro', objetivo.value === 'Outro');
+      toggleBlocoAvancadoInt();
       if (cardio) {
         const show = cardio.value === 'Sim';
         toggle('wrap_cardio_tempo', show);
