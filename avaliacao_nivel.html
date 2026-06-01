@@ -1382,8 +1382,8 @@
     let step = 1;
     let ultimoScanData = null;
     const LOGICAL_W = 1229;
-    const LOGICAL_H = 5980;
-    const EXPORT_SCALE = 1.35;
+    const LOGICAL_H = 6540;
+    const EXPORT_SCALE = 3.0;
     const bar = document.getElementById('bar');
 
     const TEMPLATE_SOURCES = {
@@ -1699,7 +1699,6 @@
 
         if(!validateCurrent()){
           showStep(i);
-          step = saved;
           return false;
         }
       }
@@ -1778,33 +1777,90 @@
       const ader = calcAderencia();
       const sem = calcSemaforo();
       const dor = +document.getElementById('dor').value;
+      const sono = +document.getElementById('sono').value;
+      const estresse = +document.getElementById('estresse').value;
+      const doms = +document.getElementById('doms').value;
+      const energia = +document.getElementById('energia').value;
       const {up, down} = perfScore();
       const tecnica = selectedText('tecnica');
       const rir = selectedText('rir');
 
+      // dados contextuais de risco
+      const localDor = selectedText('localDor') || 'não informado';
+      const pinca = selectedText('pinca');
+      const pincaEx = (document.getElementById('pincaEx')?.value || '').trim();
+      const evita = selectedText('evita');
+      const evitaEx = (document.getElementById('evitaEx')?.value || '').trim();
+      const obsRisco = (document.getElementById('obsRisco')?.value || '').trim();
+
+      // monta bloco de contexto de risco para usar nas mensagens
+      function blocoRisco(){
+        const linhas = [];
+        if(localDor && localDor !== 'Sem dor' && localDor !== 'não informado')
+          linhas.push(`📍 Local informado: ${localDor}`);
+        if(pinca === 'Sim')
+          linhas.push(`⚡ Pinçamento/travamento: Sim${pincaEx ? ' — exercício: ' + pincaEx : ''}`);
+        if(evita === 'Sim')
+          linhas.push(`🚷 Evita exercício por desconforto: Sim${evitaEx ? ' — exercício: ' + evitaEx : ''}`);
+        if(obsRisco)
+          linhas.push(`💬 Observação da pessoa: "${obsRisco}"`);
+        return linhas.length > 0 ? '\n\n' + linhas.join('\n') : '';
+      }
+
+      // ── BLOQUEIO 1: Dor articular ──────────────────────────────────────
       if(dor > 2){
-        return {sug:'Manter (SAVRL ativo)', motivo:'Dor > 2/10 bloqueia promoção.'};
+        return {
+          sug:'Manter (SAVRL ativo)',
+          motivo:`🚫 Bloqueio — dor articular: ${dor}/10 (limite máx. 2/10)\n\nSubir de nível com dor articular ativa aumenta o risco de lesão. O corpo precisa estar estruturalmente estável antes de receber mais estímulo.${blocoRisco()}\n\nFoco até a próxima reavaliação: identificar e tratar a origem da dor em ${localDor !== 'Sem dor' && localDor !== 'não informado' ? localDor : 'região informada'} antes de progredir.`
+        };
       }
 
+      // ── BLOQUEIO 2: Aderência insuficiente ────────────────────────────
       if(ader < 75){
-        return {sug:'Manter', motivo:'Aderência < 75% bloqueia promoção.'};
+        return {
+          sug:'Manter',
+          motivo:`🚫 Bloqueio — frequência insuficiente: ${ader}% (mínimo exigido: 75%)\n\nSubir de nível sem consistência significa que o volume e a complexidade do próximo nível não serão assimilados. O treino precisa ser frequente antes de ser mais intenso.\n\nMeta para a próxima reavaliação: atingir pelo menos 75% dos dias planejados.`
+        };
       }
 
+      // ── BLOQUEIO 3: Semáforo vermelho ─────────────────────────────────
       if(sem === 'Vermelho'){
-        return {sug:'Manter (reduzir volume)', motivo:'Semáforo Vermelho bloqueia promoção.'};
+        const motivosSem = [];
+        if(dor >= 3) motivosSem.push(`dor articular ${dor}/10`);
+        if(sono <= 4) motivosSem.push(`sono ${sono}/10 — muito baixo`);
+        if(estresse >= 8) motivosSem.push(`estresse ${estresse}/10 — muito alto`);
+        if(doms >= 8) motivosSem.push(`dor muscular residual ${doms}/10 — muito alta`);
+        return {
+          sug:'Manter (reduzir volume)',
+          motivo:`🚫 Bloqueio — semáforo VERMELHO\n\nO que acionou o alerta:\n${motivosSem.map(m => '• ' + m).join('\n')}${blocoRisco()}\n\nO sistema nervoso e muscular ainda não se recuperou do ciclo anterior. Subir de nível agora agravaria a sobrecarga. Prioridade: resolver os pontos acima antes da próxima reavaliação.`
+        };
       }
 
+      // ── NÍVEL INICIANTE ───────────────────────────────────────────────
       if(nivelAtual === 'Iniciante'){
         const okPerf = (up >= 1 && down === 0) || up >= 2;
         const okTec = (tecnica === 'Sim' || tecnica === 'Às vezes');
 
         if(okPerf && okTec){
-          return {sug:'Subir para Intermediário', motivo:'Aderência ok + técnica estável + performance reagindo.'};
+          return {
+            sug:'Subir para Intermediário',
+            motivo:`✅ Aprovado para subir de nível\n\n• Frequência: ${ader}% (≥75% ✓)\n• Técnica: ${tecnica} ✓\n• Marcadores de melhora: ${up} — sem pioras ✓\n\nO corpo já está respondendo ao estímulo com consistência e segurança técnica — pré-requisitos para absorver o volume intermediário.`
+          };
         }
 
-        return {sug:'Manter (consolidar)', motivo:'Consolidar técnica/consistência antes de subir.'};
+        const falhas = [];
+        if(!okPerf){
+          if(down > 0) falhas.push(`• Performance: ${down} marcador(es) de piora registrado(s) — o corpo ainda não está respondendo positivamente ao estímulo atual`);
+          else falhas.push(`• Performance: nenhum marcador de melhora nos 3 exercícios avaliados`);
+        }
+        if(!okTec) falhas.push(`• Técnica: "${tecnica}" — o movimento ainda não está consolidado (exige "Sim" ou "Às vezes")`);
+        return {
+          sug:'Manter (consolidar)',
+          motivo:`🔄 Manter nível Iniciante\n\nCritério(s) não atingido(s):\n${falhas.join('\n')}${blocoRisco()}\n\nSubir antes de consolidar a técnica e a resposta ao treino aumenta o risco de lesão e estagna o progresso no médio prazo. Foco do próximo ciclo: dominar o padrão de movimento e registrar pelo menos 1 melhora de performance sem nenhuma piora.`
+        };
       }
 
+      // ── NÍVEL INTERMEDIÁRIO ───────────────────────────────────────────
       if(nivelAtual === 'Intermediário'){
         const okA = ader >= 85;
         const okS = sem === 'Verde';
@@ -1816,25 +1872,60 @@
         ].includes(rir);
 
         if(okA && okS && okT && okP && okR){
-          return {sug:'Subir para Avançado', motivo:'Recuperação verde + aderência alta + performance consistente + técnica sólida.'};
+          return {
+            sug:'Subir para Avançado',
+            motivo:`✅ Aprovado para subir de nível\n\n• Frequência: ${ader}% (≥85% ✓)\n• Semáforo: Verde ✓\n• Técnica: ${tecnica} ✓\n• Marcadores de melhora: ${up} — sem pioras ✓\n• RIR: "${rir}" — reserva real de capacidade ✓\n\nTodos os 5 critérios do nível intermediário foram atingidos.`
+          };
         }
 
-        return {sug:'Manter (ajuste fino)', motivo:'Ainda falta 1–2 critérios para avançado. Ajuste e reavalie.'};
+        const falhasInt = [];
+        if(!okA) falhasInt.push(`• Frequência: ${ader}% — exige ≥85%`);
+        if(!okS) falhasInt.push(`• Semáforo: ${sem} — exige Verde (sono: ${sono}/10, estresse: ${estresse}/10, energia: ${energia}/10)`);
+        if(!okT) falhasInt.push(`• Técnica: "${tecnica}" — exige domínio total (Sim)`);
+        if(!okP){
+          if(down > 0) falhasInt.push(`• Performance: ${down} marcador(es) de piora — exige ≥2 melhoras e zero pioras`);
+          else falhasInt.push(`• Performance: apenas ${up} marcador(es) de melhora — exige ≥2`);
+        }
+        if(!okR) falhasInt.push(`• RIR: "${rir}" — exige reserva de 1 a 4 repetições`);
+        return {
+          sug:'Manter (ajuste fino)',
+          motivo:`🔄 Manter nível Intermediário\n\nCritério(s) não atingido(s):\n${falhasInt.join('\n')}${blocoRisco()}\n\nO nível avançado exige os 5 critérios simultaneamente. Ajuste os pontos acima no próximo ciclo e reavalie.`
+        };
       }
 
+      // ── NÍVEL AVANÇADO ────────────────────────────────────────────────
       if(nivelAtual === 'Avançado'){
         if(sem === 'Verde' && up >= 2){
-          return {sug:'Manter Avançado (progredir)', motivo:'Boa resposta ao estímulo.'};
+          return {
+            sug:'Manter Avançado (progredir)',
+            motivo:`✅ Avançado em dia\n\n• Semáforo: Verde ✓\n• Marcadores de melhora: ${up} ✓\n\nRecuperação e performance alinhadas — o foco agora é progressão dentro do nível (carga, volume ou densidade).`
+          };
         }
 
         if(sem === 'Amarelo'){
-          return {sug:'Avançado (ajustar ritmo/volume)', motivo:'Recuperação moderada; ajuste ritmo ou volume.'};
+          const motivosAm = [];
+          if(sono < 7) motivosAm.push(`• Sono: ${sono}/10`);
+          if(estresse > 5) motivosAm.push(`• Estresse: ${estresse}/10`);
+          if(doms > 6) motivosAm.push(`• Dor muscular residual: ${doms}/10`);
+          if(energia < 7) motivosAm.push(`• Energia: ${energia}/10`);
+          return {
+            sug:'Avançado (ajustar ritmo/volume)',
+            motivo:`⚠️ Semáforo Amarelo — sinais de recuperação moderada\n\n${motivosAm.join('\n')}${blocoRisco()}\n\nManter nível avançado mas reduzir volume ou intensidade temporariamente. O corpo está respondendo, porém com margem menor — forçar mais agora pode gerar regressão.`
+          };
         }
 
-        return {sug:'Avançado (deload/trocas)', motivo:'Sinais pedem redução e/ou trocas.'};
+        const motivosRed = [];
+        if(sono <= 4) motivosRed.push(`• Sono: ${sono}/10 — muito baixo`);
+        if(estresse >= 8) motivosRed.push(`• Estresse: ${estresse}/10 — muito alto`);
+        if(doms >= 8) motivosRed.push(`• Dor muscular residual: ${doms}/10 — muito alta`);
+        if(energia < 5) motivosRed.push(`• Energia: ${energia}/10 — muito baixa`);
+        return {
+          sug:'Avançado (deload/trocas)',
+          motivo:`🔴 Sinais de sobrecarga\n\n${motivosRed.length > 0 ? motivosRed.join('\n') : '• Múltiplos marcadores negativos combinados'}${blocoRisco()}\n\nRecomendado: semana de deload (50–60% do volume habitual) e revisão dos exercícios que estão gerando mais desgaste. Reavaliação em 2–3 semanas.`
+        };
       }
 
-      return {sug:'Manter', motivo:'Dados insuficientes.'};
+      return {sug:'Manter', motivo:'Dados insuficientes para gerar diagnóstico. Verifique se todas as sessões foram preenchidas corretamente.'};
     }
 
     function scoreObjetivo(){
@@ -2024,7 +2115,7 @@
         `• Motivo: <span style="color:var(--muted)">${niv.motivo}</span>`;
 
 
-      showStep(7);
+      showStep(8);
       await renderScanPanel();
       setTimeout(() => document.getElementById('scanPanel')?.scrollIntoView({behavior:'smooth', block:'start'}), 80);
     }
@@ -3277,22 +3368,22 @@
     function drawRadarOverlay(ctx,data){
       ctx.save();
       ctx.fillStyle = '#020005';
-      ctx.fillRect(326,114,890,778);
+      ctx.fillRect(18,114,1192,830);
       ctx.restore();
 
-      // Card ocupa praticamente toda a largura direita
-      const px = 336, py = 130, pw = 886, ph = 756;
-      clearPanel(ctx,px,py,pw,ph,24,'rgba(185,84,255,.46)');
+      // Card full-width com altura generosa
+      const px = 28, py = 128, pw = 1172, ph = 810;
+      clearPanel(ctx,px,py,pw,ph,28,'rgba(185,84,255,.46)');
       mfitHudCorners(ctx,px,py,pw,ph,'rgba(185,84,255,.62)');
 
-      // Centro ligeiramente deslocado para direita para dar espaço aos labels esquerdos
-      const cx = px + pw/2 + 18;
-      const cy = py + ph/2 + 8;
+      // Centro exato do card
+      const cx = px + pw/2;
+      const cy = py + ph/2 + 10;
 
-      // Radar compacto — margem generosa para ícones e labels em todos os lados
-      const maxR  = 106;
-      const iconR  = maxR + 56;   // centro → ícone
-      const labelR = maxR + 96;   // centro → texto (mais próximo = nunca corta)
+      // Radar maior — labels e ícones têm muito mais espaço
+      const maxR  = 148;
+      const iconR  = maxR + 72;   // centro → ícone
+      const labelR = maxR + 128;  // centro → texto
 
       const iconTypes = ['target','bars','calendar','heart','body','trend','dumbbell','shield'];
       const angle = i => -Math.PI/2 + i * 2*Math.PI / data.length;
@@ -3364,17 +3455,15 @@
         const icGlow  = iconGlows[i];
 
         ctx.save();
-        // Círculo exterior — glow suave
-        ctx.shadowColor = icGlow; ctx.shadowBlur = 18;
-        ctx.beginPath(); ctx.arc(ix,iy,30,0,Math.PI*2);
+        ctx.shadowColor = icGlow; ctx.shadowBlur = 22;
+        ctx.beginPath(); ctx.arc(ix,iy,36,0,Math.PI*2);
         ctx.fillStyle = 'rgba(4,0,14,.96)'; ctx.fill();
-        // Anel duplo: externo fino + interno colorido
-        ctx.strokeStyle = 'rgba(255,255,255,.10)'; ctx.lineWidth = 4; ctx.stroke();
-        ctx.beginPath(); ctx.arc(ix,iy,26,0,Math.PI*2);
-        ctx.strokeStyle = icColor; ctx.lineWidth = 2; ctx.stroke();
+        ctx.strokeStyle = 'rgba(255,255,255,.10)'; ctx.lineWidth = 5; ctx.stroke();
+        ctx.beginPath(); ctx.arc(ix,iy,31,0,Math.PI*2);
+        ctx.strokeStyle = icColor; ctx.lineWidth = 2.5; ctx.stroke();
         ctx.shadowBlur = 0;
         ctx.restore();
-        drawRefinedIcon(ctx,iconTypes[i],ix,iy,23,icColor);
+        drawRefinedIcon(ctx,iconTypes[i],ix,iy,27,icColor);
 
         // --- label (número.nome + %) ---
         // Separar número e nome para tamanhos diferentes
@@ -3393,14 +3482,15 @@
         ctx.fillRect(bx, ly - 28, lw + 12, 56);
         ctx.restore();
 
-        // Clamp lx/ly para nunca sair do card
-        const clampedLx = Math.max(px + 56, Math.min(px + pw - 56, lx));
-        const clampedLy = Math.max(py + 22, Math.min(py + ph - 22, ly));
+        // Clamp lx/ly — nunca sai do card
+        const pad = 72;
+        const clampedLx = Math.max(px + pad, Math.min(px + pw - pad, lx));
+        const clampedLy = Math.max(py + 28, Math.min(py + ph - 28, ly));
 
-        neonText(ctx, labelStr, clampedLx, clampedLy - 12,
-          {align, font:'800 13px Arial, sans-serif', color:'#E8E0FF', blur:2});
-        neonText(ctx, d.value+'%', clampedLx, clampedLy + 14,
-          {align, font:'900 27px Arial, sans-serif', color:'#C55FFF', blur:9, shadow:'#B955FF'});
+        neonText(ctx, labelStr, clampedLx, clampedLy - 14,
+          {align, font:'800 15px Arial, sans-serif', color:'#E8E0FF', blur:2});
+        neonText(ctx, d.value+'%', clampedLx, clampedLy + 16,
+          {align, font:'900 30px Arial, sans-serif', color:'#C55FFF', blur:9, shadow:'#B955FF'});
       });
     }
 
@@ -3573,7 +3663,7 @@
       const pillW = Math.floor((rightW - 56) / 2);
       drawMetricPill(ctx,rightX+24,boxY+70,pillW,100,'MOBILIDADE',mob,mob==='Sim'?'#65FF5A':'#FFB43A');
       drawMetricPill(ctx,rightX+28+pillW,boxY+70,pillW,100,'ALONGAMENTO',along,along==='Sim'?'#65FF5A':'#FFB43A');
-      const safeMaxW = Math.min(rightW - 100, (x + w) - (rightX + 60));
+      const safeMaxW = Math.min(rightW - 120, (x + w) - (rightX + 72));
       drawWrappedLeft(ctx,'Preferência: '+preferencia+'.',rightX+26,boxY+196,safeMaxW,28,'700 17px Arial, sans-serif','#FFFFFF',2);
       drawWrappedLeft(ctx,'Limitador percebido: '+atrapalhou+'.',rightX+26,boxY+256,safeMaxW,28,'600 16px Arial, sans-serif','#D8D0E2',2);
       drawWrappedLeft(ctx,conduta,rightX+26,boxY+318,safeMaxW,28,'700 16px Arial, sans-serif','#CFA7FF',3);
@@ -3764,7 +3854,7 @@
       }
 
       // ── Card STATUS DE NÍVEL ──────────────────────────────────────────────
-      const sx = 38, sy = 1600, sw = 1153, sh = 900;
+      const sx = 28, sy = 1610, sw = 1172, sh = 960;
       cardFrame(ctx,sx,sy,sw,sh,approved ? 'rgba(91,255,91,.88)' : 'rgba(255,180,58,.90)');
       neonText(ctx,'STATUS DE NÍVEL',sx+sw/2,sy+70,{align:'center',font:'900 46px Arial, sans-serif',color:'#FFFFFF',blur:10});
 
@@ -3772,23 +3862,23 @@
       drawBadge(ctx, sx+100, sy+120, approved ? 'crown' : 'shield', statusColor);
 
       // Score meter — lado esquerdo
-      drawScoreMeter(ctx,sx+260,sy+340,scoreTotal,approved);
+      drawScoreMeter(ctx,sx+260,sy+360,scoreTotal,approved);
 
       // Ícone e status — centro
-      drawIcon(ctx,approved ? 'check' : 'alert',sx+sw/2,sy+210,110,statusColor);
+      drawIcon(ctx,approved ? 'check' : 'alert',sx+sw/2,sy+220,116,statusColor);
       const statusLines = approved ? ['APROVADO PARA','SUBIR DE NÍVEL'] : ['MANTER NÍVEL','ATUAL'];
-      statusLines.forEach((ln,i)=>fitText(ctx,ln,sx+sw/2,sy+390+i*72,640,'900 68px Arial, sans-serif',statusColor,'center'));
+      statusLines.forEach((ln,i)=>fitText(ctx,ln,sx+sw/2,sy+400+i*76,700,'900 72px Arial, sans-serif',statusColor,'center'));
 
       const sub1 = approved ? 'Novo nível: ' + final.novoNivel : 'Permanecer em: ' + safeNivelAtual;
-      fitText(ctx,sub1,sx+sw/2,sy+556,700,'800 34px Arial, sans-serif',approved ? '#B7FF9A' : '#FFD278','center');
+      fitText(ctx,sub1,sx+sw/2,sy+572,720,'800 34px Arial, sans-serif',approved ? '#B7FF9A' : '#FFD278','center');
       wrapCenter(ctx,
         approved
           ? 'Critérios de aderência, técnica, recuperação e evolução compatíveis com progressão controlada.'
           : 'Progressão bloqueada: critérios técnicos ainda precisam ser consolidados antes de subir de nível.',
-        sx+sw/2, sy+614, 760, 38, '600 27px Arial, sans-serif', '#FFFFFF');
+        sx+sw/2, sy+628, 800, 40, '600 28px Arial, sans-serif', '#FFFFFF');
 
       // Barra de progresso para próximo nível
-      drawProgressBar(ctx, sx+160, sy+710, sw-320, scoreTotal, approved, safeNivelAtual, final.novoNivel);
+      drawProgressBar(ctx, sx+140, sy+740, sw-280, scoreTotal, approved, safeNivelAtual, final.novoNivel);
 
       // Destaques: melhor e pior critério
       const radarData = [
@@ -3801,10 +3891,10 @@
         {label:'Técnica',    value: scoreTecnica()},
         {label:'Segurança',  value: scoreSeguranca()}
       ];
-      drawHighlights(ctx, sx+40, sy+780, sw-80, radarData);
+      drawHighlights(ctx, sx+40, sy+820, sw-80, radarData);
 
       // Data + Reavaliação — lado direito
-      const dx2 = sx+sw-290, dy2 = sy+160;
+      const dx2 = sx+sw-300, dy2 = sy+158;
       clearPanel(ctx,dx2,dy2,240,110,16,'rgba(185,84,255,.55)');
       neonText(ctx,'DATA DA AVALIAÇÃO',dx2+120,dy2+28,{align:'center',font:'700 15px Arial, sans-serif',color:'#CFA7FF',blur:3});
       neonText(ctx,dataStr,dx2+120,dy2+72,{align:'center',font:'900 30px Arial, sans-serif',color:'#FFFFFF',blur:6});
@@ -3814,7 +3904,7 @@
       neonText(ctx,reavaStr,dx2+120,dy2+128+72,{align:'center',font:'900 30px Arial, sans-serif',color:'#FFB43A',blur:6});
 
       // ── Cards: perfil + recomendação ─────────────────────────────────────
-      const cy = 2580, ch = 680;
+      const cy = 2640, ch = 700;
       drawBottomProfileCard(ctx, selectedText('sexoPerfil') || 'Masculino', document.getElementById('nome').value.trim() || 'Aluno', selectedText('objetivo') || '—', safeNivelAtual, 44, cy, 542, ch);
 
       cardFrame(ctx,646,cy,542,ch,'rgba(185,84,255,.82)');
@@ -3833,17 +3923,17 @@
       classLines.forEach((ln,i)=>fitText(ctx,ln,913,cy+492+i*46,430,'900 42px Arial, sans-serif',approved || i===0 ? '#C55FFF' : '#FFFFFF','center'));
 
       // ── Dados técnicos ───────────────────────────────────────────────────
-      drawTechnicalInfoCard(ctx,38,3340,1153,580);
+      drawTechnicalInfoCard(ctx,28,3420,1172,590);
 
       // ── Critérios técnicos ───────────────────────────────────────────────
-      const ex = 38, ey = 3970, ew = 1153, eh = 820;
+      const ex = 28, ey = 4080, ew = 1172, eh = 1020;
       cardFrame(ctx,ex,ey,ew,eh,'rgba(185,84,255,.82)');
-      neonText(ctx,'CRITÉRIOS TÉCNICOS DA DECISÃO',ex+ew/2,ey+68,{align:'center',font:'900 38px Arial, sans-serif',color:'#FFFFFF',blur:7});
+      neonText(ctx,'CRITÉRIOS TÉCNICOS DA DECISÃO',ex+ew/2,ey+72,{align:'center',font:'900 42px Arial, sans-serif',color:'#FFFFFF',blur:7});
 
-      drawMetricPill(ctx,74,ey+120,245,130,'ADERÊNCIA',ader+'%',ader >= 75 ? '#65FF5A' : '#FFB43A');
-      drawMetricPill(ctx,348,ey+120,245,130,'RECUPERAÇÃO',rec+'%',rec >= 70 ? '#65FF5A' : '#FFB43A');
-      drawMetricPill(ctx,622,ey+120,245,130,'SEMÁFORO',sem,sem==='Verde'?'#65FF5A':sem==='Amarelo'?'#FFB43A':'#FF5555');
-      drawMetricPill(ctx,896,ey+120,245,130,'DOR',dor+'/10',dor <= 2 ? '#65FF5A' : '#FF5555');
+      drawMetricPill(ctx,62,ey+136,258,148,'ADERÊNCIA',ader+'%',ader >= 75 ? '#65FF5A' : '#FFB43A');
+      drawMetricPill(ctx,348,ey+136,258,148,'RECUPERAÇÃO',rec+'%',rec >= 70 ? '#65FF5A' : '#FFB43A');
+      drawMetricPill(ctx,634,ey+136,258,148,'SEMÁFORO',sem,sem==='Verde'?'#65FF5A':sem==='Amarelo'?'#FFB43A':'#FF5555');
+      drawMetricPill(ctx,920,ey+136,258,148,'DOR',dor+'/10',dor <= 2 ? '#65FF5A' : '#FF5555');
 
       const checklist = [
         {icon:'calendar',titulo:'Frequência e aderência',
@@ -3861,23 +3951,121 @@
       const clX = ex + 72, crX = ex + 618;
       checklist.forEach((item,i)=>{
         const colX = i < 3 ? clX : crX;
-        const rowY = ey + 320 + (i % 3) * 180;
-        drawIcon(ctx,item.icon,colX,rowY+40,28,'#F0C4FF');
-        neonText(ctx,item.titulo,colX+70,rowY+24,{font:'900 25px Arial, sans-serif',color:'#FFFFFF',blur:4});
-        drawWrappedLeft(ctx,item.texto,colX+70,rowY+58,430,28,'600 20px Arial, sans-serif','#D8D0E2',3);
+        const rowY = ey + 360 + (i % 3) * 220;
+        drawIcon(ctx,item.icon,colX,rowY+44,32,'#F0C4FF');
+        neonText(ctx,item.titulo,colX+80,rowY+28,{font:'900 28px Arial, sans-serif',color:'#FFFFFF',blur:4});
+        drawWrappedLeft(ctx,item.texto,colX+80,rowY+68,440,32,'600 23px Arial, sans-serif','#D8D0E2',3);
       });
 
       // ── Conduta MFIT ─────────────────────────────────────────────────────
-      const nx = 62, ny = 4860, nw = 1105, nh = 210;
+      const nx = 52, ny = 5170, nw = 1124, nh = 280;
       cardFrame(ctx,nx,ny,nw,nh,approved ? 'rgba(91,255,91,.70)' : 'rgba(255,180,58,.76)');
-      neonText(ctx,'CONDUTA MFIT PREMIUM',nx+40,ny+56,{font:'900 28px Arial, sans-serif',color:'#FFFFFF',blur:6});
+      neonText(ctx,'CONDUTA MFIT PREMIUM',nx+40,ny+64,{font:'900 34px Arial, sans-serif',color:'#FFFFFF',blur:6});
       const conduta = approved
         ? 'Liberar progressão para '+final.novoNivel+', sem romper técnica, amplitude e recuperação. Monitorar resposta na primeira semana.'
         : 'Manter '+safeNivelAtual+', corrigir o principal limitador e repetir avaliação após novo bloco de treino.';
-      drawWrappedLeft(ctx,conduta,nx+40,ny+102,nw-80,34,'700 25px Arial, sans-serif',approved ? '#B7FF9A' : '#FFD278',3);
+      drawWrappedLeft(ctx,conduta,nx+40,ny+118,nw-80,40,'700 28px Arial, sans-serif',approved ? '#B7FF9A' : '#FFD278',3);
+
+      // ── Card DIAGNÓSTICO + PLANO DE AÇÃO (apenas quando reprovada) ──────────
+      if(!approved){
+        // Gera plano de ação personalizado baseado nos critérios que falharam
+        function gerarPlanoAcao(){
+          const linhas = [];
+          const nivelAtual2 = selectedText('nivelAtual');
+          const ader2 = calcAderencia();
+          const sem2 = calcSemaforo();
+          const dor2 = +document.getElementById('dor').value;
+          const sono2 = +document.getElementById('sono').value;
+          const estresse2 = +document.getElementById('estresse').value;
+          const doms2 = +document.getElementById('doms').value;
+          const energia2 = +document.getElementById('energia').value;
+          const tecnica2 = selectedText('tecnica');
+          const rir2 = selectedText('rir');
+          const localDor2 = selectedText('localDor');
+          const pinca2 = selectedText('pinca');
+          const pincaEx2 = (document.getElementById('pincaEx')?.value||'').trim();
+          const evita2 = selectedText('evita');
+          const evitaEx2 = (document.getElementById('evitaEx')?.value||'').trim();
+          const {up:up2, down:down2} = perfScore();
+
+          if(dor2 > 2){
+            linhas.push('• Agendar avaliação específica para ' + (localDor2 && localDor2 !== 'Sem dor' ? localDor2 : 'a região com dor') + ' antes de continuar treinando normalmente.');
+            if(pinca2 === 'Sim' && pincaEx2) linhas.push('• Substituir ou suspender ' + pincaEx2 + ' até zerar o pinçamento.');
+            if(evita2 === 'Sim' && evitaEx2) linhas.push('• Não forçar ' + evitaEx2 + ' — trocar por variação sem dor no próximo bloco.');
+            linhas.push('• Meta: chegar na próxima reavaliação com dor ≤ 2/10.');
+          } else if(ader2 < 75){
+            const meta = nivelAtual2 === 'Intermediário' ? 85 : 75;
+            linhas.push('• Aderência atual: ' + ader2 + '%. Meta mínima para subir: ' + meta + '%.');
+            linhas.push('• Identificar o principal motivo de falta e criar um plano concreto para eliminar essa barreira.');
+            linhas.push('• Estratégia prática: fixar horário de treino imutável e registrar cada sessão realizada.');
+          } else if(sem2 === 'Vermelho'){
+            if(sono2 <= 4) linhas.push('• Sono ' + sono2 + '/10: priorizar 7–8h por noite — é o maior fator de recuperação muscular.');
+            if(estresse2 >= 8) linhas.push('• Estresse ' + estresse2 + '/10: reduzir volume de treino em 30% e inserir 1 dia extra de descanso.');
+            if(doms2 >= 8) linhas.push('• Dor muscular residual ' + doms2 + '/10: aguardar recuperação completa antes de treinar o mesmo grupamento.');
+            linhas.push('• Semáforo precisa estar Amarelo ou Verde para liberar progressão.');
+          } else {
+            // Bloqueios por nível
+            if(nivelAtual2 === 'Iniciante'){
+              if(down2 > 0) linhas.push('• ' + down2 + ' exercício(s) pioraram: revisar execução e reduzir carga até retomar a progressão.');
+              if(up2 === 0) linhas.push('• Nenhuma melhora registrada: aumentar estímulo gradualmente (carga +2–5% ou +1–2 repetições por semana).');
+              if(tecnica2 !== 'Sim' && tecnica2 !== 'Às vezes') linhas.push('• Técnica "' + tecnica2 + '": focar em qualidade antes de aumentar carga — gravar os movimentos pode ajudar.');
+            } else if(nivelAtual2 === 'Intermediário'){
+              if(ader2 < 85) linhas.push('• Frequência ' + ader2 + '%: para avançado exige ≥85% — criar rotina semanal fixa é o caminho mais rápido.');
+              if(sem2 !== 'Verde') linhas.push('• Semáforo ' + sem2 + ': sono (' + sono2 + '/10), energia (' + energia2 + '/10) e estresse (' + estresse2 + '/10) precisam melhorar.');
+              if(tecnica2 !== 'Sim') linhas.push('• Técnica "' + tecnica2 + '": para avançado exige domínio total — dedicar 1 sessão/semana exclusivamente a refinamento técnico.');
+              if(down2 > 0) linhas.push('• Performance: ' + down2 + ' piora(s) registrada(s) — identificar se é fadiga acumulada, carga excessiva ou execução incorreta.');
+              if(up2 < 2) linhas.push('• Evolução: apenas ' + up2 + ' melhora(s) — exige ≥2. Aplicar sobrecarga progressiva nos 3 exercícios-chave.');
+              const okRir = ['Conseguiria fazer mais 1 ou 2 repetições','Conseguiria fazer mais 3 ou 4 repetições'].includes(rir2);
+              if(!okRir) linhas.push('• RIR "' + rir2 + '": o esforço precisa estar calibrado — nem muito fácil, nem até a falha total.');
+            }
+          }
+          if(linhas.length === 0) linhas.push('• Revisar todos os critérios com o personal e montar plano de correção para o próximo bloco.');
+          return linhas;
+        }
+
+        const plano = gerarPlanoAcao();
+        const niv2 = sugestaoNivel();
+        const motivoBloqueio = niv2.motivo.split('\n')[0]; // primeira linha = título do bloqueio
+
+        const dpX = 28, dpY = 5480, dpW = 1172;
+        // altura dinâmica baseada nas linhas do plano
+        const dpH = 120 + 54 + (plano.length * 52) + 40;
+
+        cardFrame(ctx, dpX, dpY, dpW, dpH, 'rgba(255,100,58,.82)');
+
+        // Título
+        neonText(ctx, '⚠  POR QUE FOI BLOQUEADA', dpX + dpW/2, dpY + 52, {
+          align:'center', font:'900 32px Arial, sans-serif', color:'#FFD278', blur:7
+        });
+
+        // Linha do motivo real
+        drawWrappedLeft(ctx, motivoBloqueio, dpX + 52, dpY + 96, dpW - 104, 34,
+          '700 24px Arial, sans-serif', '#FFFFFF', 2);
+
+        // Divisor
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255,210,77,.35)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(dpX + 52, dpY + 150);
+        ctx.lineTo(dpX + dpW - 52, dpY + 150);
+        ctx.stroke();
+        ctx.restore();
+
+        // Subtítulo plano de ação
+        neonText(ctx, '✦  O QUE FAZER ATÉ A PRÓXIMA REAVALIAÇÃO', dpX + dpW/2, dpY + 192, {
+          align:'center', font:'900 28px Arial, sans-serif', color:'#FFD278', blur:5
+        });
+
+        // Linhas do plano
+        plano.forEach((linha, i) => {
+          drawWrappedLeft(ctx, linha, dpX + 64, dpY + 232 + i * 52, dpW - 128, 32,
+            '600 22px Arial, sans-serif', '#FFE5B0', 2);
+        });
+      }
 
       // ── Rodapé: Score + Data + Reavaliação ───────────────────────────────
-      const ry = 5140, rh = 380;
+      const ry = 5960, rh = 400;
       cardFrame(ctx,38,ry,1153,rh,'rgba(185,84,255,.72)');
       neonText(ctx,'RESUMO FINAL DA AVALIAÇÃO',38+1153/2,ry+60,{align:'center',font:'900 36px Arial, sans-serif',color:'#FFFFFF',blur:8});
 
@@ -3986,7 +4174,7 @@
     }
 
     function drawMotivCard(ctx, x, y, w, msg, approved){
-      const h = 240;
+      const h = 320;
       const color = approved ? 'rgba(109,255,122,.72)' : 'rgba(163,89,218,.82)';
       const textColor = approved ? '#B7FF9A' : '#E9C6FF';
       const accentColor = approved ? '#65FF5A' : '#C55FFF';
@@ -4010,32 +4198,229 @@
       ctx.shadowColor = accentColor;
       ctx.shadowBlur = 18;
       ctx.beginPath();
-      ctx.arc(x+74, y+h/2, 38, 0, Math.PI*2);
+      ctx.arc(x+88, y+h/2, 50, 0, Math.PI*2);
       ctx.fillStyle = 'rgba(0,0,0,.55)';
       ctx.fill();
       ctx.strokeStyle = color;
       ctx.lineWidth = 2.5;
       ctx.stroke();
       ctx.restore();
-      drawIcon(ctx, approved ? 'star' : 'target', x+74, y+h/2, 42, accentColor);
+      drawIcon(ctx, approved ? 'star' : 'target', x+88, y+h/2, 54, accentColor);
 
       // Label "MENSAGEM DO DIA"
       neonText(ctx, approved ? '🏆  MENSAGEM DO DIA' : '🎯  MENSAGEM DO DIA',
-        x+138, y+46,
-        {font:'800 18px Arial, sans-serif', color: accentColor, blur:5});
+        x+164, y+58,
+        {font:'800 22px Arial, sans-serif', color: accentColor, blur:5});
 
       // Linha separadora
       ctx.save();
       ctx.strokeStyle = 'rgba(255,255,255,.12)';
       ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.moveTo(x+138, y+62);
-      ctx.lineTo(x+w-42, y+62);
+      ctx.moveTo(x+164, y+82);
+      ctx.lineTo(x+w-48, y+82);
       ctx.stroke();
       ctx.restore();
 
       // Texto da mensagem — com quebra de linha automática
-      drawWrappedLeft(ctx, msg, x+138, y+82, w-210, 36, '600 26px Arial, sans-serif', textColor, 4);
+      drawWrappedLeft(ctx, msg, x+164, y+108, w-240, 42, '600 30px Arial, sans-serif', textColor, 5);
+    }
+
+    function buildPlanoAcao(){
+      const niv = sugestaoNivel();
+      const ader = calcAderencia();
+      const sem = calcSemaforo();
+      const dor = +document.getElementById('dor').value;
+      const sono = +document.getElementById('sono').value;
+      const estresse = +document.getElementById('estresse').value;
+      const doms = +document.getElementById('doms').value;
+      const energia = +document.getElementById('energia').value;
+      const {up, down} = perfScore();
+      const tecnica = selectedText('tecnica');
+      const rir = selectedText('rir');
+      const localDor = selectedText('localDor') || '';
+      const pinca = selectedText('pinca');
+      const pincaEx = (document.getElementById('pincaEx')?.value || '').trim();
+      const evita = selectedText('evita');
+      const evitaEx = (document.getElementById('evitaEx')?.value || '').trim();
+      const nivelAtual = selectedText('nivelAtual');
+
+      const passos = [];
+
+      // Dor articular
+      if(dor > 2){
+        const local = (localDor && localDor !== 'Sem dor') ? localDor : 'articulação afetada';
+        passos.push({
+          icon:'alert',
+          cor:'#FF6B6B',
+          titulo:'Tratar a dor articular — ' + local,
+          texto: `Dor informada: ${dor}/10 em ${local}. ${pinca === 'Sim' ? 'Houve pinçamento' + (pincaEx ? ' em ' + pincaEx : '') + '. ' : ''}${evita === 'Sim' ? 'Evita ' + (evitaEx || 'algum exercício') + ' por desconforto. ' : ''}Consultar profissional de saúde, substituir movimentos que agravam e só retomar carga após a dor estabilizar em 2/10 ou menos.`
+        });
+      }
+
+      // Frequência
+      if(ader < (nivelAtual === 'Intermediário' ? 85 : 75)){
+        const meta = nivelAtual === 'Intermediário' ? 85 : 75;
+        const planejado = Number(document.getElementById('planejado')?.value || 4) || 4;
+        passos.push({
+          icon:'calendar',
+          cor:'#FFB43A',
+          titulo:'Aumentar frequência de treino',
+          texto: `Frequência atual: ${ader}%. Meta mínima: ${meta}%. Com ${planejado}x planejados por semana, a pessoa precisa completar pelo menos ${Math.ceil(planejado * meta / 100)} treinos semanais. Identificar o principal motivo de falta e criar estratégia para eliminá-lo.`
+        });
+      }
+
+      // Semáforo vermelho/amarelo
+      if(sem === 'Vermelho' || sem === 'Amarelo'){
+        const problemas = [];
+        if(sono <= (sem === 'Vermelho' ? 4 : 6)) problemas.push(`sono ${sono}/10`);
+        if(estresse >= (sem === 'Vermelho' ? 8 : 7)) problemas.push(`estresse ${estresse}/10`);
+        if(doms >= (sem === 'Vermelho' ? 8 : 7)) problemas.push(`dor muscular ${doms}/10`);
+        if(energia <= (sem === 'Vermelho' ? 4 : 5)) problemas.push(`energia ${energia}/10`);
+        if(problemas.length > 0){
+          passos.push({
+            icon:'heart',
+            cor: sem === 'Vermelho' ? '#FF5555' : '#FFB43A',
+            titulo:'Melhorar recuperação — semáforo ' + sem,
+            texto: `Pontos críticos: ${problemas.join(', ')}. Priorizar sono de qualidade (meta ≥7/10), reduzir estressores externos, respeitar dias de descanso e considerar redução temporária de volume até os marcadores normalizarem.`
+          });
+        }
+      }
+
+      // Técnica
+      if(tecnica === 'Não'){
+        passos.push({
+          icon:'dumbbell',
+          cor:'#CFA7FF',
+          titulo:'Consolidar técnica de execução',
+          texto: `Técnica informada: "${tecnica}". Antes de subir de nível, os padrões de movimento precisam estar seguros. Dedicar as próximas semanas a executar com carga controlada, foco em amplitude e sem compensações. Gravar os exercícios-chave para checar postura.`
+        });
+      }
+
+      // Performance
+      if(down > 0){
+        passos.push({
+          icon:'trend',
+          cor:'#FF8080',
+          titulo:'Reverter piora de performance',
+          texto: `${down} exercício(s) com resultado pior. Isso pode indicar excesso de volume, falta de recuperação ou técnica inadequada. Revisar o exercício que piorou: carga correta, descanso entre séries e qualidade de execução antes de tentar progredir.`
+        });
+      } else if(up === 0 && nivelAtual !== 'Avançado'){
+        passos.push({
+          icon:'trend',
+          cor:'#FFB43A',
+          titulo:'Registrar melhora de performance',
+          texto: `Nenhum marcador de melhora registrado. Para avançar, pelo menos 1 exercício precisa mostrar evolução (mais carga, mais reps ou melhor controle). Focar na progressão consistente nos exercícios-chave da avaliação.`
+        });
+      }
+
+      // RIR — só para intermediário
+      if(nivelAtual === 'Intermediário'){
+        const rirOk = ['Conseguiria fazer mais 1 ou 2 repetições','Conseguiria fazer mais 3 ou 4 repetições'].includes(rir);
+        if(!rirOk){
+          passos.push({
+            icon:'target',
+            cor:'#CFA7FF',
+            titulo:'Ajustar intensidade de treino (RIR)',
+            texto: `RIR informado: "${rir}". O nível avançado exige que o aluno termine as séries com 1 a 4 repetições de reserva — nem exausto demais, nem com folga excessiva. Ajustar a carga e o volume para atingir essa faixa de esforço.`
+          });
+        }
+      }
+
+      return passos;
+    }
+
+    function drawPlanoAcaoCard(ctx, x, y, w, passos){
+      const paddingTop = 90;
+      const paddingBottom = 60;
+      const itemH = 280;
+      const rowGap = 28;
+      const totalH = paddingTop + passos.length * itemH + (passos.length - 1) * rowGap + paddingBottom;
+
+      cardFrame(ctx, x, y, w, totalH, 'rgba(255,140,0,.80)');
+
+      // Título do card
+      ctx.save();
+      ctx.textAlign = 'center';
+      ctx.font = '900 36px Arial, sans-serif';
+      ctx.fillStyle = '#FFD278';
+      ctx.shadowColor = '#FFB43A';
+      ctx.shadowBlur = 14;
+      ctx.fillText('🎯  PLANO DE AÇÃO — O QUE FAZER PARA PASSAR DE NÍVEL', x + w / 2, y + 60);
+      ctx.restore();
+
+      passos.forEach((passo, i) => {
+        const py = y + paddingTop + i * (itemH + rowGap);
+        const iw = w - 40;
+        const ix = x + 20;
+
+        // Fundo do item — largura total
+        drawRoundRect(ctx, ix, py, iw, itemH, 18, 'rgba(0,0,0,0.34)', passo.cor, 2);
+
+        // Número — grande, coluna esquerda
+        ctx.save();
+        ctx.font = '900 56px Arial, sans-serif';
+        ctx.fillStyle = passo.cor;
+        ctx.shadowColor = passo.cor;
+        ctx.shadowBlur = 16;
+        ctx.textAlign = 'center';
+        ctx.fillText(String(i + 1), ix + 64, py + 90);
+        ctx.restore();
+
+        // Ícone — abaixo do número
+        drawIcon(ctx, passo.icon, ix + 64, py + 148, 30, passo.cor);
+
+        // Linha vertical separadora
+        ctx.save();
+        ctx.strokeStyle = passo.cor;
+        ctx.globalAlpha = 0.38;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(ix + 118, py + 22);
+        ctx.lineTo(ix + 118, py + itemH - 22);
+        ctx.stroke();
+        ctx.restore();
+
+        // Título do passo
+        const textX = ix + 136;
+        const textMaxW = iw - 160;
+        ctx.save();
+        ctx.font = '800 28px Arial, sans-serif';
+        ctx.fillStyle = '#FFFFFF';
+        ctx.shadowColor = passo.cor;
+        ctx.shadowBlur = 7;
+        ctx.textAlign = 'left';
+        const titleWords = passo.titulo.split(' ');
+        let titleLine = '';
+        let titleY = py + 52;
+        for(let wi = 0; wi < titleWords.length; wi++){
+          const test = titleLine + titleWords[wi] + ' ';
+          if(ctx.measureText(test).width > textMaxW && wi > 0){
+            ctx.fillText(titleLine.trim(), textX, titleY);
+            titleLine = titleWords[wi] + ' ';
+            titleY += 34;
+          } else { titleLine = test; }
+        }
+        ctx.fillText(titleLine.trim(), textX, titleY);
+        ctx.shadowBlur = 0;
+        ctx.restore();
+
+        // Linha separadora horizontal
+        ctx.save();
+        ctx.strokeStyle = passo.cor;
+        ctx.globalAlpha = 0.28;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(textX, py + 102);
+        ctx.lineTo(ix + iw - 20, py + 102);
+        ctx.stroke();
+        ctx.restore();
+
+        // Texto explicativo — fonte maior, mais linhas
+        drawWrappedLeft(ctx, passo.texto, textX, py + 126, textMaxW, 34, '500 23px Arial, sans-serif', '#EDE8F8', 5);
+      });
+
+      return totalH;
     }
 
     function gerarCanvasGrafico(scale = EXPORT_SCALE){
@@ -4047,15 +4432,20 @@
       const final = getStatusFinal();
       const approved = !!final.status.aprovado;
 
+      // Calcular altura extra para o plano de ação (só reprovados)
+      const passos = approved ? [] : buildPlanoAcao();
+      const planoH = passos.length > 0 ? (90 + passos.length * 280 + (passos.length - 1) * 28 + 60 + 20) : 0;
+      const canvasH = LOGICAL_H + planoH;
+
       const c = document.createElement('canvas');
       c.width = Math.round(LOGICAL_W * scale);
-      c.height = Math.round(LOGICAL_H * scale);
+      c.height = Math.round(canvasH * scale);
       const ctx = c.getContext('2d');
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
       ctx.scale(scale, scale);
 
-      drawHudBackground(ctx,LOGICAL_W,LOGICAL_H);
+      drawHudBackground(ctx,LOGICAL_W,canvasH);
 
       drawFinalHeaderOverlay(ctx);
       drawSilhouette(ctx,sexo,42,170,292,632);
@@ -4064,39 +4454,17 @@
       drawBarsOverlay(ctx,data);
       drawFooterOverlay(ctx,final,approved,nivel);
 
+      // ── Plano de Ação (somente reprovados) ───────────────────────────
+      if(!approved && passos.length > 0){
+        drawPlanoAcaoCard(ctx, 28, LOGICAL_H + 20, LOGICAL_W - 56, passos);
+      }
+
       ctx.save();
       ctx.textAlign = 'right';
       ctx.fillStyle = 'rgba(255,255,255,.36)';
       ctx.font = '700 13px Arial, sans-serif';
-      ctx.fillText('MFIT PREMIUM • AVALIAÇÃO DE NÍVEL', LOGICAL_W - 32, LOGICAL_H - 18);
+      ctx.fillText('MFIT PREMIUM • AVALIAÇÃO DE NÍVEL', LOGICAL_W - 32, canvasH - 18);
 
-      // ── Branding personal ──
-      ctx.save();
-      const bx = 38, by = LOGICAL_H - 68, bw = 480, bh = 50;
-      ctx.fillStyle = 'rgba(20,0,40,.70)';
-      ctx.beginPath();
-      ctx.roundRect(bx, by, bw, bh, 12);
-      ctx.fill();
-      ctx.strokeStyle = 'rgba(185,84,255,.40)';
-      ctx.lineWidth = 1;
-      ctx.stroke();
-
-      // Avatar iniciais do personal
-      ctx.beginPath(); ctx.arc(bx+28, by+25, 18, 0, Math.PI*2);
-      ctx.fillStyle = 'rgba(185,84,255,.30)'; ctx.fill();
-      ctx.strokeStyle = '#C55FFF'; ctx.lineWidth = 1.5; ctx.stroke();
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.font = '900 14px Arial, sans-serif'; ctx.fillStyle = '#fff';
-      ctx.fillText('TL', bx+28, by+26);
-
-      ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
-      ctx.shadowColor = '#C55FFF'; ctx.shadowBlur = 6;
-      ctx.font = '800 18px Arial, sans-serif'; ctx.fillStyle = '#FFFFFF';
-      ctx.fillText(window.PERSONAL_NAME || 'Tiago Lima', bx+54, by+22);
-      ctx.shadowBlur = 0;
-      ctx.font = '600 13px Arial, sans-serif'; ctx.fillStyle = '#CFA7FF';
-      ctx.fillText(window.PERSONAL_LABEL || 'Personal Trainer • MFIT Premium', bx+54, by+40);
-      ctx.restore();
       ctx.restore();
 
       // Salvar avaliação no JSONBin após gerar o canvas
