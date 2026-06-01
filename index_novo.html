@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Tiago Lima Personal — Treino Online</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #06060A;
+  --surface: #0C0C12;
+  --card: #111118;
+  --card-2: #16161F;
+  --text: #F2EEF9;
+  --muted: #9B94AE;
+  --muted-2: #5C566B;
+  --accent: #C46EFF;
+  --accent-2: #8B2FE8;
+  --accent-glow: rgba(196,110,255,.18);
+  --accent-glow-strong: rgba(196,110,255,.32);
+  --gold: #F0C96A;
+  --gold-soft: rgba(240,201,106,.12);
+  --line: rgba(255,255,255,.07);
+  --line-accent: rgba(196,110,255,.22);
+  --radius: 20px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── NOISE TEXTURE ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: .6;
+}
+
+/* ── AMBIENT GLOWS ── */
+.glow-1 {
+  position: fixed;
+  top: -200px; left: -150px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(196,110,255,.12) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+.glow-2 {
+  position: fixed;
+  bottom: -100px; right: -100px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(139,47,232,.10) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+
+/* ── WRAP ── */
+.wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px 80px;
+}
+
+/* ── NAV ── */
+nav {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.nav-logo img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+.nav-brand {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.3rem;
+  letter-spacing: .06em;
+  color: var(--text);
+}
+.nav-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent-glow);
+  border: 1px solid var(--line-accent);
+  color: var(--accent);
+  font-size: .82rem;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 50px;
+  text-decoration: none;
+  transition: background .2s, border-color .2s;
+  white-space: nowrap;
+}
+.nav-cta:hover {
+  background: rgba(196,110,255,.28);
+  border-color: rgba(196,110,255,.5);
+}
+
+/* ── HERO ── */
+.hero {
+  padding: 60px 0 56px;
+  position: relative;
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-glow);
+  border: 1px solid var(--line-accent);
+  border-radius: 50px;
+  padding: 5px 14px;
+  margin-bottom: 26px;
+  animation: fadeUp .6s ease both;
+}
+.eyebrow-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100%{opacity:1;transform:scale(1);}
+  50%{opacity:.5;transform:scale(.7);}
+}
+
+.hero-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3rem, 9vw, 6.5rem);
+  line-height: .95;
+  letter-spacing: .02em;
+  color: var(--text);
+  margin-bottom: 8px;
+  animation: fadeUp .6s .1s ease both;
+}
+.hero-title span {
+  color: var(--accent);
+  display: block;
+}
+
+.hero-sub {
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  color: var(--muted);
+  font-weight: 300;
+  max-width: 520px;
+  margin-bottom: 36px;
+  line-height: 1.55;
+  animation: fadeUp .6s .2s ease both;
+}
+.hero-sub strong {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  animation: fadeUp .6s .3s ease both;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, var(--accent-2), #6A1FC2);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 16px 30px;
+  border-radius: 14px;
+  text-decoration: none;
+  box-shadow: 0 8px 32px rgba(139,47,232,.4), 0 0 0 1px rgba(196,110,255,.2) inset;
+  transition: transform .15s, box-shadow .15s;
+  letter-spacing: -.01em;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 40px rgba(139,47,232,.55), 0 0 0 1px rgba(196,110,255,.3) inset;
+}
+.btn-primary:active { transform: translateY(0); }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: .9rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color .15s;
+  padding: 16px 4px;
+}
+.btn-secondary:hover { color: var(--text); }
+
+.hero-note {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: .78rem;
+  color: var(--muted-2);
+  animation: fadeUp .6s .4s ease both;
+}
+.hero-note::before {
+  content: '';
+  display: inline-block;
+  width: 16px; height: 1px;
+  background: var(--muted-2);
+}
+
+/* ── PRICE CARD ── */
+.price-strip {
+  margin: 0 0 64px;
+  animation: fadeUp .6s .35s ease both;
+}
+
+.price-card {
+  background: linear-gradient(135deg, #13111C 0%, #0E0C16 100%);
+  border: 1px solid var(--line-accent);
+  border-radius: var(--radius);
+  padding: 28px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.price-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: .5;
+}
+.price-card::after {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.price-left {}
+.price-label {
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+  margin-bottom: 6px;
+}
+.price-value {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  line-height: 1;
+}
+.price-currency {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--accent);
+  margin-top: 4px;
+}
+.price-number {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3.8rem;
+  letter-spacing: .02em;
+  color: var(--text);
+}
+.price-period {
+  font-size: .82rem;
+  color: var(--muted);
+  font-weight: 300;
+  margin-left: 2px;
+}
+.price-desc {
+  font-size: .8rem;
+  color: var(--muted-2);
+  margin-top: 6px;
+}
+
+.price-right {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 220px;
+}
+.price-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: .86rem;
+  color: var(--muted);
+}
+.price-item-icon {
+  width: 22px; height: 22px;
+  border-radius: 6px;
+  background: var(--accent-glow);
+  border: 1px solid var(--line-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .7rem;
+  flex-shrink: 0;
+}
+
+/* ── HOW IT WORKS ── */
+.section-label {
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  letter-spacing: .03em;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 40px;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2px;
+  margin-bottom: 72px;
+  background: var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.step {
+  background: var(--card);
+  padding: 28px 24px;
+  position: relative;
+  transition: background .2s;
+}
+.step:hover { background: var(--card-2); }
+.step-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3rem;
+  line-height: 1;
+  color: var(--line-accent);
+  margin-bottom: 14px;
+  letter-spacing: .02em;
+}
+.step-title {
+  font-size: .92rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.step-desc {
+  font-size: .82rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.step-icon {
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+  display: block;
+}
+
+/* ── INCLUDES ── */
+.includes {
+  margin-bottom: 72px;
+}
+.includes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+.include-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 22px 20px;
+  transition: border-color .2s, background .2s;
+}
+.include-card:hover {
+  border-color: var(--line-accent);
+  background: var(--card-2);
+}
+.include-icon {
+  font-size: 1.6rem;
+  margin-bottom: 12px;
+  display: block;
+}
+.include-title {
+  font-size: .92rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 5px;
+}
+.include-desc {
+  font-size: .81rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* ── DIFFERENTIALS ── */
+.diff-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 72px;
+}
+@media(max-width:560px){ .diff-row{ grid-template-columns: 1fr; } }
+
+.diff-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.diff-badge {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: var(--accent-glow);
+  border: 1px solid var(--line-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+.diff-content {}
+.diff-title {
+  font-size: .88rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.diff-desc {
+  font-size: .8rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+/* ── FINAL CTA ── */
+.final-cta {
+  background: linear-gradient(135deg, #12101C 0%, #0E0C17 100%);
+  border: 1px solid var(--line-accent);
+  border-radius: 24px;
+  padding: 48px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.final-cta::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%; transform: translateX(-50%);
+  width: 60%; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: .5;
+}
+.final-cta::after {
+  content: '';
+  position: absolute;
+  top: -80px; left: 50%; transform: translateX(-50%);
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+  pointer-events: none;
+}
+.final-cta-eyebrow {
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+.final-cta-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  letter-spacing: .03em;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 14px;
+  position: relative;
+  z-index: 1;
+}
+.final-cta-sub {
+  font-size: .92rem;
+  color: var(--muted);
+  max-width: 440px;
+  margin: 0 auto 28px;
+  font-weight: 300;
+  line-height: 1.55;
+}
+.final-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, var(--accent-2), #6A1FC2);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 16px 36px;
+  border-radius: 14px;
+  text-decoration: none;
+  box-shadow: 0 8px 32px rgba(139,47,232,.4);
+  transition: transform .15s, box-shadow .15s;
+  position: relative;
+  z-index: 1;
+}
+.final-cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 40px rgba(139,47,232,.55);
+}
+.final-cta-note {
+  margin-top: 16px;
+  font-size: .76rem;
+  color: var(--muted-2);
+}
+
+/* ── FOOTER ── */
+footer {
+  text-align: center;
+  padding: 28px 20px;
+  font-size: .75rem;
+  color: var(--muted-2);
+  border-top: 1px solid var(--line);
+  position: relative;
+  z-index: 1;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(20px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .55s ease, transform .55s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  .price-card { flex-direction: column; }
+  .price-right { min-width: unset; }
+  .final-cta { padding: 36px 24px; }
+  nav { padding: 18px 16px; }
+  .hero { padding: 40px 0 44px; }
+}
+</style>
+</head>
+<body>
+
+<div class="glow-1"></div>
+<div class="glow-2"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <img src="https://tiagolima575.github.io/tiago-lima-treino-hub/logo.png" alt="Logo" onerror="this.style.display='none'"/>
+    <span class="nav-brand">Tiago Lima Personal</span>
+  </div>
+  <a href="#comecar" class="nav-cta">Começar agora →</a>
+</nav>
+
+<!-- HERO -->
+<div class="wrap">
+  <section class="hero">
+    <div class="hero-eyebrow">
+      <span class="eyebrow-dot"></span>
+      Treino online · MFIT Premium
+    </div>
+    <h1 class="hero-title">
+      Treino feito<br/>
+      <span>pra você.</span>
+    </h1>
+    <p class="hero-sub">
+      Avaliação adaptativa, prescrição personalizada e treino organizado direto no <strong>app MFIT</strong> — tudo por um valor que cabe no mês.
+    </p>
+    <div class="hero-actions">
+      <a href="#como-funciona" class="btn-primary">
+        Saiba mais &nbsp;↓
+      </a>
+    </div>
+    <p class="hero-note">Leva de 6 a 12 minutos. Sem enrolação.</p>
+  </section>
+
+  <!-- PRICE -->
+  <div class="price-strip reveal">
+    <div class="price-card">
+      <div class="price-left">
+        <p class="price-label">Plano mensal</p>
+        <div class="price-value">
+          <span class="price-currency">R$</span>
+          <span class="price-number">35</span>
+          <span class="price-period">/mês</span>
+        </div>
+        <p class="price-desc">Sem taxa de adesão · Cancela quando quiser</p>
+      </div>
+      <div class="price-right">
+        <div class="price-item">
+          <span class="price-item-icon">✦</span>
+          Treino personalizado no app MFIT
+        </div>
+        <div class="price-item">
+          <span class="price-item-icon">✦</span>
+          Prescrição baseada na sua avaliação real
+        </div>
+        <div class="price-item">
+          <span class="price-item-icon">✦</span>
+          Reavaliação a cada 3 meses
+        </div>
+        <div class="price-item">
+          <span class="price-item-icon">✦</span>
+          Contato direto pelo WhatsApp
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <section id="como-funciona" class="reveal">
+    <p class="section-label">Processo</p>
+    <h2 class="section-title">Como funciona</h2>
+    <div class="steps">
+      <div class="step">
+        <span class="step-num">01</span>
+        <span class="step-icon">📋</span>
+        <p class="step-title">Preenche a avaliação</p>
+        <p class="step-desc">A ficha se adapta ao seu nível automaticamente — iniciante, intermediário ou avançado.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">02</span>
+        <span class="step-icon">⚙️</span>
+        <p class="step-title">Treino é montado</p>
+        <p class="step-desc">Prescrição personalizada com base nas suas respostas, objetivo, limitações e rotina real.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">03</span>
+        <span class="step-icon">📱</span>
+        <p class="step-title">Acessa no MFIT</p>
+        <p class="step-desc">Treino organizado direto no app. Séries, cargas, cadência e observações tudo no lugar certo.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">04</span>
+        <span class="step-icon">🔄</span>
+        <p class="step-title">Reavalia a cada 3 meses</p>
+        <p class="step-desc">Nova avaliação para medir resultado, ajustar exercícios e evoluir a prescrição junto com você.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- INCLUDES -->
+  <section class="includes reveal">
+    <p class="section-label">O que está incluso</p>
+    <h2 class="section-title">Tudo que você recebe</h2>
+    <div class="includes-grid">
+      <div class="include-card">
+        <span class="include-icon">🎯</span>
+        <p class="include-title">Avaliação adaptativa</p>
+        <p class="include-desc">Ficha inteligente que identifica seu nível e coleta exatamente o que precisa — sem perguntas desnecessárias.</p>
+      </div>
+      <div class="include-card">
+        <span class="include-icon">📱</span>
+        <p class="include-title">Treino no app MFIT</p>
+        <p class="include-desc">Treino organizado, com séries, cargas e exercícios direto no app. Acessa pelo celular, sem papel.</p>
+      </div>
+      <div class="include-card">
+        <span class="include-icon">🧠</span>
+        <p class="include-title">Prescrição personalizada</p>
+        <p class="include-desc">Não é ficha genérica. Cada detalhe — divisão, volume, exercícios — é montado para o seu perfil.</p>
+      </div>
+      <div class="include-card">
+        <span class="include-icon">🔄</span>
+        <p class="include-title">Reavaliação trimestral</p>
+        <p class="include-desc">A cada 3 meses você faz nova avaliação para verificar resultado e ajustar o que for necessário.</p>
+      </div>
+      <div class="include-card">
+        <span class="include-icon">💬</span>
+        <p class="include-title">Suporte pelo WhatsApp</p>
+        <p class="include-desc">Dúvida sobre execução, ajuste de carga ou qualquer outra coisa — contato direto, sem rodeio.</p>
+      </div>
+      <div class="include-card">
+        <span class="include-icon">🛡️</span>
+        <p class="include-title">Segurança articular</p>
+        <p class="include-desc">Dores, limitações e histórico de lesão são considerados antes de qualquer exercício ser prescrito.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DIFFERENTIALS -->
+  <section class="reveal">
+    <p class="section-label">Por que é diferente</p>
+    <h2 class="section-title">Treino bem prescrito não é excesso</h2>
+    <div class="diff-row">
+      <div class="diff-card">
+        <div class="diff-badge">📊</div>
+        <div class="diff-content">
+          <p class="diff-title">Nível identificado pela avaliação</p>
+          <p class="diff-desc">A ficha detecta se você é iniciante, intermediário ou avançado — sem depender da sua autoavaliação.</p>
+        </div>
+      </div>
+      <div class="diff-card">
+        <div class="diff-badge">🚫</div>
+        <div class="diff-content">
+          <p class="diff-title">Zero exercícios que você não quer</p>
+          <p class="diff-desc">O que você marcou como "não quero" ou "não posso" nunca aparece no treino. Sem exceção.</p>
+        </div>
+      </div>
+      <div class="diff-card">
+        <div class="diff-badge">📈</div>
+        <div class="diff-content">
+          <p class="diff-title">Progressão real</p>
+          <p class="diff-desc">Carga, volume e intensidade evoluem de forma estruturada — não é só aumentar peso às cegas.</p>
+        </div>
+      </div>
+      <div class="diff-card">
+        <div class="diff-badge">🎯</div>
+        <div class="diff-content">
+          <p class="diff-title">Seu objetivo no centro</p>
+          <p class="diff-desc">Emagrecer, ganhar massa ou melhorar condicionamento — cada objetivo tem uma estratégia específica.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final-cta reveal" id="comecar">
+    <p class="final-cta-eyebrow">Comece agora</p>
+    <h2 class="final-cta-title">Pronto para ter um treino de verdade?</h2>
+    <p class="final-cta-sub">Preencha a avaliação, receba seu treino no MFIT e comece a progredir com estratégia.</p>
+    <a href="ficha_unica.html" class="final-cta-btn">
+      📋 Preencher minha avaliação
+    </a>
+    <p class="final-cta-note">R$ 35/mês · Treino no app MFIT · Suporte pelo WhatsApp</p>
+  </section>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 Tiago Lima Personal · Todos os direitos reservados</p>
+</footer>
+
+<script>
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if(entry.isIntersecting){
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  reveals.forEach(el => io.observe(el));
+
+  // Logo fallback
+  const logo = document.querySelector('nav img');
+  if(logo){
+    const tries = [logo.src,'logo-tiago.png','logo.png'];
+    let i = 0;
+    logo.onerror = () => { i++; if(i<tries.length) logo.src=tries[i]; else logo.style.display='none'; };
+  }
+</script>
+</body>
+</html>
