@@ -1070,9 +1070,15 @@
             </div>
           </div>
 
-          <div style="margin-top:12px">
-            <label>Carga/peso atual ou evolução no exercício</label>
-            <input type="text" id="carga1" placeholder="Ex.: 20kg → 25kg / +5kg / 10 reps → 12 reps">
+          <div class="grid grid-2" style="margin-top:12px">
+            <div>
+              <label>Carga / Peso</label>
+              <input type="text" id="carga1" placeholder="Ex.: 20kg, +5kg, 40kg">
+            </div>
+            <div>
+              <label>Repetições</label>
+              <input type="text" id="reps1" placeholder="Ex.: 10, 10→12, +2 reps">
+            </div>
           </div>
         </div>
 
@@ -1093,9 +1099,15 @@
             </div>
           </div>
 
-          <div style="margin-top:12px">
-            <label>Carga/peso atual ou evolução no exercício</label>
-            <input type="text" id="carga2" placeholder="Ex.: 20kg → 25kg / +5kg / 10 reps → 12 reps">
+          <div class="grid grid-2" style="margin-top:12px">
+            <div>
+              <label>Carga / Peso</label>
+              <input type="text" id="carga2" placeholder="Ex.: 20kg, +5kg, 40kg">
+            </div>
+            <div>
+              <label>Repetições</label>
+              <input type="text" id="reps2" placeholder="Ex.: 10, 10→12, +2 reps">
+            </div>
           </div>
         </div>
 
@@ -1116,9 +1128,15 @@
             </div>
           </div>
 
-          <div style="margin-top:12px">
-            <label>Carga/peso atual ou evolução no exercício</label>
-            <input type="text" id="carga3" placeholder="Ex.: 20kg → 25kg / +5kg / 10 reps → 12 reps">
+          <div class="grid grid-2" style="margin-top:12px">
+            <div>
+              <label>Carga / Peso</label>
+              <input type="text" id="carga3" placeholder="Ex.: 20kg, +5kg, 40kg">
+            </div>
+            <div>
+              <label>Repetições</label>
+              <input type="text" id="reps3" placeholder="Ex.: 10, 10→12, +2 reps">
+            </div>
           </div>
         </div>
 
@@ -1498,7 +1516,7 @@
     let step = 1;
     let ultimoScanData = null;
     const LOGICAL_W = 1229;
-    const LOGICAL_H = 7420;
+    const LOGICAL_H = 7500;
     const EXPORT_SCALE = 3.0;
     const bar = document.getElementById('bar');
 
@@ -1688,6 +1706,11 @@
 
     function getCargaValue(n){
       const el = document.getElementById(`carga${n}`);
+      return (el?.value || '').trim() || 'não informado';
+    }
+
+    function getRepsValue(n){
+      const el = document.getElementById(`reps${n}`);
       return (el?.value || '').trim() || 'não informado';
     }
 
@@ -2267,6 +2290,7 @@
           naoQuer: [...naoSelecionados, ...(naoOutro ? [naoOutro] : [])].join(', ') || '',
           pinca: selectedText('pinca') || '',
           evita: selectedText('evita') || '',
+          reps1: getRepsValue(1), reps2: getRepsValue(2), reps3: getRepsValue(3),
           motivo: niv.motivo
         };
 
@@ -3846,10 +3870,14 @@
         const ex = getExercicioValue(n) || 'Exercício ' + n;
         const res = selectedText('res'+n) || '—';
         const carga = getCargaValue(n);
+        const reps = getRepsValue(n);
         const yy = boxY + 76 + i * exRowH;
         drawIcon(ctx,'dumbbell',leftX+28,yy+20,20,'#F0C4FF');
         fitText(ctx,n+'. '+ex,leftX+62,yy+6,leftW-82,'900 21px Arial, sans-serif','#FFFFFF','left');
-        drawWrappedLeft(ctx,res+'. Carga/peso: '+carga+'.',leftX+62,yy+32,leftW-82,23,'600 16px Arial, sans-serif','#D8D0E2',2);
+        const cargaStr = carga !== 'não informado' ? '🏋️ '+carga : '';
+        const repsStr  = reps  !== 'não informado' ? '🔁 '+reps  : '';
+        const detalhes = [res, cargaStr, repsStr].filter(Boolean).join('   ');
+        drawWrappedLeft(ctx,detalhes,leftX+62,yy+32,leftW-82,23,'600 16px Arial, sans-serif','#D8D0E2',2);
       });
 
       // --- Lado direito: mobilidade ---
@@ -4154,10 +4182,10 @@
       classLines.forEach((ln,i)=>fitText(ctx,ln,913,cy+492+i*46,430,'900 42px Arial, sans-serif',approved || i===0 ? '#C55FFF' : '#FFFFFF','center'));
 
       // ── Dados técnicos ───────────────────────────────────────────────────
-      drawTechnicalInfoCard(ctx,28,3420,1172,720);
+      drawTechnicalInfoCard(ctx,28,3420,1172,800);
 
       // ── Critérios técnicos ───────────────────────────────────────────────
-      const ex = 28, ey = 4210, ew = 1172, eh = 1020;
+      const ex = 28, ey = 4290, ew = 1172, eh = 1020;
       cardFrame(ctx,ex,ey,ew,eh,'rgba(185,84,255,.82)');
       neonText(ctx,'CRITÉRIOS TÉCNICOS DA DECISÃO',ex+ew/2,ey+72,{align:'center',font:'900 42px Arial, sans-serif',color:'#FFFFFF',blur:7});
 
@@ -4266,7 +4294,7 @@
       }
 
       // ── Conduta MFIT ─────────────────────────────────────────────────────
-      const nx = 52, ny = 5660, nw = 1124, nh = 280;
+      const nx = 52, ny = 5740, nw = 1124, nh = 280;
       cardFrame(ctx,nx,ny,nw,nh,approved ? 'rgba(91,255,91,.70)' : 'rgba(255,180,58,.76)');
       neonText(ctx,'CONDUTA MFIT PREMIUM',nx+40,ny+64,{font:'900 34px Arial, sans-serif',color:'#FFFFFF',blur:6});
       const conduta = approved
@@ -4275,7 +4303,7 @@
       drawWrappedLeft(ctx,conduta,nx+40,ny+118,nw-80,40,'700 28px Arial, sans-serif',approved ? '#B7FF9A' : '#FFD278',3);
 
       // ── Card FOCO MUSCULAR E PREFERÊNCIAS ────────────────────────────────────
-      const fx = 28, fy = 5970, fw = 1172, fh = 560;
+      const fx = 28, fy = 6050, fw = 1172, fh = 560;
       cardFrame(ctx, fx, fy, fw, fh, 'rgba(185,84,255,.82)');
       neonText(ctx, 'FOCO MUSCULAR E PREFERÊNCIAS', fx+fw/2, fy+58, {align:'center', font:'900 38px Arial, sans-serif', color:'#FFFFFF', blur:7});
       neonText(ctx, 'Dados informados pelo aluno para o próximo ciclo de treino', fx+fw/2, fy+96, {align:'center', font:'600 20px Arial, sans-serif', color:'#D9D0E8', blur:4});
@@ -4442,7 +4470,7 @@
       }
 
       // ── Rodapé: Score + Data + Reavaliação ───────────────────────────────
-      const ry = 6570, rh = 400;
+      const ry = 6650, rh = 400;
       cardFrame(ctx,38,ry,1153,rh,'rgba(185,84,255,.72)');
       neonText(ctx,'RESUMO FINAL DA AVALIAÇÃO',38+1153/2,ry+60,{align:'center',font:'900 36px Arial, sans-serif',color:'#FFFFFF',blur:8});
 
