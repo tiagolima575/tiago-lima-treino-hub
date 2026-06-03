@@ -1498,7 +1498,7 @@
     let step = 1;
     let ultimoScanData = null;
     const LOGICAL_W = 1229;
-    const LOGICAL_H = 6540;
+    const LOGICAL_H = 7420;
     const EXPORT_SCALE = 3.0;
     const bar = document.getElementById('bar');
 
@@ -2270,7 +2270,7 @@
           motivo: niv.motivo
         };
 
-        fetch('https://script.google.com/macros/s/AKfycbwTUNQDjrXBpwI7HodzD5yHxgSqrDgFEE6_WKeFJYHS3PCkw-_F3mUL9clRIab5Y1u-/exec', {
+        fetch('https://script.google.com/macros/s/AKfycbyVspRAdo4UFyYngo7jYuGIKrvkoIaQVgr-wPQ7nal6-6SD8gNTKTjOM4PgZ8Pw-9en/exec', {
           method: 'POST',
           mode: 'no-cors',
           headers: {'Content-Type': 'application/json'},
@@ -3863,12 +3863,41 @@
         : 'Manter mobilidade e alongamento como suporte de amplitude, recuperação e prevenção.';
 
       const pillW = Math.floor((rightW - 56) / 2);
-      drawMetricPill(ctx,rightX+24,boxY+70,pillW,100,'MOBILIDADE',mob,mob==='Sim'?'#65FF5A':'#FFB43A');
-      drawMetricPill(ctx,rightX+28+pillW,boxY+70,pillW,100,'ALONGAMENTO',along,along==='Sim'?'#65FF5A':'#FFB43A');
+      drawMetricPill(ctx,rightX+24,boxY+50,pillW,72,'MOBILIDADE',mob,mob==='Sim'?'#65FF5A':'#FFB43A');
+      drawMetricPill(ctx,rightX+28+pillW,boxY+50,pillW,72,'ALONGAMENTO',along,along==='Sim'?'#65FF5A':'#FFB43A');
       const safeMaxW = Math.min(rightW - 120, (x + w) - (rightX + 72));
-      drawWrappedLeft(ctx,'Preferência: '+preferencia+'.',rightX+26,boxY+196,safeMaxW,28,'700 17px Arial, sans-serif','#FFFFFF',2);
-      drawWrappedLeft(ctx,'Limitador percebido: '+atrapalhou+'.',rightX+26,boxY+256,safeMaxW,28,'600 16px Arial, sans-serif','#D8D0E2',2);
-      drawWrappedLeft(ctx,conduta,rightX+26,boxY+318,safeMaxW,28,'700 16px Arial, sans-serif','#CFA7FF',3);
+      drawWrappedLeft(ctx,'Preferência: '+preferencia+'.',rightX+26,boxY+148,safeMaxW,26,'700 16px Arial, sans-serif','#FFFFFF',2);
+      drawWrappedLeft(ctx,'Limitador: '+atrapalhou+'.',rightX+26,boxY+196,safeMaxW,26,'600 15px Arial, sans-serif','#D8D0E2',2);
+      drawWrappedLeft(ctx,conduta,rightX+26,boxY+244,safeMaxW,26,'700 15px Arial, sans-serif','#CFA7FF',3);
+
+      // --- Lado direito extra: percepção e bem-estar ---
+      const gostou = selectedText('gostou') || '—';
+      const alimentacao = selectedText('alimentacao') || '—';
+      const sensacao = selectedText('sensacaoTreino') || '—';
+
+      // Separador
+      ctx.save();
+      ctx.strokeStyle = 'rgba(185,84,255,.35)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(rightX+26, boxY+340);
+      ctx.lineTo(rightX+rightW-26, boxY+340);
+      ctx.stroke();
+      ctx.restore();
+
+      neonText(ctx,'PERCEPÇÃO DO ALUNO',rightX+24,boxY+368,{font:'900 19px Arial, sans-serif',color:'#FFFFFF',blur:5});
+
+      const percLines = [
+        { label:'✅ Gostou:', val: gostou, color:'#65FF5A' },
+        { label:'⚠️ Atrapalhou:', val: atrapalhou, color:'#FFB43A' },
+        { label:'🍽️ Alimentação:', val: alimentacao, color:'#D8D0E2' },
+        { label:'💪 Sensação:', val: sensacao, color:'#D8D0E2' },
+      ];
+      percLines.forEach((l, i) => {
+        const py = boxY + 398 + i * 56;
+        neonText(ctx, l.label, rightX+26, py, {font:'700 15px Arial, sans-serif', color:l.color, blur:3});
+        fitText(ctx, l.val, rightX+26, py+22, safeMaxW, '600 15px Arial, sans-serif', '#FFFFFF', 'left');
+      });
     }
 
     function calcScoreTotal(){
@@ -4125,10 +4154,10 @@
       classLines.forEach((ln,i)=>fitText(ctx,ln,913,cy+492+i*46,430,'900 42px Arial, sans-serif',approved || i===0 ? '#C55FFF' : '#FFFFFF','center'));
 
       // ── Dados técnicos ───────────────────────────────────────────────────
-      drawTechnicalInfoCard(ctx,28,3420,1172,590);
+      drawTechnicalInfoCard(ctx,28,3420,1172,720);
 
       // ── Critérios técnicos ───────────────────────────────────────────────
-      const ex = 28, ey = 4080, ew = 1172, eh = 1020;
+      const ex = 28, ey = 4210, ew = 1172, eh = 1020;
       cardFrame(ctx,ex,ey,ew,eh,'rgba(185,84,255,.82)');
       neonText(ctx,'CRITÉRIOS TÉCNICOS DA DECISÃO',ex+ew/2,ey+72,{align:'center',font:'900 42px Arial, sans-serif',color:'#FFFFFF',blur:7});
 
@@ -4159,14 +4188,160 @@
         drawWrappedLeft(ctx,item.texto,colX+80,rowY+68,440,32,'600 23px Arial, sans-serif','#D8D0E2',3);
       });
 
+
+      // ── Card SINAIS DE RISCO E CONTEXTO ─────────────────────────────────────
+      {
+        const rx2 = 28, ry2 = 5260, rw2 = 1172, rh2 = 360;
+        cardFrame(ctx, rx2, ry2, rw2, rh2, 'rgba(255,140,58,.78)');
+        neonText(ctx, 'SINAIS DE RISCO E CONTEXTO', rx2+rw2/2, ry2+58, {align:'center', font:'900 36px Arial, sans-serif', color:'#FFFFFF', blur:7});
+        neonText(ctx, 'Informações críticas para prescrição segura do próximo ciclo', rx2+rw2/2, ry2+94, {align:'center', font:'600 19px Arial, sans-serif', color:'#FFD8B0', blur:4});
+
+        const localDor2  = selectedText('localDor') || '—';
+        const pincaEx2   = (document.getElementById('pincaEx')?.value || '').trim() || '—';
+        const evitaEx2   = (document.getElementById('evitaEx')?.value || '').trim() || '—';
+        const obsRisco2  = (document.getElementById('obsRisco')?.value || '').trim() || '—';
+        const motivoF    = selectedText('motivoFalta') || '—';
+        const sono2v     = document.getElementById('sono2')?.value || document.getElementById('sono')?.value || '—';
+        const estresse2v = document.getElementById('estresse2')?.value || document.getElementById('estresse')?.value || '—';
+
+        // Pills linha 1: localDor | sono2 | estresse2
+        const rp = Math.floor((rw2 - 116) / 3);
+        const rpY = ry2 + 122;
+        const rpH = 100;
+
+        const dorColor = localDor2 === '—' || localDor2 === 'Sem dor' ? '#65FF5A' : '#FF5555';
+        clearPanel(ctx, rx2+34, rpY, rp, rpH, 14, 'rgba(255,85,85,.10)');
+        drawRoundRect(ctx, rx2+34, rpY, rp, rpH, 14, null, dorColor, 2);
+        neonText(ctx, '🦴  LOCAL DA DOR', rx2+34+rp/2, rpY+28, {align:'center', font:'700 17px Arial, sans-serif', color:dorColor, blur:4});
+        fitText(ctx, localDor2, rx2+34+rp/2, rpY+72, rp-20, '800 20px Arial, sans-serif', '#FFFFFF', 'center');
+
+        const sonoN = parseFloat(sono2v) || 0;
+        const sonoC = sonoN >= 7 ? '#65FF5A' : sonoN >= 5 ? '#FFB43A' : '#FF5555';
+        const p2rx = rx2+34+rp+24;
+        clearPanel(ctx, p2rx, rpY, rp, rpH, 14, 'rgba(255,255,255,.06)');
+        drawRoundRect(ctx, p2rx, rpY, rp, rpH, 14, null, sonoC, 2);
+        neonText(ctx, '🌙  SONO (ATUAL)', p2rx+rp/2, rpY+28, {align:'center', font:'700 17px Arial, sans-serif', color:sonoC, blur:4});
+        fitText(ctx, sono2v+'/10', p2rx+rp/2, rpY+72, rp-20, '800 20px Arial, sans-serif', '#FFFFFF', 'center');
+
+        const estN = parseFloat(estresse2v) || 0;
+        const estC = estN <= 4 ? '#65FF5A' : estN <= 7 ? '#FFB43A' : '#FF5555';
+        const p3rx = rx2+34+2*(rp+24);
+        clearPanel(ctx, p3rx, rpY, rp, rpH, 14, 'rgba(255,255,255,.06)');
+        drawRoundRect(ctx, p3rx, rpY, rp, rpH, 14, null, estC, 2);
+        neonText(ctx, '⚡  ESTRESSE (ATUAL)', p3rx+rp/2, rpY+28, {align:'center', font:'700 17px Arial, sans-serif', color:estC, blur:4});
+        fitText(ctx, estresse2v+'/10', p3rx+rp/2, rpY+72, rp-20, '800 20px Arial, sans-serif', '#FFFFFF', 'center');
+
+        // Linha 2: pinçamento | evita | motivo falta (3 colunas de texto)
+        const colW3 = Math.floor((rw2 - 116) / 3);
+        const row2Y = rpY + rpH + 24;
+
+        // Col 1 — pinçamento
+        clearPanel(ctx, rx2+34, row2Y, colW3, 80, 12, 'rgba(255,85,85,.08)');
+        drawRoundRect(ctx, rx2+34, row2Y, colW3, 80, 12, null, 'rgba(255,120,58,.50)', 1.5);
+        neonText(ctx, '⚠️  PINÇAMENTO', rx2+46, row2Y+22, {font:'700 16px Arial, sans-serif', color:'#FFB43A', blur:4});
+        fitText(ctx, pincaEx2, rx2+46, row2Y+56, colW3-24, '600 17px Arial, sans-serif', '#FFFFFF', 'left');
+
+        // Col 2 — evita exercício
+        const c2x = rx2+34+colW3+24;
+        clearPanel(ctx, c2x, row2Y, colW3, 80, 12, 'rgba(255,85,85,.08)');
+        drawRoundRect(ctx, c2x, row2Y, colW3, 80, 12, null, 'rgba(255,85,85,.50)', 1.5);
+        neonText(ctx, '🚷  EVITA', c2x+12, row2Y+22, {font:'700 16px Arial, sans-serif', color:'#FF7070', blur:4});
+        fitText(ctx, evitaEx2, c2x+12, row2Y+56, colW3-24, '600 17px Arial, sans-serif', '#FFFFFF', 'left');
+
+        // Col 3 — motivo de falta
+        const c3x = rx2+34+2*(colW3+24);
+        clearPanel(ctx, c3x, row2Y, colW3, 80, 12, 'rgba(255,180,58,.08)');
+        drawRoundRect(ctx, c3x, row2Y, colW3, 80, 12, null, 'rgba(255,180,58,.50)', 1.5);
+        neonText(ctx, '📅  MOTIVO DE FALTA', c3x+12, row2Y+22, {font:'700 16px Arial, sans-serif', color:'#FFB43A', blur:4});
+        fitText(ctx, motivoF, c3x+12, row2Y+56, colW3-24, '600 17px Arial, sans-serif', '#FFFFFF', 'left');
+
+        // Linha 3 — observação livre (full width)
+        if(obsRisco2 !== '—'){
+          const obsY = row2Y + 100;
+          clearPanel(ctx, rx2+34, obsY, rw2-68, 60, 12, 'rgba(255,255,255,.05)');
+          drawRoundRect(ctx, rx2+34, obsY, rw2-68, 60, 12, null, 'rgba(255,200,100,.35)', 1.5);
+          neonText(ctx, '💬  OBS:', rx2+56, obsY+22, {font:'700 16px Arial, sans-serif', color:'#FFD080', blur:3});
+          fitText(ctx, obsRisco2, rx2+120, obsY+22, rw2-180, '600 17px Arial, sans-serif', '#FFFFFF', 'left');
+        }
+      }
+
       // ── Conduta MFIT ─────────────────────────────────────────────────────
-      const nx = 52, ny = 5170, nw = 1124, nh = 280;
+      const nx = 52, ny = 5660, nw = 1124, nh = 280;
       cardFrame(ctx,nx,ny,nw,nh,approved ? 'rgba(91,255,91,.70)' : 'rgba(255,180,58,.76)');
       neonText(ctx,'CONDUTA MFIT PREMIUM',nx+40,ny+64,{font:'900 34px Arial, sans-serif',color:'#FFFFFF',blur:6});
       const conduta = approved
         ? 'Liberar progressão para '+final.novoNivel+', sem romper técnica, amplitude e recuperação. Monitorar resposta na primeira semana.'
         : 'Manter '+safeNivelAtual+', corrigir o principal limitador e repetir avaliação após novo bloco de treino.';
       drawWrappedLeft(ctx,conduta,nx+40,ny+118,nw-80,40,'700 28px Arial, sans-serif',approved ? '#B7FF9A' : '#FFD278',3);
+
+      // ── Card FOCO MUSCULAR E PREFERÊNCIAS ────────────────────────────────────
+      const fx = 28, fy = 5970, fw = 1172, fh = 560;
+      cardFrame(ctx, fx, fy, fw, fh, 'rgba(185,84,255,.82)');
+      neonText(ctx, 'FOCO MUSCULAR E PREFERÊNCIAS', fx+fw/2, fy+58, {align:'center', font:'900 38px Arial, sans-serif', color:'#FFFFFF', blur:7});
+      neonText(ctx, 'Dados informados pelo aluno para o próximo ciclo de treino', fx+fw/2, fy+96, {align:'center', font:'600 20px Arial, sans-serif', color:'#D9D0E8', blur:4});
+
+      const musEvoluiu = selectedText('musculoEvoluiu') || '—';
+      const musIgual = selectedText('musculoIgual') || '—';
+      const focoMusc = selectedText('focoMuscular') || '—';
+
+      const queroSel2 = getCheckedItems('wrapQueroAprender');
+      const queroOut2 = (document.getElementById('queroAprenderOutro')?.value || '').trim();
+      const queroFinal = [...queroSel2, ...(queroOut2 ? [queroOut2] : [])].join(', ') || '—';
+
+      const naoSel2 = getCheckedItems('wrapNaoQuer');
+      const naoOut2 = (document.getElementById('naoQuerOutro')?.value || '').trim();
+      const naoFinal = [...naoSel2, ...(naoOut2 ? [naoOut2] : [])].join(', ') || '—';
+
+      // ── Linha 1: 3 pills — evoluiu | igual | foco ──
+      const pillFW = Math.floor((fw - 116) / 3);
+      const pillFY = fy + 124;
+      const pillH = 120;
+
+      // Pill 1 — maior evolução (verde)
+      clearPanel(ctx, fx+34, pillFY, pillFW, pillH, 16, 'rgba(101,255,90,.12)');
+      ctx.save(); ctx.strokeStyle='rgba(101,255,90,.60)'; ctx.lineWidth=2;
+      drawRoundRect(ctx, fx+34, pillFY, pillFW, pillH, 16, null, 'rgba(101,255,90,.60)', 2); ctx.restore();
+      neonText(ctx, '📈  MAIOR EVOLUÇÃO', fx+34+pillFW/2, pillFY+32, {align:'center', font:'700 18px Arial, sans-serif', color:'#65FF5A', blur:5});
+      fitText(ctx, musEvoluiu, fx+34+pillFW/2, pillFY+82, pillFW-24, '900 24px Arial, sans-serif', '#FFFFFF', 'center');
+
+      // Pill 2 — ficou igual (laranja)
+      const p2x = fx+34+pillFW+24;
+      clearPanel(ctx, p2x, pillFY, pillFW, pillH, 16, 'rgba(255,180,58,.12)');
+      drawRoundRect(ctx, p2x, pillFY, pillFW, pillH, 16, null, 'rgba(255,180,58,.60)', 2);
+      neonText(ctx, '📊  FICOU IGUAL', p2x+pillFW/2, pillFY+32, {align:'center', font:'700 18px Arial, sans-serif', color:'#FFB43A', blur:5});
+      fitText(ctx, musIgual, p2x+pillFW/2, pillFY+82, pillFW-24, '900 24px Arial, sans-serif', '#FFFFFF', 'center');
+
+      // Pill 3 — foco próximo ciclo (roxo)
+      const p3x = fx+34+2*(pillFW+24);
+      clearPanel(ctx, p3x, pillFY, pillFW, pillH, 16, 'rgba(197,95,255,.12)');
+      drawRoundRect(ctx, p3x, pillFY, pillFW, pillH, 16, null, 'rgba(197,95,255,.70)', 2);
+      neonText(ctx, '🎯  FOCO DO CICLO', p3x+pillFW/2, pillFY+32, {align:'center', font:'700 18px Arial, sans-serif', color:'#C55FFF', blur:5});
+      fitText(ctx, focoMusc, p3x+pillFW/2, pillFY+82, pillFW-24, '900 24px Arial, sans-serif', '#FFFFFF', 'center');
+
+      // ── Linha 2: quer aprender | não quer fazer (lado a lado) ──
+      const rowY2 = pillFY + pillH + 28;
+      const halfW = Math.floor((fw - 100) / 2);
+
+      // Bloco QUER APRENDER (esquerda)
+      clearPanel(ctx, fx+34, rowY2, halfW, 160, 16, 'rgba(101,255,90,.10)');
+      drawRoundRect(ctx, fx+34, rowY2, halfW, 160, 16, null, 'rgba(101,255,90,.50)', 2);
+      neonText(ctx, '✅  QUER APRENDER', fx+34+halfW/2, rowY2+34, {align:'center', font:'800 22px Arial, sans-serif', color:'#65FF5A', blur:5});
+      ctx.save();
+      ctx.rect(fx+34, rowY2+52, halfW, 100);
+      ctx.clip();
+      drawWrappedLeft(ctx, queroFinal, fx+56, rowY2+74, halfW-44, 30, '600 20px Arial, sans-serif', '#FFFFFF', 3);
+      ctx.restore();
+
+      // Bloco NÃO QUER FAZER (direita)
+      const bx2 = fx+34+halfW+32;
+      clearPanel(ctx, bx2, rowY2, halfW, 160, 16, 'rgba(255,85,85,.10)');
+      drawRoundRect(ctx, bx2, rowY2, halfW, 160, 16, null, 'rgba(255,85,85,.50)', 2);
+      neonText(ctx, '🚫  NÃO QUER FAZER', bx2+halfW/2, rowY2+34, {align:'center', font:'800 22px Arial, sans-serif', color:'#FF5555', blur:5});
+      ctx.save();
+      ctx.rect(bx2, rowY2+52, halfW, 100);
+      ctx.clip();
+      drawWrappedLeft(ctx, naoFinal, bx2+22, rowY2+74, halfW-44, 30, '600 20px Arial, sans-serif', '#FFFFFF', 3);
+      ctx.restore();
 
       // ── Card DIAGNÓSTICO + PLANO DE AÇÃO (apenas quando reprovada) ──────────
       if(!approved){
@@ -4267,7 +4442,7 @@
       }
 
       // ── Rodapé: Score + Data + Reavaliação ───────────────────────────────
-      const ry = 5960, rh = 400;
+      const ry = 6570, rh = 400;
       cardFrame(ctx,38,ry,1153,rh,'rgba(185,84,255,.72)');
       neonText(ctx,'RESUMO FINAL DA AVALIAÇÃO',38+1153/2,ry+60,{align:'center',font:'900 36px Arial, sans-serif',color:'#FFFFFF',blur:8});
 
