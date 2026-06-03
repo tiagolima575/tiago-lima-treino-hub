@@ -27,6 +27,40 @@
       --shadowSoft:0 12px 28px rgba(0,0,0,.28);
     }
 
+
+    .checkgrid{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px 12px;
+      margin-top:8px;
+    }
+    .checkitem{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      font-size:.85rem;
+      color:var(--text);
+      background:var(--card2);
+      border:1px solid var(--line);
+      border-radius:8px;
+      padding:6px 10px;
+      cursor:pointer;
+      transition:border-color .15s, background .15s;
+    }
+    .checkitem:hover{
+      border-color:var(--purple);
+    }
+    .checkitem input[type=checkbox]{
+      accent-color:var(--purple);
+      width:14px;
+      height:14px;
+      cursor:pointer;
+    }
+    .checkitem:has(input:checked){
+      border-color:var(--purple);
+      background:rgba(163,89,218,.12);
+    }
+
     *{box-sizing:border-box}
 
     html{scroll-behavior:smooth}
@@ -831,7 +865,7 @@
 
     <form id="form">
       <section class="card session" data-step="1">
-        <h2>SESSÃO 1/8 — Identificação</h2>
+        <h2>SESSÃO 1/9 — Identificação</h2>
         <p class="sub">Dados básicos para cruzar com o plano atual.</p>
 
         <div class="grid">
@@ -887,7 +921,7 @@
       </section>
 
       <section class="card session" data-step="2" style="display:none">
-        <h2>SESSÃO 2/8 — Frequência nos últimos 30 dias</h2>
+        <h2>SESSÃO 2/9 — Frequência nos últimos 30 dias</h2>
         <p class="sub">Responda com base no que realmente aconteceu.</p>
 
         <div class="grid grid-2">
@@ -963,7 +997,7 @@
       </section>
 
       <section class="card session" data-step="3" style="display:none">
-        <h2>SESSÃO 3/8 — Semáforo de recuperação</h2>
+        <h2>SESSÃO 3/9 — Semáforo de recuperação</h2>
         <p class="sub">Preencha de 0 a 10.</p>
 
         <div class="grid grid-2">
@@ -1018,7 +1052,7 @@
       </section>
 
       <section class="card session" data-step="4" style="display:none">
-        <h2>SESSÃO 4/8 — Evolução no treino</h2>
+        <h2>SESSÃO 4/9 — Evolução no treino</h2>
         <p class="sub">Selecione 1 exercício por bloco. Os blocos mudam automaticamente conforme o sexo/perfil visual informado na sessão 1.</p>
 
         <div class="resultBox">
@@ -1125,7 +1159,7 @@
       </section>
 
       <section class="card session" data-step="5" style="display:none">
-        <h2>SESSÃO 5/8 — Sinais de risco</h2>
+        <h2>SESSÃO 5/9 — Sinais de risco</h2>
         <p class="sub">Se teve dor/pinçamento, o sistema trava o risco e recomenda ajuste.</p>
 
         <div class="grid grid-2">
@@ -1172,7 +1206,7 @@
       </section>
 
       <section class="card session" data-step="6" style="display:none">
-        <h2>SESSÃO 6/8 — Percepção e logística</h2>
+        <h2>SESSÃO 6/9 — Percepção e logística</h2>
         <p class="sub">Marque se mobilidade ou alongamento devem entrar no próximo mês.</p>
 
         <div class="grid grid-2">
@@ -1241,7 +1275,7 @@
       </section>
 
       <section class="card session" data-step="7" style="display:none">
-        <h2>SESSÃO 7/8 — Bem-estar e corpo</h2>
+        <h2>SESSÃO 7/9 — Bem-estar e corpo</h2>
         <p class="sub">Dados que ajudam a calibrar recuperação, treino e evolução física.</p>
 
         <div class="grid grid-2">
@@ -1323,8 +1357,90 @@
         </div>
       </section>
 
-            <section class="card session final-session" data-step="8" style="display:none">
-        <h2>SESSÃO 8/8 — Gráfico final</h2>
+      <section class="card session" data-step="8" style="display:none">
+        <h2>SESSÃO 8/9 — Foco e preferências de exercícios</h2>
+        <p class="sub">Informações que ajudam a personalizar o próximo ciclo de treino.</p>
+
+        <div class="grid">
+          <div>
+            <label>Qual músculo você sentiu maior evolução nesse ciclo?</label>
+            <select id="musculoEvoluiu">
+              <option value="">Selecione</option>
+              <option>Pernas / Quadríceps</option>
+              <option>Glúteos</option>
+              <option>Dorsal / Costas</option>
+              <option>Peito</option>
+              <option>Ombros</option>
+              <option>Bíceps</option>
+              <option>Tríceps</option>
+              <option>Panturrilha</option>
+              <option>Abdômen / Core</option>
+              <option>Nenhum em especial</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div>
+            <label>Qual músculo você sentiu que ficou igual ou não evoluiu?</label>
+            <select id="musculoIgual">
+              <option value="">Selecione</option>
+              <option>Pernas / Quadríceps</option>
+              <option>Glúteos</option>
+              <option>Dorsal / Costas</option>
+              <option>Peito</option>
+              <option>Ombros</option>
+              <option>Bíceps</option>
+              <option>Tríceps</option>
+              <option>Panturrilha</option>
+              <option>Abdômen / Core</option>
+              <option>Nenhum em especial</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div>
+            <label>Qual é o seu foco muscular principal para o próximo ciclo?</label>
+            <select id="focoMuscular">
+              <option value="">Selecione</option>
+              <option>Pernas / Quadríceps</option>
+              <option>Glúteos</option>
+              <option>Dorsal / Costas</option>
+              <option>Peito</option>
+              <option>Ombros</option>
+              <option>Bíceps / Tríceps</option>
+              <option>Panturrilha</option>
+              <option>Abdômen / Core</option>
+              <option>Corpo todo (sem foco específico)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div>
+          <label id="labelQueroAprender">Tem algum exercício que gostaria de aprender a fazer?</label>
+          <p class="hint">Selecione um ou mais, ou escreva no campo abaixo.</p>
+          <div id="wrapQueroAprender" class="checkgrid"></div>
+          <input id="queroAprenderOutro" placeholder="Escreva outros exercícios aqui..." style="margin-top:10px">
+        </div>
+
+        <div style="margin-top:18px">
+          <label id="labelNaoQuer">Tem algum exercício que você não quer fazer?</label>
+          <p class="hint">Selecione um ou mais, ou escreva no campo abaixo.</p>
+          <div id="wrapNaoQuer" class="checkgrid"></div>
+          <input id="naoQuerOutro" placeholder="Escreva outros exercícios aqui..." style="margin-top:10px">
+        </div>
+
+        <div class="nav">
+          <button type="button" class="btn" onclick="prev()">Voltar</button>
+          <button type="button" class="btn primary" onclick="next()">Próximo</button>
+        </div>
+      </section>
+
+            <section class="card session final-session" data-step="9" style="display:none">
+        <h2>SESSÃO 9/9 — Gráfico final</h2>
         <p class="sub">A tela final mostra somente o gráfico premium gerado com base nas respostas.</p>
 
         <div class="kpi" style="margin-bottom:10px">
@@ -2111,13 +2227,58 @@
         `• Marcadores: <b>${up}</b> melhoraram, <b>${down}</b> pioraram<br>` +
         `• Mobilidade: <b>${selectedText('mob')}</b> • Alongamento: <b>${selectedText('along')}</b><br>` +
         `• Preferência: <b>${selectedText('preferencia')}</b><br>` +
+        `• Foco muscular: <b>${selectedText('focoMuscular')||'—'}</b><br>` +
+        `• Músculo evoluiu: <b>${selectedText('musculoEvoluiu')||'—'}</b> • Ficou igual: <b>${selectedText('musculoIgual')||'—'}</b><br>` +
+        `• Quer aprender: <b>${(()=>{const s=getCheckedItems('wrapQueroAprender');const o=(document.getElementById('queroAprenderOutro')?.value||'').trim();return [...s,...(o?[o]:[])].join(', ')||'—';})()}</b><br>` +
+        `• Não quer fazer: <b>${(()=>{const s=getCheckedItems('wrapNaoQuer');const o=(document.getElementById('naoQuerOutro')?.value||'').trim();return [...s,...(o?[o]:[])].join(', ')||'—';})()}</b><br>` +
         `• Sugestão: <b>${niv.sug}</b><br>` +
         `• Motivo: <span style="color:var(--muted)">${niv.motivo}</span>`;
 
 
-      showStep(8);
+      showStep(9);
       await renderScanPanel();
       setTimeout(() => document.getElementById('scanPanel')?.scrollIntoView({behavior:'smooth', block:'start'}), 80);
+
+      // ── Enviar dados para Google Sheets ──────────────────────────────
+      try {
+        const nome = document.getElementById('nome').value.trim();
+        const queroSelecionados = getCheckedItems('wrapQueroAprender');
+        const queroOutro = (document.getElementById('queroAprenderOutro')?.value || '').trim();
+        const naoSelecionados = getCheckedItems('wrapNaoQuer');
+        const naoOutro = (document.getElementById('naoQuerOutro')?.value || '').trim();
+
+        const payload = {
+          nome: nome,
+          sexo: selectedText('sexoPerfil'),
+          nivel: selectedText('nivelAtual'),
+          objetivo: selectedText('objetivo') === 'Outro' ? 'Outro: ' + (document.getElementById('objetivoOutro')?.value || '') : selectedText('objetivo'),
+          aderencia: calcAderencia(),
+          semaforo: calcSemaforo(),
+          sugestao: niv.sug,
+          sono: document.getElementById('sono2')?.value || document.getElementById('sono')?.value || '',
+          estresse: document.getElementById('estresse2')?.value || document.getElementById('estresse')?.value || '',
+          doms: document.getElementById('doms')?.value || '',
+          energia: document.getElementById('energia')?.value || '',
+          dor: document.getElementById('dor')?.value || '',
+          musculoEvoluiu: selectedText('musculoEvoluiu') || '',
+          musculoIgual: selectedText('musculoIgual') || '',
+          focoMuscular: selectedText('focoMuscular') || '',
+          queroAprender: [...queroSelecionados, ...(queroOutro ? [queroOutro] : [])].join(', ') || '',
+          naoQuer: [...naoSelecionados, ...(naoOutro ? [naoOutro] : [])].join(', ') || '',
+          pinca: selectedText('pinca') || '',
+          evita: selectedText('evita') || '',
+          motivo: niv.motivo
+        };
+
+        fetch('https://script.google.com/macros/s/AKfycbwTUNQDjrXBpwI7HodzD5yHxgSqrDgFEE6_WKeFJYHS3PCkw-_F3mUL9clRIab5Y1u-/exec', {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(payload)
+        });
+      } catch(err) {
+        console.warn('Erro ao enviar para planilha:', err);
+      }
     }
 
     function buildMessage(){
@@ -2146,9 +2307,50 @@
 `4) Evolução\n1) ${getExercicioValue(1)} — ${selectedText('res1')}\n2) ${getExercicioValue(2)} — ${selectedText('res2')}\n3) ${getExercicioValue(3)} — ${selectedText('res3')}\nRIR percebido: ${selectedText('rir')}\nMovimento correto: ${selectedText('tecnica')}\n\n` +
 `5) Risco\nPinçamento/travamento: ${selectedText('pinca')}${document.getElementById('pincaEx').value.trim()? ' | Ex.: '+document.getElementById('pincaEx').value.trim():''}\nEvita exercício: ${selectedText('evita')}${document.getElementById('evitaEx').value.trim()? ' | Ex.: '+document.getElementById('evitaEx').value.trim():''}\nObs: ${document.getElementById('obsRisco').value.trim()||'—'}\n\n` +
 `6) Percepção\nGostou: ${document.getElementById('gostou').value.trim()}\nAtrapalhou: ${document.getElementById('atrapalhou').value.trim()}\nMobilidade: ${selectedText('mob')}\nAlongamento: ${selectedText('along')}\nPreferência próximo mês: ${selectedText('preferencia')}\n\n` +
-`7) Resultado\nFrequência estimada: ${ader}%\nSemáforo: ${sem}\nSugestão: ${niv.sug}\nMotivo: ${niv.motivo}\n`;
+`7) Bem-estar\nSono: ${document.getElementById('sono2').value}/10\nEstresse: ${document.getElementById('estresse2').value}/10\nAlimentação: ${selectedText('alimentacao')}\nSensação nos treinos: ${selectedText('sensacaoTreino')}\n\n` +
+`8) Foco e preferências\nMúsculo com maior evolução: ${selectedText('musculoEvoluiu')||'—'}\nMúsculo que ficou igual: ${selectedText('musculoIgual')||'—'}\nFoco muscular próximo ciclo: ${selectedText('focoMuscular')||'—'}\nQuer aprender: ${(()=>{const s=getCheckedItems('wrapQueroAprender');const o=(document.getElementById('queroAprenderOutro')?.value||'').trim();return [...s,...(o?[o]:[])].join(', ')||'—';})()}\nNão quer fazer: ${(()=>{const s=getCheckedItems('wrapNaoQuer');const o=(document.getElementById('naoQuerOutro')?.value||'').trim();return [...s,...(o?[o]:[])].join(', ')||'—';})()}\n\n` +
+`9) Resultado\nFrequência estimada: ${ader}%\nSemáforo: ${sem}\nSugestão: ${niv.sug}\nMotivo: ${niv.motivo}\n`;
     }
 
+
+
+    // ── SESSÃO 8: Exercícios por sexo ───────────────────────────────────
+    const exerciciosMasculino = ['Levantamento Terra', 'Agachamento Livre (barra)', 'Supino Livre (barra)', 'Desenvolvimento com Barra', 'Barra Fixa', 'Remada Curvada', 'Agachamento Búlgaro', 'Stiff com Barra', 'Clean (Levantamento Olímpico)', 'Flexão de Braços (Push-up)', 'Mergulho nas Paralelas', 'Agachamento Goblet', 'Kettlebell Swing', 'Farmer Walk', 'Rosca Direta com Barra', 'Triceps Francês', 'Face Pull', 'Elevação Lateral com Halteres', 'Leg Press', 'Cadeira Extensora', 'Mesa Flexora', 'Panturrilha em Pé', 'Prancha', 'Abdominal', 'Hip Thrust com Barra'];
+    const exerciciosFeminino = ['Hip Thrust com Barra', 'Agachamento Sumo', 'Levantamento Terra Romeno', 'Agachamento Búlgaro', 'Stiff com Halteres', 'Glúteo na Polia (coice)', 'Abdução de Quadril Máquina', 'Elevação de Quadril Unilateral', 'Barra Fixa (assistida ou livre)', 'Agachamento Livre (barra)', 'Leg Press', 'Cadeira Extensora', 'Mesa Flexora', 'Panturrilha em Pé', 'Supino com Halteres', 'Desenvolvimento com Halteres', 'Elevação Lateral', 'Remada Serrote', 'Puxada Aberta na Polia', 'Flexão de Braços', 'Kettlebell Swing', 'Prancha', 'Abdominal', 'Rosca Direta', 'Triceps Corda'];
+
+    function buildCheckgrid(containerId, items){
+      const wrap = document.getElementById(containerId);
+      if(!wrap) return;
+      wrap.innerHTML = '';
+      items.forEach(item => {
+        const label = document.createElement('label');
+        label.className = 'checkitem';
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.value = item;
+        label.appendChild(cb);
+        label.appendChild(document.createTextNode(' ' + item));
+        wrap.appendChild(label);
+      });
+    }
+
+    function populateExerciciosCheckgrids(){
+      const perfil = document.getElementById('sexoPerfil').value;
+      const lista = perfil === 'Feminino' ? exerciciosFeminino : exerciciosMasculino;
+      buildCheckgrid('wrapQueroAprender', lista);
+      buildCheckgrid('wrapNaoQuer', lista);
+    }
+
+    // Atualizar ao mudar sexo
+    document.getElementById('sexoPerfil').addEventListener('change', populateExerciciosCheckgrids);
+    // Popular na carga inicial
+    populateExerciciosCheckgrids();
+
+    function getCheckedItems(containerId){
+      const wrap = document.getElementById(containerId);
+      if(!wrap) return [];
+      return Array.from(wrap.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
+    }
 
     function safeFileName(str){
       return (str || 'aluno')
