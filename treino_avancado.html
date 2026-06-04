@@ -1452,6 +1452,8 @@
 </div>
 </div>
 </div>
+</div>
+</div>
 </section>
 <section class="section">
 <h2>BLOCO 11/11 - Recuperação e Observações Finais</h2>
@@ -1512,13 +1514,21 @@
 <label class="label" for="medidas">103. Medidas corporais (opcional)</label>
 <textarea id="medidas" name="medidas" placeholder="Ex.: cintura, quadril, braço, coxa..."></textarea>
 </div>
-<div class="field col-6">
+<div id="wrap_campo_fotos"><div id="wrap_campo_fotos"><div class="field col-6">
 <label class="label" for="fotos">104. Fotos (opcional)</label>
 <select id="fotos" name="fotos">
 <option value="">Selecione</option>
 <option>Sim</option>
 <option>Não</option>
 </select>
+<div id="wrap_fotos_drive" class="hidden" style="margin-top:10px;">
+  <p style="font-size:.84rem;color:var(--muted);margin:0 0 6px;font-weight:600;">📋 <strong>Passo 1</strong> — Primeiro clique em <strong>Enviar minhas respostas no WhatsApp</strong> abaixo.</p>
+  <p style="font-size:.82rem;color:var(--muted-2);margin:0 0 10px;">Depois que enviar, clique aqui para mandar suas fotos:</p>
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSdPfcwdKj1kU2Oh_vRalywjHtm_by26FGhZoBhunjtEHjXgGw/viewform?usp=publish-editor" target="_blank" style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#8D2DE2,#5B168F);color:#fff;font-size:.88rem;font-weight:600;padding:10px 20px;border-radius:10px;text-decoration:none;">
+    📁 Enviar fotos no Google Drive
+  </a>
+</div>
+</div>
 </div>
 </div>
 </section>
@@ -1728,8 +1738,41 @@
         }
         const msg = buildWhatsAppMessage();
         openWhatsApp(msg);
+          // Se marcou fotos = Sim, abre o Forms após 1.5s
+          const fotosCheck = document.getElementById('fotos');
+          if(fotosCheck && fotosCheck.value === 'Sim'){
+            setTimeout(function(){ window.open('https://docs.google.com/forms/d/e/1FAIpQLSdPfcwdKj1kU2Oh_vRalywjHtm_by26FGhZoBhunjtEHjXgGw/viewform?usp=publish-editor','_blank'); }, 1500);
+          }
       });
     }
+
+    
+        // Fotos trigger
+        const fotosEl = document.getElementById('fotos');
+        if(fotosEl) fotosEl.addEventListener('change', function(){
+          const wrap = document.getElementById('wrap_fotos_drive');
+          if(wrap) wrap.classList.toggle('hidden', fotosEl.value !== 'Sim');
+        });
+
+    
+        // Ocultar campo de fotos para menores de 18
+        function toggleFotosPorIdade(){
+          const idadeEl = document.getElementById('idade');
+          const fotosField = document.getElementById('wrap_campo_fotos');
+          if(!idadeEl || !fotosField) return;
+          const idade = parseInt(idadeEl.value);
+          const menor = !isNaN(idade) && idade < 18;
+          fotosField.classList.toggle('hidden', menor);
+          if(menor){
+            const sel = document.getElementById('fotos');
+            if(sel) sel.value = '';
+            const wrap = document.getElementById('wrap_fotos_drive');
+            if(wrap) wrap.classList.add('hidden');
+          }
+        }
+        const idadeInputF = document.getElementById('idade');
+        if(idadeInputF) idadeInputF.addEventListener('input', toggleFotosPorIdade);
+        toggleFotosPorIdade();
 
     function toggleFemaleHealthFields() {
       const sexo = document.getElementById('sexo');
