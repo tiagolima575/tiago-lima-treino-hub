@@ -564,17 +564,6 @@
 </div>
 
 <script>
-  // ── Carrega preços salvos ao abrir a página ──
-  function carregarPrecos() {
-    const ini = localStorage.getItem('preco-iniciante');
-    const med = localStorage.getItem('preco-intermediario');
-    const adv = localStorage.getItem('preco-avancado');
-    if (ini) document.getElementById('preco-iniciante').textContent = ini;
-    if (med) document.getElementById('preco-intermediario').textContent = med;
-    if (adv) document.getElementById('preco-avancado').textContent = adv;
-  }
-  carregarPrecos();
-
   // Duplo clique no logo abre o painel
   document.querySelector('.logo').addEventListener('dblclick', function(e) {
     e.preventDefault();
@@ -636,13 +625,21 @@
     document.getElementById('preco-intermediario').textContent = Number(med);
     document.getElementById('preco-avancado').textContent = Number(adv);
 
-    // Salva no navegador — persiste mesmo após recarregar
-    localStorage.setItem('preco-iniciante', Number(ini));
-    localStorage.setItem('preco-intermediario', Number(med));
-    localStorage.setItem('preco-avancado', Number(adv));
+    // Baixa o arquivo com os preços novos
+    baixarHTML();
 
     document.getElementById('admin-sucesso').style.display = 'block';
     setTimeout(fecharAdmin, 1200);
+  }
+
+  function baixarHTML() {
+    const html = document.documentElement.outerHTML;
+    const blob = new Blob([html], { type: 'text/html' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'index.html';
+    a.click();
+    URL.revokeObjectURL(a.href);
   }
 </script>
 

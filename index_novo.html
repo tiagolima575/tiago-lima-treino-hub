@@ -936,16 +936,6 @@ footer {
     }
   }
 
-  // Carrega preço salvo ao abrir a página
-  (function() {
-    const v = localStorage.getItem('preco-unico');
-    if (v) {
-      document.querySelector('.price-number').textContent = v;
-      document.querySelector('.final-cta-note').textContent =
-        'R$ ' + v + '/mês · Treino no app MFIT · Suporte pelo WhatsApp';
-    }
-  })();
-
   function aplicarPreco() {
     const novoValor = document.getElementById('admin-preco-input').value.trim();
     if(!novoValor || isNaN(novoValor) || Number(novoValor) < 1) return;
@@ -957,11 +947,21 @@ footer {
     document.querySelector('.final-cta-note').textContent =
       'R$ ' + v + '/mês · Treino no app MFIT · Suporte pelo WhatsApp';
 
-    // Salva no navegador — persiste após recarregar
-    localStorage.setItem('preco-unico', v);
+    // Baixa o arquivo com o preço novo
+    baixarHTML();
 
     document.getElementById('admin-sucesso').style.display = 'block';
     setTimeout(fecharAdmin, 1200);
+  }
+
+  function baixarHTML() {
+    const html = document.documentElement.outerHTML;
+    const blob = new Blob([html], { type: 'text/html' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'index_novo.html';
+    a.click();
+    URL.revokeObjectURL(a.href);
   }
 </script>
 </body>
