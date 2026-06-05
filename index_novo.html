@@ -790,7 +790,7 @@ footer {
 </footer>
 
 <!-- PAINEL SECRETO -->
-<div id="admin-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);z-index:9999;" class="aberto">
+<div id="admin-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);z-index:9999;" class="">
   <div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;">
   <div style="
     background:#13111C;
@@ -851,7 +851,7 @@ footer {
         font-family:'DM Sans',sans-serif;margin-bottom:10px;
       ">Aplicar</button>
 
-      <p id="admin-sucesso" style="font-size:.8rem;color:#6EDA8C;text-align:center;display:none;">✓ Preço atualizado!</p>
+      <p id="admin-sucesso" style="font-size: 0.8rem; color: rgb(110, 218, 140); text-align: center; display: block;">✓ Preço atualizado!</p>
     </div>
   </div>
 </div>
@@ -878,11 +878,21 @@ footer {
   }
 
   // ── PAINEL SECRETO ──
-  // Ativa com duplo clique no logo
-  document.querySelector('.nav-logo').addEventListener('dblclick', function(e) {
-    e.preventDefault();
-    abrirAdmin();
-  });
+  // 2 toques = painel | 3 toques = download
+  (function() {
+    var el = document.querySelector('.nav-logo');
+    var toques = 0;
+    var timer = null;
+    el.addEventListener('click', function(e) {
+      toques++;
+      clearTimeout(timer);
+      timer = setTimeout(function() {
+        if (toques === 2) abrirAdmin();
+        if (toques >= 3) baixarHTML();
+        toques = 0;
+      }, 400);
+    });
+  })();
 
   function abrirAdmin() {
     const overlay = document.getElementById('admin-overlay');
@@ -941,11 +951,8 @@ footer {
     document.querySelector('.final-cta-note').textContent =
       'R$ ' + v + '/mês · Treino no app MFIT · Suporte pelo WhatsApp';
 
-    // Baixa o arquivo com o preço novo
-    baixarHTML();
-
     document.getElementById('admin-sucesso').style.display = 'block';
-    setTimeout(fecharAdmin, 1200);
+    setTimeout(fecharAdmin, 800);
   }
 
   function baixarHTML() {

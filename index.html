@@ -463,7 +463,7 @@
   </main>
 
 <!-- PAINEL SECRETO -->
-<div id="admin-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(8px);z-index:9999;" class="aberto">
+<div id="admin-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(8px);z-index:9999;" class="">
   <div style="
     background:#12091d;
     border:1px solid rgba(196,107,255,.35);
@@ -550,17 +550,27 @@
         font-family:Inter,sans-serif;margin-bottom:10px;
       ">Aplicar</button>
 
-      <p id="admin-sucesso" style="font-size:.8rem;color:#6EDA8C;text-align:center;display:none;">✓ Preços atualizados!</p>
+      <p id="admin-sucesso" style="font-size: 0.8rem; color: rgb(110, 218, 140); text-align: center; display: block;">✓ Preços atualizados!</p>
     </div>
   </div>
 </div>
 
 <script>
-  // Duplo clique no logo abre o painel
-  document.querySelector('.logo').addEventListener('dblclick', function(e) {
-    e.preventDefault();
-    abrirAdmin();
-  });
+  // 2 toques = painel | 3 toques = download
+  (function() {
+    var el = document.querySelector('.logo');
+    var toques = 0;
+    var timer = null;
+    el.addEventListener('click', function(e) {
+      toques++;
+      clearTimeout(timer);
+      timer = setTimeout(function() {
+        if (toques === 2) abrirAdmin();
+        if (toques >= 3) baixarHTML();
+        toques = 0;
+      }, 400);
+    });
+  })();
 
   function abrirAdmin() {
     document.getElementById('admin-overlay').classList.add('aberto');
@@ -617,11 +627,8 @@
     document.getElementById('preco-intermediario').textContent = Number(med);
     document.getElementById('preco-avancado').textContent = Number(adv);
 
-    // Baixa o arquivo com os preços novos
-    baixarHTML();
-
     document.getElementById('admin-sucesso').style.display = 'block';
-    setTimeout(fecharAdmin, 1200);
+    setTimeout(fecharAdmin, 800);
   }
 
   function baixarHTML() {
