@@ -390,9 +390,9 @@
         <div>
           <p class="eyebrow">Tiago Lima • Personal Trainer</p>
           <h1 id="page-title">Pesquisa <span>Personalizada</span></h1>
-          <p class="sub">Escolha o plano, responda a avaliação inicial e receba uma prescrição mais precisa para seu objetivo, nível e rotina.</p>
+          <p class="sub">Preencha a avaliação do seu plano. Quanto mais você conta, mais precisa fica a prescrição — sem copiar ficha de ninguém.</p>
           <div class="quick" aria-label="Informações rápidas">
-            <span>⚡ Leva 2–3 min</span>
+            <span>⚡ Leva 6–10 min</span>
             <span>🔒 Dados protegidos</span>
             <span>💬 Envio pelo WhatsApp</span>
           </div>
@@ -402,15 +402,15 @@
 
     <div class="sectionTitle">
       <h2>Selecione seu plano</h2>
-      <p>Quanto maior o plano, maior o nível de estratégia, controle e refinamento da prescrição.</p>
+      <p>Quanto maior o plano, maior o nível de estratégia, controle e refinamento da prescrição.</p><p style="margin:4px 0 0;color:rgba(248,241,255,.46);font-size:12px;">Não sabe qual é o seu nível? Escolha Iniciante se treina há menos de 6 meses ou voltou depois de uma pausa longa.</p>
     </div>
 
     <section class="plans" aria-label="Planos disponíveis">
       <a class="plan" href="treino_iniciante.html" aria-label="Abrir pesquisa do Plano Iniciante">
-        <span class="badge">BASE TÉCNICA</span>
+        <span class="badge">PARA QUEM ESTÁ COMEÇANDO</span>
         <h3>Plano Iniciante</h3>
         <div class="price" aria-label="R$ 20 por mês">
-          <span class="currency">R$</span><span class="amount">20</span><span class="period">/mês</span>
+          <span class="currency">R$</span><span id="preco-iniciante" class="amount">20</span><span class="period">/mês</span>
         </div>
         <p class="desc">Ideal para começar com segurança, aprender a execução correta e criar consistência nos treinos.</p>
         <ul class="benefits">
@@ -426,7 +426,7 @@
         <span class="badge">⭐ MAIS ESCOLHIDO</span>
         <h3>Plano Intermediário</h3>
         <div class="price" aria-label="R$ 30 por mês">
-          <span class="currency">R$</span><span class="amount">30</span><span class="period">/mês</span>
+          <span class="currency">R$</span><span id="preco-intermediario" class="amount">30</span><span class="period">/mês</span>
         </div>
         <p class="desc">Para quem já treina e quer evoluir com melhor organização, progressão e controle de esforço.</p>
         <ul class="benefits">
@@ -442,7 +442,7 @@
         <span class="badge">PREMIUM</span>
         <h3>Plano Avançado</h3>
         <div class="price" aria-label="R$ 50 por mês">
-          <span class="currency">R$</span><span class="amount">50</span><span class="period">/mês</span>
+          <span class="currency">R$</span><span id="preco-avancado" class="amount">50</span><span class="period">/mês</span>
         </div>
         <p class="desc">Para quem busca uma prescrição mais completa, com estratégia, refinamento técnico e maior controle da evolução.</p>
         <ul class="benefits">
@@ -460,5 +460,191 @@
       <p>Treino bem prescrito não é excesso: é estratégia, segurança articular e progressão real.</p>
     </section>
   </main>
+
+<!-- PAINEL SECRETO -->
+<div id="admin-overlay" style="
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.78);
+  backdrop-filter:blur(8px);
+  z-index:9999;
+  align-items:center;
+  justify-content:center;
+">
+  <div style="
+    background:#12091d;
+    border:1px solid rgba(196,107,255,.35);
+    border-radius:22px;
+    padding:36px 32px;
+    width:min(380px,92vw);
+    box-shadow:0 28px 70px rgba(0,0,0,.75);
+    position:relative;
+  ">
+    <button onclick="fecharAdmin()" style="
+      position:absolute;top:14px;right:18px;
+      background:none;border:none;color:#5C566B;
+      font-size:1.2rem;cursor:pointer;
+    ">✕</button>
+
+    <!-- Tela de senha -->
+    <div id="admin-senha-tela">
+      <p style="font-size:1.5rem;font-weight:900;color:#F8F1FF;letter-spacing:-.03em;margin-bottom:5px;">Acesso restrito</p>
+      <p style="font-size:.8rem;color:rgba(248,241,255,.45);margin-bottom:20px;">Digite a senha para continuar.</p>
+      <input id="admin-senha-input" type="password" placeholder="Senha" style="
+        width:100%;padding:12px 16px;
+        background:rgba(0,0,0,.5);
+        border:1px solid rgba(196,107,255,.28);
+        border-radius:10px;color:#F8F1FF;font-size:.95rem;
+        outline:none;margin-bottom:10px;
+        font-family:Inter,sans-serif;
+      "/>
+      <p id="admin-erro" style="font-size:.78rem;color:#FF6B6B;margin-bottom:10px;display:none;">Senha incorreta.</p>
+      <button onclick="verificarSenha()" style="
+        width:100%;padding:12px;
+        background:linear-gradient(135deg,#9B3CFF,#7B20E8);
+        color:#fff;font-weight:800;font-size:.92rem;
+        border:none;border-radius:10px;cursor:pointer;
+        font-family:Inter,sans-serif;
+      ">Entrar</button>
+    </div>
+
+    <!-- Tela de edição -->
+    <div id="admin-edicao-tela" style="display:none;">
+      <p style="font-size:1.5rem;font-weight:900;color:#F8F1FF;letter-spacing:-.03em;margin-bottom:5px;">Editar preços</p>
+      <p style="font-size:.8rem;color:rgba(248,241,255,.45);margin-bottom:22px;">Os valores são atualizados em toda a página.</p>
+
+      <div style="display:grid;gap:14px;margin-bottom:18px;">
+        <div>
+          <label style="font-size:.73rem;font-weight:700;color:rgba(248,241,255,.5);letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:6px;">Iniciante (R$)</label>
+          <input id="input-iniciante" type="number" min="1" style="
+            width:100%;padding:10px 14px;
+            background:rgba(0,0,0,.5);
+            border:1px solid rgba(196,107,255,.28);
+            border-radius:10px;color:#F8F1FF;font-size:1.3rem;
+            font-weight:900;letter-spacing:-.04em;
+            outline:none;font-family:Inter,sans-serif;
+          "/>
+        </div>
+        <div>
+          <label style="font-size:.73rem;font-weight:700;color:rgba(248,241,255,.5);letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:6px;">Intermediário (R$)</label>
+          <input id="input-intermediario" type="number" min="1" style="
+            width:100%;padding:10px 14px;
+            background:rgba(0,0,0,.5);
+            border:1px solid rgba(196,107,255,.28);
+            border-radius:10px;color:#F8F1FF;font-size:1.3rem;
+            font-weight:900;letter-spacing:-.04em;
+            outline:none;font-family:Inter,sans-serif;
+          "/>
+        </div>
+        <div>
+          <label style="font-size:.73rem;font-weight:700;color:rgba(248,241,255,.5);letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:6px;">Avançado (R$)</label>
+          <input id="input-avancado" type="number" min="1" style="
+            width:100%;padding:10px 14px;
+            background:rgba(0,0,0,.5);
+            border:1px solid rgba(196,107,255,.28);
+            border-radius:10px;color:#F8F1FF;font-size:1.3rem;
+            font-weight:900;letter-spacing:-.04em;
+            outline:none;font-family:Inter,sans-serif;
+          "/>
+        </div>
+      </div>
+
+      <button onclick="aplicarPrecos()" style="
+        width:100%;padding:12px;
+        background:linear-gradient(135deg,#9B3CFF,#7B20E8);
+        color:#fff;font-weight:800;font-size:.92rem;
+        border:none;border-radius:10px;cursor:pointer;
+        font-family:Inter,sans-serif;margin-bottom:10px;
+      ">Aplicar</button>
+
+      <p id="admin-sucesso" style="font-size:.8rem;color:#6EDA8C;text-align:center;display:none;">✓ Preços atualizados!</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── Carrega preços salvos ao abrir a página ──
+  function carregarPrecos() {
+    const ini = localStorage.getItem('preco-iniciante');
+    const med = localStorage.getItem('preco-intermediario');
+    const adv = localStorage.getItem('preco-avancado');
+    if (ini) document.getElementById('preco-iniciante').textContent = ini;
+    if (med) document.getElementById('preco-intermediario').textContent = med;
+    if (adv) document.getElementById('preco-avancado').textContent = adv;
+  }
+  carregarPrecos();
+
+  // Duplo clique no logo abre o painel
+  document.querySelector('.logo').addEventListener('dblclick', function(e) {
+    e.preventDefault();
+    abrirAdmin();
+  });
+
+  function abrirAdmin() {
+    document.getElementById('admin-overlay').style.display = 'flex';
+    document.getElementById('admin-senha-tela').style.display = 'block';
+    document.getElementById('admin-edicao-tela').style.display = 'none';
+    document.getElementById('admin-senha-input').value = '';
+    document.getElementById('admin-erro').style.display = 'none';
+    setTimeout(() => document.getElementById('admin-senha-input').focus(), 100);
+  }
+
+  function fecharAdmin() {
+    document.getElementById('admin-overlay').style.display = 'none';
+  }
+
+  document.getElementById('admin-overlay').addEventListener('click', function(e) {
+    if (e.target === this) fecharAdmin();
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') fecharAdmin();
+    if (e.key === 'Enter' && document.getElementById('admin-overlay').style.display === 'flex') {
+      const senhaAtiva = document.getElementById('admin-senha-tela').style.display !== 'none';
+      if (senhaAtiva) verificarSenha();
+      else aplicarPrecos();
+    }
+  });
+
+  function verificarSenha() {
+    const senha = document.getElementById('admin-senha-input').value.trim().toLowerCase();
+    if (senha === 'lobo') {
+      document.getElementById('admin-senha-tela').style.display = 'none';
+      document.getElementById('admin-edicao-tela').style.display = 'block';
+      document.getElementById('admin-sucesso').style.display = 'none';
+      document.getElementById('input-iniciante').value = document.getElementById('preco-iniciante').textContent.trim();
+      document.getElementById('input-intermediario').value = document.getElementById('preco-intermediario').textContent.trim();
+      document.getElementById('input-avancado').value = document.getElementById('preco-avancado').textContent.trim();
+      setTimeout(() => document.getElementById('input-iniciante').focus(), 100);
+    } else {
+      document.getElementById('admin-erro').style.display = 'block';
+      document.getElementById('admin-senha-input').value = '';
+      document.getElementById('admin-senha-input').focus();
+    }
+  }
+
+  function aplicarPrecos() {
+    const ini = document.getElementById('input-iniciante').value.trim();
+    const med = document.getElementById('input-intermediario').value.trim();
+    const adv = document.getElementById('input-avancado').value.trim();
+
+    if (!ini || !med || !adv) return;
+
+    // Aplica na tela
+    document.getElementById('preco-iniciante').textContent = Number(ini);
+    document.getElementById('preco-intermediario').textContent = Number(med);
+    document.getElementById('preco-avancado').textContent = Number(adv);
+
+    // Salva no navegador — persiste mesmo após recarregar
+    localStorage.setItem('preco-iniciante', Number(ini));
+    localStorage.setItem('preco-intermediario', Number(med));
+    localStorage.setItem('preco-avancado', Number(adv));
+
+    document.getElementById('admin-sucesso').style.display = 'block';
+    setTimeout(fecharAdmin, 1200);
+  }
+</script>
+
 </body>
 </html>
