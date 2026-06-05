@@ -567,6 +567,10 @@ footer {
   z-index: 1;
 }
 
+/* ── ADMIN OVERLAY ── */
+#admin-overlay { display: none !important; }
+#admin-overlay.aberto { display: flex !important; align-items: center; justify-content: center; }
+
 /* ── ANIMATIONS ── */
 @keyframes fadeUp {
   from { opacity:0; transform:translateY(20px); }
@@ -786,7 +790,8 @@ footer {
 </footer>
 
 <!-- PAINEL SECRETO -->
-<div id="admin-overlay" style="display: flex; position: fixed; inset: 0px; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(6px); z-index: 9999; align-items: center; justify-content: center;">
+<div id="admin-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);z-index:9999;" class="aberto">
+  <div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;">
   <div style="
     background:#13111C;
     border:1px solid rgba(196,110,255,.3);
@@ -881,7 +886,7 @@ footer {
 
   function abrirAdmin() {
     const overlay = document.getElementById('admin-overlay');
-    overlay.style.display = 'flex';
+    overlay.classList.add('aberto');
     document.getElementById('admin-senha-tela').style.display = 'block';
     document.getElementById('admin-edicao-tela').style.display = 'none';
     document.getElementById('admin-senha-input').value = '';
@@ -890,7 +895,7 @@ footer {
   }
 
   function fecharAdmin() {
-    document.getElementById('admin-overlay').style.display = 'none';
+    document.getElementById('admin-overlay').classList.remove('aberto');
   }
 
   // Fechar clicando fora do card
@@ -901,7 +906,7 @@ footer {
   // Enter na senha
   document.addEventListener('keydown', function(e) {
     if(e.key === 'Escape') fecharAdmin();
-    if(e.key === 'Enter' && document.getElementById('admin-overlay').style.display === 'flex') {
+    if(e.key === 'Enter' && document.getElementById('admin-overlay').classList.contains('aberto')) {
       const senhaAtiva = document.getElementById('admin-senha-tela').style.display !== 'none';
       if(senhaAtiva) verificarSenha();
       else aplicarPreco();
@@ -955,4 +960,4 @@ footer {
 </script>
 
 
-</body></html>
+</div></body></html>
