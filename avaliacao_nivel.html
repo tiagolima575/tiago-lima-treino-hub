@@ -848,6 +848,7 @@
       }
     }
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 
 <body>
@@ -909,10 +910,38 @@
           </div>
         </div>
 
+        <div class="grid grid-3">
+          <div>
+            <label>Idade</label>
+            <input id="idade" type="number" min="10" max="99" placeholder="Ex.: 28" required>
+          </div>
+        </div>
+
         <div id="objOutroWrap" style="display:none">
           <label>Descreva seu objetivo</label>
           <input id="objetivoOutro" placeholder="Ex.: reduzir cintura e melhorar condicionamento">
         </div>
+
+        <div id="wrapCampoFotos" style="display:none">
+        <div class="divider" style="margin-top:24px"></div>
+
+        <div>
+          <label>Você quer enviar fotos para avaliação postural e física? <span style="color:var(--muted);font-weight:400">(opcional)</span></label>
+          <p class="hint">As fotos ajudam a personalizar ainda mais o próximo ciclo de treino.</p>
+          <select id="fotos">
+            <option value="">Selecione</option>
+            <option value="Sim">Sim, quero enviar</option>
+            <option value="Nao">Não por enquanto</option>
+          </select>
+          <div id="wrapGuiaFotos" style="display:none;margin-top:14px;background:rgba(163,89,218,.10);border:1px solid rgba(163,89,218,.30);border-radius:12px;padding:14px 16px">
+            <p style="margin:0 0 8px;font-weight:700;color:var(--purple)">📸 Como tirar as fotos</p>
+            <p style="margin:0 0 6px;font-size:14px;color:var(--text)">Use roupas de academia confortáveis — short ou bermuda e cropped ou top esportivo. Evite roupas largas, pois dificultam a avaliação postural.</p>
+            <p style="margin:0 0 6px;font-size:14px;color:var(--text)">✅ 4 ângulos: frente, costas, lado direito e lado esquerdo<br>✅ Ambiente iluminado, fundo neutro, câmera na altura do umbigo</p>
+            <p style="margin:0;font-size:13px;color:var(--muted)">Por respeito e segurança, não serão aceitas fotos em roupas íntimas.</p>
+            <p style="margin:8px 0 0;font-size:14px;color:var(--text)">📎 <b>Após enviar via WhatsApp</b>, o link de envio das fotos vai abrir automaticamente.</p>
+          </div>
+        </div>
+        </div><!-- /wrapCampoFotos -->
 
         <div class="nav">
           <span></span>
@@ -1435,6 +1464,23 @@
           </div>
         </div>
 
+        <div class="grid">
+          <div>
+            <label>Você percebe algum lado do corpo maior ou diferente do outro?</label>
+            <select id="assimetria">
+              <option value="">Selecione</option>
+              <option>Não percebo diferença</option>
+              <option>Sim — braço / ombro</option>
+              <option>Sim — peito</option>
+              <option>Sim — costas / dorsal</option>
+              <option>Sim — glúteo / quadril</option>
+              <option>Sim — perna / coxa</option>
+              <option>Sim — panturrilha</option>
+              <option>Sim — mais de um lado</option>
+            </select>
+          </div>
+        </div>
+
         <div class="divider"></div>
 
         <div>
@@ -1495,16 +1541,22 @@
 
         <div class="divider"></div>
 
-        <button type="button" id="pdfGraphBtn" class="btn primary" style="width:100%;padding:14px 16px;font-size:16px" onclick="baixarPDFGrafico()" disabled>
-          Gerar PDF do gráfico
-        </button>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px">
+          <button type="button" id="whatsappBtn" class="btn primary" style="width:100%;padding:14px 16px;font-size:16px;background:linear-gradient(135deg,#25D366,#128C7E)" onclick="enviarWhatsApp()" disabled>
+            📲 Enviar pelo WhatsApp
+          </button>
+          <button type="button" id="pdfGraphBtn" class="btn" style="width:100%;padding:14px 16px;font-size:16px" onclick="baixarPDFCompleto()" disabled>
+            📄 Gerar PDF (dados + gráfico)
+          </button>
+        </div>
 
-        <p class="hint">
-          Ao clicar, o sistema gera e baixa somente o PDF do gráfico final. Depois a pessoa envia o arquivo manualmente para você pelo WhatsApp.
+        <p class="hint" style="margin-top:10px">
+          <b>WhatsApp</b> envia todos os dados da avaliação direto para o Tiago. Se marcou fotos, o link abre automaticamente depois.<br>
+          <b>PDF</b> baixa um arquivo com o resumo completo e o gráfico — para guardar ou enviar depois.
         </p>
 
-        <div class="nav">
-          <button type="button" class="btn" onclick="prev()">Voltar</button>
+        <div class="nav" style="margin-top:16px">
+          <button type="button" class="btn" onclick="prev()">← Voltar</button>
           <span></span>
         </div>
       </section>
@@ -2225,6 +2277,8 @@
       if(downloadBtn) downloadBtn.disabled = false;
       const pdfBtn = document.getElementById('pdfGraphBtn');
       if(pdfBtn) pdfBtn.disabled = false;
+      const waBtn = document.getElementById('whatsappBtn');
+      if(waBtn) waBtn.disabled = false;
     }
 
     async function calcular(){
@@ -2325,14 +2379,14 @@
       const niv = sugestaoNivel();
 
       return `AVALIAÇÃO DE RESULTADO E MUDANÇA DE NÍVEL\n\n` +
-`1) Identificação\nNome: ${nome}\nSexo / perfil visual: ${sexoPerfil}\nNível atual: ${nivelAtual}\nObjetivo: ${obj}\n\n` +
+`1) Identificação\nNome: ${nome}\nIdade: ${document.getElementById('idade')?.value||'—'}\nSexo / perfil visual: ${sexoPerfil}\nNível atual: ${nivelAtual}\nObjetivo: ${obj}\n\n` +
 `2) Frequência\nPlanejado por semana: ${selectedText('planejado')}\nDias treinados nos últimos 30 dias: ${selectedText('feito')}\nConclusão dos treinos: ${selectedText('pctCompleto')}\nMotivo principal: ${selectedText('motivoFalta')}\nTempo coube: ${selectedText('tempoCabe')}\n\n` +
 `3) Recuperação\nSono: ${document.getElementById('sono').value}/10\nEstresse: ${document.getElementById('estresse').value}/10\nDor muscular: ${document.getElementById('doms').value}/10\nEnergia: ${document.getElementById('energia').value}/10\nDor articular: ${document.getElementById('dor').value}/10\nLocal: ${selectedText('localDor')}\n\n` +
 `4) Evolução\n1) ${getExercicioValue(1)} — ${selectedText('res1')}\n2) ${getExercicioValue(2)} — ${selectedText('res2')}\n3) ${getExercicioValue(3)} — ${selectedText('res3')}\nRIR percebido: ${selectedText('rir')}\nMovimento correto: ${selectedText('tecnica')}\n\n` +
 `5) Risco\nPinçamento/travamento: ${selectedText('pinca')}${document.getElementById('pincaEx').value.trim()? ' | Ex.: '+document.getElementById('pincaEx').value.trim():''}\nEvita exercício: ${selectedText('evita')}${document.getElementById('evitaEx').value.trim()? ' | Ex.: '+document.getElementById('evitaEx').value.trim():''}\nObs: ${document.getElementById('obsRisco').value.trim()||'—'}\n\n` +
 `6) Percepção\nGostou: ${document.getElementById('gostou').value.trim()}\nAtrapalhou: ${document.getElementById('atrapalhou').value.trim()}\nMobilidade: ${selectedText('mob')}\nAlongamento: ${selectedText('along')}\nPreferência próximo mês: ${selectedText('preferencia')}\n\n` +
 `7) Bem-estar\nSono: ${document.getElementById('sono2').value}/10\nEstresse: ${document.getElementById('estresse2').value}/10\nAlimentação: ${selectedText('alimentacao')}\nSensação nos treinos: ${selectedText('sensacaoTreino')}\n\n` +
-`8) Foco e preferências\nMúsculo com maior evolução: ${selectedText('musculoEvoluiu')||'—'}\nMúsculo que ficou igual: ${selectedText('musculoIgual')||'—'}\nFoco muscular próximo ciclo: ${selectedText('focoMuscular')||'—'}\nQuer aprender: ${(()=>{const s=getCheckedItems('wrapQueroAprender');const o=(document.getElementById('queroAprenderOutro')?.value||'').trim();return [...s,...(o?[o]:[])].join(', ')||'—';})()}\nNão quer fazer: ${(()=>{const s=getCheckedItems('wrapNaoQuer');const o=(document.getElementById('naoQuerOutro')?.value||'').trim();return [...s,...(o?[o]:[])].join(', ')||'—';})()}\n\n` +
+`8) Foco e preferências\nMúsculo com maior evolução: ${selectedText('musculoEvoluiu')||'—'}\nMúsculo que ficou igual: ${selectedText('musculoIgual')||'—'}\nFoco muscular próximo ciclo: ${selectedText('focoMuscular')||'—'}\nAssimetria percebida: ${selectedText('assimetria')||'—'}\nQuer aprender: ${(()=>{const s=getCheckedItems('wrapQueroAprender');const o=(document.getElementById('queroAprenderOutro')?.value||'').trim();return [...s,...(o?[o]:[])].join(', ')||'—';})()}\nNão quer fazer: ${(()=>{const s=getCheckedItems('wrapNaoQuer');const o=(document.getElementById('naoQuerOutro')?.value||'').trim();return [...s,...(o?[o]:[])].join(', ')||'—';})()}\n\n` +
 `9) Resultado\nFrequência estimada: ${ader}%\nSemáforo: ${sem}\nSugestão: ${niv.sug}\nMotivo: ${niv.motivo}\n`;
     }
 
@@ -3268,6 +3322,8 @@
       if(downloadBtn) downloadBtn.disabled = true;
       const pdfBtn = document.getElementById('pdfGraphBtn');
       if(pdfBtn) pdfBtn.disabled = true;
+      const waBtnL = document.getElementById('whatsappBtn');
+      if(waBtnL) waBtnL.disabled = true;
       document.getElementById('kpiAder').textContent = '—';
       document.getElementById('kpiSem').textContent = '—';
       document.getElementById('kpiNivel').textContent = '—';
@@ -5080,11 +5136,7 @@ function gerarLinkAluno(){
   const base = window.location.href.split('?')[0];
   const link = base + '?aluno=' + encodeURIComponent(nome.trim());
   navigator.clipboard.writeText(link).then(()=>{
-    alert('✅ Link copiado!
-
-' + link + '
-
-Mande pelo WhatsApp para o aluno preencher.');
+    alert('✅ Link copiado!\n\n' + link + '\n\nMande pelo WhatsApp para o aluno preencher.');
   }).catch(()=>{
     prompt('Copie o link abaixo:', link);
   });
@@ -5103,6 +5155,201 @@ Mande pelo WhatsApp para o aluno preencher.');
 // Expose to canvas branding
 window.PERSONAL_NAME  = PERSONAL_NAME;
 window.PERSONAL_LABEL = PERSONAL_LABEL;
+
+    // ── Campo de fotos — aparece somente para alunos com 18 anos ou mais ──
+    (function(){
+      const idadeEl   = document.getElementById('idade');
+      const fotosWrap = document.getElementById('wrapCampoFotos');
+      const fotosEl   = document.getElementById('fotos');
+      const guiaEl    = document.getElementById('wrapGuiaFotos');
+
+      function atualizarGuiaFotos(){
+        if(!guiaEl || !fotosEl) return;
+        guiaEl.style.display = fotosEl.value === 'Sim' ? 'block' : 'none';
+      }
+
+      function atualizarCampoFotosPorIdade(){
+        if(!idadeEl || !fotosWrap) return;
+
+        const idade = Number(idadeEl.value);
+        const maiorDeIdade = Number.isFinite(idade) && idade >= 18;
+
+        fotosWrap.style.display = maiorDeIdade ? 'block' : 'none';
+
+        // Menor de 18 ou idade em branco: não mostra fotos e limpa resposta.
+        if(!maiorDeIdade){
+          if(fotosEl) fotosEl.value = '';
+          if(guiaEl) guiaEl.style.display = 'none';
+          return;
+        }
+
+        atualizarGuiaFotos();
+      }
+
+      if(idadeEl){
+        idadeEl.addEventListener('input', atualizarCampoFotosPorIdade);
+        idadeEl.addEventListener('change', atualizarCampoFotosPorIdade);
+      }
+
+      if(fotosEl){
+        fotosEl.addEventListener('change', atualizarGuiaFotos);
+      }
+
+      atualizarCampoFotosPorIdade();
+    })();
+
+    // ── Enviar WhatsApp com dados + link fotos ─────────────────────────
+    function enviarWhatsApp(){
+      const nome    = (document.getElementById('nome')?.value || '').trim();
+      const ader    = calcAderencia();
+      const sem     = calcSemaforo();
+      const niv     = sugestaoNivel();
+      const fotos   = document.getElementById('fotos')?.value || '';
+      const now     = new Date();
+      const data    = now.toLocaleDateString('pt-BR');
+      const hora    = now.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
+
+      let header = `📋 REAVALIAÇÃO DE NÍVEL — MFIT\n🕒 ${data} às ${hora}`;
+      if(fotos === 'Sim'){
+        header += `\n\n━━━━━━━━━━━━━━━━━━━━━\n📸 ENVIO DE FOTOS\n━━━━━━━━━━━━━━━━━━━━━\nUse roupas de academia — short/bermuda + cropped ou top esportivo.\n✅ 4 ângulos: frente, costas, lado direito e lado esquerdo\n✅ Ambiente iluminado, câmera na altura do umbigo\n📎 Clique para enviar as fotos:\nhttps://docs.google.com/forms/d/e/1FAIpQLSdPfcwdKj1kU2Oh_vRalywjHtm_by26FGhZoBhunjtEHjXgGw/viewform\n━━━━━━━━━━━━━━━━━━━━━`;
+      }
+
+      const body  = buildMessage();
+      const full  = header + '\n\n' + body;
+      const url   = `https://wa.me/5569992913628?text=${encodeURIComponent(full)}`;
+      window.open(url, '_blank');
+
+      if(fotos === 'Sim'){
+        setTimeout(function(){
+          window.open('https://docs.google.com/forms/d/e/1FAIpQLSdPfcwdKj1kU2Oh_vRalywjHtm_by26FGhZoBhunjtEHjXgGw/viewform', '_blank');
+        }, 1500);
+      }
+    }
+
+    // ── PDF completo: dados em texto + gráfico ─────────────────────────
+    async function baixarPDFCompleto(){
+      if(!ultimoScanData){ await renderScanPanel(); }
+
+      const nome    = document.getElementById('nome')?.value.trim() || 'aluno';
+      const ader    = calcAderencia();
+      const sem     = calcSemaforo();
+      const niv     = sugestaoNivel();
+      const msg     = buildMessage();
+      const canvas  = gerarCanvasGrafico();
+      const imgData = canvas.toDataURL('image/png');
+
+      // Monta PDF com jsPDF inline
+      const {jsPDF} = window.jspdf;
+      if(!jsPDF){ alert('PDF indisponível neste dispositivo.'); return; }
+
+      const doc = new jsPDF({unit:'mm', format:'a4', orientation:'portrait'});
+      const PW  = doc.internal.pageSize.getWidth();
+      const PH  = doc.internal.pageSize.getHeight();
+      const M   = 14;
+      const LW  = PW - M*2;
+
+      // Fundo escuro
+      doc.setFillColor(7,6,10);
+      doc.rect(0,0,PW,PH,'F');
+
+      // Título
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(14);
+      doc.setTextColor(163,89,218);
+      doc.text('REAVALIAÇÃO DE NÍVEL — MFIT PREMIUM', PW/2, 18, {align:'center'});
+
+      // Data
+      const now  = new Date();
+      const data = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+      doc.setFontSize(9);
+      doc.setTextColor(155,148,174);
+      doc.text(data, PW/2, 24, {align:'center'});
+
+      // Linha separadora
+      doc.setDrawColor(163,89,218);
+      doc.setLineWidth(0.4);
+      doc.line(M,27,PW-M,27);
+
+      // Texto das respostas
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(8);
+      doc.setTextColor(248,245,255);
+
+      const linhas = msg.split('\n');
+      let y = 33;
+      const lineH = 4.5;
+
+      linhas.forEach(ln => {
+        if(y > PH - 20){
+          doc.addPage();
+          doc.setFillColor(7,6,10);
+          doc.rect(0,0,PW,PH,'F');
+          y = 14;
+        }
+        if(ln.match(/^\d+\)|^■/)){
+          doc.setFont('helvetica','bold');
+          doc.setTextColor(163,89,218);
+        } else {
+          doc.setFont('helvetica','normal');
+          doc.setTextColor(248,245,255);
+        }
+        const wrapped = doc.splitTextToSize(ln, LW);
+        doc.text(wrapped, M, y);
+        y += wrapped.length * lineH;
+      });
+
+      // Nova página para o gráfico
+      doc.addPage();
+      doc.setFillColor(7,6,10);
+      doc.rect(0,0,PW,PH,'F');
+
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(11);
+      doc.setTextColor(163,89,218);
+      doc.text('Gráfico de Resultado', PW/2, 14, {align:'center'});
+      doc.setDrawColor(163,89,218);
+      doc.setLineWidth(0.4);
+      doc.line(M,17,PW-M,17);
+
+      // Calcular proporção do gráfico para caber na página
+      const ratio  = canvas.height / canvas.width;
+      const imgW   = LW;
+      const imgH   = imgW * ratio;
+      const pageH  = PH - 22;
+
+      if(imgH <= pageH){
+        doc.addImage(imgData,'PNG',M,20,imgW,imgH);
+      } else {
+        // Gráfico muito alto: encaixar na largura disponível em múltiplas páginas via slice
+        const sliceH   = Math.floor(canvas.width * pageH / imgW);
+        let srcY       = 0;
+        let firstSlice = true;
+
+        while(srcY < canvas.height){
+          if(!firstSlice){
+            doc.addPage();
+            doc.setFillColor(7,6,10);
+            doc.rect(0,0,PW,PH,'F');
+          }
+          firstSlice = false;
+
+          const remaining = canvas.height - srcY;
+          const thisH     = Math.min(sliceH, remaining);
+          const sliceCanvas = document.createElement('canvas');
+          sliceCanvas.width  = canvas.width;
+          sliceCanvas.height = thisH;
+          const sCtx = sliceCanvas.getContext('2d');
+          sCtx.drawImage(canvas,0,-srcY);
+          const sliceData  = sliceCanvas.toDataURL('image/png');
+          const renderH    = (thisH / canvas.width) * imgW;
+          doc.addImage(sliceData,'PNG',M,20,imgW,renderH);
+          srcY += thisH;
+        }
+      }
+
+      const fileName = `avaliacao-nivel-${safeFileName(nome)}.pdf`;
+      doc.save(fileName);
+    }
 </script>
 
 <!-- ═══ PERSONAL TOOLBAR — RODAPÉ ════════════════════════════ -->
