@@ -1478,6 +1478,12 @@
               <option>Sim — panturrilha</option>
               <option>Sim — mais de um lado</option>
             </select>
+
+            <div id="wrapAssimetriaDescricao" style="display:none;margin-top:12px">
+              <label>Descreva a diferença percebida</label>
+              <textarea id="assimetriaDescricao" placeholder="Ex.: lado direito do glúteo parece maior; perna esquerda parece mais fina; ombro direito mais alto..."></textarea>
+              <p class="hint">Esse campo aparece somente quando você marca que percebe diferença entre os lados.</p>
+            </div>
           </div>
         </div>
 
@@ -1568,8 +1574,8 @@
     let step = 1;
     let ultimoScanData = null;
     const LOGICAL_W = 1229;
-    const LOGICAL_H = 7500;
-    const EXPORT_SCALE = 3.0;
+    const LOGICAL_H = 7700;
+    const EXPORT_SCALE = 1.0;
     const bar = document.getElementById('bar');
 
     const TEMPLATE_SOURCES = {
@@ -1864,6 +1870,34 @@
       document.getElementById('objOutroWrap').style.display =
         document.getElementById('objetivo').value === 'Outro' ? 'block' : 'none';
     });
+
+    // ── Campo de descrição da assimetria muscular ─────────────────────
+    function atualizarCampoAssimetria(){
+      const assimetriaEl = document.getElementById('assimetria');
+      const wrapDesc = document.getElementById('wrapAssimetriaDescricao');
+      const descEl = document.getElementById('assimetriaDescricao');
+      if(!assimetriaEl || !wrapDesc) return;
+
+      const valor = assimetriaEl.value || '';
+      const mostrar = valor.startsWith('Sim');
+      wrapDesc.style.display = mostrar ? 'block' : 'none';
+
+      if(!mostrar && descEl){
+        descEl.value = '';
+      }
+    }
+
+    function getAssimetriaValue(){
+      const escolha = selectedText('assimetria') || '—';
+      const descricao = (document.getElementById('assimetriaDescricao')?.value || '').trim();
+
+      if(descricao && escolha !== '—') return escolha + ' | Descrição: ' + descricao;
+      if(descricao) return descricao;
+      return escolha;
+    }
+
+    document.getElementById('assimetria')?.addEventListener('change', atualizarCampoAssimetria);
+    atualizarCampoAssimetria();
 
     function validateCurrent(){
       const sec = sessions.find(s => Number(s.dataset.step) === step);
@@ -2259,14 +2293,16 @@
       const generated = gerarCanvasGrafico(1);
 
       if(preview){
-        preview.width = LOGICAL_W;
-        preview.height = LOGICAL_H;
+        // Usa a altura real do gráfico gerado. Quando há plano de ação extra,
+        // a prévia não corta a parte final e evita blocos sobrepostos/ocultos.
+        preview.width = generated.width || LOGICAL_W;
+        preview.height = generated.height || LOGICAL_H;
         const ctx = preview.getContext('2d');
         ctx.setTransform(1,0,0,1,0,0);
         ctx.clearRect(0,0,preview.width,preview.height);
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
-        ctx.drawImage(generated,0,0,LOGICAL_W,LOGICAL_H);
+        ctx.drawImage(generated,0,0,preview.width,preview.height);
       }
 
       panel.style.display = 'flex';
@@ -2305,6 +2341,7 @@
         `• Mobilidade: <b>${selectedText('mob')}</b> • Alongamento: <b>${selectedText('along')}</b><br>` +
         `• Preferência: <b>${selectedText('preferencia')}</b><br>` +
         `• Foco muscular: <b>${selectedText('focoMuscular')||'—'}</b><br>` +
+        `• Assimetria percebida: <b>${getAssimetriaValue()}</b><br>` +
         `• Músculo evoluiu: <b>${selectedText('musculoEvoluiu')||'—'}</b> • Ficou igual: <b>${selectedText('musculoIgual')||'—'}</b><br>` +
         `• Quer aprender: <b>${(()=>{const s=getCheckedItems('wrapQueroAprender');const o=(document.getElementById('queroAprenderOutro')?.value||'').trim();return [...s,...(o?[o]:[])].join(', ')||'—';})()}</b><br>` +
         `• Não quer fazer: <b>${(()=>{const s=getCheckedItems('wrapNaoQuer');const o=(document.getElementById('naoQuerOutro')?.value||'').trim();return [...s,...(o?[o]:[])].join(', ')||'—';})()}</b><br>` +
@@ -2340,6 +2377,9 @@
           musculoEvoluiu: selectedText('musculoEvoluiu') || '',
           musculoIgual: selectedText('musculoIgual') || '',
           focoMuscular: selectedText('focoMuscular') || '',
+          assimetria: selectedText('assimetria') || '',
+          assimetriaDescricao: (document.getElementById('assimetriaDescricao')?.value || '').trim(),
+          assimetriaCompleta: getAssimetriaValue(),
           queroAprender: [...queroSelecionados, ...(queroOutro ? [queroOutro] : [])].join(', ') || '',
           naoQuer: [...naoSelecionados, ...(naoOutro ? [naoOutro] : [])].join(', ') || '',
           pinca: selectedText('pinca') || '',
@@ -2386,7 +2426,7 @@
 `5) Risco\nPinçamento/travamento: ${selectedText('pinca')}${document.getElementById('pincaEx').value.trim()? ' | Ex.: '+document.getElementById('pincaEx').value.trim():''}\nEvita exercício: ${selectedText('evita')}${document.getElementById('evitaEx').value.trim()? ' | Ex.: '+document.getElementById('evitaEx').value.trim():''}\nObs: ${document.getElementById('obsRisco').value.trim()||'—'}\n\n` +
 `6) Percepção\nGostou: ${document.getElementById('gostou').value.trim()}\nAtrapalhou: ${document.getElementById('atrapalhou').value.trim()}\nMobilidade: ${selectedText('mob')}\nAlongamento: ${selectedText('along')}\nPreferência próximo mês: ${selectedText('preferencia')}\n\n` +
 `7) Bem-estar\nSono: ${document.getElementById('sono2').value}/10\nEstresse: ${document.getElementById('estresse2').value}/10\nAlimentação: ${selectedText('alimentacao')}\nSensação nos treinos: ${selectedText('sensacaoTreino')}\n\n` +
-`8) Foco e preferências\nMúsculo com maior evolução: ${selectedText('musculoEvoluiu')||'—'}\nMúsculo que ficou igual: ${selectedText('musculoIgual')||'—'}\nFoco muscular próximo ciclo: ${selectedText('focoMuscular')||'—'}\nAssimetria percebida: ${selectedText('assimetria')||'—'}\nQuer aprender: ${(()=>{const s=getCheckedItems('wrapQueroAprender');const o=(document.getElementById('queroAprenderOutro')?.value||'').trim();return [...s,...(o?[o]:[])].join(', ')||'—';})()}\nNão quer fazer: ${(()=>{const s=getCheckedItems('wrapNaoQuer');const o=(document.getElementById('naoQuerOutro')?.value||'').trim();return [...s,...(o?[o]:[])].join(', ')||'—';})()}\n\n` +
+`8) Foco e preferências\nMúsculo com maior evolução: ${selectedText('musculoEvoluiu')||'—'}\nMúsculo que ficou igual: ${selectedText('musculoIgual')||'—'}\nFoco muscular próximo ciclo: ${selectedText('focoMuscular')||'—'}\nAssimetria percebida: ${getAssimetriaValue()}\nQuer aprender: ${(()=>{const s=getCheckedItems('wrapQueroAprender');const o=(document.getElementById('queroAprenderOutro')?.value||'').trim();return [...s,...(o?[o]:[])].join(', ')||'—';})()}\nNão quer fazer: ${(()=>{const s=getCheckedItems('wrapNaoQuer');const o=(document.getElementById('naoQuerOutro')?.value||'').trim();return [...s,...(o?[o]:[])].join(', ')||'—';})()}\n\n` +
 `9) Resultado\nFrequência estimada: ${ader}%\nSemáforo: ${sem}\nSugestão: ${niv.sug}\nMotivo: ${niv.motivo}\n`;
     }
 
@@ -3164,12 +3204,12 @@
         await renderScanPanel();
       }
 
-      const canvas = gerarCanvasGrafico();
+      const canvas = gerarCanvasGrafico(1);
       const nome = safeFileName(document.getElementById('nome').value.trim());
       const a = document.createElement('a');
 
-      a.download = `grafico-avaliacao-nivel-${nome}.png`;
-      a.href = canvas.toDataURL('image/png');
+      a.download = `grafico-avaliacao-nivel-${nome}.jpg`;
+      a.href = canvas.toDataURL('image/jpeg', 0.86);
       a.click();
     }
 
@@ -3178,11 +3218,11 @@
         await renderScanPanel();
       }
 
-      const canvas = gerarCanvasGrafico();
+      const canvas = gerarCanvasGrafico(1);
       const nome = safeFileName(document.getElementById('nome').value.trim());
 
       canvas.toBlob(async blob => {
-        const file = new File([blob],`grafico-avaliacao-nivel-${nome}.png`,{type:'image/png'});
+        const file = new File([blob],`grafico-avaliacao-nivel-${nome}.jpg`,{type:'image/jpeg'});
 
         if(navigator.canShare && navigator.canShare({files:[file]})){
           try{
@@ -3204,7 +3244,7 @@
         window.open(url,'_blank');
 
         alert('O navegador não permitiu anexar automaticamente. O gráfico foi baixado como PNG; anexe esse arquivo no WhatsApp.');
-      },'image/png');
+      },'image/jpeg', 0.86);
     }
 
     function asciiBytes(str){
@@ -3377,17 +3417,41 @@
 
     function drawMetricPill(ctx,x,y,w,h,label,value,color='#C55FFF'){
       clearPanel(ctx,x,y,w,h,18,'rgba(185,84,255,.48)');
+
+      const labelText = String(label || '');
+      const valueText = String(value || '—');
+      const innerW = Math.max(20, w - 24);
+
+      function fitFontSize(text, baseSize, minSize, weight='900'){
+        let size = baseSize;
+        ctx.save();
+        do{
+          ctx.font = weight + ' ' + size + 'px Arial, sans-serif';
+          if(ctx.measureText(text).width <= innerW || size <= minSize) break;
+          size -= 1;
+        }while(size > minSize);
+        ctx.restore();
+        return size;
+      }
+
+      const labelSize = fitFontSize(labelText, Math.min(18, Math.max(11, Math.floor(h * 0.18))), 9, '800');
+      const valueSize = fitFontSize(valueText, Math.min(38, Math.max(17, Math.floor(h * 0.34))), 12, '900');
+      const labelY = y + Math.max(20, h * 0.34);
+      const valueY = y + Math.min(h - 18, h * 0.70);
+
       ctx.save();
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
+
       ctx.fillStyle = '#D8D0E2';
-      ctx.font = '800 18px Arial, sans-serif';
-      ctx.fillText(label,x+w/2,y+31);
+      ctx.font = '800 ' + labelSize + 'px Arial, sans-serif';
+      ctx.fillText(labelText,x+w/2,labelY);
+
       ctx.shadowColor = color;
       ctx.shadowBlur = 10;
       ctx.fillStyle = color;
-      ctx.font = '900 38px Arial, sans-serif';
-      ctx.fillText(value,x+w/2,y+76);
+      ctx.font = '900 ' + valueSize + 'px Arial, sans-serif';
+      ctx.fillText(valueText,x+w/2,valueY);
       ctx.restore();
     }
 
@@ -4275,7 +4339,7 @@
 
       // ── Card SINAIS DE RISCO E CONTEXTO ─────────────────────────────────────
       {
-        const rx2 = 28, ry2 = 5260, rw2 = 1172, rh2 = 360;
+        const rx2 = 28, ry2 = 5260, rw2 = 1172, rh2 = 560;
         cardFrame(ctx, rx2, ry2, rw2, rh2, 'rgba(255,140,58,.78)');
         neonText(ctx, 'SINAIS DE RISCO E CONTEXTO', rx2+rw2/2, ry2+58, {align:'center', font:'900 36px Arial, sans-serif', color:'#FFFFFF', blur:7});
         neonText(ctx, 'Informações críticas para prescrição segura do próximo ciclo', rx2+rw2/2, ry2+94, {align:'center', font:'600 19px Arial, sans-serif', color:'#FFD8B0', blur:4});
@@ -4342,24 +4406,24 @@
         // Linha 3 — observação livre (full width)
         if(obsRisco2 !== '—'){
           const obsY = row2Y + 100;
-          clearPanel(ctx, rx2+34, obsY, rw2-68, 60, 12, 'rgba(255,255,255,.05)');
-          drawRoundRect(ctx, rx2+34, obsY, rw2-68, 60, 12, null, 'rgba(255,200,100,.35)', 1.5);
-          neonText(ctx, '💬  OBS:', rx2+56, obsY+22, {font:'700 16px Arial, sans-serif', color:'#FFD080', blur:3});
-          fitText(ctx, obsRisco2, rx2+120, obsY+22, rw2-180, '600 17px Arial, sans-serif', '#FFFFFF', 'left');
+          clearPanel(ctx, rx2+34, obsY, rw2-68, 74, 12, 'rgba(255,255,255,.05)');
+          drawRoundRect(ctx, rx2+34, obsY, rw2-68, 74, 12, null, 'rgba(255,200,100,.35)', 1.5);
+          neonText(ctx, '💬  OBS:', rx2+56, obsY+24, {font:'700 16px Arial, sans-serif', color:'#FFD080', blur:3});
+          fitText(ctx, obsRisco2, rx2+120, obsY+44, rw2-180, '600 16px Arial, sans-serif', '#FFFFFF', 'left');
         }
       }
 
       // ── Conduta MFIT ─────────────────────────────────────────────────────
-      const nx = 52, ny = 5740, nw = 1124, nh = 280;
+      const nx = 52, ny = 5850, nw = 1124, nh = 300;
       cardFrame(ctx,nx,ny,nw,nh,approved ? 'rgba(91,255,91,.70)' : 'rgba(255,180,58,.76)');
       neonText(ctx,'CONDUTA MFIT PREMIUM',nx+40,ny+64,{font:'900 34px Arial, sans-serif',color:'#FFFFFF',blur:6});
       const conduta = approved
         ? 'Liberar progressão para '+final.novoNivel+', sem romper técnica, amplitude e recuperação. Monitorar resposta na primeira semana.'
         : 'Manter '+safeNivelAtual+', corrigir o principal limitador e repetir avaliação após novo bloco de treino.';
-      drawWrappedLeft(ctx,conduta,nx+40,ny+118,nw-80,40,'700 28px Arial, sans-serif',approved ? '#B7FF9A' : '#FFD278',3);
+      drawWrappedLeft(ctx,conduta,nx+40,ny+118,nw-80,38,'700 26px Arial, sans-serif',approved ? '#B7FF9A' : '#FFD278',4);
 
       // ── Card FOCO MUSCULAR E PREFERÊNCIAS ────────────────────────────────────
-      const fx = 28, fy = 6050, fw = 1172, fh = 560;
+      const fx = 28, fy = 6190, fw = 1172, fh = 580;
       cardFrame(ctx, fx, fy, fw, fh, 'rgba(185,84,255,.82)');
       neonText(ctx, 'FOCO MUSCULAR E PREFERÊNCIAS', fx+fw/2, fy+58, {align:'center', font:'900 38px Arial, sans-serif', color:'#FFFFFF', blur:7});
       neonText(ctx, 'Dados informados pelo aluno para o próximo ciclo de treino', fx+fw/2, fy+96, {align:'center', font:'600 20px Arial, sans-serif', color:'#D9D0E8', blur:4});
@@ -4403,130 +4467,36 @@
       fitText(ctx, focoMusc, p3x+pillFW/2, pillFY+82, pillFW-24, '900 24px Arial, sans-serif', '#FFFFFF', 'center');
 
       // ── Linha 2: quer aprender | não quer fazer (lado a lado) ──
-      const rowY2 = pillFY + pillH + 28;
+      const rowY2 = pillFY + pillH + 34;
       const halfW = Math.floor((fw - 100) / 2);
 
       // Bloco QUER APRENDER (esquerda)
-      clearPanel(ctx, fx+34, rowY2, halfW, 160, 16, 'rgba(101,255,90,.10)');
-      drawRoundRect(ctx, fx+34, rowY2, halfW, 160, 16, null, 'rgba(101,255,90,.50)', 2);
+      clearPanel(ctx, fx+34, rowY2, halfW, 180, 16, 'rgba(101,255,90,.10)');
+      drawRoundRect(ctx, fx+34, rowY2, halfW, 180, 16, null, 'rgba(101,255,90,.50)', 2);
       neonText(ctx, '✅  QUER APRENDER', fx+34+halfW/2, rowY2+34, {align:'center', font:'800 22px Arial, sans-serif', color:'#65FF5A', blur:5});
       ctx.save();
-      ctx.rect(fx+34, rowY2+52, halfW, 100);
+      ctx.rect(fx+34, rowY2+52, halfW, 120);
       ctx.clip();
-      drawWrappedLeft(ctx, queroFinal, fx+56, rowY2+74, halfW-44, 30, '600 20px Arial, sans-serif', '#FFFFFF', 3);
+      drawWrappedLeft(ctx, queroFinal, fx+56, rowY2+74, halfW-44, 28, '600 19px Arial, sans-serif', '#FFFFFF', 4);
       ctx.restore();
 
       // Bloco NÃO QUER FAZER (direita)
       const bx2 = fx+34+halfW+32;
-      clearPanel(ctx, bx2, rowY2, halfW, 160, 16, 'rgba(255,85,85,.10)');
-      drawRoundRect(ctx, bx2, rowY2, halfW, 160, 16, null, 'rgba(255,85,85,.50)', 2);
+      clearPanel(ctx, bx2, rowY2, halfW, 180, 16, 'rgba(255,85,85,.10)');
+      drawRoundRect(ctx, bx2, rowY2, halfW, 180, 16, null, 'rgba(255,85,85,.50)', 2);
       neonText(ctx, '🚫  NÃO QUER FAZER', bx2+halfW/2, rowY2+34, {align:'center', font:'800 22px Arial, sans-serif', color:'#FF5555', blur:5});
       ctx.save();
-      ctx.rect(bx2, rowY2+52, halfW, 100);
+      ctx.rect(bx2, rowY2+52, halfW, 120);
       ctx.clip();
-      drawWrappedLeft(ctx, naoFinal, bx2+22, rowY2+74, halfW-44, 30, '600 20px Arial, sans-serif', '#FFFFFF', 3);
+      drawWrappedLeft(ctx, naoFinal, bx2+22, rowY2+74, halfW-44, 28, '600 19px Arial, sans-serif', '#FFFFFF', 4);
       ctx.restore();
 
-      // ── Card DIAGNÓSTICO + PLANO DE AÇÃO (apenas quando reprovada) ──────────
-      if(!approved){
-        // Gera plano de ação personalizado baseado nos critérios que falharam
-        function gerarPlanoAcao(){
-          const linhas = [];
-          const nivelAtual2 = selectedText('nivelAtual');
-          const ader2 = calcAderencia();
-          const sem2 = calcSemaforo();
-          const dor2 = +document.getElementById('dor').value;
-          const sono2 = +document.getElementById('sono').value;
-          const estresse2 = +document.getElementById('estresse').value;
-          const doms2 = +document.getElementById('doms').value;
-          const energia2 = +document.getElementById('energia').value;
-          const tecnica2 = selectedText('tecnica');
-          const rir2 = selectedText('rir');
-          const localDor2 = selectedText('localDor');
-          const pinca2 = selectedText('pinca');
-          const pincaEx2 = (document.getElementById('pincaEx')?.value||'').trim();
-          const evita2 = selectedText('evita');
-          const evitaEx2 = (document.getElementById('evitaEx')?.value||'').trim();
-          const {up:up2, down:down2} = perfScore();
-
-          if(dor2 > 2){
-            linhas.push('• Agendar avaliação específica para ' + (localDor2 && localDor2 !== 'Sem dor' ? localDor2 : 'a região com dor') + ' antes de continuar treinando normalmente.');
-            if(pinca2 === 'Sim' && pincaEx2) linhas.push('• Substituir ou suspender ' + pincaEx2 + ' até zerar o pinçamento.');
-            if(evita2 === 'Sim' && evitaEx2) linhas.push('• Não forçar ' + evitaEx2 + ' — trocar por variação sem dor no próximo bloco.');
-            linhas.push('• Meta: chegar na próxima reavaliação com dor ≤ 2/10.');
-          } else if(ader2 < 75){
-            const meta = nivelAtual2 === 'Intermediário' ? 85 : 75;
-            linhas.push('• Aderência atual: ' + ader2 + '%. Meta mínima para subir: ' + meta + '%.');
-            linhas.push('• Identificar o principal motivo de falta e criar um plano concreto para eliminar essa barreira.');
-            linhas.push('• Estratégia prática: fixar horário de treino imutável e registrar cada sessão realizada.');
-          } else if(sem2 === 'Vermelho'){
-            if(sono2 <= 4) linhas.push('• Sono ' + sono2 + '/10: priorizar 7–8h por noite — é o maior fator de recuperação muscular.');
-            if(estresse2 >= 8) linhas.push('• Estresse ' + estresse2 + '/10: reduzir volume de treino em 30% e inserir 1 dia extra de descanso.');
-            if(doms2 >= 8) linhas.push('• Dor muscular residual ' + doms2 + '/10: aguardar recuperação completa antes de treinar o mesmo grupamento.');
-            linhas.push('• Semáforo precisa estar Amarelo ou Verde para liberar progressão.');
-          } else {
-            // Bloqueios por nível
-            if(nivelAtual2 === 'Iniciante'){
-              if(down2 > 0) linhas.push('• ' + down2 + ' exercício(s) pioraram: revisar execução e reduzir carga até retomar a progressão.');
-              if(up2 === 0) linhas.push('• Nenhuma melhora registrada: aumentar estímulo gradualmente (carga +2–5% ou +1–2 repetições por semana).');
-              if(tecnica2 !== 'Sim' && tecnica2 !== 'Às vezes') linhas.push('• Técnica "' + tecnica2 + '": focar em qualidade antes de aumentar carga — gravar os movimentos pode ajudar.');
-            } else if(nivelAtual2 === 'Intermediário'){
-              if(ader2 < 85) linhas.push('• Frequência ' + ader2 + '%: para avançado exige ≥85% — criar rotina semanal fixa é o caminho mais rápido.');
-              if(sem2 !== 'Verde') linhas.push('• Semáforo ' + sem2 + ': sono (' + sono2 + '/10), energia (' + energia2 + '/10) e estresse (' + estresse2 + '/10) precisam melhorar.');
-              if(tecnica2 !== 'Sim') linhas.push('• Técnica "' + tecnica2 + '": para avançado exige domínio total — dedicar 1 sessão/semana exclusivamente a refinamento técnico.');
-              if(down2 > 0) linhas.push('• Performance: ' + down2 + ' piora(s) registrada(s) — identificar se é fadiga acumulada, carga excessiva ou execução incorreta.');
-              if(up2 < 2) linhas.push('• Evolução: apenas ' + up2 + ' melhora(s) — exige ≥2. Aplicar sobrecarga progressiva nos 3 exercícios-chave.');
-              const okRir = ['Conseguiria fazer mais 1 ou 2 repetições','Conseguiria fazer mais 3 ou 4 repetições'].includes(rir2);
-              if(!okRir) linhas.push('• RIR "' + rir2 + '": o esforço precisa estar calibrado — nem muito fácil, nem até a falha total.');
-            }
-          }
-          if(linhas.length === 0) linhas.push('• Revisar todos os critérios com o personal e montar plano de correção para o próximo bloco.');
-          return linhas;
-        }
-
-        const plano = gerarPlanoAcao();
-        const niv2 = sugestaoNivel();
-        const motivoBloqueio = niv2.motivo.split('\n')[0]; // primeira linha = título do bloqueio
-
-        const dpX = 28, dpY = 5480, dpW = 1172;
-        // altura dinâmica baseada nas linhas do plano
-        const dpH = 120 + 54 + (plano.length * 52) + 40;
-
-        cardFrame(ctx, dpX, dpY, dpW, dpH, 'rgba(255,100,58,.82)');
-
-        // Título
-        neonText(ctx, '⚠  POR QUE FOI BLOQUEADA', dpX + dpW/2, dpY + 52, {
-          align:'center', font:'900 32px Arial, sans-serif', color:'#FFD278', blur:7
-        });
-
-        // Linha do motivo real
-        drawWrappedLeft(ctx, motivoBloqueio, dpX + 52, dpY + 96, dpW - 104, 34,
-          '700 24px Arial, sans-serif', '#FFFFFF', 2);
-
-        // Divisor
-        ctx.save();
-        ctx.strokeStyle = 'rgba(255,210,77,.35)';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(dpX + 52, dpY + 150);
-        ctx.lineTo(dpX + dpW - 52, dpY + 150);
-        ctx.stroke();
-        ctx.restore();
-
-        // Subtítulo plano de ação
-        neonText(ctx, '✦  O QUE FAZER ATÉ A PRÓXIMA REAVALIAÇÃO', dpX + dpW/2, dpY + 192, {
-          align:'center', font:'900 28px Arial, sans-serif', color:'#FFD278', blur:5
-        });
-
-        // Linhas do plano
-        plano.forEach((linha, i) => {
-          drawWrappedLeft(ctx, linha, dpX + 64, dpY + 232 + i * 52, dpW - 128, 32,
-            '600 22px Arial, sans-serif', '#FFE5B0', 2);
-        });
-      }
+      // ── Diagnóstico detalhado ─────────────────────────────────────────────
+      // O bloco detalhado de plano de ação fica em uma área própria após o gráfico.
+      // Assim o final do canvas não sobrepõe sinais de risco, conduta e preferências.
 
       // ── Rodapé: Score + Data + Reavaliação ───────────────────────────────
-      const ry = 6650, rh = 400;
+      const ry = 6820, rh = 400;
       cardFrame(ctx,38,ry,1153,rh,'rgba(185,84,255,.72)');
       neonText(ctx,'RESUMO FINAL DA AVALIAÇÃO',38+1153/2,ry+60,{align:'center',font:'900 36px Arial, sans-serif',color:'#FFFFFF',blur:8});
 
@@ -5228,127 +5198,140 @@ window.PERSONAL_LABEL = PERSONAL_LABEL;
 
     // ── PDF completo: dados em texto + gráfico ─────────────────────────
     async function baixarPDFCompleto(){
-      if(!ultimoScanData){ await renderScanPanel(); }
+      const pdfBtn = document.getElementById('pdfGraphBtn');
+      const textoOriginal = pdfBtn ? pdfBtn.textContent : '';
 
-      const nome    = document.getElementById('nome')?.value.trim() || 'aluno';
-      const ader    = calcAderencia();
-      const sem     = calcSemaforo();
-      const niv     = sugestaoNivel();
-      const msg     = buildMessage();
-      const canvas  = gerarCanvasGrafico();
-      const imgData = canvas.toDataURL('image/png');
-
-      // Monta PDF com jsPDF inline
-      const {jsPDF} = window.jspdf;
-      if(!jsPDF){ alert('PDF indisponível neste dispositivo.'); return; }
-
-      const doc = new jsPDF({unit:'mm', format:'a4', orientation:'portrait'});
-      const PW  = doc.internal.pageSize.getWidth();
-      const PH  = doc.internal.pageSize.getHeight();
-      const M   = 14;
-      const LW  = PW - M*2;
-
-      // Fundo escuro
-      doc.setFillColor(7,6,10);
-      doc.rect(0,0,PW,PH,'F');
-
-      // Título
-      doc.setFont('helvetica','bold');
-      doc.setFontSize(14);
-      doc.setTextColor(163,89,218);
-      doc.text('REAVALIAÇÃO DE NÍVEL — MFIT PREMIUM', PW/2, 18, {align:'center'});
-
-      // Data
-      const now  = new Date();
-      const data = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-      doc.setFontSize(9);
-      doc.setTextColor(155,148,174);
-      doc.text(data, PW/2, 24, {align:'center'});
-
-      // Linha separadora
-      doc.setDrawColor(163,89,218);
-      doc.setLineWidth(0.4);
-      doc.line(M,27,PW-M,27);
-
-      // Texto das respostas
-      doc.setFont('helvetica','normal');
-      doc.setFontSize(8);
-      doc.setTextColor(248,245,255);
-
-      const linhas = msg.split('\n');
-      let y = 33;
-      const lineH = 4.5;
-
-      linhas.forEach(ln => {
-        if(y > PH - 20){
-          doc.addPage();
-          doc.setFillColor(7,6,10);
-          doc.rect(0,0,PW,PH,'F');
-          y = 14;
+      try{
+        if(pdfBtn){
+          pdfBtn.disabled = true;
+          pdfBtn.textContent = 'Gerando PDF...';
         }
-        if(ln.match(/^\d+\)|^■/)){
-          doc.setFont('helvetica','bold');
-          doc.setTextColor(163,89,218);
-        } else {
-          doc.setFont('helvetica','normal');
-          doc.setTextColor(248,245,255);
+
+        const jspdfNS = window.jspdf;
+        if(!jspdfNS || !jspdfNS.jsPDF){
+          alert('Não foi possível carregar o gerador de PDF neste dispositivo. Tente abrir pelo Google Chrome com internet ativa.');
+          return;
         }
-        const wrapped = doc.splitTextToSize(ln, LW);
-        doc.text(wrapped, M, y);
-        y += wrapped.length * lineH;
-      });
 
-      // Nova página para o gráfico
-      doc.addPage();
-      doc.setFillColor(7,6,10);
-      doc.rect(0,0,PW,PH,'F');
+        if(!ultimoScanData){ await renderScanPanel(); }
 
-      doc.setFont('helvetica','bold');
-      doc.setFontSize(11);
-      doc.setTextColor(163,89,218);
-      doc.text('Gráfico de Resultado', PW/2, 14, {align:'center'});
-      doc.setDrawColor(163,89,218);
-      doc.setLineWidth(0.4);
-      doc.line(M,17,PW-M,17);
+        const nome    = document.getElementById('nome')?.value.trim() || 'aluno';
+        const msg     = buildMessage();
 
-      // Calcular proporção do gráfico para caber na página
-      const ratio  = canvas.height / canvas.width;
-      const imgW   = LW;
-      const imgH   = imgW * ratio;
-      const pageH  = PH - 22;
+        // Importante: escala 1 e JPEG evitam travamento em celulares.
+        // A versão anterior usava escala 3x + PNG, gerando imagem enorme na memória.
+        const canvas  = gerarCanvasGrafico(1);
+        const imgData = canvas.toDataURL('image/jpeg', 0.86);
 
-      if(imgH <= pageH){
-        doc.addImage(imgData,'PNG',M,20,imgW,imgH);
-      } else {
-        // Gráfico muito alto: encaixar na largura disponível em múltiplas páginas via slice
-        const sliceH   = Math.floor(canvas.width * pageH / imgW);
-        let srcY       = 0;
-        let firstSlice = true;
+        const {jsPDF} = jspdfNS;
+        const doc = new jsPDF({unit:'mm', format:'a4', orientation:'portrait', compress:true});
+        const PW  = doc.internal.pageSize.getWidth();
+        const PH  = doc.internal.pageSize.getHeight();
+        const M   = 14;
+        const LW  = PW - M*2;
 
-        while(srcY < canvas.height){
-          if(!firstSlice){
+        doc.setFillColor(7,6,10);
+        doc.rect(0,0,PW,PH,'F');
+
+        doc.setFont('helvetica','bold');
+        doc.setFontSize(14);
+        doc.setTextColor(163,89,218);
+        doc.text('REAVALIAÇÃO DE NÍVEL — MFIT PREMIUM', PW/2, 18, {align:'center'});
+
+        const now  = new Date();
+        const data = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+        doc.setFontSize(9);
+        doc.setTextColor(155,148,174);
+        doc.text(data, PW/2, 24, {align:'center'});
+
+        doc.setDrawColor(163,89,218);
+        doc.setLineWidth(0.4);
+        doc.line(M,27,PW-M,27);
+
+        doc.setFont('helvetica','normal');
+        doc.setFontSize(8);
+        doc.setTextColor(248,245,255);
+
+        const linhas = msg.split('\n');
+        let y = 33;
+        const lineH = 4.5;
+
+        linhas.forEach(ln => {
+          if(y > PH - 20){
             doc.addPage();
             doc.setFillColor(7,6,10);
             doc.rect(0,0,PW,PH,'F');
+            y = 14;
           }
-          firstSlice = false;
+          if(ln.match(/^\d+\)|^■/)){
+            doc.setFont('helvetica','bold');
+            doc.setTextColor(163,89,218);
+          } else {
+            doc.setFont('helvetica','normal');
+            doc.setTextColor(248,245,255);
+          }
+          const wrapped = doc.splitTextToSize(ln, LW);
+          doc.text(wrapped, M, y);
+          y += wrapped.length * lineH;
+        });
 
-          const remaining = canvas.height - srcY;
-          const thisH     = Math.min(sliceH, remaining);
-          const sliceCanvas = document.createElement('canvas');
-          sliceCanvas.width  = canvas.width;
-          sliceCanvas.height = thisH;
-          const sCtx = sliceCanvas.getContext('2d');
-          sCtx.drawImage(canvas,0,-srcY);
-          const sliceData  = sliceCanvas.toDataURL('image/png');
-          const renderH    = (thisH / canvas.width) * imgW;
-          doc.addImage(sliceData,'PNG',M,20,imgW,renderH);
-          srcY += thisH;
+        doc.addPage();
+        doc.setFillColor(7,6,10);
+        doc.rect(0,0,PW,PH,'F');
+
+        doc.setFont('helvetica','bold');
+        doc.setFontSize(11);
+        doc.setTextColor(163,89,218);
+        doc.text('Gráfico de Resultado', PW/2, 14, {align:'center'});
+        doc.setDrawColor(163,89,218);
+        doc.setLineWidth(0.4);
+        doc.line(M,17,PW-M,17);
+
+        const ratio  = canvas.height / canvas.width;
+        const imgW   = LW;
+        const imgH   = imgW * ratio;
+        const pageH  = PH - 22;
+
+        if(imgH <= pageH){
+          doc.addImage(imgData,'JPEG',M,20,imgW,imgH,undefined,'FAST');
+        } else {
+          const sliceH   = Math.max(400, Math.floor(canvas.width * pageH / imgW));
+          let srcY       = 0;
+          let firstSlice = true;
+
+          while(srcY < canvas.height){
+            if(!firstSlice){
+              doc.addPage();
+              doc.setFillColor(7,6,10);
+              doc.rect(0,0,PW,PH,'F');
+            }
+            firstSlice = false;
+
+            const remaining = canvas.height - srcY;
+            const thisH     = Math.min(sliceH, remaining);
+            const sliceCanvas = document.createElement('canvas');
+            sliceCanvas.width  = canvas.width;
+            sliceCanvas.height = thisH;
+            const sCtx = sliceCanvas.getContext('2d');
+            sCtx.drawImage(canvas, 0, srcY, canvas.width, thisH, 0, 0, canvas.width, thisH);
+            const sliceData  = sliceCanvas.toDataURL('image/jpeg', 0.86);
+            const renderH    = (thisH / canvas.width) * imgW;
+            doc.addImage(sliceData,'JPEG',M,20,imgW,renderH,undefined,'FAST');
+            srcY += thisH;
+          }
+        }
+
+        const fileName = `avaliacao-nivel-${safeFileName(nome)}.pdf`;
+        doc.save(fileName);
+      }catch(e){
+        console.error('Erro ao gerar PDF:', e);
+        alert('O PDF não conseguiu ser gerado neste dispositivo. Tente novamente pelo Google Chrome ou envie pelo WhatsApp e gere o PDF depois.');
+      }finally{
+        if(pdfBtn){
+          pdfBtn.disabled = false;
+          pdfBtn.textContent = textoOriginal || '📄 Gerar PDF (dados + gráfico)';
         }
       }
-
-      const fileName = `avaliacao-nivel-${safeFileName(nome)}.pdf`;
-      doc.save(fileName);
     }
 </script>
 
