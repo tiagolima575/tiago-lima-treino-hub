@@ -1246,6 +1246,113 @@
           <textarea id="obsRisco" placeholder="Ex.: joelho incomodou na descida; ombro pinçou no final..."></textarea>
         </div>
 
+        <!-- ── Bloco saúde feminina ──────────────────────────────────── -->
+        <div id="wrapSaudeFeminina" style="display:none">
+          <div class="divider" style="margin:20px 0 16px"></div>
+          <p style="font-weight:700;color:var(--purple);margin:0 0 14px">🩺 Histórico de saúde — feminino</p>
+
+          <div class="grid grid-2">
+            <div>
+              <label>Fez cesárea?</label>
+              <select id="cesareia">
+                <option value="">Selecione</option>
+                <option value="Nao">Não</option>
+                <option value="Sim">Sim</option>
+              </select>
+            </div>
+            <div id="wrapCesareiaTempo" style="display:none">
+              <label>Há quanto tempo?</label>
+              <input id="cesareiaTempo" type="text" placeholder="Ex.: 8 meses, 2 anos">
+            </div>
+          </div>
+
+          <div class="grid grid-2" style="margin-top:12px">
+            <div>
+              <label>Fez algum procedimento estético ou cirúrgico?</label>
+              <select id="procedimento">
+                <option value="">Selecione</option>
+                <option value="Nao">Não</option>
+                <option value="Sim">Sim</option>
+              </select>
+            </div>
+            <div id="wrapProcedimentoTempo" style="display:none">
+              <label>Há quanto tempo?</label>
+              <input id="procedimentoTempo" type="text" placeholder="Ex.: 6 meses, 1 ano">
+            </div>
+          </div>
+
+          <div id="wrapProcedimentoTipo" style="display:none;margin-top:12px">
+            <div class="grid grid-2">
+              <div>
+                <label>Qual procedimento?</label>
+                <select id="procedimentoTipo">
+                  <option value="">Selecione</option>
+                  <option>Lipoaspiração</option>
+                  <option>Abdominoplastia (barriga)</option>
+                  <option>Mamoplastia — colocação de prótese</option>
+                  <option>Mamoplastia redutora</option>
+                  <option>Rinoplastia (nariz)</option>
+                  <option>Blefaroplastia (pálpebra)</option>
+                  <option>Botox / preenchimento</option>
+                  <option>Cirurgia bariátrica (redução de estômago)</option>
+                  <option>Histerectomia (útero)</option>
+                  <option>Outro</option>
+                </select>
+              </div>
+              <div id="wrapProcedimentoOutro" style="display:none">
+                <label>Qual procedimento? (descreva)</label>
+                <input id="procedimentoOutro" type="text" placeholder="Ex.: cirurgia no quadril">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Bloco saúde masculina ──────────────────────────────────── -->
+        <div id="wrapSaudeMasculina" style="display:none">
+          <div class="divider" style="margin:20px 0 16px"></div>
+          <p style="font-weight:700;color:var(--purple);margin:0 0 14px">🩺 Histórico de saúde — masculino</p>
+
+          <div class="grid grid-2">
+            <div>
+              <label>Passou por alguma cirurgia?</label>
+              <select id="cirurgia">
+                <option value="">Selecione</option>
+                <option value="Nao">Não</option>
+                <option value="Sim">Sim</option>
+              </select>
+            </div>
+            <div id="wrapCirurgiaTempo" style="display:none">
+              <label>Há quanto tempo?</label>
+              <input id="cirurgiaTempo" type="text" placeholder="Ex.: 4 meses, 3 anos">
+            </div>
+          </div>
+
+          <div id="wrapCirurgiaTipo" style="display:none;margin-top:12px">
+            <div class="grid grid-2">
+              <div>
+                <label>Qual cirurgia?</label>
+                <select id="cirurgiaTipo">
+                  <option value="">Selecione</option>
+                  <option>Joelho — ligamento (LCA / LCP)</option>
+                  <option>Joelho — menisco</option>
+                  <option>Ombro — manguito rotador</option>
+                  <option>Ombro — luxação recorrente</option>
+                  <option>Hérnia inguinal</option>
+                  <option>Hérnia de disco — coluna</option>
+                  <option>Apendicite / abdômen</option>
+                  <option>Cirurgia bariátrica (redução de estômago)</option>
+                  <option>Cirurgia cardíaca</option>
+                  <option>Outro</option>
+                </select>
+              </div>
+              <div id="wrapCirurgiaOutro" style="display:none">
+                <label>Qual cirurgia? (descreva)</label>
+                <input id="cirurgiaOutro" type="text" placeholder="Ex.: cirurgia no tornozelo">
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="nav">
           <button type="button" class="btn" onclick="prev()">Voltar</button>
           <button type="button" class="btn primary" onclick="next()">Próximo</button>
@@ -1548,17 +1655,23 @@
         <div class="divider"></div>
 
         <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px">
-          <button type="button" id="whatsappBtn" class="btn primary" style="width:100%;padding:14px 16px;font-size:16px;background:linear-gradient(135deg,#25D366,#128C7E)" onclick="enviarWhatsApp()" disabled>
-            📲 Enviar pelo WhatsApp
+          <button type="button" id="pdfGraphBtn" class="btn primary" style="width:100%;padding:14px 16px;font-size:16px" onclick="baixarPDFCompleto()" disabled>
+            📄 Gerar PDF primeiro (dados + gráfico)
           </button>
-          <button type="button" id="pdfGraphBtn" class="btn" style="width:100%;padding:14px 16px;font-size:16px" onclick="baixarPDFCompleto()" disabled>
-            📄 Gerar PDF (dados + gráfico)
-          </button>
+
+          <div id="posPdfWhatsappBox" style="display:none;margin-top:4px;padding:14px;border:1px solid rgba(37,211,102,.38);border-radius:14px;background:rgba(37,211,102,.08)">
+            <b style="display:block;color:#8CFFB0;margin-bottom:6px">✅ PDF gerado com sucesso</b>
+            <p class="hint" style="margin:0 0 12px;color:var(--text)">
+              Agora envie as informações pelo WhatsApp e anexe o PDF baixado. Se você escolheu enviar fotos, o link de fotos também vai junto na mensagem.
+            </p>
+            <button type="button" id="whatsappBtn" class="btn primary" style="width:100%;padding:14px 16px;font-size:16px;background:linear-gradient(135deg,#25D366,#128C7E)" onclick="enviarWhatsApp()" disabled>
+              📲 Enviar dados pelo WhatsApp
+            </button>
+          </div>
         </div>
 
         <p class="hint" style="margin-top:10px">
-          <b>WhatsApp</b> envia todos os dados da avaliação direto para o Tiago. Se marcou fotos, o link abre automaticamente depois.<br>
-          <b>PDF</b> baixa um arquivo com o resumo completo e o gráfico — para guardar ou enviar depois.
+          Primeiro o aluno gera o <b>PDF com dados + gráfico</b>. Depois aparece o botão de <b>WhatsApp</b> para enviar todas as respostas coletadas e lembrar de anexar o PDF baixado.
         </p>
 
         <div class="nav" style="margin-top:16px">
@@ -1573,6 +1686,8 @@
     const sessions = Array.from(document.querySelectorAll('.session'));
     let step = 1;
     let ultimoScanData = null;
+    let pdfJaGerado = false;
+    let ultimoPdfGeradoNome = "";
     const LOGICAL_W = 1229;
     const LOGICAL_H = 7700;
     const EXPORT_SCALE = 1.0;
@@ -2313,8 +2428,12 @@
       if(downloadBtn) downloadBtn.disabled = false;
       const pdfBtn = document.getElementById('pdfGraphBtn');
       if(pdfBtn) pdfBtn.disabled = false;
+
+      // O WhatsApp só libera depois que o PDF é gerado.
       const waBtn = document.getElementById('whatsappBtn');
-      if(waBtn) waBtn.disabled = false;
+      if(waBtn) waBtn.disabled = !pdfJaGerado;
+      const posPdfBox = document.getElementById('posPdfWhatsappBox');
+      if(posPdfBox) posPdfBox.style.display = pdfJaGerado ? 'block' : 'none';
     }
 
     async function calcular(){
@@ -2400,34 +2519,70 @@
     }
 
     function buildMessage(){
-      const nome = document.getElementById('nome').value.trim();
-      const sexoPerfil = selectedText('sexoPerfil');
-      const nivelAtual = selectedText('nivelAtual');
+      const val = (id) => (document.getElementById(id)?.value || '').trim() || '—';
+      const txt = (id) => selectedText(id) || '—';
 
-      let obj = selectedText('objetivo');
+      const nome = val('nome');
+      const sexoPerfil = txt('sexoPerfil');
+      const nivelAtual = txt('nivelAtual');
+      const idade = val('idade');
+      const fotosValor = document.getElementById('fotos')?.value || '';
+      const fotosTxt = fotosValor === 'Sim' ? 'Sim, quer enviar fotos' : fotosValor === 'Nao' ? 'Não por enquanto' : '—';
 
-      if(document.getElementById('objetivo').value === 'Outro'){
-        const o = document.getElementById('objetivoOutro').value.trim();
-
-        if(o){
-          obj = 'Outro: ' + o;
-        }
+      let obj = txt('objetivo');
+      if(document.getElementById('objetivo')?.value === 'Outro'){
+        const o = val('objetivoOutro');
+        if(o !== '—') obj = 'Outro: ' + o;
       }
 
       const ader = calcAderencia();
       const sem = calcSemaforo();
       const niv = sugestaoNivel();
+      const scoreTotal = typeof calcScoreTotal === 'function' ? calcScoreTotal() : '—';
+
+      const querAprender = (() => {
+        const s = getCheckedItems('wrapQueroAprender');
+        const o = val('queroAprenderOutro');
+        return [...s, ...(o !== '—' ? [o] : [])].join(', ') || '—';
+      })();
+
+      const naoQuerFazer = (() => {
+        const s = getCheckedItems('wrapNaoQuer');
+        const o = val('naoQuerOutro');
+        return [...s, ...(o !== '—' ? [o] : [])].join(', ') || '—';
+      })();
 
       return `AVALIAÇÃO DE RESULTADO E MUDANÇA DE NÍVEL\n\n` +
-`1) Identificação\nNome: ${nome}\nIdade: ${document.getElementById('idade')?.value||'—'}\nSexo / perfil visual: ${sexoPerfil}\nNível atual: ${nivelAtual}\nObjetivo: ${obj}\n\n` +
-`2) Frequência\nPlanejado por semana: ${selectedText('planejado')}\nDias treinados nos últimos 30 dias: ${selectedText('feito')}\nConclusão dos treinos: ${selectedText('pctCompleto')}\nMotivo principal: ${selectedText('motivoFalta')}\nTempo coube: ${selectedText('tempoCabe')}\n\n` +
-`3) Recuperação\nSono: ${document.getElementById('sono').value}/10\nEstresse: ${document.getElementById('estresse').value}/10\nDor muscular: ${document.getElementById('doms').value}/10\nEnergia: ${document.getElementById('energia').value}/10\nDor articular: ${document.getElementById('dor').value}/10\nLocal: ${selectedText('localDor')}\n\n` +
-`4) Evolução\n1) ${getExercicioValue(1)} — ${selectedText('res1')}\n2) ${getExercicioValue(2)} — ${selectedText('res2')}\n3) ${getExercicioValue(3)} — ${selectedText('res3')}\nRIR percebido: ${selectedText('rir')}\nMovimento correto: ${selectedText('tecnica')}\n\n` +
-`5) Risco\nPinçamento/travamento: ${selectedText('pinca')}${document.getElementById('pincaEx').value.trim()? ' | Ex.: '+document.getElementById('pincaEx').value.trim():''}\nEvita exercício: ${selectedText('evita')}${document.getElementById('evitaEx').value.trim()? ' | Ex.: '+document.getElementById('evitaEx').value.trim():''}\nObs: ${document.getElementById('obsRisco').value.trim()||'—'}\n\n` +
-`6) Percepção\nGostou: ${document.getElementById('gostou').value.trim()}\nAtrapalhou: ${document.getElementById('atrapalhou').value.trim()}\nMobilidade: ${selectedText('mob')}\nAlongamento: ${selectedText('along')}\nPreferência próximo mês: ${selectedText('preferencia')}\n\n` +
-`7) Bem-estar\nSono: ${document.getElementById('sono2').value}/10\nEstresse: ${document.getElementById('estresse2').value}/10\nAlimentação: ${selectedText('alimentacao')}\nSensação nos treinos: ${selectedText('sensacaoTreino')}\n\n` +
-`8) Foco e preferências\nMúsculo com maior evolução: ${selectedText('musculoEvoluiu')||'—'}\nMúsculo que ficou igual: ${selectedText('musculoIgual')||'—'}\nFoco muscular próximo ciclo: ${selectedText('focoMuscular')||'—'}\nAssimetria percebida: ${getAssimetriaValue()}\nQuer aprender: ${(()=>{const s=getCheckedItems('wrapQueroAprender');const o=(document.getElementById('queroAprenderOutro')?.value||'').trim();return [...s,...(o?[o]:[])].join(', ')||'—';})()}\nNão quer fazer: ${(()=>{const s=getCheckedItems('wrapNaoQuer');const o=(document.getElementById('naoQuerOutro')?.value||'').trim();return [...s,...(o?[o]:[])].join(', ')||'—';})()}\n\n` +
-`9) Resultado\nFrequência estimada: ${ader}%\nSemáforo: ${sem}\nSugestão: ${niv.sug}\nMotivo: ${niv.motivo}\n`;
+`1) Identificação\nNome: ${nome}\nIdade: ${idade}\nSexo / perfil visual: ${sexoPerfil}\nNível atual: ${nivelAtual}\nObjetivo: ${obj}\nEnvio de fotos: ${fotosTxt}\n\n` +
+`2) Frequência nos últimos 30 dias\nPlanejado por semana: ${txt('planejado')}\nDias treinados nos últimos 30 dias: ${txt('feito')}\nConclusão dos treinos: ${txt('pctCompleto')}\nMotivo principal: ${txt('motivoFalta')}\nTreino coube no tempo real: ${txt('tempoCabe')}\n\n` +
+`3) Recuperação e segurança\nSono: ${val('sono')}/10\nEstresse: ${val('estresse')}/10\nDor muscular no dia seguinte: ${val('doms')}/10\nEnergia no treino: ${val('energia')}/10\nDor articular média: ${val('dor')}/10\nLocal principal da dor: ${txt('localDor')}\n\n` +
+`4) Evolução nos exercícios-chave\n1) Exercício: ${getExercicioValue(1)}\n   Resultado: ${txt('res1')}\n   Carga / Peso: ${val('carga1')}\n   Repetições: ${val('reps1')}\n2) Exercício: ${getExercicioValue(2)}\n   Resultado: ${txt('res2')}\n   Carga / Peso: ${val('carga2')}\n   Repetições: ${val('reps2')}\n3) Exercício: ${getExercicioValue(3)}\n   Resultado: ${txt('res3')}\n   Carga / Peso: ${val('carga3')}\n   Repetições: ${val('reps3')}\nRIR percebido: ${txt('rir')}\nMovimento correto do começo ao fim: ${txt('tecnica')}\n\n` +
+`5) Sinais de risco\nPinçamento, travamento ou dor pontuda: ${txt('pinca')}\nExercício do pinçamento/travamento: ${val('pincaEx')}\nExercício evitado por medo/desconforto: ${txt('evita')}\nQual exercício evita: ${val('evitaEx')}\nObservação de risco: ${val('obsRisco')}\n` +
+(()=>{
+  const sexo = (txt('sexoPerfil')||'').toLowerCase();
+  const fem  = sexo.includes('fem') || sexo.includes('mulher');
+  const masc = sexo.includes('masc') || sexo.includes('homem');
+  if(fem){
+    const cesareia   = txt('cesareia') || '—';
+    const cesarTempo = val('cesareiaTempo');
+    const proc       = txt('procedimento') || '—';
+    const procTipo   = document.getElementById('procedimentoTipo')?.value === 'Outro' ? val('procedimentoOutro') : (document.getElementById('procedimentoTipo')?.value || '—');
+    const procTempo  = val('procedimentoTempo');
+    return `Cesárea: ${cesareia}${cesareia==='Sim'?' | Tempo: '+cesarTempo:''}\nProcedimento estético/cirúrgico: ${proc}${proc==='Sim'?' | '+procTipo+' | Tempo: '+procTempo:''}\n`;
+  }
+  if(masc){
+    const cirurgia   = txt('cirurgia') || '—';
+    const cirTipo    = document.getElementById('cirurgiaTipo')?.value === 'Outro' ? val('cirurgiaOutro') : (document.getElementById('cirurgiaTipo')?.value || '—');
+    const cirTempo   = val('cirurgiaTempo');
+    return `Cirurgia: ${cirurgia}${cirurgia==='Sim'?' | '+cirTipo+' | Tempo: '+cirTempo:''}\n`;
+  }
+  return '';
+})() +
+`\n` +
+`6) Percepção e logística\nO que mais gostou: ${txt('gostou')}\nO que mais atrapalhou: ${txt('atrapalhou')}\nMobilidade no treino: ${txt('mob')}\nAlongamento no treino: ${txt('along')}\nPreferência para o próximo mês: ${txt('preferencia')}\n\n` +
+`7) Bem-estar e corpo\nSono da semana: ${val('sono2')}/10\nEstresse da semana: ${val('estresse2')}/10\nAlimentação da semana: ${txt('alimentacao')}\nSensação durante os treinos: ${txt('sensacaoTreino')}\nPeso atual: ${val('pesoAtual')} kg\nPeso na última avaliação: ${val('pesoAnterior')} kg\n\n` +
+`8) Foco muscular e preferências\nMúsculo com maior evolução: ${txt('musculoEvoluiu')}\nMúsculo que ficou igual ou não evoluiu: ${txt('musculoIgual')}\nFoco muscular do próximo ciclo: ${txt('focoMuscular')}\nAssimetria percebida: ${getAssimetriaValue()}\nQuer aprender: ${querAprender}\nNão quer fazer: ${naoQuerFazer}\n\n` +
+`9) Resultado calculado\nScore geral: ${scoreTotal}/100\nFrequência estimada: ${ader}%\nSemáforo de recuperação: ${sem}\nSugestão de nível: ${niv.sug}\nMotivo técnico: ${niv.motivo}\n`;
     }
 
 
@@ -5168,8 +5323,28 @@ window.PERSONAL_LABEL = PERSONAL_LABEL;
       atualizarCampoFotosPorIdade();
     })();
 
+    function mostrarEtapaWhatsAppDepoisDoPDF(fileName){
+      pdfJaGerado = true;
+      ultimoPdfGeradoNome = fileName || ultimoPdfGeradoNome || '';
+
+      const box = document.getElementById('posPdfWhatsappBox');
+      const waBtn = document.getElementById('whatsappBtn');
+
+      if(box) box.style.display = 'block';
+      if(waBtn) waBtn.disabled = false;
+
+      setTimeout(function(){
+        box?.scrollIntoView({behavior:'smooth', block:'center'});
+      }, 250);
+    }
+
     // ── Enviar WhatsApp com dados + link fotos ─────────────────────────
     function enviarWhatsApp(){
+      if(!pdfJaGerado){
+        alert('Primeiro gere o PDF. Depois o botão de WhatsApp será liberado para enviar os dados e anexar o PDF baixado.');
+        return;
+      }
+
       const nome    = (document.getElementById('nome')?.value || '').trim();
       const ader    = calcAderencia();
       const sem     = calcSemaforo();
@@ -5180,6 +5355,11 @@ window.PERSONAL_LABEL = PERSONAL_LABEL;
       const hora    = now.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
 
       let header = `📋 REAVALIAÇÃO DE NÍVEL — MFIT\n🕒 ${data} às ${hora}`;
+      header += `
+
+📄 PDF DA AVALIAÇÃO
+O PDF com dados + gráfico foi gerado no aparelho do aluno.
+📎 Anexar no WhatsApp o arquivo: ${ultimoPdfGeradoNome || 'avaliacao-nivel.pdf'}`;
       if(fotos === 'Sim'){
         header += `\n\n━━━━━━━━━━━━━━━━━━━━━\n📸 ENVIO DE FOTOS\n━━━━━━━━━━━━━━━━━━━━━\nUse roupas de academia — short/bermuda + cropped ou top esportivo.\n✅ 4 ângulos: frente, costas, lado direito e lado esquerdo\n✅ Ambiente iluminado, câmera na altura do umbigo\n📎 Clique para enviar as fotos:\nhttps://docs.google.com/forms/d/e/1FAIpQLSdPfcwdKj1kU2Oh_vRalywjHtm_by26FGhZoBhunjtEHjXgGw/viewform\n━━━━━━━━━━━━━━━━━━━━━`;
       }
@@ -5323,16 +5503,92 @@ window.PERSONAL_LABEL = PERSONAL_LABEL;
 
         const fileName = `avaliacao-nivel-${safeFileName(nome)}.pdf`;
         doc.save(fileName);
+        mostrarEtapaWhatsAppDepoisDoPDF(fileName);
       }catch(e){
         console.error('Erro ao gerar PDF:', e);
         alert('O PDF não conseguiu ser gerado neste dispositivo. Tente novamente pelo Google Chrome ou envie pelo WhatsApp e gere o PDF depois.');
       }finally{
         if(pdfBtn){
           pdfBtn.disabled = false;
-          pdfBtn.textContent = textoOriginal || '📄 Gerar PDF (dados + gráfico)';
+          pdfBtn.textContent = textoOriginal || '📄 Gerar PDF primeiro (dados + gráfico)';
         }
       }
     }
+
+    // ── Saúde: blocos feminino / masculino por sexo ────────────────────
+    (function(){
+      function show(id, vis){
+        var el = document.getElementById(id);
+        if(el) el.style.display = vis ? 'block' : 'none';
+      }
+      function limpar(id){
+        var el = document.getElementById(id);
+        if(!el) return;
+        if(el.tagName === 'SELECT' || el.tagName === 'INPUT') el.value = '';
+        if(el.tagName === 'TEXTAREA') el.value = '';
+      }
+
+      // Mostrar bloco feminino ou masculino
+      function atualizarBlocoSaude(){
+        var sexo = (document.getElementById('sexoPerfil')?.value || '').toLowerCase();
+        var fem  = sexo.includes('fem') || sexo.includes('mulher');
+        var masc = sexo.includes('masc') || sexo.includes('homem');
+
+        show('wrapSaudeFeminina',  fem);
+        show('wrapSaudeMasculina', masc);
+
+        if(!fem){ limpar('cesareia'); limpar('cesareiaTempo'); limpar('procedimento'); limpar('procedimentoTipo'); limpar('procedimentoOutro'); limpar('procedimentoTempo'); }
+        if(!masc){ limpar('cirurgia'); limpar('cirurgiaTipo'); limpar('cirurgiaOutro'); limpar('cirurgiaTempo'); }
+      }
+
+      // Cesárea → tempo
+      function atualizarCesareia(){
+        var sim = document.getElementById('cesareia')?.value === 'Sim';
+        show('wrapCesareiaTempo', sim);
+        if(!sim) limpar('cesareiaTempo');
+      }
+
+      // Procedimento feminino → tipo + tempo
+      function atualizarProcedimento(){
+        var sim = document.getElementById('procedimento')?.value === 'Sim';
+        show('wrapProcedimentoTipo',  sim);
+        show('wrapProcedimentoTempo', sim);
+        if(!sim){ limpar('procedimentoTipo'); limpar('procedimentoOutro'); limpar('procedimentoTempo'); show('wrapProcedimentoOutro', false); }
+      }
+
+      // Procedimento tipo → campo livre se "Outro"
+      function atualizarProcedimentoTipo(){
+        var outro = document.getElementById('procedimentoTipo')?.value === 'Outro';
+        show('wrapProcedimentoOutro', outro);
+        if(!outro) limpar('procedimentoOutro');
+      }
+
+      // Cirurgia masculina → tipo + tempo
+      function atualizarCirurgia(){
+        var sim = document.getElementById('cirurgia')?.value === 'Sim';
+        show('wrapCirurgiaTipo',  sim);
+        show('wrapCirurgiaTempo', sim);
+        if(!sim){ limpar('cirurgiaTipo'); limpar('cirurgiaOutro'); limpar('cirurgiaTempo'); show('wrapCirurgiaOutro', false); }
+      }
+
+      // Cirurgia tipo → campo livre se "Outro"
+      function atualizarCirurgiaTipo(){
+        var outro = document.getElementById('cirurgiaTipo')?.value === 'Outro';
+        show('wrapCirurgiaOutro', outro);
+        if(!outro) limpar('cirurgiaOutro');
+      }
+
+      // Vincular eventos
+      document.getElementById('sexoPerfil')?.addEventListener('change', atualizarBlocoSaude);
+      document.getElementById('cesareia')?.addEventListener('change', atualizarCesareia);
+      document.getElementById('procedimento')?.addEventListener('change', atualizarProcedimento);
+      document.getElementById('procedimentoTipo')?.addEventListener('change', atualizarProcedimentoTipo);
+      document.getElementById('cirurgia')?.addEventListener('change', atualizarCirurgia);
+      document.getElementById('cirurgiaTipo')?.addEventListener('change', atualizarCirurgiaTipo);
+
+      // Inicializar estado
+      atualizarBlocoSaude();
+    })();
 </script>
 
 <!-- ═══ PERSONAL TOOLBAR — RODAPÉ ════════════════════════════ -->
