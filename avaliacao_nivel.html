@@ -1055,9 +1055,9 @@
             <select id="dor" required></select>
           </div>
 
-          <div>
+          <div id="wrapLocalDor" style="display:none">
             <label>Local principal da dor</label>
-            <select id="localDor" required>
+            <select id="localDor">
               <option value="">Selecione</option>
               <option>Sem dor</option>
               <option>Ombro</option>
@@ -1982,10 +1982,32 @@
       for(let i=0;i<=10;i++){
         op = document.createElement('option');
         op.value = i;
-        op.textContent = i;
+        op.textContent = (id === 'dor' && i === 0) ? '0 — Não sinto dor' : i;
         el.appendChild(op);
       }
     });
+
+    // Dor articular: só mostra o local da dor quando existe dor informada.
+    function atualizarLocalDor(){
+      const dorEl = document.getElementById('dor');
+      const wrap = document.getElementById('wrapLocalDor');
+      const local = document.getElementById('localDor');
+      if(!dorEl || !wrap || !local) return;
+
+      const dorValor = dorEl.value === '' ? null : Number(dorEl.value);
+      const mostrar = dorValor !== null && dorValor > 0;
+      wrap.style.display = mostrar ? 'block' : 'none';
+      local.required = mostrar;
+
+      if(!mostrar){
+        local.value = dorValor === 0 ? 'Sem dor' : '';
+      }else if(local.value === 'Sem dor'){
+        local.value = '';
+      }
+    }
+
+    document.getElementById('dor')?.addEventListener('change', atualizarLocalDor);
+    atualizarLocalDor();
 
     function updateBar(){
       bar.style.width = Math.round((step-1)/(sessions.length-1)*100) + '%';
@@ -2166,6 +2188,53 @@
       const evitaEx = (document.getElementById('evitaEx')?.value || '').trim();
       const obsRisco = (document.getElementById('obsRisco')?.value || '').trim();
 
+      function tempoEmMeses(valorId, unidadeId){
+        const raw = (document.getElementById(valorId)?.value || '').trim();
+        if(raw === '') return null;
+        const n = parseFloat(raw.replace(',', '.'));
+        if(!Number.isFinite(n)) return null;
+        const unidade = document.getElementById(unidadeId)?.value || 'meses';
+        return unidade === 'anos' ? n * 12 : n;
+      }
+
+      function tempoTexto(valorId, unidadeId){
+        const raw = (document.getElementById(valorId)?.value || '').trim();
+        if(raw === '') return 'tempo não informado';
+        const unidade = document.getElementById(unidadeId)?.value || 'meses';
+        return raw + ' ' + unidade;
+      }
+
+      function riscosBloqueantes(){
+        const linhas = [];
+        if(pinca === 'Sim') linhas.push(`Pinçamento/travamento/dor pontuda informado${pincaEx ? ' no exercício: ' + pincaEx : ''}`);
+        if(evita === 'Sim') linhas.push(`Evita exercício por medo/desconforto${evitaEx ? ': ' + evitaEx : ''}`);
+
+        const ces = selectedText('cesareia');
+        if(ces === 'Sim'){
+          const meses = tempoEmMeses('cesareiaTempoValor','cesareiaTempoUnidade');
+          if(meses === null) linhas.push('Cesárea informada, mas sem tempo definido');
+          else if(meses <= 6) linhas.push('Cesárea recente: ' + tempoTexto('cesareiaTempoValor','cesareiaTempoUnidade'));
+        }
+
+        const proc = selectedText('procedimento');
+        if(proc === 'Sim'){
+          const meses = tempoEmMeses('procedimentoTempoValor','procedimentoTempoUnidade');
+          const tipo = selectedText('procedimentoTipo') || 'procedimento estético/cirúrgico';
+          if(meses === null) linhas.push(tipo + ' informado, mas sem tempo definido');
+          else if(meses <= 6) linhas.push(tipo + ' recente: ' + tempoTexto('procedimentoTempoValor','procedimentoTempoUnidade'));
+        }
+
+        const cir = selectedText('cirurgia');
+        if(cir === 'Sim'){
+          const meses = tempoEmMeses('cirurgiaTempoValor','cirurgiaTempoUnidade');
+          const tipo = selectedText('cirurgiaTipo') || 'cirurgia';
+          if(meses === null) linhas.push(tipo + ' informada, mas sem tempo definido');
+          else if(meses <= 6) linhas.push(tipo + ' recente: ' + tempoTexto('cirurgiaTempoValor','cirurgiaTempoUnidade'));
+        }
+
+        return linhas;
+      }
+
       // monta bloco de contexto de risco para usar nas mensagens
       function blocoRisco(){
         const linhas = [];
@@ -2188,7 +2257,22 @@
         };
       }
 
-      // ── BLOQUEIO 2: Aderência insuficiente ────────────────────────────
+      // ── BLOQUEIO 2: Segurança por pinçamento, desconforto ou cirurgia recente ──
+      const bloqueiosSeg = riscosBloqueantes();
+      if(bloqueiosSeg.length > 0){
+        return {
+          sug:'Manter (segurança)',
+          motivo:`🚫 Bloqueio de segurança — revisar antes de subir de nível
+
+${bloqueiosSeg.map(m => '• ' + m).join('\n')}${blocoRisco()}
+
+Mesmo com boa frequência e evolução, estes sinais indicam que o próximo ciclo precisa de ajuste técnico antes de aumentar a exigência.
+
+Foco até a próxima reavaliação: retirar ou adaptar exercícios que geram desconforto, revisar execução e respeitar o tempo de recuperação cirúrgica antes de liberar progressão de nível.`
+        };
+      }
+
+      // ── BLOQUEIO 3: Aderência insuficiente ────────────────────────────
       if(ader < 75){
         return {
           sug:'Manter',
@@ -2196,7 +2280,7 @@
         };
       }
 
-      // ── BLOQUEIO 3: Semáforo vermelho ─────────────────────────────────
+      // ── BLOQUEIO 4: Semáforo vermelho ─────────────────────────────────
       if(sem === 'Vermelho'){
         const motivosSem = [];
         if(dor >= 3) motivosSem.push(`dor articular ${dor}/10`);
