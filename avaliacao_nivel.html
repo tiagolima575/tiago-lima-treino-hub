@@ -900,12 +900,12 @@
             <label>Objetivo atual</label>
             <select id="objetivo" required>
               <option value="">Selecione</option>
-              <option>Hipertrofia</option>
-              <option>Emagrecimento / Definição</option>
-              <option>Recomposição</option>
-              <option>Força</option>
-              <option>Condicionamento</option>
-              <option value="Outro">Outro</option>
+              <option>Ganhar massa muscular</option>
+              <option>Emagrecer / perder gordura</option>
+              <option>Perder gordura e ganhar músculo</option>
+              <option>Ficar mais forte</option>
+              <option>Melhorar fôlego e condicionamento</option>
+              <option value="Outro">Outro objetivo</option>
             </select>
           </div>
         </div>
@@ -2272,12 +2272,12 @@
       const obj = selectedText('objetivo');
       let s = 78;
 
-      if(obj === 'Hipertrofia') s = 85;
-      if(obj === 'Emagrecimento / Definição') s = 82;
-      if(obj === 'Recomposição') s = 83;
-      if(obj === 'Força') s = 80;
-      if(obj === 'Condicionamento') s = 76;
-      if(obj === 'Outro') s = 68;
+      if(obj === 'Ganhar massa muscular' || obj === 'Hipertrofia') s = 85;
+      if(obj === 'Emagrecer / perder gordura' || obj === 'Emagrecimento / Definição') s = 82;
+      if(obj === 'Perder gordura e ganhar músculo' || obj === 'Recomposição') s = 83;
+      if(obj === 'Ficar mais forte' || obj === 'Força') s = 80;
+      if(obj === 'Melhorar fôlego e condicionamento' || obj === 'Condicionamento') s = 76;
+      if(obj === 'Outro objetivo' || obj === 'Outro') s = 68;
 
       return Math.round(clamp(s,45,95));
     }
@@ -5013,7 +5013,7 @@
       const data = ultimoScanData || scanData();
       const sexo = selectedText('sexoPerfil') || 'Masculino';
       const nome = document.getElementById('nome').value.trim() || (String(sexo).toLowerCase().includes('femin') ? 'Maria Exemplo' : 'João Exemplo');
-      const objetivo = selectedText('objetivo') || 'Hipertrofia';
+      const objetivo = selectedText('objetivo') || 'Ganhar massa muscular';
       const nivel = selectedText('nivelAtual') || 'Iniciante';
       const final = getStatusFinal();
       const approved = !!final.status.aprovado;
