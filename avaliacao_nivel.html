@@ -1262,7 +1262,18 @@
             </div>
             <div id="wrapCesareiaTempo" style="display:none">
               <label>Há quanto tempo?</label>
-              <input id="cesareiaTempo" type="text" placeholder="Ex.: 8 meses, 2 anos">
+              <div class="grid grid-2" style="margin-top:0">
+                <div>
+                  <input id="cesareiaTempoValor" type="number" min="0" placeholder="Ex.: 5">
+                </div>
+                <div>
+                  <select id="cesareiaTempoUnidade">
+                    <option value="">Mês ou ano?</option>
+                    <option value="meses">Meses</option>
+                    <option value="anos">Anos</option>
+                  </select>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -1277,7 +1288,18 @@
             </div>
             <div id="wrapProcedimentoTempo" style="display:none">
               <label>Há quanto tempo?</label>
-              <input id="procedimentoTempo" type="text" placeholder="Ex.: 6 meses, 1 ano">
+              <div class="grid grid-2" style="margin-top:0">
+                <div>
+                  <input id="procedimentoTempoValor" type="number" min="0" placeholder="Ex.: 6">
+                </div>
+                <div>
+                  <select id="procedimentoTempoUnidade">
+                    <option value="">Mês ou ano?</option>
+                    <option value="meses">Meses</option>
+                    <option value="anos">Anos</option>
+                  </select>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -1323,7 +1345,18 @@
             </div>
             <div id="wrapCirurgiaTempo" style="display:none">
               <label>Há quanto tempo?</label>
-              <input id="cirurgiaTempo" type="text" placeholder="Ex.: 4 meses, 3 anos">
+              <div class="grid grid-2" style="margin-top:0">
+                <div>
+                  <input id="cirurgiaTempoValor" type="number" min="0" placeholder="Ex.: 4">
+                </div>
+                <div>
+                  <select id="cirurgiaTempoUnidade">
+                    <option value="">Mês ou ano?</option>
+                    <option value="meses">Meses</option>
+                    <option value="anos">Anos</option>
+                  </select>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -1655,14 +1688,14 @@
         <div class="divider"></div>
 
         <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px">
-          <button type="button" id="pdfGraphBtn" class="btn primary" style="width:100%;padding:14px 16px;font-size:16px" onclick="baixarPDFCompleto()" disabled>
-            📄 Gerar PDF primeiro (dados + gráfico)
+          <button type="button" id="pdfGraphBtn" class="btn primary" style="width:100%;padding:14px 16px;font-size:16px" onclick="baixarHTMLGrafico()" disabled>
+            🌐 Baixar HTML do gráfico primeiro
           </button>
 
           <div id="posPdfWhatsappBox" style="display:none;margin-top:4px;padding:14px;border:1px solid rgba(37,211,102,.38);border-radius:14px;background:rgba(37,211,102,.08)">
-            <b style="display:block;color:#8CFFB0;margin-bottom:6px">✅ PDF gerado com sucesso</b>
+            <b style="display:block;color:#8CFFB0;margin-bottom:6px">✅ HTML do gráfico gerado com sucesso</b>
             <p class="hint" style="margin:0 0 12px;color:var(--text)">
-              Agora envie as informações pelo WhatsApp e anexe o PDF baixado. Se você escolheu enviar fotos, o link de fotos também vai junto na mensagem.
+              Agora envie as informações pelo WhatsApp e anexe o arquivo HTML do gráfico. Se você escolheu enviar fotos, o link de fotos também vai junto na mensagem.
             </p>
             <button type="button" id="whatsappBtn" class="btn primary" style="width:100%;padding:14px 16px;font-size:16px;background:linear-gradient(135deg,#25D366,#128C7E)" onclick="enviarWhatsApp()" disabled>
               📲 Enviar dados pelo WhatsApp
@@ -1671,7 +1704,7 @@
         </div>
 
         <p class="hint" style="margin-top:10px">
-          Primeiro o aluno gera o <b>PDF com dados + gráfico</b>. Depois aparece o botão de <b>WhatsApp</b> para enviar todas as respostas coletadas e lembrar de anexar o PDF baixado.
+          Primeiro o aluno gera o <b>HTML com o gráfico</b>. Depois aparece o botão de <b>WhatsApp</b> para enviar todas as respostas coletadas e lembrar de anexar o arquivo HTML baixado.
         </p>
 
         <div class="nav" style="margin-top:16px">
@@ -2272,12 +2305,12 @@
       const obj = selectedText('objetivo');
       let s = 78;
 
-      if(obj === 'Ganhar massa muscular' || obj === 'Hipertrofia') s = 85;
-      if(obj === 'Emagrecer / perder gordura' || obj === 'Emagrecimento / Definição') s = 82;
-      if(obj === 'Perder gordura e ganhar músculo' || obj === 'Recomposição') s = 83;
-      if(obj === 'Ficar mais forte' || obj === 'Força') s = 80;
-      if(obj === 'Melhorar fôlego e condicionamento' || obj === 'Condicionamento') s = 76;
-      if(obj === 'Outro objetivo' || obj === 'Outro') s = 68;
+      if(obj === 'Ganhar massa muscular') s = 85;
+      if(obj === 'Emagrecer / perder gordura') s = 82;
+      if(obj === 'Perder gordura e ganhar músculo') s = 83;
+      if(obj === 'Ficar mais forte') s = 80;
+      if(obj === 'Melhorar fôlego e condicionamento') s = 76;
+      if(obj === 'Outro objetivo') s = 68;
 
       return Math.round(clamp(s,45,95));
     }
@@ -2429,7 +2462,7 @@
       const pdfBtn = document.getElementById('pdfGraphBtn');
       if(pdfBtn) pdfBtn.disabled = false;
 
-      // O WhatsApp só libera depois que o PDF é gerado.
+      // O WhatsApp só libera depois que o HTML do gráfico é gerado.
       const waBtn = document.getElementById('whatsappBtn');
       if(waBtn) waBtn.disabled = !pdfJaGerado;
       const posPdfBox = document.getElementById('posPdfWhatsappBox');
@@ -2484,7 +2517,7 @@
           nome: nome,
           sexo: selectedText('sexoPerfil'),
           nivel: selectedText('nivelAtual'),
-          objetivo: selectedText('objetivo') === 'Outro' ? 'Outro: ' + (document.getElementById('objetivoOutro')?.value || '') : selectedText('objetivo'),
+          objetivo: document.getElementById('objetivo')?.value === 'Outro' ? 'Outro: ' + (document.getElementById('objetivoOutro')?.value || '') : selectedText('objetivo'),
           aderencia: calcAderencia(),
           semaforo: calcSemaforo(),
           sugestao: niv.sug,
@@ -2521,6 +2554,15 @@
     function buildMessage(){
       const val = (id) => (document.getElementById(id)?.value || '').trim() || '—';
       const txt = (id) => selectedText(id) || '—';
+      const tempo = (base) => {
+        const n = (document.getElementById(base + 'TempoValor')?.value || '').trim();
+        const u = (document.getElementById(base + 'TempoUnidade')?.value || '').trim();
+        if(!n || !u) return '—';
+        const num = Number(n);
+        if(u === 'meses') return `${n} ${num === 1 ? 'mês' : 'meses'}`;
+        if(u === 'anos') return `${n} ${num === 1 ? 'ano' : 'anos'}`;
+        return `${n} ${u}`;
+      };
 
       const nome = val('nome');
       const sexoPerfil = txt('sexoPerfil');
@@ -2564,16 +2606,16 @@
   const masc = sexo.includes('masc') || sexo.includes('homem');
   if(fem){
     const cesareia   = txt('cesareia') || '—';
-    const cesarTempo = val('cesareiaTempo');
+    const cesarTempo = tempo('cesareia');
     const proc       = txt('procedimento') || '—';
     const procTipo   = document.getElementById('procedimentoTipo')?.value === 'Outro' ? val('procedimentoOutro') : (document.getElementById('procedimentoTipo')?.value || '—');
-    const procTempo  = val('procedimentoTempo');
+    const procTempo  = tempo('procedimento');
     return `Cesárea: ${cesareia}${cesareia==='Sim'?' | Tempo: '+cesarTempo:''}\nProcedimento estético/cirúrgico: ${proc}${proc==='Sim'?' | '+procTipo+' | Tempo: '+procTempo:''}\n`;
   }
   if(masc){
     const cirurgia   = txt('cirurgia') || '—';
     const cirTipo    = document.getElementById('cirurgiaTipo')?.value === 'Outro' ? val('cirurgiaOutro') : (document.getElementById('cirurgiaTipo')?.value || '—');
-    const cirTempo   = val('cirurgiaTempo');
+    const cirTempo   = tempo('cirurgia');
     return `Cirurgia: ${cirurgia}${cirurgia==='Sim'?' | '+cirTipo+' | Tempo: '+cirTempo:''}\n`;
   }
   return '';
@@ -5341,7 +5383,7 @@ window.PERSONAL_LABEL = PERSONAL_LABEL;
     // ── Enviar WhatsApp com dados + link fotos ─────────────────────────
     function enviarWhatsApp(){
       if(!pdfJaGerado){
-        alert('Primeiro gere o PDF. Depois o botão de WhatsApp será liberado para enviar os dados e anexar o PDF baixado.');
+        alert('Primeiro gere o HTML do gráfico. Depois o botão de WhatsApp será liberado para enviar os dados e anexar o arquivo baixado.');
         return;
       }
 
@@ -5357,9 +5399,9 @@ window.PERSONAL_LABEL = PERSONAL_LABEL;
       let header = `📋 REAVALIAÇÃO DE NÍVEL — MFIT\n🕒 ${data} às ${hora}`;
       header += `
 
-📄 PDF DA AVALIAÇÃO
-O PDF com dados + gráfico foi gerado no aparelho do aluno.
-📎 Anexar no WhatsApp o arquivo: ${ultimoPdfGeradoNome || 'avaliacao-nivel.pdf'}`;
+🌐 HTML DO GRÁFICO
+O HTML com o gráfico foi gerado no aparelho do aluno.
+📎 Anexar no WhatsApp o arquivo: ${ultimoPdfGeradoNome || 'grafico-avaliacao-nivel.html'}`;
       if(fotos === 'Sim'){
         header += `\n\n━━━━━━━━━━━━━━━━━━━━━\n📸 ENVIO DE FOTOS\n━━━━━━━━━━━━━━━━━━━━━\nUse roupas de academia — short/bermuda + cropped ou top esportivo.\n✅ 4 ângulos: frente, costas, lado direito e lado esquerdo\n✅ Ambiente iluminado, câmera na altura do umbigo\n📎 Clique para enviar as fotos:\nhttps://docs.google.com/forms/d/e/1FAIpQLSdPfcwdKj1kU2Oh_vRalywjHtm_by26FGhZoBhunjtEHjXgGw/viewform\n━━━━━━━━━━━━━━━━━━━━━`;
       }
@@ -5377,140 +5419,65 @@ O PDF com dados + gráfico foi gerado no aparelho do aluno.
     }
 
     // ── PDF completo: dados em texto + gráfico ─────────────────────────
-    async function baixarPDFCompleto(){
-      const pdfBtn = document.getElementById('pdfGraphBtn');
-      const textoOriginal = pdfBtn ? pdfBtn.textContent : '';
+    async function baixarHTMLGrafico(){
+      const htmlBtn = document.getElementById('pdfGraphBtn');
+      const textoOriginal = htmlBtn ? htmlBtn.textContent : '';
 
       try{
-        if(pdfBtn){
-          pdfBtn.disabled = true;
-          pdfBtn.textContent = 'Gerando PDF...';
-        }
-
-        const jspdfNS = window.jspdf;
-        if(!jspdfNS || !jspdfNS.jsPDF){
-          alert('Não foi possível carregar o gerador de PDF neste dispositivo. Tente abrir pelo Google Chrome com internet ativa.');
-          return;
+        if(htmlBtn){
+          htmlBtn.disabled = true;
+          htmlBtn.textContent = 'Gerando HTML do gráfico...';
         }
 
         if(!ultimoScanData){ await renderScanPanel(); }
 
         const nome    = document.getElementById('nome')?.value.trim() || 'aluno';
-        const msg     = buildMessage();
-
-        // Importante: escala 1 e JPEG evitam travamento em celulares.
-        // A versão anterior usava escala 3x + PNG, gerando imagem enorme na memória.
         const canvas  = gerarCanvasGrafico(1);
-        const imgData = canvas.toDataURL('image/jpeg', 0.86);
+        const imgData = canvas.toDataURL('image/jpeg', 0.90);
+        const fileName = `grafico-avaliacao-nivel-${safeFileName(nome)}.html`;
 
-        const {jsPDF} = jspdfNS;
-        const doc = new jsPDF({unit:'mm', format:'a4', orientation:'portrait', compress:true});
-        const PW  = doc.internal.pageSize.getWidth();
-        const PH  = doc.internal.pageSize.getHeight();
-        const M   = 14;
-        const LW  = PW - M*2;
+        const html = `<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gráfico da Avaliação — MFIT</title>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#000;color:#fff;font-family:Arial,Helvetica,sans-serif}
+  body{min-height:100vh}
+  .page{width:100%;display:flex;justify-content:center;align-items:flex-start;background:#000}
+  img{display:block;width:100%;max-width:1229px;height:auto;margin:0 auto;background:#000}
+  @media print{img{width:100%;max-width:none}}
+</style>
+</head>
+<body>
+  <main class="page">
+    <img src="${imgData}" alt="Gráfico final da avaliação MFIT">
+  </main>
+</body>
+</html>`;
 
-        doc.setFillColor(7,6,10);
-        doc.rect(0,0,PW,PH,'F');
+        const blob = new Blob([html], {type:'text/html;charset=utf-8'});
+        const url = URL.createObjectURL(blob);
 
-        doc.setFont('helvetica','bold');
-        doc.setFontSize(14);
-        doc.setTextColor(163,89,218);
-        doc.text('REAVALIAÇÃO DE NÍVEL — MFIT PREMIUM', PW/2, 18, {align:'center'});
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
 
-        const now  = new Date();
-        const data = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-        doc.setFontSize(9);
-        doc.setTextColor(155,148,174);
-        doc.text(data, PW/2, 24, {align:'center'});
-
-        doc.setDrawColor(163,89,218);
-        doc.setLineWidth(0.4);
-        doc.line(M,27,PW-M,27);
-
-        doc.setFont('helvetica','normal');
-        doc.setFontSize(8);
-        doc.setTextColor(248,245,255);
-
-        const linhas = msg.split('\n');
-        let y = 33;
-        const lineH = 4.5;
-
-        linhas.forEach(ln => {
-          if(y > PH - 20){
-            doc.addPage();
-            doc.setFillColor(7,6,10);
-            doc.rect(0,0,PW,PH,'F');
-            y = 14;
-          }
-          if(ln.match(/^\d+\)|^■/)){
-            doc.setFont('helvetica','bold');
-            doc.setTextColor(163,89,218);
-          } else {
-            doc.setFont('helvetica','normal');
-            doc.setTextColor(248,245,255);
-          }
-          const wrapped = doc.splitTextToSize(ln, LW);
-          doc.text(wrapped, M, y);
-          y += wrapped.length * lineH;
-        });
-
-        doc.addPage();
-        doc.setFillColor(7,6,10);
-        doc.rect(0,0,PW,PH,'F');
-
-        doc.setFont('helvetica','bold');
-        doc.setFontSize(11);
-        doc.setTextColor(163,89,218);
-        doc.text('Gráfico de Resultado', PW/2, 14, {align:'center'});
-        doc.setDrawColor(163,89,218);
-        doc.setLineWidth(0.4);
-        doc.line(M,17,PW-M,17);
-
-        const ratio  = canvas.height / canvas.width;
-        const imgW   = LW;
-        const imgH   = imgW * ratio;
-        const pageH  = PH - 22;
-
-        if(imgH <= pageH){
-          doc.addImage(imgData,'JPEG',M,20,imgW,imgH,undefined,'FAST');
-        } else {
-          const sliceH   = Math.max(400, Math.floor(canvas.width * pageH / imgW));
-          let srcY       = 0;
-          let firstSlice = true;
-
-          while(srcY < canvas.height){
-            if(!firstSlice){
-              doc.addPage();
-              doc.setFillColor(7,6,10);
-              doc.rect(0,0,PW,PH,'F');
-            }
-            firstSlice = false;
-
-            const remaining = canvas.height - srcY;
-            const thisH     = Math.min(sliceH, remaining);
-            const sliceCanvas = document.createElement('canvas');
-            sliceCanvas.width  = canvas.width;
-            sliceCanvas.height = thisH;
-            const sCtx = sliceCanvas.getContext('2d');
-            sCtx.drawImage(canvas, 0, srcY, canvas.width, thisH, 0, 0, canvas.width, thisH);
-            const sliceData  = sliceCanvas.toDataURL('image/jpeg', 0.86);
-            const renderH    = (thisH / canvas.width) * imgW;
-            doc.addImage(sliceData,'JPEG',M,20,imgW,renderH,undefined,'FAST');
-            srcY += thisH;
-          }
-        }
-
-        const fileName = `avaliacao-nivel-${safeFileName(nome)}.pdf`;
-        doc.save(fileName);
+        setTimeout(()=>URL.revokeObjectURL(url), 90000);
         mostrarEtapaWhatsAppDepoisDoPDF(fileName);
       }catch(e){
-        console.error('Erro ao gerar PDF:', e);
-        alert('O PDF não conseguiu ser gerado neste dispositivo. Tente novamente pelo Google Chrome ou envie pelo WhatsApp e gere o PDF depois.');
+        console.error('Erro ao gerar HTML do gráfico:', e);
+        alert('O HTML do gráfico não conseguiu ser gerado neste dispositivo. Tente novamente pelo Google Chrome.');
       }finally{
-        if(pdfBtn){
-          pdfBtn.disabled = false;
-          pdfBtn.textContent = textoOriginal || '📄 Gerar PDF primeiro (dados + gráfico)';
+        if(htmlBtn){
+          htmlBtn.disabled = false;
+          htmlBtn.textContent = textoOriginal || '🌐 Baixar HTML do gráfico primeiro';
         }
       }
     }
@@ -5537,15 +5504,15 @@ O PDF com dados + gráfico foi gerado no aparelho do aluno.
         show('wrapSaudeFeminina',  fem);
         show('wrapSaudeMasculina', masc);
 
-        if(!fem){ limpar('cesareia'); limpar('cesareiaTempo'); limpar('procedimento'); limpar('procedimentoTipo'); limpar('procedimentoOutro'); limpar('procedimentoTempo'); }
-        if(!masc){ limpar('cirurgia'); limpar('cirurgiaTipo'); limpar('cirurgiaOutro'); limpar('cirurgiaTempo'); }
+        if(!fem){ limpar('cesareia'); limpar('cesareiaTempoValor'); limpar('cesareiaTempoUnidade'); limpar('procedimento'); limpar('procedimentoTipo'); limpar('procedimentoOutro'); limpar('procedimentoTempoValor'); limpar('procedimentoTempoUnidade'); }
+        if(!masc){ limpar('cirurgia'); limpar('cirurgiaTipo'); limpar('cirurgiaOutro'); limpar('cirurgiaTempoValor'); limpar('cirurgiaTempoUnidade'); }
       }
 
       // Cesárea → tempo
       function atualizarCesareia(){
         var sim = document.getElementById('cesareia')?.value === 'Sim';
         show('wrapCesareiaTempo', sim);
-        if(!sim) limpar('cesareiaTempo');
+        if(!sim) limpar('cesareiaTempoValor'); limpar('cesareiaTempoUnidade');
       }
 
       // Procedimento feminino → tipo + tempo
@@ -5553,7 +5520,7 @@ O PDF com dados + gráfico foi gerado no aparelho do aluno.
         var sim = document.getElementById('procedimento')?.value === 'Sim';
         show('wrapProcedimentoTipo',  sim);
         show('wrapProcedimentoTempo', sim);
-        if(!sim){ limpar('procedimentoTipo'); limpar('procedimentoOutro'); limpar('procedimentoTempo'); show('wrapProcedimentoOutro', false); }
+        if(!sim){ limpar('procedimentoTipo'); limpar('procedimentoOutro'); limpar('procedimentoTempoValor'); limpar('procedimentoTempoUnidade'); show('wrapProcedimentoOutro', false); }
       }
 
       // Procedimento tipo → campo livre se "Outro"
@@ -5568,7 +5535,7 @@ O PDF com dados + gráfico foi gerado no aparelho do aluno.
         var sim = document.getElementById('cirurgia')?.value === 'Sim';
         show('wrapCirurgiaTipo',  sim);
         show('wrapCirurgiaTempo', sim);
-        if(!sim){ limpar('cirurgiaTipo'); limpar('cirurgiaOutro'); limpar('cirurgiaTempo'); show('wrapCirurgiaOutro', false); }
+        if(!sim){ limpar('cirurgiaTipo'); limpar('cirurgiaOutro'); limpar('cirurgiaTempoValor'); limpar('cirurgiaTempoUnidade'); show('wrapCirurgiaOutro', false); }
       }
 
       // Cirurgia tipo → campo livre se "Outro"
