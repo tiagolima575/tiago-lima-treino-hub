@@ -159,6 +159,24 @@
     .section .desc{margin:0 0 18px;color:var(--muted-2);font-size:.85rem;}
     .section.hidden{display:none;}
 
+    .triage-alert{
+      background:rgba(255,94,94,.10);
+      border:1px solid rgba(255,94,94,.32);
+      color:#FFD0D0;
+      border-radius:12px;
+      padding:10px 14px;
+      margin:0 0 14px;
+      font-size:.83rem;
+      font-weight:600;
+    }
+    .triage-alert.hidden{display:none!important;}
+    .field.level-required-missing select,
+    .field.level-required-missing input,
+    .field.level-required-missing textarea{
+      border-color:var(--danger);
+      box-shadow:0 0 0 3px rgba(255,94,94,.12);
+    }
+
     /* Transition marker shown when level upgrades */
     .level-divider{
       display:none;
@@ -296,7 +314,7 @@
 <!-- ════════════════════════════════════════════════
      BLOCO 1 — DADOS PESSOAIS (universal)
 ═════════════════════════════════════════════════ -->
-<section class="section">
+<section class="section" id="section_dados_pessoais">
 <h2>BLOCO 1 — 👤 Dados Pessoais</h2>
 <p class="desc">Informações básicas para identificação e personalização.</p>
 <div class="grid">
@@ -337,14 +355,352 @@
 </section>
 
 <!-- ════════════════════════════════════════════════
-     BLOCO 2 — OBJETIVO (universal)
+     BLOCO 2 — CLASSIFICAÇÃO DE NÍVEL (obrigatório — determina o fluxo)
+═════════════════════════════════════════════════ -->
+<section class="section" id="section_nivel_base">
+<h2>BLOCO 2 — 📊 Classificação de Nível</h2>
+<p class="desc">Essas 6 perguntas são obrigatórias para identificar o nível real antes de liberar o restante da ficha.</p>
+<div id="triagem_alerta" class="triage-alert hidden">Responda todas as perguntas de classificação antes de continuar.</div>
+<div class="grid">
+  <div class="field col-6">
+    <label class="label" for="ja_treinou">8. Você já treinou musculação antes? *</label>
+    <select id="ja_treinou" name="ja_treinou" required data-level-required="true">
+      <option value="">Selecione</option>
+      <option>Não, nunca treinei</option>
+      <option>Já treinei e parei (faz mais de 6 meses)</option>
+      <option>Treino com algumas pausas há menos de 1 ano</option>
+      <option>Treino com constância há 1 a 2 anos</option>
+      <option>Treino com constância há mais de 2 anos</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="consistencia_atual">9. Nos últimos 30 dias, você treinou com regularidade? *</label>
+    <select id="consistencia_atual" name="consistencia_atual" required data-level-required="true">
+      <option value="">Selecione</option>
+      <option>Não treinei</option>
+      <option>Treinei pouco / irregular</option>
+      <option>Mais ou menos</option>
+      <option>Consistente</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="tecnica_exec">10. Na maioria dos exercícios, você se sente: *</label>
+    <select id="tecnica_exec" name="tecnica_exec" required data-level-required="true">
+      <option value="">Selecione</option>
+      <option>Inseguro(a) — não tenho certeza se estou fazendo certo</option>
+      <option>Mais ou menos seguro(a)</option>
+      <option>Seguro(a) na maioria</option>
+      <option>Seguro(a) em quase todos</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="anota_cargas">11. Você costuma anotar as cargas e repetições dos exercícios? *</label>
+    <span class="helper">Ex.: peso usado e quantas vezes fez cada exercício.</span>
+    <select id="anota_cargas" name="anota_cargas" required data-level-required="true">
+      <option value="">Selecione</option>
+      <option>Não</option>
+      <option>Às vezes</option>
+      <option>Na maioria das vezes</option>
+      <option>Sempre</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="recupera_geral">12. Depois de um treino pesado, você costuma recuperar bem até o próximo? *</label>
+    <select id="recupera_geral" name="recupera_geral" required data-level-required="true">
+      <option value="">Selecione</option>
+      <option>Não treino pesado ainda</option>
+      <option>Demoro muito para recuperar</option>
+      <option>Mais ou menos</option>
+      <option>Sim, na maioria das vezes</option>
+      <option>Sim, recupero muito bem</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="evolucao_recente">13. Nos últimos 2 meses, você conseguiu evoluir em carga, repetições ou execução? *</label>
+    <select id="evolucao_recente" name="evolucao_recente" required data-level-required="true">
+      <option value="">Selecione</option>
+      <option>Não se aplica / não treinei</option>
+      <option>Não evolui</option>
+      <option>Um pouco</option>
+      <option>Sim, em vários exercícios</option>
+    </select>
+  </div>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     DIVISOR — INTERMEDIÁRIO (aparece quando nível >= intermediário)
+═════════════════════════════════════════════════ -->
+<div class="level-divider" id="divider_int">
+  <span>✦ Confirmação de nível — responda para finalizar a classificação ✦</span>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     BLOCO 12 — EXPERIÊNCIA INTERMEDIÁRIA (aparece só para intermediário+)
+═════════════════════════════════════════════════ -->
+<section class="section hidden" id="bloco_int_experiencia">
+<h2>CONFIRMAÇÃO — 🏆 Experiência de Treino</h2>
+<p class="desc">Quando a triagem aponta intermediário, essas respostas confirmam se o perfil continua intermediário ou sobe para avançado.</p>
+<div class="grid">
+  <div class="field col-6">
+    <label class="label" for="int_divisao">Qual divisão de treino você já usou ou prefere? *</label>
+    <span class="helper">Como seu treino costuma ser organizado entre os dias da semana.</span>
+    <select id="int_divisao" name="int_divisao" data-level-refine="true">
+      <option value="">Selecione</option>
+      <option>Full body — treino o corpo todo em cada sessão</option>
+      <option>A/B — alterno dois treinos diferentes</option>
+      <option>Treino separado por grupos musculares (pernas, costas, peito...)</option>
+      <option>Upper/Lower — parte superior um dia, inferior no outro</option>
+      <option>Push/Pull/Legs — empurrar / puxar / pernas</option>
+      <option>Sem preferência</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="int_falha">Quando a série fica pesada, você normalmente: *</label>
+    <select id="int_falha" name="int_falha" data-level-refine="true">
+      <option value="">Selecione</option>
+      <option>Paro antes de perder a execução</option>
+      <option>Às vezes perco a execução no final</option>
+      <option>Quase sempre vou até perder a execução</option>
+      <option>Não sei dizer</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="int_lesao_hist">Você tem histórico de lesão que costuma voltar?</label>
+    <select id="int_lesao_hist" name="int_lesao_hist">
+      <option value="">Selecione</option>
+      <option>Nunca tive lesão relevante</option>
+      <option>Já tive lesão, mas hoje está controlada</option>
+      <option>Lesão costuma voltar com carga/volume</option>
+      <option>Estou em reabilitação</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="int_passos">Em média, quantos passos você dá por dia?</label>
+    <select id="int_passos" name="int_passos">
+      <option value="">Selecione</option>
+      <option>Não sei</option>
+      <option>Menos de 5 mil</option>
+      <option>5–8 mil</option>
+      <option>8–12 mil</option>
+      <option>Mais de 12 mil</option>
+    </select>
+    <span class="helper">Se não sabe, consulte o app de saúde do celular. Referência: 6.000–10.000 passos/dia é considerado ativo.</span>
+  </div>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     BLOCO 13 — ESTRATÉGIA INTERMEDIÁRIA (aparece só para intermediário+)
+═════════════════════════════════════════════════ -->
+<section class="section hidden" id="bloco_int_estrategia">
+<h2>CONFIRMAÇÃO — 🔬 Estratégia de Treino</h2>
+<p class="desc">Perguntas obrigatórias para separar intermediário real de avançado, sem chute.</p>
+<div class="grid">
+  <div class="field col-6">
+    <label class="label" for="int_periodizacao">Como você prefere organizar a evolução ao longo das semanas? *</label>
+    <select id="int_periodizacao" name="int_periodizacao" data-level-refine="true">
+      <option value="">Selecione</option>
+      <option>Sem preferência — o personal decide</option>
+      <option>Linear — aumentar carga gradualmente toda semana</option>
+      <option>Ondulação — variar carga e repetições entre as semanas</option>
+      <option>Blocos — fases diferentes (volume, força, definição...)</option>
+    </select>
+    <span class="helper">Se não souber a diferença, escolha "Sem preferência".</span>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="int_deload">Você costuma fazer semana de deload (semana de descarga — redução proposital de carga e volume para recuperar)? *</label>
+    <select id="int_deload" name="int_deload" data-level-refine="true">
+      <option value="">Selecione</option>
+      <option>Não, nunca fiz</option>
+      <option>Faço quando sinto que preciso</option>
+      <option>Sigo uma programação com deload planejado</option>
+      <option>Não sei o que é</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="int_rir">Você costuma controlar o RIR (Reps in Reserve — quantas repetições você ainda conseguiria fazer ao parar a série)? *</label>
+    <select id="int_rir" name="int_rir" data-level-refine="true">
+      <option value="">Selecione</option>
+      <option>Não uso isso</option>
+      <option>Paro com 3–4 repetições sobrando (esforço moderado)</option>
+      <option>Paro com 1–2 repetições sobrando (esforço alto)</option>
+      <option>Vou até a falha ou quase (RIR 0–1)</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="int_rpe">Você já usou RPE (Rate of Perceived Exertion — escala de esforço de 1 a 10, onde 10 é o máximo) para controlar a intensidade? *</label>
+    <select id="int_rpe" name="int_rpe" data-level-refine="true">
+      <option value="">Selecione</option>
+      <option>Não, nunca usei</option>
+      <option>Conheço mas não uso</option>
+      <option>Uso às vezes</option>
+      <option>Uso com frequência</option>
+    </select>
+  </div>
+  <div class="field col-12">
+    <label class="label">Técnicas de intensidade que você usa ou já usou:</label>
+    <div class="options inline-2">
+      <label class="option"><input name="int_tecnicas" type="checkbox" value="Drop set — reduz a carga e continua sem parar"/><span>Drop set — reduz a carga e continua sem parar</span></label>
+      <label class="option"><input name="int_tecnicas" type="checkbox" value="Rest-pause — pausa curta dentro da própria série"/><span>Rest-pause — pausa curta dentro da própria série</span></label>
+      <label class="option"><input name="int_tecnicas" type="checkbox" value="Bi-set — dois exercícios seguidos sem descanso"/><span>Bi-set — dois exercícios seguidos sem descanso</span></label>
+      <label class="option"><input name="int_tecnicas" type="checkbox" value="Myo-reps — acumula repetições com pausas muito curtas"/><span>Myo-reps — acumula repetições com pausas muito curtas</span></label>
+      <label class="option"><input name="int_tecnicas" type="checkbox" value="Nenhuma dessas"/><span>Nenhuma dessas</span></label>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     DIVISOR — AVANÇADO (aparece quando nível = avançado)
+═════════════════════════════════════════════════ -->
+<div class="level-divider" id="divider_adv">
+  <span>✦ Perfil Avançado identificado — últimas perguntas de refinamento ✦</span>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     BLOCO 14 — ESTRATÉGIA AVANÇADA (aparece só para avançado)
+═════════════════════════════════════════════════ -->
+<section class="section hidden" id="bloco_adv_estrategia">
+<h2>REFINAMENTO — 🔬 Estratégia Avançada</h2>
+<p class="desc">Nível de detalhe máximo para prescrição de alta precisão.</p>
+<div class="grid">
+  <div class="field col-6">
+    <label class="label" for="adv_periodizacao">Qual modelo de periodização você prefere ou já usou?</label>
+    <select id="adv_periodizacao" name="adv_periodizacao">
+      <option value="">Selecione</option>
+      <option>Sem preferência — o personal decide</option>
+      <option>Linear — progressão direta de carga semana a semana</option>
+      <option>Ondulação diária — muda rep/carga a cada sessão</option>
+      <option>Ondulação semanal — muda rep/carga a cada semana</option>
+      <option>Blocos — fases distintas (hipertrofia, força, potência...)</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="adv_deload">Como você trata o deload (semana de descarga — redução proposital de carga e volume para recuperar melhor)?</label>
+    <select id="adv_deload" name="adv_deload">
+      <option value="">Selecione</option>
+      <option>Nunca faço deload</option>
+      <option>Faço por intuição quando sinto que preciso</option>
+      <option>Sigo deload planejado a cada 4–6 semanas</option>
+      <option>Prefiro semanas de volume reduzido em vez de deload total</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="adv_rir">Como você trabalha o RIR (Reps in Reserve — quantas repetições sobraram ao parar a série)?</label>
+    <select id="adv_rir" name="adv_rir">
+      <option value="">Selecione</option>
+      <option>Não uso essa referência</option>
+      <option>RIR 3–4 — paro com bastante reserva (esforço moderado)</option>
+      <option>RIR 1–2 — paro perto do limite (esforço alto)</option>
+      <option>RIR 0 — vou até a falha técnica ou muscular</option>
+      <option>Varia conforme o exercício e a fase do treino</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="adv_rpe">Você usa RPE (Rate of Perceived Exertion — escala de esforço de 1 a 10) sistematicamente?</label>
+    <select id="adv_rpe" name="adv_rpe">
+      <option value="">Selecione</option>
+      <option>Não uso</option>
+      <option>Conheço mas não aplico no dia a dia</option>
+      <option>Uso como referência nas séries principais</option>
+      <option>Uso sistematicamente em todo o treino</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="adv_progressao">Como você prefere ver a progressão?</label>
+    <select id="adv_progressao" name="adv_progressao">
+      <option value="">Selecione</option>
+      <option>Carga primeiro — aumentar peso quando as reps ficarem fáceis</option>
+      <option>Volume primeiro — mais séries antes de aumentar carga</option>
+      <option>Dupla progressão — aumenta reps até o teto, depois sobe carga</option>
+      <option>Misturar conforme o exercício</option>
+      <option>Sem preferência</option>
+    </select>
+    <span class="helper">Dupla progressão: ex. alvo 8–12 reps → faz 8 → sobe até 12 → aumenta carga → recomeça em 8.</span>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="adv_velocidade">Você controla a velocidade de execução (tempo de subida, descida e pausa)?</label>
+    <select id="adv_velocidade" name="adv_velocidade">
+      <option value="">Selecione</option>
+      <option>Não controlo, executo no ritmo natural</option>
+      <option>Controlo a descida (excêntrico) — faço mais devagar</option>
+      <option>Controlo os dois — descida lenta e subida controlada</option>
+      <option>Uso tempo prescrito (ex.: 3-1-2 — 3s descer, 1s pausa, 2s subir)</option>
+    </select>
+  </div>
+  <div class="field col-12">
+    <label class="label">Técnicas de intensidade que você usa com frequência:</label>
+    <div class="options inline-2">
+      <label class="option"><input name="adv_tecnicas" type="checkbox" value="Drop set — reduz a carga e continua sem parar"/><span>Drop set — reduz a carga e continua sem parar</span></label>
+      <label class="option"><input name="adv_tecnicas" type="checkbox" value="Rest-pause — pausa curta de 10–20s dentro da própria série"/><span>Rest-pause — pausa curta de 10–20s dentro da própria série</span></label>
+      <label class="option"><input name="adv_tecnicas" type="checkbox" value="Myo-reps — acumula repetições com minirepousos de 3–5s"/><span>Myo-reps — acumula repetições com minirepousos de 3–5s</span></label>
+      <label class="option"><input name="adv_tecnicas" type="checkbox" value="Bi-set — dois exercícios seguidos sem descanso"/><span>Bi-set — dois exercícios seguidos sem descanso</span></label>
+      <label class="option"><input name="adv_tecnicas" type="checkbox" value="Cluster set — séries fragmentadas com pausa entre mini-blocos"/><span>Cluster set — séries fragmentadas com pausa entre mini-blocos</span></label>
+      <label class="option"><input name="adv_tecnicas" type="checkbox" value="Nenhuma dessas"/><span>Nenhuma dessas</span></label>
+    </div>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="adv_semana_teste">Você aceita uma semana de teste (semana de avaliação de carga — para calibrar o ponto real de cada exercício antes de progredir)?</label>
+    <select id="adv_semana_teste" name="adv_semana_teste">
+      <option value="">Selecione</option>
+      <option>Sim, prefiro calibrar antes</option>
+      <option>Não, prefiro começar direto com estimativa</option>
+    </select>
+  </div>
+
+  <div class="field col-12">
+    <div class="subhead">Histórico de resposta ao treino</div>
+  </div>
+
+  <div class="field col-6">
+    <label class="label" for="adv_evolucao_onde">Onde você viu mais evolução no seu corpo?</label>
+    <div class="options inline-2">
+      <label class="option"><input name="adv_evolucao_onde" type="checkbox" value="Peito"/><span>Peito</span></label>
+      <label class="option"><input name="adv_evolucao_onde" type="checkbox" value="Costas"/><span>Costas</span></label>
+      <label class="option"><input name="adv_evolucao_onde" type="checkbox" value="Ombro"/><span>Ombro</span></label>
+      <label class="option"><input name="adv_evolucao_onde" type="checkbox" value="Bíceps"/><span>Bíceps</span></label>
+      <label class="option"><input name="adv_evolucao_onde" type="checkbox" value="Tríceps"/><span>Tríceps</span></label>
+      <label class="option"><input name="adv_evolucao_onde" type="checkbox" value="Abdômen"/><span>Abdômen</span></label>
+      <label class="option"><input name="adv_evolucao_onde" type="checkbox" value="Glúteos"/><span>Glúteos</span></label>
+      <label class="option"><input name="adv_evolucao_onde" type="checkbox" value="Quadríceps"/><span>Quadríceps</span></label>
+      <label class="option"><input name="adv_evolucao_onde" type="checkbox" value="Posterior de coxa"/><span>Posterior de coxa</span></label>
+      <label class="option"><input name="adv_evolucao_onde" type="checkbox" value="Panturrilha"/><span>Panturrilha</span></label>
+    </div>
+    <input id="adv_evolucao_onde_obs" name="adv_evolucao_onde_obs" type="text" placeholder="Quer especificar algo? Escreva aqui..." style="margin-top:8px;"/>
+  </div>
+
+  <div class="field col-6">
+    <label class="label" for="adv_estagnacao_onde">Onde você viu menos evolução ou continua igual?</label>
+    <div class="options inline-2">
+      <label class="option"><input name="adv_estagnacao_onde" type="checkbox" value="Peito"/><span>Peito</span></label>
+      <label class="option"><input name="adv_estagnacao_onde" type="checkbox" value="Costas"/><span>Costas</span></label>
+      <label class="option"><input name="adv_estagnacao_onde" type="checkbox" value="Ombro"/><span>Ombro</span></label>
+      <label class="option"><input name="adv_estagnacao_onde" type="checkbox" value="Bíceps"/><span>Bíceps</span></label>
+      <label class="option"><input name="adv_estagnacao_onde" type="checkbox" value="Tríceps"/><span>Tríceps</span></label>
+      <label class="option"><input name="adv_estagnacao_onde" type="checkbox" value="Abdômen"/><span>Abdômen</span></label>
+      <label class="option"><input name="adv_estagnacao_onde" type="checkbox" value="Glúteos"/><span>Glúteos</span></label>
+      <label class="option"><input name="adv_estagnacao_onde" type="checkbox" value="Quadríceps"/><span>Quadríceps</span></label>
+      <label class="option"><input name="adv_estagnacao_onde" type="checkbox" value="Posterior de coxa"/><span>Posterior de coxa</span></label>
+      <label class="option"><input name="adv_estagnacao_onde" type="checkbox" value="Panturrilha"/><span>Panturrilha</span></label>
+    </div>
+    <input id="adv_estagnacao_onde_obs" name="adv_estagnacao_onde_obs" type="text" placeholder="Quer especificar algo? Escreva aqui..." style="margin-top:8px;"/>
+  </div>
+
+</div>
+</section>
+
+
+
+<!-- ════════════════════════════════════════════════
+     BLOCO 3 — OBJETIVO (universal)
 ═════════════════════════════════════════════════ -->
 <section class="section">
-<h2>BLOCO 2 — 🎯 Objetivo</h2>
+<h2>BLOCO 3 — 🎯 Objetivo</h2>
 <p class="desc">Seu objetivo guia toda a montagem do treino — seja direto.</p>
 <div class="grid">
   <div class="field col-6">
-    <label class="label" for="objetivo">8. Objetivo principal *</label>
+    <label class="label" for="objetivo">14. Objetivo principal *</label>
     <select id="objetivo" name="objetivo" required>
       <option value="">Selecione</option>
       <option>Emagrecer / reduzir gordura</option>
@@ -357,11 +713,11 @@
     </select>
   </div>
   <div class="field col-6 hidden" id="wrap_objetivo_outro">
-    <label class="label" for="objetivo_outro">9. Se marcou "Outro", especifique</label>
+    <label class="label" for="objetivo_outro">15. Se marcou "Outro", especifique</label>
     <input id="objetivo_outro" name="objetivo_outro" placeholder="Ex.: melhorar postura, correr 5km..." type="text"/>
   </div>
   <div class="field col-6">
-    <label class="label" for="prazo">10. Prazo de foco</label>
+    <label class="label" for="prazo">16. Prazo de foco</label>
     <select id="prazo" name="prazo">
       <option value="">Selecione</option>
       <option>Curto (1–3 meses)</option>
@@ -371,86 +727,13 @@
     </select>
   </div>
   <div class="field col-6">
-    <label class="label" for="resultado">11. Como você vai medir resultado?</label>
+    <label class="label" for="resultado">17. Como você vai medir resultado?</label>
     <div class="options inline-2">
       <label class="option"><input name="resultado" type="checkbox" value="Peso (balança)"/><span>Peso (balança)</span></label>
       <label class="option"><input name="resultado" type="checkbox" value="Medidas"/><span>Medidas</span></label>
       <label class="option"><input name="resultado" type="checkbox" value="Quanto consigo carregar e fazer (desempenho)"/><span>Quanto consigo carregar e fazer (desempenho)</span></label>
       <label class="option"><input name="resultado" type="checkbox" value="Como meu corpo aparece no espelho"/><span>Como meu corpo aparece no espelho</span></label>
     </div>
-  </div>
-</div>
-</section>
-
-<!-- ════════════════════════════════════════════════
-     BLOCO 3 — TRIAGEM DE NÍVEL (universal — determina o fluxo)
-═════════════════════════════════════════════════ -->
-<section class="section">
-<h2>BLOCO 3 — 📊 Seu Histórico de Treino</h2>
-<p class="desc">Essas perguntas ajudam a entender seu nível real — sem julgamento, só para a ficha se adaptar.</p>
-<div class="grid">
-  <div class="field col-6">
-    <label class="label" for="ja_treinou">12. Você já treinou musculação antes?</label>
-    <select id="ja_treinou" name="ja_treinou">
-      <option value="">Selecione</option>
-      <option>Não, nunca treinei</option>
-      <option>Já treinei e parei (faz mais de 6 meses)</option>
-      <option>Treino com algumas pausas há menos de 1 ano</option>
-      <option>Treino com constância há 1 a 2 anos</option>
-      <option>Treino com constância há mais de 2 anos</option>
-    </select>
-  </div>
-  <div class="field col-6">
-    <label class="label" for="consistencia_atual">13. Nos últimos 30 dias, você treinou com regularidade?</label>
-    <select id="consistencia_atual" name="consistencia_atual">
-      <option value="">Selecione</option>
-      <option>Não treinei</option>
-      <option>Treinei pouco / irregular</option>
-      <option>Mais ou menos</option>
-      <option>Consistente</option>
-    </select>
-  </div>
-  <div class="field col-6">
-    <label class="label" for="tecnica_exec">14. Na maioria dos exercícios, você se sente:</label>
-    <select id="tecnica_exec" name="tecnica_exec">
-      <option value="">Selecione</option>
-      <option>Inseguro(a) — não tenho certeza se estou fazendo certo</option>
-      <option>Mais ou menos seguro(a)</option>
-      <option>Seguro(a) na maioria</option>
-      <option>Seguro(a) em quase todos</option>
-    </select>
-  </div>
-  <div class="field col-6">
-    <label class="label" for="anota_cargas">15. Você costuma anotar as cargas e repetições dos exercícios?</label>
-    <span class="helper">Ex.: peso usado e quantas vezes fez cada exercício.</span>
-    <select id="anota_cargas" name="anota_cargas">
-      <option value="">Selecione</option>
-      <option>Não</option>
-      <option>Às vezes</option>
-      <option>Na maioria das vezes</option>
-      <option>Sempre</option>
-    </select>
-  </div>
-  <div class="field col-6">
-    <label class="label" for="recupera_geral">16. Depois de um treino pesado, você costuma recuperar bem até o próximo?</label>
-    <select id="recupera_geral" name="recupera_geral">
-      <option value="">Selecione</option>
-      <option>Não treino pesado ainda</option>
-      <option>Demoro muito para recuperar</option>
-      <option>Mais ou menos</option>
-      <option>Sim, na maioria das vezes</option>
-      <option>Sim, recupero muito bem</option>
-    </select>
-  </div>
-  <div class="field col-6">
-    <label class="label" for="evolucao_recente">17. Nos últimos 2 meses, você conseguiu evoluir em carga, repetições ou execução?</label>
-    <select id="evolucao_recente" name="evolucao_recente">
-      <option value="">Selecione</option>
-      <option>Não se aplica / não treinei</option>
-      <option>Não evolui</option>
-      <option>Um pouco</option>
-      <option>Sim, em vários exercícios</option>
-    </select>
   </div>
 </div>
 </section>
@@ -893,268 +1176,6 @@
 </section>
 
 <!-- ════════════════════════════════════════════════
-     DIVISOR — INTERMEDIÁRIO (aparece quando nível >= intermediário)
-═════════════════════════════════════════════════ -->
-<div class="level-divider" id="divider_int">
-  <span>✦ Perfil Intermediário identificado — continuando com mais detalhes ✦</span>
-</div>
-
-<!-- ════════════════════════════════════════════════
-     BLOCO 12 — EXPERIÊNCIA INTERMEDIÁRIA (aparece só para intermediário+)
-═════════════════════════════════════════════════ -->
-<section class="section hidden" id="bloco_int_experiencia">
-<h2>BLOCO 12 — 🏆 Experiência de Treino</h2>
-<p class="desc">Detalhes do seu histórico para montar uma prescrição mais precisa.</p>
-<div class="grid">
-  <div class="field col-6">
-    <label class="label" for="int_divisao">80. Qual divisão de treino você já usou ou prefere?</label>
-    <span class="helper">Como seu treino costuma ser organizado entre os dias da semana.</span>
-    <select id="int_divisao" name="int_divisao">
-      <option value="">Selecione</option>
-      <option>Full body — treino o corpo todo em cada sessão</option>
-      <option>A/B — alterno dois treinos diferentes</option>
-      <option>Treino separado por grupos musculares (pernas, costas, peito...)</option>
-      <option>Upper/Lower — parte superior um dia, inferior no outro</option>
-      <option>Push/Pull/Legs — empurrar / puxar / pernas</option>
-      <option>Sem preferência</option>
-    </select>
-  </div>
-  <div class="field col-6">
-    <label class="label" for="int_falha">Quando a série fica pesada, você normalmente:</label>
-    <select id="int_falha" name="int_falha">
-      <option value="">Selecione</option>
-      <option>Paro antes de perder a execução</option>
-      <option>Às vezes perco a execução no final</option>
-      <option>Quase sempre vou até perder a execução</option>
-      <option>Não sei dizer</option>
-    </select>
-  </div>
-  <div class="field col-6">
-    <label class="label" for="int_lesao_hist">Você tem histórico de lesão que costuma voltar?</label>
-    <select id="int_lesao_hist" name="int_lesao_hist">
-      <option value="">Selecione</option>
-      <option>Nunca tive lesão relevante</option>
-      <option>Já tive lesão, mas hoje está controlada</option>
-      <option>Lesão costuma voltar com carga/volume</option>
-      <option>Estou em reabilitação</option>
-    </select>
-  </div>
-  <div class="field col-6">
-    <label class="label" for="int_passos">Em média, quantos passos você dá por dia?</label>
-    <select id="int_passos" name="int_passos">
-      <option value="">Selecione</option>
-      <option>Não sei</option>
-      <option>Menos de 5 mil</option>
-      <option>5–8 mil</option>
-      <option>8–12 mil</option>
-      <option>Mais de 12 mil</option>
-    </select>
-    <span class="helper">Se não sabe, consulte o app de saúde do celular. Referência: 6.000–10.000 passos/dia é considerado ativo.</span>
-  </div>
-</div>
-</section>
-
-<!-- ════════════════════════════════════════════════
-     BLOCO 13 — ESTRATÉGIA INTERMEDIÁRIA (aparece só para intermediário+)
-═════════════════════════════════════════════════ -->
-<section class="section hidden" id="bloco_int_estrategia">
-<h2>BLOCO 13 — 🔬 Estratégia de Treino</h2>
-<p class="desc">Perguntas de estratégia para prescrição mais refinada.</p>
-<div class="grid">
-  <div class="field col-6">
-    <label class="label" for="int_periodizacao">Como você prefere organizar a evolução ao longo das semanas?</label>
-    <select id="int_periodizacao" name="int_periodizacao">
-      <option value="">Selecione</option>
-      <option>Sem preferência — o personal decide</option>
-      <option>Linear — aumentar carga gradualmente toda semana</option>
-      <option>Ondulação — variar carga e repetições entre as semanas</option>
-      <option>Blocos — fases diferentes (volume, força, definição...)</option>
-    </select>
-    <span class="helper">Se não souber a diferença, escolha "Sem preferência".</span>
-  </div>
-  <div class="field col-6">
-    <label class="label" for="int_deload">Você costuma fazer semana de deload (semana de descarga — redução proposital de carga e volume para recuperar)?</label>
-    <select id="int_deload" name="int_deload">
-      <option value="">Selecione</option>
-      <option>Não, nunca fiz</option>
-      <option>Faço quando sinto que preciso</option>
-      <option>Sigo uma programação com deload planejado</option>
-      <option>Não sei o que é</option>
-    </select>
-  </div>
-  <div class="field col-6">
-    <label class="label" for="int_rir">Você costuma controlar o RIR (Reps in Reserve — quantas repetições você ainda conseguiria fazer ao parar a série)?</label>
-    <select id="int_rir" name="int_rir">
-      <option value="">Selecione</option>
-      <option>Não uso isso</option>
-      <option>Paro com 3–4 repetições sobrando (esforço moderado)</option>
-      <option>Paro com 1–2 repetições sobrando (esforço alto)</option>
-      <option>Vou até a falha ou quase (RIR 0–1)</option>
-    </select>
-  </div>
-  <div class="field col-6">
-    <label class="label" for="int_rpe">Você já usou RPE (Rate of Perceived Exertion — escala de esforço de 1 a 10, onde 10 é o máximo) para controlar a intensidade?</label>
-    <select id="int_rpe" name="int_rpe">
-      <option value="">Selecione</option>
-      <option>Não, nunca usei</option>
-      <option>Conheço mas não uso</option>
-      <option>Uso às vezes</option>
-      <option>Uso com frequência</option>
-    </select>
-  </div>
-  <div class="field col-12">
-    <label class="label">Técnicas de intensidade que você usa ou já usou:</label>
-    <div class="options inline-2">
-      <label class="option"><input name="int_tecnicas" type="checkbox" value="Drop set — reduz a carga e continua sem parar"/><span>Drop set — reduz a carga e continua sem parar</span></label>
-      <label class="option"><input name="int_tecnicas" type="checkbox" value="Rest-pause — pausa curta dentro da própria série"/><span>Rest-pause — pausa curta dentro da própria série</span></label>
-      <label class="option"><input name="int_tecnicas" type="checkbox" value="Bi-set — dois exercícios seguidos sem descanso"/><span>Bi-set — dois exercícios seguidos sem descanso</span></label>
-      <label class="option"><input name="int_tecnicas" type="checkbox" value="Myo-reps — acumula repetições com pausas muito curtas"/><span>Myo-reps — acumula repetições com pausas muito curtas</span></label>
-      <label class="option"><input name="int_tecnicas" type="checkbox" value="Nenhuma dessas"/><span>Nenhuma dessas</span></label>
-    </div>
-  </div>
-</div>
-</section>
-
-<!-- ════════════════════════════════════════════════
-     DIVISOR — AVANÇADO (aparece quando nível = avançado)
-═════════════════════════════════════════════════ -->
-<div class="level-divider" id="divider_adv">
-  <span>✦ Perfil Avançado identificado — últimas perguntas de refinamento ✦</span>
-</div>
-
-<!-- ════════════════════════════════════════════════
-     BLOCO 14 — ESTRATÉGIA AVANÇADA (aparece só para avançado)
-═════════════════════════════════════════════════ -->
-<section class="section hidden" id="bloco_adv_estrategia">
-<h2>BLOCO 14 — 🔬 Estratégia Avançada</h2>
-<p class="desc">Nível de detalhe máximo para prescrição de alta precisão.</p>
-<div class="grid">
-  <div class="field col-6">
-    <label class="label" for="adv_periodizacao">Qual modelo de periodização você prefere ou já usou?</label>
-    <select id="adv_periodizacao" name="adv_periodizacao">
-      <option value="">Selecione</option>
-      <option>Sem preferência — o personal decide</option>
-      <option>Linear — progressão direta de carga semana a semana</option>
-      <option>Ondulação diária — muda rep/carga a cada sessão</option>
-      <option>Ondulação semanal — muda rep/carga a cada semana</option>
-      <option>Blocos — fases distintas (hipertrofia, força, potência...)</option>
-    </select>
-  </div>
-  <div class="field col-6">
-    <label class="label" for="adv_deload">Como você trata o deload (semana de descarga — redução proposital de carga e volume para recuperar melhor)?</label>
-    <select id="adv_deload" name="adv_deload">
-      <option value="">Selecione</option>
-      <option>Nunca faço deload</option>
-      <option>Faço por intuição quando sinto que preciso</option>
-      <option>Sigo deload planejado a cada 4–6 semanas</option>
-      <option>Prefiro semanas de volume reduzido em vez de deload total</option>
-    </select>
-  </div>
-  <div class="field col-6">
-    <label class="label" for="adv_rir">Como você trabalha o RIR (Reps in Reserve — quantas repetições sobraram ao parar a série)?</label>
-    <select id="adv_rir" name="adv_rir">
-      <option value="">Selecione</option>
-      <option>Não uso essa referência</option>
-      <option>RIR 3–4 — paro com bastante reserva (esforço moderado)</option>
-      <option>RIR 1–2 — paro perto do limite (esforço alto)</option>
-      <option>RIR 0 — vou até a falha técnica ou muscular</option>
-      <option>Varia conforme o exercício e a fase do treino</option>
-    </select>
-  </div>
-  <div class="field col-6">
-    <label class="label" for="adv_rpe">Você usa RPE (Rate of Perceived Exertion — escala de esforço de 1 a 10) sistematicamente?</label>
-    <select id="adv_rpe" name="adv_rpe">
-      <option value="">Selecione</option>
-      <option>Não uso</option>
-      <option>Conheço mas não aplico no dia a dia</option>
-      <option>Uso como referência nas séries principais</option>
-      <option>Uso sistematicamente em todo o treino</option>
-    </select>
-  </div>
-  <div class="field col-6">
-    <label class="label" for="adv_progressao">Como você prefere ver a progressão?</label>
-    <select id="adv_progressao" name="adv_progressao">
-      <option value="">Selecione</option>
-      <option>Carga primeiro — aumentar peso quando as reps ficarem fáceis</option>
-      <option>Volume primeiro — mais séries antes de aumentar carga</option>
-      <option>Dupla progressão — aumenta reps até o teto, depois sobe carga</option>
-      <option>Misturar conforme o exercício</option>
-      <option>Sem preferência</option>
-    </select>
-    <span class="helper">Dupla progressão: ex. alvo 8–12 reps → faz 8 → sobe até 12 → aumenta carga → recomeça em 8.</span>
-  </div>
-  <div class="field col-6">
-    <label class="label" for="adv_velocidade">Você controla a velocidade de execução (tempo de subida, descida e pausa)?</label>
-    <select id="adv_velocidade" name="adv_velocidade">
-      <option value="">Selecione</option>
-      <option>Não controlo, executo no ritmo natural</option>
-      <option>Controlo a descida (excêntrico) — faço mais devagar</option>
-      <option>Controlo os dois — descida lenta e subida controlada</option>
-      <option>Uso tempo prescrito (ex.: 3-1-2 — 3s descer, 1s pausa, 2s subir)</option>
-    </select>
-  </div>
-  <div class="field col-12">
-    <label class="label">Técnicas de intensidade que você usa com frequência:</label>
-    <div class="options inline-2">
-      <label class="option"><input name="adv_tecnicas" type="checkbox" value="Drop set — reduz a carga e continua sem parar"/><span>Drop set — reduz a carga e continua sem parar</span></label>
-      <label class="option"><input name="adv_tecnicas" type="checkbox" value="Rest-pause — pausa curta de 10–20s dentro da própria série"/><span>Rest-pause — pausa curta de 10–20s dentro da própria série</span></label>
-      <label class="option"><input name="adv_tecnicas" type="checkbox" value="Myo-reps — acumula repetições com minirepousos de 3–5s"/><span>Myo-reps — acumula repetições com minirepousos de 3–5s</span></label>
-      <label class="option"><input name="adv_tecnicas" type="checkbox" value="Bi-set — dois exercícios seguidos sem descanso"/><span>Bi-set — dois exercícios seguidos sem descanso</span></label>
-      <label class="option"><input name="adv_tecnicas" type="checkbox" value="Cluster set — séries fragmentadas com pausa entre mini-blocos"/><span>Cluster set — séries fragmentadas com pausa entre mini-blocos</span></label>
-      <label class="option"><input name="adv_tecnicas" type="checkbox" value="Nenhuma dessas"/><span>Nenhuma dessas</span></label>
-    </div>
-  </div>
-  <div class="field col-6">
-    <label class="label" for="adv_semana_teste">Você aceita uma semana de teste (semana de avaliação de carga — para calibrar o ponto real de cada exercício antes de progredir)?</label>
-    <select id="adv_semana_teste" name="adv_semana_teste">
-      <option value="">Selecione</option>
-      <option>Sim, prefiro calibrar antes</option>
-      <option>Não, prefiro começar direto com estimativa</option>
-    </select>
-  </div>
-
-  <div class="field col-12">
-    <div class="subhead">Histórico de resposta ao treino</div>
-  </div>
-
-  <div class="field col-6">
-    <label class="label" for="adv_evolucao_onde">Onde você viu mais evolução no seu corpo?</label>
-    <div class="options inline-2">
-      <label class="option"><input name="adv_evolucao_onde" type="checkbox" value="Peito"/><span>Peito</span></label>
-      <label class="option"><input name="adv_evolucao_onde" type="checkbox" value="Costas"/><span>Costas</span></label>
-      <label class="option"><input name="adv_evolucao_onde" type="checkbox" value="Ombro"/><span>Ombro</span></label>
-      <label class="option"><input name="adv_evolucao_onde" type="checkbox" value="Bíceps"/><span>Bíceps</span></label>
-      <label class="option"><input name="adv_evolucao_onde" type="checkbox" value="Tríceps"/><span>Tríceps</span></label>
-      <label class="option"><input name="adv_evolucao_onde" type="checkbox" value="Abdômen"/><span>Abdômen</span></label>
-      <label class="option"><input name="adv_evolucao_onde" type="checkbox" value="Glúteos"/><span>Glúteos</span></label>
-      <label class="option"><input name="adv_evolucao_onde" type="checkbox" value="Quadríceps"/><span>Quadríceps</span></label>
-      <label class="option"><input name="adv_evolucao_onde" type="checkbox" value="Posterior de coxa"/><span>Posterior de coxa</span></label>
-      <label class="option"><input name="adv_evolucao_onde" type="checkbox" value="Panturrilha"/><span>Panturrilha</span></label>
-    </div>
-    <input id="adv_evolucao_onde_obs" name="adv_evolucao_onde_obs" type="text" placeholder="Quer especificar algo? Escreva aqui..." style="margin-top:8px;"/>
-  </div>
-
-  <div class="field col-6">
-    <label class="label" for="adv_estagnacao_onde">Onde você viu menos evolução ou continua igual?</label>
-    <div class="options inline-2">
-      <label class="option"><input name="adv_estagnacao_onde" type="checkbox" value="Peito"/><span>Peito</span></label>
-      <label class="option"><input name="adv_estagnacao_onde" type="checkbox" value="Costas"/><span>Costas</span></label>
-      <label class="option"><input name="adv_estagnacao_onde" type="checkbox" value="Ombro"/><span>Ombro</span></label>
-      <label class="option"><input name="adv_estagnacao_onde" type="checkbox" value="Bíceps"/><span>Bíceps</span></label>
-      <label class="option"><input name="adv_estagnacao_onde" type="checkbox" value="Tríceps"/><span>Tríceps</span></label>
-      <label class="option"><input name="adv_estagnacao_onde" type="checkbox" value="Abdômen"/><span>Abdômen</span></label>
-      <label class="option"><input name="adv_estagnacao_onde" type="checkbox" value="Glúteos"/><span>Glúteos</span></label>
-      <label class="option"><input name="adv_estagnacao_onde" type="checkbox" value="Quadríceps"/><span>Quadríceps</span></label>
-      <label class="option"><input name="adv_estagnacao_onde" type="checkbox" value="Posterior de coxa"/><span>Posterior de coxa</span></label>
-      <label class="option"><input name="adv_estagnacao_onde" type="checkbox" value="Panturrilha"/><span>Panturrilha</span></label>
-    </div>
-    <input id="adv_estagnacao_onde_obs" name="adv_estagnacao_onde_obs" type="text" placeholder="Quer especificar algo? Escreva aqui..." style="margin-top:8px;"/>
-  </div>
-
-</div>
-</section>
-
-<!-- ════════════════════════════════════════════════
      BLOCO 15 — OBSERVAÇÕES FINAIS (universal)
 ═════════════════════════════════════════════════ -->
 <section class="section">
@@ -1313,8 +1334,48 @@
   }
 
   // ── Nivel classification ───────────────────────────────────────────────
-  // Returns: 'ini' | 'int' | 'adv'
-  function calcNivel(){
+  const TRIAGEM_NIVEL_IDS = ['ja_treinou','consistencia_atual','tecnica_exec','anota_cargas','recupera_geral','evolucao_recente'];
+  const REFINO_NIVEL_IDS = ['int_divisao','int_falha','int_periodizacao','int_deload','int_rir','int_rpe'];
+
+  function firstMissing(ids){
+    return ids.map(id => document.getElementById(id)).find(el => el && !el.value);
+  }
+
+  function marcarCamposFaltantes(ids){
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      const field = el ? el.closest('.field') : null;
+      if(field) field.classList.toggle('level-required-missing', !el.value);
+    });
+  }
+
+  function mostrarAvisoNivel(texto, missingEl){
+    const box = document.getElementById('triagem_alerta');
+    if(box){
+      box.textContent = texto;
+      box.classList.remove('hidden');
+    }
+    if(missingEl){
+      const msg = texto;
+      missingEl.setCustomValidity(msg);
+      missingEl.reportValidity();
+      setTimeout(() => missingEl.setCustomValidity(''), 900);
+      missingEl.scrollIntoView({behavior:'smooth', block:'center'});
+      setTimeout(() => missingEl.focus({preventScroll:true}), 180);
+    }
+  }
+
+  function ocultarAvisoNivelSeCompleto(){
+    if(!firstMissing(TRIAGEM_NIVEL_IDS) && !firstMissing(REFINO_NIVEL_IDS.filter(id => {
+      const el = document.getElementById(id);
+      return el && el.required;
+    }))){
+      const box = document.getElementById('triagem_alerta');
+      if(box) box.classList.add('hidden');
+    }
+  }
+
+  function calcNivelBase(){
     const jaTreinou = val('ja_treinou');
     const consistencia = val('consistencia_atual');
     const tecnica = val('tecnica_exec');
@@ -1322,30 +1383,138 @@
     const recupera = val('recupera_geral');
     const evolucao = val('evolucao_recente');
 
-    // If any of the 6 fields is empty, don't classify yet
     if(!jaTreinou || !consistencia || !tecnica || !anota || !recupera || !evolucao) return null;
 
-    // Score advanced signals (all 3 required)
-    const advAnota = ['Na maioria das vezes','Sempre'].includes(anota);
-    const advConstancia = ['Treino com constância há 1 a 2 anos','Treino com constância há mais de 2 anos'].includes(jaTreinou);
-    const advRecupera = ['Sim, na maioria das vezes','Sim, recupero muito bem'].includes(recupera);
-    const advTecnica = ['Seguro(a) em quase todos'].includes(tecnica);
-    const advEvolucao = ['Sim, em vários exercícios'].includes(evolucao);
-    const advScore = [advAnota,advConstancia,advRecupera,advTecnica,advEvolucao].filter(Boolean).length;
-    if(advScore >= 4) return 'adv';
-
-    // Score intermediate signals (2+ of 3)
     const intConstancia = ['Treino com algumas pausas há menos de 1 ano','Treino com constância há 1 a 2 anos','Treino com constância há mais de 2 anos'].includes(jaTreinou);
     const intTecnica = ['Seguro(a) na maioria','Seguro(a) em quase todos'].includes(tecnica);
     const intConsistencia = ['Consistente'].includes(consistencia);
-    const intScore = [intConstancia,intTecnica,intConsistencia].filter(Boolean).length;
-    if(intScore >= 2) return 'int';
+    const intControle = ['Às vezes','Na maioria das vezes','Sempre'].includes(anota) || ['Um pouco','Sim, em vários exercícios'].includes(evolucao);
+    const intRecuperacao = ['Mais ou menos','Sim, na maioria das vezes','Sim, recupero muito bem'].includes(recupera);
+    const intScore = [intConstancia,intTecnica,intConsistencia,intControle,intRecuperacao].filter(Boolean).length;
 
-    return 'ini';
+    return intScore >= 3 ? 'int' : 'ini';
+  }
+
+  function calcSinaisAvancadoRapidos(){
+    const jaTreinou = val('ja_treinou');
+    const tecnica = val('tecnica_exec');
+    const anota = val('anota_cargas');
+    const recupera = val('recupera_geral');
+    const evolucao = val('evolucao_recente');
+    return [
+      ['Treino com constância há 1 a 2 anos','Treino com constância há mais de 2 anos'].includes(jaTreinou),
+      ['Seguro(a) em quase todos'].includes(tecnica),
+      ['Na maioria das vezes','Sempre'].includes(anota),
+      ['Sim, na maioria das vezes','Sim, recupero muito bem'].includes(recupera),
+      ['Sim, em vários exercícios'].includes(evolucao)
+    ].filter(Boolean).length;
+  }
+
+  function calcSinaisAvancadoRefino(){
+    const divisao = val('int_divisao');
+    const falha = val('int_falha');
+    const periodizacao = val('int_periodizacao');
+    const deload = val('int_deload');
+    const rir = val('int_rir');
+    const rpe = val('int_rpe');
+    return [
+      ['Treino separado por grupos musculares (pernas, costas, peito...)','Upper/Lower — parte superior um dia, inferior no outro','Push/Pull/Legs — empurrar / puxar / pernas'].includes(divisao),
+      ['Paro antes de perder a execução'].includes(falha),
+      ['Linear — aumentar carga gradualmente toda semana','Ondulação — variar carga e repetições entre as semanas','Blocos — fases diferentes (volume, força, definição...)'].includes(periodizacao),
+      ['Faço quando sinto que preciso','Sigo uma programação com deload planejado'].includes(deload),
+      ['Paro com 1–2 repetições sobrando (esforço alto)','Vou até a falha ou quase (RIR 0–1)'].includes(rir),
+      ['Uso às vezes','Uso com frequência'].includes(rpe)
+    ].filter(Boolean).length;
+  }
+
+  // Returns: null | 'ini' | 'int' | 'adv'
+  function calcNivel(){
+    const base = calcNivelBase();
+    if(!base) return null;
+    if(base === 'ini') return 'ini';
+
+    const refinoCompleto = !firstMissing(REFINO_NIVEL_IDS);
+    if(!refinoCompleto) return 'int';
+
+    const scoreRapido = calcSinaisAvancadoRapidos();
+    const scoreRefino = calcSinaisAvancadoRefino();
+    return (scoreRapido >= 4 && scoreRefino >= 2) || (scoreRefino >= 4) ? 'adv' : 'int';
+  }
+
+  function updateNivelRequired(){
+    TRIAGEM_NIVEL_IDS.forEach(id => {
+      const el = document.getElementById(id);
+      if(el) el.required = true;
+    });
+
+    const base = calcNivelBase();
+    const exigirRefino = base === 'int';
+    REFINO_NIVEL_IDS.forEach(id => {
+      const el = document.getElementById(id);
+      if(el) el.required = exigirRefino;
+    });
+
+    const box = document.getElementById('triagem_alerta');
+    const alertaVisivel = box && !box.classList.contains('hidden');
+    if(alertaVisivel){
+      marcarCamposFaltantes(TRIAGEM_NIVEL_IDS);
+      if(exigirRefino) marcarCamposFaltantes(REFINO_NIVEL_IDS);
+    } else {
+      [...TRIAGEM_NIVEL_IDS, ...REFINO_NIVEL_IDS].forEach(id => {
+        const el = document.getElementById(id);
+        const field = el ? el.closest('.field') : null;
+        if(field) field.classList.remove('level-required-missing');
+      });
+    }
+    ocultarAvisoNivelSeCompleto();
+  }
+
+  function validateNivelCompleto(){
+    updateNivelRequired();
+    const faltaBase = firstMissing(TRIAGEM_NIVEL_IDS);
+    if(faltaBase){
+      marcarCamposFaltantes(TRIAGEM_NIVEL_IDS);
+      mostrarAvisoNivel('Antes de continuar, responda as 6 perguntas obrigatórias de classificação de nível.', faltaBase);
+      return false;
+    }
+
+    if(calcNivelBase() === 'int'){
+      const faltaRefino = firstMissing(REFINO_NIVEL_IDS);
+      if(faltaRefino){
+        marcarCamposFaltantes(REFINO_NIVEL_IDS);
+        mostrarAvisoNivel('Como o perfil apontou intermediário, responda também as perguntas de refinamento para confirmar se é intermediário ou avançado.', faltaRefino);
+        return false;
+      }
+    }
+    return true;
+  }
+
+  function bloquearPuloDeNivel(target, ev){
+    if(!target || !target.matches || !target.matches('input,select,textarea,button')) return;
+    if(target.closest('#section_dados_pessoais') || target.closest('#section_nivel_base')) return;
+    if(target.closest('.submit-bar')) return;
+
+    const faltaBase = firstMissing(TRIAGEM_NIVEL_IDS);
+    if(faltaBase){
+      if(ev) ev.preventDefault();
+      mostrarAvisoNivel('Antes de continuar, responda as 6 perguntas obrigatórias de classificação de nível.', faltaBase);
+      return;
+    }
+
+    if(calcNivelBase() === 'int'){
+      const faltaRefino = firstMissing(REFINO_NIVEL_IDS);
+      const dentroRefino = target.closest('#bloco_int_experiencia') || target.closest('#bloco_int_estrategia');
+      if(faltaRefino && !dentroRefino){
+        if(ev) ev.preventDefault();
+        mostrarAvisoNivel('Antes de seguir para os outros blocos, finalize a confirmação do nível intermediário/avançado.', faltaRefino);
+      }
+    }
   }
 
   function applyNivel(){
+    updateNivelRequired();
     const nivel = calcNivel();
+    const base = calcNivelBase();
 
     // Banner
     const banner = document.getElementById('nivel_banner');
@@ -1375,7 +1544,8 @@
       show('divider_adv', false);
     } else if(nivel === 'int'){
       icon.textContent = '🟣';
-      texto.textContent = 'Perfil identificado: Intermediário — a ficha continuou com mais detalhes';
+      const faltaRefino = base === 'int' && firstMissing(REFINO_NIVEL_IDS);
+      texto.textContent = faltaRefino ? 'Perfil inicial: Intermediário — responda as próximas perguntas para confirmar se é intermediário ou avançado' : 'Perfil identificado: Intermediário';
       show('divider_int', true);
       showSection('bloco_int_experiencia', true);
       showSection('bloco_int_estrategia', true);
@@ -1390,6 +1560,8 @@
       show('divider_adv', true);
       showSection('bloco_adv_estrategia', true);
     }
+
+    updateNivelRequired();
   }
 
   // ── Mobility / stretching triage ──────────────────────────────────────
@@ -1451,14 +1623,39 @@
     return ta ? (ta.value||'').trim() : '';
   }
 
+  function getNivelResumoWhatsApp(){
+    const nivel = calcNivel();
+    const base = calcNivelBase();
+    if(nivel === 'ini'){
+      return [
+        '📌 Nível final: Iniciante',
+        '✅ Classificação concluída na triagem inicial.'
+      ];
+    }
+    if(nivel === 'int'){
+      return [
+        '📌 Nível final: Intermediário',
+        base === 'int' ? '✅ Triagem inicial + confirmação intermediária concluídas.' : '✅ Classificação concluída.'
+      ];
+    }
+    if(nivel === 'adv'){
+      return [
+        '📌 Nível final: Avançado',
+        '✅ Triagem inicial + confirmação intermediária/avançada concluídas.'
+      ];
+    }
+    return [
+      '📌 Nível final: Não classificado',
+      '⚠️ Triagem de nível incompleta.'
+    ];
+  }
+
   function buildMessage(){
-    const nivel = calcNivel() || 'ini';
-    const nivelLabel = nivel==='adv'?'Avançado':nivel==='int'?'Intermediário':'Iniciante';
     const lines = [];
     const stamp = new Date().toLocaleString('pt-BR');
     lines.push('📋 AVALIAÇÃO MFIT PREMIUM');
     lines.push('📦 PLANO ESCOLHIDO: ' + getPlanoLabel());
-    lines.push('📌 Nível identificado: ' + nivelLabel);
+    lines.push(...getNivelResumoWhatsApp());
     lines.push('🕒 Data/Hora: ' + stamp);
     lines.push('');
 
@@ -1476,8 +1673,16 @@
       lines.push('');
     }
 
+    const SECOES_INTERNAS_CLASSIFICACAO = new Set([
+      'section_nivel_base',
+      'bloco_int_experiencia',
+      'bloco_int_estrategia',
+      'bloco_adv_estrategia'
+    ]);
+
     document.querySelectorAll('.section').forEach(sec => {
       if(sec.classList.contains('hidden')) return; // skip hidden sections entirely
+      if(SECOES_INTERNAS_CLASSIFICACAO.has(sec.id)) return; // testes de nível ficam só na lógica interna
       const title = sec.querySelector('h2');
       const secLines = [];
       sec.querySelectorAll('.field').forEach(field => {
@@ -1504,10 +1709,16 @@
     setupLogo();
 
     // Nivel triggers
-    ['ja_treinou','consistencia_atual','tecnica_exec','anota_cargas','recupera_geral','evolucao_recente'].forEach(id => {
+    [...TRIAGEM_NIVEL_IDS, ...REFINO_NIVEL_IDS].forEach(id => {
       const el = document.getElementById(id);
-      if(el) el.addEventListener('change', applyNivel);
+      if(el){
+        el.addEventListener('change', applyNivel);
+        el.addEventListener('input', applyNivel);
+      }
     });
+
+    document.addEventListener('focusin', e => bloquearPuloDeNivel(e.target, e), true);
+    document.addEventListener('click', e => bloquearPuloDeNivel(e.target, e), true);
 
     // Objetivo outro
     const obj = document.getElementById('objetivo');
@@ -1576,6 +1787,7 @@
     if(form){
       form.addEventListener('submit', e => {
         e.preventDefault();
+        if(!validateNivelCompleto()) return;
         if(!form.checkValidity()){ form.reportValidity(); return; }
         const msg = buildMessage();
         window.open('https://wa.me/5569992913628?text='+encodeURIComponent(msg),'_blank');
