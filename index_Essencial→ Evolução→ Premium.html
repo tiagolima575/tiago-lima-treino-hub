@@ -504,14 +504,16 @@ nav {
   font-weight: 700;
   border-radius: 12px;
   padding: 12px 14px;
-  background: rgba(255,255,255,.04);
-  border: 1px solid var(--line);
-  transition: background .15s ease, border-color .15s ease, transform .15s ease;
+  background: linear-gradient(135deg, var(--accent-2), #6A1FC2);
+  border: 1px solid rgba(196,110,255,.35);
+  box-shadow: 0 10px 30px rgba(139,47,232,.28);
+  transition: background .15s ease, border-color .15s ease, transform .15s ease, box-shadow .15s ease;
 }
 .plan-cta:hover {
-  background: var(--accent-glow);
-  border-color: var(--line-accent);
+  background: linear-gradient(135deg, #9D3BFF, #7424D4);
+  border-color: rgba(196,110,255,.55);
   transform: translateY(-1px);
+  box-shadow: 0 14px 34px rgba(139,47,232,.38);
 }
 .plan-ouro .plan-cta {
   background: linear-gradient(135deg, var(--accent-2), #6A1FC2);
