@@ -1261,15 +1261,41 @@
     ouro:   { label:'OURO',   icon:'🥇', classe:'ouro',   desc:'Treino personalizado com avaliação postural completa.' }
   };
 
+  function getPlanoParams(){
+    return new URLSearchParams(window.location.search);
+  }
+
+  function isPlanoPersonal(){
+    const params = getPlanoParams();
+    const tipo = (params.get('tipo') || '').toLowerCase().trim();
+    const nome = (params.get('nome') || '').trim();
+    return tipo === 'personal' || nome.toLowerCase().startsWith('personal');
+  }
+
   function getPlanoKey(){
-    const params = new URLSearchParams(window.location.search);
+    const params = getPlanoParams();
     const plano = (params.get('plano') || params.get('plan') || '').toLowerCase().trim();
     return PLANOS_CONFIG[plano] ? plano : '';
   }
 
   function getPlanoLabel(){
+    const params = getPlanoParams();
+    const nome = (params.get('nome') || '').trim();
+    if(isPlanoPersonal() && nome) return nome;
     const plano = getPlanoKey();
     return plano ? PLANOS_CONFIG[plano].label : 'NÃO INFORMADO';
+  }
+
+  function getPlanoDescPersonal(){
+    const params = getPlanoParams();
+    const dias = (params.get('dias') || '').trim();
+    const valorSessao = (params.get('valorSessao') || '').trim();
+    const total = (params.get('total') || '').trim();
+    const partes = [];
+    if(dias) partes.push(dias + 'x/dias por mês');
+    if(valorSessao) partes.push('R$ ' + valorSessao + ' por sessão');
+    if(total) partes.push('total R$ ' + total);
+    return partes.length ? partes.join(' • ') : 'Plano Personal escolhido na página de planos.';
   }
 
   function idadeMenor18(){
@@ -1287,13 +1313,16 @@
     const texto = document.getElementById('plano_texto');
     const desc = document.getElementById('plano_desc');
 
+    const personal = isPlanoPersonal();
+    const planoLabel = getPlanoLabel();
+
     if(banner){
       banner.classList.remove('bronze','prata','ouro');
       if(cfg) banner.classList.add(cfg.classe);
     }
-    if(icon) icon.textContent = cfg ? cfg.icon : '📦';
-    if(texto) texto.textContent = cfg ? ('Plano selecionado: ' + cfg.label) : 'Plano não identificado';
-    if(desc) desc.textContent = cfg ? cfg.desc : 'Volte para a página dos planos e escolha Bronze, Prata ou Ouro antes de preencher a avaliação.';
+    if(icon) icon.textContent = personal ? '💪' : (cfg ? cfg.icon : '📦');
+    if(texto) texto.textContent = cfg || personal ? ('Plano selecionado: ' + planoLabel) : 'Plano não identificado';
+    if(desc) desc.textContent = personal ? getPlanoDescPersonal() : (cfg ? cfg.desc : 'Volte para a página dos planos e escolha Bronze, Prata, Ouro ou Personal antes de preencher a avaliação.');
 
     updateFotosPorPlano();
   }
@@ -1653,7 +1682,7 @@
   function buildMessage(){
     const lines = [];
     const stamp = new Date().toLocaleString('pt-BR');
-    lines.push('📋 AVALIAÇÃO MFIT PREMIUM');
+    lines.push('📋 NOVA AVALIAÇÃO — PERSONAL MFIT');
     lines.push('📦 PLANO ESCOLHIDO: ' + getPlanoLabel());
     lines.push(...getNivelResumoWhatsApp());
     lines.push('🕒 Data/Hora: ' + stamp);
