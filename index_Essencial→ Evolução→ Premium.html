@@ -664,15 +664,18 @@ nav {
 .personal-row.best::before {
   content: 'MELHOR CUSTO';
   position: absolute;
-  left: -36px;
-  top: 14px;
-  transform: rotate(-38deg);
+  left: auto;
+  right: -46px;
+  top: 20px;
+  transform: rotate(38deg);
   background: linear-gradient(135deg, #8B2FE8, #C46EFF);
   color: #fff;
-  font-size: .58rem;
+  font-size: .56rem;
   font-weight: 800;
   letter-spacing: .06em;
-  padding: 5px 38px;
+  padding: 5px 44px;
+  z-index: 2;
+  pointer-events: none;
 }
 .personal-cell {
   min-width: 0;
