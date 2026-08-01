@@ -237,6 +237,15 @@
     }
     .option:hover{border-color:rgba(163,89,218,.38);background:var(--card-3);}
     .option input{width:16px;height:16px;accent-color:var(--purple);cursor:pointer;flex-shrink:0;}
+    .option.dia-confirmado{
+      border-color:rgba(89,189,108,.55);
+      background:rgba(89,189,108,.08);
+    }
+    .option.dia-confirmado span::after{
+      content:' ✓';
+      color:#59BD6C;
+      font-weight:800;
+    }
 
     .hidden{display:none!important;}
     .mt-8{margin-top:8px;}
@@ -322,16 +331,12 @@
     <label class="label" for="nome">1. Nome completo *</label>
     <input id="nome" name="nome" placeholder="Seu nome" required type="text"/>
   </div>
-  <div class="field col-6">
-    <label class="label" for="whats">2. WhatsApp (com DDD)</label>
-    <input id="whats" name="whats" placeholder="Ex.: 69 99291-3628" type="tel"/>
-  </div>
   <div class="field col-4">
-    <label class="label" for="idade">3. Idade</label>
+    <label class="label" for="idade">2. Idade</label>
     <input id="idade" max="99" min="10" name="idade" placeholder="Ex.: 28" type="number"/>
   </div>
   <div class="field col-4">
-    <label class="label" for="sexo">4. Sexo biológico</label>
+    <label class="label" for="sexo">3. Sexo biológico</label>
     <select id="sexo" name="sexo">
       <option value="">Selecione</option>
       <option>Masculino</option>
@@ -340,16 +345,29 @@
     </select>
   </div>
   <div class="field col-4">
-    <label class="label" for="peso">5. Peso aproximado (kg)</label>
+    <label class="label" for="peso">4. Peso aproximado (kg)</label>
     <input id="peso" name="peso" placeholder="Ex.: 72" type="number"/>
   </div>
   <div class="field col-6">
-    <label class="label" for="altura">6. Altura (cm)</label>
+    <label class="label" for="altura">5. Altura (cm)</label>
     <input id="altura" name="altura" placeholder="Ex.: 170" type="number"/>
   </div>
   <div class="field col-6">
-    <label class="label" for="profissao">7. Profissão / rotina de trabalho</label>
+    <label class="label" for="profissao">6. Profissão / rotina de trabalho</label>
     <input id="profissao" name="profissao" placeholder="Ex.: trabalho sentado, em pé, físico pesado, turnos" type="text"/>
+  </div>
+
+  <div class="field col-12 hidden" id="wrap_personal_dias_semana">
+    <label class="label" id="personal_dias_label">7. Dias da semana para treinar *</label>
+    <span class="helper" id="personal_dias_helper">Escolha os dias de segunda a sexta. A quantidade permitida depende do plano Personal escolhido.</span>
+    <div class="options inline-2 mt-8">
+      <label class="option"><input name="personal_dias_semana" type="checkbox" value="Segunda-feira"/><span>Segunda-feira</span></label>
+      <label class="option"><input name="personal_dias_semana" type="checkbox" value="Terça-feira"/><span>Terça-feira</span></label>
+      <label class="option"><input name="personal_dias_semana" type="checkbox" value="Quarta-feira"/><span>Quarta-feira</span></label>
+      <label class="option"><input name="personal_dias_semana" type="checkbox" value="Quinta-feira"/><span>Quinta-feira</span></label>
+      <label class="option"><input name="personal_dias_semana" type="checkbox" value="Sexta-feira"/><span>Sexta-feira</span></label>
+    </div>
+    <span class="helper" id="personal_dias_contador">0 dia selecionado.</span>
   </div>
 </div>
 </section>
@@ -1286,16 +1304,99 @@
     return plano ? PLANOS_CONFIG[plano].label : 'NÃO INFORMADO';
   }
 
+  function getPersonalDiasMensais(){
+    const params = getPlanoParams();
+    const dias = parseInt((params.get('dias') || '').trim(), 10);
+    return Number.isFinite(dias) ? dias : 0;
+  }
+
+  function getPersonalFrequenciaSemanal(){
+    const dias = getPersonalDiasMensais();
+    const mapa = {4:1, 8:2, 12:3, 16:4, 20:5};
+    return mapa[dias] || (dias ? Math.max(1, Math.round(dias / 4)) : 0);
+  }
+
+  function getPersonalFrequenciaTexto(){
+    const freq = getPersonalFrequenciaSemanal();
+    if(!freq) return '';
+    return 'média de ' + freq + ' ' + (freq === 1 ? 'treino' : 'treinos') + ' por semana';
+  }
+
   function getPlanoDescPersonal(){
     const params = getPlanoParams();
-    const dias = (params.get('dias') || '').trim();
+    const dias = getPersonalDiasMensais();
     const valorSessao = (params.get('valorSessao') || '').trim();
     const total = (params.get('total') || '').trim();
     const partes = [];
-    if(dias) partes.push(dias + 'x/dias por mês');
+    if(dias) partes.push(dias + 'x/mês');
+    const freqTxt = getPersonalFrequenciaTexto();
+    if(freqTxt) partes.push(freqTxt);
     if(valorSessao) partes.push('R$ ' + valorSessao + ' por sessão');
     if(total) partes.push('total R$ ' + total);
     return partes.length ? partes.join(' • ') : 'Plano Personal escolhido na página de planos.';
+  }
+
+  function getPersonalDiasSelecionados(){
+    return [...document.querySelectorAll('input[name="personal_dias_semana"]')]
+      .filter(c => c.checked)
+      .map(c => c.value);
+  }
+
+  function updatePersonalDiasVisual(){
+    document.querySelectorAll('input[name="personal_dias_semana"]').forEach(c => {
+      const label = c.closest('.option');
+      if(label) label.classList.toggle('dia-confirmado', c.checked);
+    });
+  }
+
+  function updatePersonalDiasSemana(){
+    const wrap = document.getElementById('wrap_personal_dias_semana');
+    if(!wrap) return;
+
+    const personal = isPlanoPersonal();
+    wrap.classList.toggle('hidden', !personal);
+
+    const freq = getPersonalFrequenciaSemanal();
+    const helper = document.getElementById('personal_dias_helper');
+    const contador = document.getElementById('personal_dias_contador');
+    const marcados = getPersonalDiasSelecionados().length;
+
+    if(helper){
+      helper.textContent = freq
+        ? 'Escolha exatamente ' + freq + ' ' + (freq === 1 ? 'dia' : 'dias') + ' de segunda a sexta.'
+        : 'Escolha os dias de segunda a sexta em que prefere treinar.';
+    }
+
+    if(contador){
+      contador.textContent = freq
+        ? marcados + ' de ' + freq + ' ' + (freq === 1 ? 'dia selecionado' : 'dias selecionados') + '.'
+        : marcados + ' dia(s) selecionado(s).';
+    }
+
+    updatePersonalDiasVisual();
+  }
+
+  function validatePersonalDiasSemana(){
+    if(!isPlanoPersonal()) return true;
+
+    const checks = [...document.querySelectorAll('input[name="personal_dias_semana"]')];
+    const freq = getPersonalFrequenciaSemanal();
+    const marcados = checks.filter(c => c.checked).length;
+
+    checks.forEach(c => c.setCustomValidity(''));
+
+    if(freq && marcados !== freq){
+      const msg = 'Escolha exatamente ' + freq + ' ' + (freq === 1 ? 'dia' : 'dias') + ' da semana para treinar.';
+      if(checks[0]){
+        checks[0].setCustomValidity(msg);
+        checks[0].reportValidity();
+        document.getElementById('wrap_personal_dias_semana')?.scrollIntoView({behavior:'smooth', block:'center'});
+        setTimeout(() => checks[0].setCustomValidity(''), 900);
+      }
+      return false;
+    }
+
+    return true;
   }
 
   function idadeMenor18(){
@@ -1324,6 +1425,7 @@
     if(texto) texto.textContent = cfg || personal ? ('Plano selecionado: ' + planoLabel) : 'Plano não identificado';
     if(desc) desc.textContent = personal ? getPlanoDescPersonal() : (cfg ? cfg.desc : 'Volte para a página dos planos e escolha Bronze, Prata, Ouro ou Personal antes de preencher a avaliação.');
 
+    updatePersonalDiasSemana();
     updateFotosPorPlano();
   }
 
@@ -1684,6 +1786,7 @@
     const stamp = new Date().toLocaleString('pt-BR');
     lines.push('📋 NOVA AVALIAÇÃO — PERSONAL MFIT');
     lines.push('📦 PLANO ESCOLHIDO: ' + getPlanoLabel());
+    if(isPlanoPersonal() && getPersonalFrequenciaTexto()) lines.push('📅 FREQUÊNCIA: ' + getPersonalFrequenciaTexto());
     lines.push(...getNivelResumoWhatsApp());
     lines.push('🕒 Data/Hora: ' + stamp);
     lines.push('');
@@ -1817,6 +1920,7 @@
       form.addEventListener('submit', e => {
         e.preventDefault();
         if(!validateNivelCompleto()) return;
+        if(!validatePersonalDiasSemana()) return;
         if(!form.checkValidity()){ form.reportValidity(); return; }
         const msg = buildMessage();
         window.open('https://wa.me/5569992913628?text='+encodeURIComponent(msg),'_blank');
@@ -1826,6 +1930,7 @@
         setTimeout(() => {
           applyPlano();
           applyNivel();
+          updatePersonalDiasSemana();
           toggleCesarea();
           toggleMobAlongTriage();
           togglePainBlock();
