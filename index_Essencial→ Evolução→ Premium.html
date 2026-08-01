@@ -726,6 +726,15 @@ nav {
   box-shadow: 0 10px 26px rgba(139,47,232,.28);
   text-align: center;
 }
+.personal-frequency {
+  margin-top: 5px;
+  color: var(--muted);
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  font-size: .76rem !important;
+  font-weight: 600 !important;
+  line-height: 1.25 !important;
+}
 .personal-note {
   margin-top: 14px;
   background: rgba(255,255,255,.03);
@@ -1003,7 +1012,7 @@ footer {
 }
 </style>
 </head>
-<body>
+<body style="">
 
 <div class="glow-1"></div>
 <div class="glow-2"></div>
@@ -1029,7 +1038,7 @@ footer {
       <span>pra você.</span>
     </h1>
     <p class="hero-sub">
-      Escolha o plano conforme o seu momento: <strong>Bronze</strong> para começar, <strong>Prata</strong> para treinar com avaliação inicial, <strong>Ouro</strong> para acompanhamento completo e <strong>Personal</strong> para atendimento presencial por pacote de dias.
+      Escolha o plano conforme o seu momento: <strong>Bronze</strong> para começar, <strong>Prata</strong> para treinar com avaliação inicial, <strong>Ouro</strong> para acompanhamento completo e <strong>Personal</strong> para atendimento presencial por pacote de sessões.
     </p>
     <div class="hero-actions">
       <a href="#como-funciona" class="btn-primary">
@@ -1054,7 +1063,7 @@ footer {
         <span class="step-num">02</span>
         <span class="step-icon">🏷️</span>
         <p class="step-title">Escolhe o plano</p>
-        <p class="step-desc">Bronze para começar, Prata para ter avaliação postural simples, Ouro para acompanhar a evolução de forma completa e Personal para atendimento presencial por pacote de dias.</p>
+        <p class="step-desc">Bronze para começar, Prata para ter avaliação postural simples, Ouro para acompanhar a evolução de forma completa e Personal para atendimento presencial por pacote de sessões.</p>
       </div>
       <div class="step">
         <span class="step-num">03</span>
@@ -1157,7 +1166,7 @@ footer {
   <section id="planos" class="plans-section reveal visible">
     <p class="section-label">Agora escolha seu plano</p>
     <h2 class="section-title">Bronze, Prata, Ouro ou Personal</h2>
-    <p class="plans-intro">Depois de entender como funciona o acompanhamento, fica mais fácil escolher: Bronze para começar com treino organizado, Prata para treinar com avaliação postural simples, Ouro para ter acompanhamento completo com gráfico e reavaliação, ou Personal para atendimento presencial por quantidade de dias no mês.</p>
+    <p class="plans-intro">Depois de entender como funciona o acompanhamento, fica mais fácil escolher: Bronze para começar com treino organizado, Prata para treinar com avaliação postural simples, Ouro para ter acompanhamento completo com gráfico e reavaliação, ou Personal para atendimento presencial por quantidade de sessões no mês.</p>
 
     <div class="plan-grid">
       <article class="plan-card plan-bronze" data-plan="bronze">
@@ -1228,11 +1237,11 @@ footer {
           <div>
             <p class="plan-kicker">Planos Personal</p>
             <h3 class="plan-name">Treino com acompanhamento presencial</h3>
-            <p class="plan-desc">Para quem quer atendimento personal trainer por quantidade de dias no mês, com valor por sessão reduzindo conforme o pacote escolhido.</p>
-            <p class="plan-value"><strong>Escolha entre 4x, 8x, 12x, 16x ou 20x por mês.</strong> Depois abre a avaliação no mesmo formato do plano Ouro.</p>
+            <p class="plan-desc">Para quem quer atendimento personal trainer por quantidade de sessões no mês, com frequência semanal explicada de forma clara e valor por sessão reduzindo conforme o pacote escolhido.</p>
+            <p class="plan-value"><strong>Escolha entre 4x, 8x, 12x, 16x ou 20x/mês.</strong> Cada opção já mostra a média de treinos por semana e depois abre a avaliação no mesmo formato do plano Ouro.</p>
           </div>
           <div class="plan-personal-highlights">
-            <div class="plan-personal-pill" data-personal-highlight="menor"><strong>A partir de R$ 25,50</strong>por sessão no pacote de 20x.</div>
+            <div class="plan-personal-pill" data-personal-highlight="menor"><strong>A partir de R$ 25,50</strong>por sessão no pacote de 20x/mês.</div>
             <div class="plan-personal-pill"><strong>Plano presencial</strong>ideal para quem precisa de correção, suporte e constância.</div>
           </div>
         </div>
@@ -1257,47 +1266,47 @@ footer {
     <div class="personal-head">
       <small>Tabela de preços</small>
       <h2 id="personal-modal-title">Personal <span>Trainer</span></h2>
-      <p>Selecione o pacote de atendimento presencial. Ao escolher, a avaliação abre no formato completo do plano Ouro e o nome do pacote vai junto no link.</p>
+      <p>Selecione o pacote de atendimento presencial. Cada opção mostra as sessões no mês e a média de treinos por semana. Ao escolher, a avaliação abre no formato completo do plano Ouro e o nome do pacote vai junto no link.</p>
     </div>
 
     <div class="personal-table">
       <div class="personal-row" data-personal-row="4">
-        <div class="personal-cell personal-days"><strong data-personal-days="4">4x / dias</strong><small>por mês</small></div>
+        <div class="personal-cell personal-days"><strong data-personal-days="4">4x/mês</strong><small class="personal-frequency" data-personal-frequency="4">Média de 1 treino por semana</small></div>
         <div class="personal-cell personal-session"><strong><span>R$</span><b data-personal-sessao="4" style="font-weight:inherit;">50</b></strong><small>por sessão</small></div>
         <div class="personal-cell personal-total"><small>Total</small><strong><span>R$</span><b data-personal-total="4" style="font-weight:inherit;">200</b></strong><small>pacote</small></div>
-        <a class="personal-pick" data-personal-pick="4" href="ficha_unica_planos.html?plano=ouro&amp;nome=Personal%20-%204x%2Fdias%20por%20m%C3%AAs&amp;tipo=personal&amp;dias=4&amp;valorSessao=50&amp;total=200">Escolher 4x</a>
+        <a class="personal-pick" data-personal-pick="4" href="ficha_unica_planos.html?plano=ouro&amp;nome=Personal%20-%204x%2Fm%C3%AAs&amp;tipo=personal&amp;dias=4&amp;valorSessao=50&amp;total=200">Escolher 4x</a>
       </div>
 
       <div class="personal-row" data-personal-row="8">
-        <div class="personal-cell personal-days"><strong data-personal-days="8">8x / dias</strong><small>por mês</small></div>
+        <div class="personal-cell personal-days"><strong data-personal-days="8">8x/mês</strong><small class="personal-frequency" data-personal-frequency="8">Média de 2 treinos por semana</small></div>
         <div class="personal-cell personal-session"><strong><span>R$</span><b data-personal-sessao="8" style="font-weight:inherit;">40</b></strong><small>por sessão</small></div>
         <div class="personal-cell personal-total"><small>Total</small><strong><span>R$</span><b data-personal-total="8" style="font-weight:inherit;">320</b></strong><small>pacote</small></div>
-        <a class="personal-pick" data-personal-pick="8" href="ficha_unica_planos.html?plano=ouro&amp;nome=Personal%20-%208x%2Fdias%20por%20m%C3%AAs&amp;tipo=personal&amp;dias=8&amp;valorSessao=40&amp;total=320">Escolher 8x</a>
+        <a class="personal-pick" data-personal-pick="8" href="ficha_unica_planos.html?plano=ouro&amp;nome=Personal%20-%208x%2Fm%C3%AAs&amp;tipo=personal&amp;dias=8&amp;valorSessao=40&amp;total=320">Escolher 8x</a>
       </div>
 
       <div class="personal-row" data-personal-row="12">
-        <div class="personal-cell personal-days"><strong data-personal-days="12">12x / dias</strong><small>por mês</small></div>
+        <div class="personal-cell personal-days"><strong data-personal-days="12">12x/mês</strong><small class="personal-frequency" data-personal-frequency="12">Média de 3 treinos por semana</small></div>
         <div class="personal-cell personal-session"><strong><span>R$</span><b data-personal-sessao="12" style="font-weight:inherit;">35</b></strong><small>por sessão</small></div>
         <div class="personal-cell personal-total"><small>Total</small><strong><span>R$</span><b data-personal-total="12" style="font-weight:inherit;">420</b></strong><small>pacote</small></div>
-        <a class="personal-pick" data-personal-pick="12" href="ficha_unica_planos.html?plano=ouro&amp;nome=Personal%20-%2012x%2Fdias%20por%20m%C3%AAs&amp;tipo=personal&amp;dias=12&amp;valorSessao=35&amp;total=420">Escolher 12x</a>
+        <a class="personal-pick" data-personal-pick="12" href="ficha_unica_planos.html?plano=ouro&amp;nome=Personal%20-%2012x%2Fm%C3%AAs&amp;tipo=personal&amp;dias=12&amp;valorSessao=35&amp;total=420">Escolher 12x</a>
       </div>
 
       <div class="personal-row" data-personal-row="16">
-        <div class="personal-cell personal-days"><strong data-personal-days="16">16x / dias</strong><small>por mês</small></div>
+        <div class="personal-cell personal-days"><strong data-personal-days="16">16x/mês</strong><small class="personal-frequency" data-personal-frequency="16">Média de 4 treinos por semana</small></div>
         <div class="personal-cell personal-session"><strong><span>R$</span><b data-personal-sessao="16" style="font-weight:inherit;">30</b></strong><small>por sessão</small></div>
         <div class="personal-cell personal-total"><small>Total</small><strong><span>R$</span><b data-personal-total="16" style="font-weight:inherit;">480</b></strong><small>pacote</small></div>
-        <a class="personal-pick" data-personal-pick="16" href="ficha_unica_planos.html?plano=ouro&amp;nome=Personal%20-%2016x%2Fdias%20por%20m%C3%AAs&amp;tipo=personal&amp;dias=16&amp;valorSessao=30&amp;total=480">Escolher 16x</a>
+        <a class="personal-pick" data-personal-pick="16" href="ficha_unica_planos.html?plano=ouro&amp;nome=Personal%20-%2016x%2Fm%C3%AAs&amp;tipo=personal&amp;dias=16&amp;valorSessao=30&amp;total=480">Escolher 16x</a>
       </div>
 
       <div class="personal-row best" data-personal-row="20">
-        <div class="personal-cell personal-days"><strong data-personal-days="20">20x / dias</strong><small>por mês</small></div>
+        <div class="personal-cell personal-days"><strong data-personal-days="20">20x/mês</strong><small class="personal-frequency" data-personal-frequency="20">Média de 5 treinos por semana</small></div>
         <div class="personal-cell personal-session"><strong><span>R$</span><b data-personal-sessao="20" style="font-weight:inherit;">25,50</b></strong><small>por sessão</small></div>
         <div class="personal-cell personal-total"><small>Total</small><strong><span>R$</span><b data-personal-total="20" style="font-weight:inherit;">500</b></strong><small>pacote</small></div>
-        <a class="personal-pick" data-personal-pick="20" href="ficha_unica_planos.html?plano=ouro&amp;nome=Personal%20-%2020x%2Fdias%20por%20m%C3%AAs&amp;tipo=personal&amp;dias=20&amp;valorSessao=25%2C50&amp;total=500">Escolher 20x</a>
+        <a class="personal-pick" data-personal-pick="20" href="ficha_unica_planos.html?plano=ouro&amp;nome=Personal%20-%2020x%2Fm%C3%AAs&amp;tipo=personal&amp;dias=20&amp;valorSessao=25%2C50&amp;total=500">Escolher 20x</a>
       </div>
     </div>
 
-    <p class="personal-note"><strong>Observação:</strong> quanto mais dias no mês, menor o valor por sessão. A avaliação seguinte usa o formato completo do Ouro para coletar as informações antes da prescrição.</p>
+    <p class="personal-note"><strong>Observação:</strong> quanto mais sessões no mês, menor o valor por sessão. A frequência semanal é uma média e os dias/horários serão organizados conforme disponibilidade. A avaliação seguinte usa o formato completo do Ouro para coletar as informações antes da prescrição.</p>
   </div>
 </div>
 
@@ -1778,10 +1787,21 @@ footer {
     return dados;
   }
 
+  function getPersonalFrequenciaTexto(dia) {
+    const mapa = {
+      '4': 'Média de 1 treino por semana',
+      '8': 'Média de 2 treinos por semana',
+      '12': 'Média de 3 treinos por semana',
+      '16': 'Média de 4 treinos por semana',
+      '20': 'Média de 5 treinos por semana'
+    };
+    return mapa[String(dia)] || '';
+  }
+
   function atualizarLinkPersonal(dia, sessao, total) {
     const link = document.querySelector('[data-personal-pick="' + dia + '"]');
     if(!link) return;
-    const nome = 'Personal - ' + dia + 'x/dias por mês';
+    const nome = 'Personal - ' + dia + 'x/mês';
     link.href = 'ficha_unica_planos.html?plano=ouro&nome=' + encodeURIComponent(nome) +
       '&tipo=personal&dias=' + encodeURIComponent(dia) +
       '&valorSessao=' + encodeURIComponent(sessao) +
@@ -1802,7 +1822,7 @@ footer {
       }
     });
     const valorTxt = dados[menorDia]?.sessao || '';
-    highlight.innerHTML = '<strong>A partir de R$ ' + valorTxt + '</strong>por sessão no pacote de ' + menorDia + 'x.';
+    highlight.innerHTML = '<strong>A partir de R$ ' + valorTxt + '</strong>por sessão no pacote de ' + menorDia + 'x/mês.';
   }
 
   function aplicarConfigPersonal(dados, persistir) {
@@ -1813,7 +1833,9 @@ footer {
       const sessaoEl = document.querySelector('[data-personal-sessao="' + dia + '"]');
       const totalEl = document.querySelector('[data-personal-total="' + dia + '"]');
       const diasEl = document.querySelector('[data-personal-days="' + dia + '"]');
-      if(diasEl) diasEl.textContent = dia + 'x / dias';
+      if(diasEl) diasEl.textContent = dia + 'x/mês';
+      const freqEl = document.querySelector('[data-personal-frequency="' + dia + '"]');
+      if(freqEl) freqEl.textContent = getPersonalFrequenciaTexto(dia);
       if(sessaoEl) sessaoEl.textContent = sessao;
       if(totalEl) totalEl.textContent = total;
       atualizarLinkPersonal(dia, sessao, total);
