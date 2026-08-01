@@ -1356,9 +1356,20 @@
     const personal = isPlanoPersonal();
     wrap.classList.toggle('hidden', !personal);
 
+    const checks = [...document.querySelectorAll('input[name="personal_dias_semana"]')];
     const freq = getPersonalFrequenciaSemanal();
     const helper = document.getElementById('personal_dias_helper');
     const contador = document.getElementById('personal_dias_contador');
+
+    if(personal && freq){
+      const marcadosAtuais = checks.filter(c => c.checked);
+      if(marcadosAtuais.length > freq){
+        marcadosAtuais.slice(freq).forEach(c => c.checked = false);
+      }
+    } else if(!personal){
+      checks.forEach(c => c.checked = false);
+    }
+
     const marcados = getPersonalDiasSelecionados().length;
 
     if(helper){
