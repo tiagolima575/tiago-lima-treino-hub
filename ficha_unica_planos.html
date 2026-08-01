@@ -1,0 +1,2000 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Avaliação de Treino — MFIT Premium</title>
+<style>
+    :root{
+      --bg:#030305;
+      --bg-2:#080A10;
+      --surface:#0B0D12;
+      --card:#10131A;
+      --card-2:#151924;
+      --card-3:#191E2A;
+      --text:#F8F5FF;
+      --muted:#B9B1C8;
+      --muted-2:#8F849D;
+      --line:rgba(255,255,255,.08);
+      --line-purple:rgba(163,89,218,.38);
+      --purple:#A359DA;
+      --purple-strong:#8D2DE2;
+      --purple-deep:#5B168F;
+      --purple-2:#E49EF7;
+      --purple-soft:rgba(163,89,218,.16);
+      --danger:#FF5E5E;
+      --danger-bg:rgba(255,94,94,.075);
+      --radius:18px;
+      --shadow:0 18px 48px rgba(0,0,0,.42);
+      --shadow-soft:0 12px 28px rgba(0,0,0,.28);
+    }
+
+    *{box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{
+      margin:0;
+      min-height:100vh;
+      color:var(--text);
+      font-family:Inter,Arial,Helvetica,sans-serif;
+      line-height:1.45;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(163,89,218,.22), transparent 34%),
+        radial-gradient(circle at 88% 8%, rgba(228,158,247,.13), transparent 32%),
+        linear-gradient(180deg,#000000 0%,#07080D 46%,#030305 100%);
+      -webkit-font-smoothing:antialiased;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background:
+        linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.014) 1px, transparent 1px);
+      background-size:42px 42px;
+      mask-image:linear-gradient(180deg,rgba(0,0,0,.72),transparent 78%);
+      z-index:0;
+    }
+
+    ::selection{background:rgba(163,89,218,.42);color:#fff;}
+
+    .wrap{
+      position:relative;
+      z-index:1;
+      max-width:1080px;
+      margin:0 auto;
+      padding:28px 16px 64px;
+    }
+
+    .hero{
+      position:relative;
+      overflow:hidden;
+      background:
+        linear-gradient(135deg,rgba(163,89,218,.20),rgba(0,0,0,0) 34%),
+        linear-gradient(180deg,#090A10 0%,#030305 100%);
+      border:1px solid rgba(163,89,218,.62);
+      border-radius:28px;
+      padding:30px;
+      margin-bottom:22px;
+      box-shadow:var(--shadow),0 0 0 1px rgba(228,158,247,.08) inset,0 0 48px rgba(163,89,218,.12);
+    }
+
+    .hero::before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background:
+        radial-gradient(circle at 92% 0%, rgba(228,158,247,.28), transparent 34%),
+        radial-gradient(circle at 0% 100%, rgba(163,89,218,.18), transparent 36%);
+      pointer-events:none;
+    }
+
+    .hero > *{position:relative;z-index:1;}
+    .hero h1{margin:0 0 10px;font-size:clamp(1.25rem,3vw,1.7rem);font-weight:700;letter-spacing:-.01em;line-height:1.2;}
+    .hero p{margin:0 0 14px;color:var(--muted);font-size:.93rem;}
+    .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+    .pill{background:rgba(163,89,218,.18);border:1px solid rgba(163,89,218,.32);border-radius:20px;padding:4px 12px;font-size:.78rem;color:var(--purple-2);}
+
+    .brand{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+    .logo{width:40px;height:40px;object-fit:contain;border-radius:8px;}
+    .brand-name{font-size:.95rem;font-weight:600;color:var(--text);}
+
+    /* Level indicator banner */
+    .nivel-banner{
+      display:none;
+      align-items:center;
+      gap:10px;
+      padding:12px 18px;
+      border-radius:12px;
+      margin-bottom:12px;
+      font-size:.88rem;
+      font-weight:600;
+      border:1px solid;
+    }
+    .nivel-banner.show{display:flex;}
+    .nivel-banner.ini{background:rgba(89,189,108,.08);border-color:rgba(89,189,108,.3);color:#59BD6C;}
+    .nivel-banner.int{background:rgba(163,89,218,.10);border-color:rgba(163,89,218,.35);color:#C17FEE;}
+    .nivel-banner.adv{background:rgba(228,158,247,.08);border-color:rgba(228,158,247,.32);color:#E49EF7;}
+
+
+    .plano-banner{
+      display:flex;
+      align-items:flex-start;
+      gap:12px;
+      padding:14px 18px;
+      border-radius:14px;
+      margin-bottom:12px;
+      font-size:.88rem;
+      border:1px solid rgba(163,89,218,.30);
+      background:rgba(163,89,218,.10);
+      color:var(--text);
+    }
+    .plano-banner .plano-icon{
+      width:30px;
+      height:30px;
+      border-radius:10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(255,255,255,.06);
+      flex-shrink:0;
+    }
+    .plano-banner strong{display:block;font-size:.92rem;letter-spacing:.01em;}
+    .plano-banner small{display:block;color:var(--muted);font-size:.78rem;margin-top:2px;line-height:1.35;}
+    .plano-banner.bronze{border-color:rgba(201,137,75,.34);background:rgba(201,137,75,.09);}
+    .plano-banner.prata{border-color:rgba(200,200,210,.30);background:rgba(200,200,210,.07);}
+    .plano-banner.ouro{border-color:rgba(240,201,106,.34);background:rgba(240,201,106,.08);}
+
+    .section{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:24px;
+      margin-bottom:16px;
+      transition:border-color .2s;
+    }
+    .section:focus-within{border-color:rgba(163,89,218,.38);}
+    .section h2{margin:0 0 6px;font-size:1rem;font-weight:700;color:var(--text);letter-spacing:.01em;}
+    .section .desc{margin:0 0 18px;color:var(--muted-2);font-size:.85rem;}
+    .section.hidden{display:none;}
+
+    .triage-alert{
+      background:rgba(255,94,94,.10);
+      border:1px solid rgba(255,94,94,.32);
+      color:#FFD0D0;
+      border-radius:12px;
+      padding:10px 14px;
+      margin:0 0 14px;
+      font-size:.83rem;
+      font-weight:600;
+    }
+    .triage-alert.hidden{display:none!important;}
+    .field.level-required-missing select,
+    .field.level-required-missing input,
+    .field.level-required-missing textarea{
+      border-color:var(--danger);
+      box-shadow:0 0 0 3px rgba(255,94,94,.12);
+    }
+
+    /* Transition marker shown when level upgrades */
+    .level-divider{
+      display:none;
+      text-align:center;
+      padding:18px 0 6px;
+      color:var(--purple-2);
+      font-size:.82rem;
+      font-weight:600;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .level-divider.show{display:block;}
+    .level-divider span{
+      display:inline-block;
+      background:rgba(163,89,218,.14);
+      border:1px solid rgba(163,89,218,.28);
+      border-radius:20px;
+      padding:5px 16px;
+    }
+
+    .subhead{grid-column:1/-1;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--purple-2);padding:8px 0 2px;border-bottom:1px solid var(--line-purple);margin-bottom:4px;}
+
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;}
+    .field{display:flex;flex-direction:column;gap:6px;}
+    .col-4{grid-column:span 4;}
+    .col-6{grid-column:span 6;}
+    .col-8{grid-column:span 8;}
+    .col-12{grid-column:span 12;}
+    @media(max-width:680px){.col-4,.col-6,.col-8{grid-column:span 12;}}
+
+    .label{font-size:.84rem;font-weight:600;color:var(--muted);line-height:1.3;}
+    .helper{font-size:.75rem;color:var(--muted-2);font-style:italic;margin-top:2px;}
+
+    select,input[type=text],input[type=number],input[type=tel],textarea{
+      width:100%;
+      background:var(--card-2);
+      border:1px solid var(--line);
+      border-radius:10px;
+      color:var(--text);
+      font-size:.88rem;
+      padding:9px 12px;
+      outline:none;
+      transition:border-color .18s,box-shadow .18s;
+      font-family:inherit;
+    }
+    select:focus,input:focus,textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(163,89,218,.15);}
+    select option{background:var(--card-2);color:var(--text);}
+    textarea{resize:vertical;min-height:72px;}
+
+    .options{display:flex;flex-direction:column;gap:8px;}
+    .options.inline-2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+    @media(max-width:500px){.options.inline-2{grid-template-columns:1fr;}}
+
+    .option{
+      display:flex;align-items:center;gap:10px;
+      background:var(--card-2);border:1px solid var(--line);border-radius:10px;
+      padding:9px 12px;cursor:pointer;transition:border-color .15s,background .15s;font-size:.85rem;
+    }
+    .option:hover{border-color:rgba(163,89,218,.38);background:var(--card-3);}
+    .option input{width:16px;height:16px;accent-color:var(--purple);cursor:pointer;flex-shrink:0;}
+    .option.dia-confirmado{
+      border-color:rgba(89,189,108,.55);
+      background:rgba(89,189,108,.08);
+    }
+    .option.dia-confirmado span::after{
+      content:' ✓';
+      color:#59BD6C;
+      font-weight:800;
+    }
+
+    .hidden{display:none!important;}
+    .mt-8{margin-top:8px;}
+
+    .image-picker summary{cursor:pointer;color:var(--purple-2);font-size:.84rem;font-weight:600;padding:8px 0;user-select:none;}
+    .image-picker-body{margin-top:10px;}
+    .image-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+    @media(max-width:500px){.image-grid{grid-template-columns:1fr;}}
+    .image-option{cursor:pointer;}
+    .image-option input{display:none;}
+    .image-card{display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px;border:2px solid var(--line);border-radius:12px;background:var(--card-2);transition:border-color .15s;}
+    .image-option input:checked + .image-card{border-color:var(--purple);}
+    .image-card img{width:80px;height:80px;object-fit:cover;border-radius:8px;}
+    .image-card strong{font-size:.84rem;}
+    .image-card small{font-size:.75rem;color:var(--muted-2);}
+
+    .danger-note{background:var(--danger-bg);border:1px solid rgba(255,94,94,.2);border-radius:10px;padding:10px 14px;font-size:.82rem;color:var(--danger);margin-top:10px;}
+
+    .submit-bar{
+      background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+      padding:20px 24px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;
+      margin-top:16px;margin-bottom:32px;
+      box-shadow:0 8px 32px rgba(0,0,0,.5);
+      position:static !important;
+    }
+    .submit-left{display:flex;flex-direction:column;gap:6px;}
+    .submit-right{display:flex;gap:10px;flex-wrap:wrap;}
+    .consent{display:flex;align-items:flex-start;gap:8px;font-size:.82rem;color:var(--muted);cursor:pointer;}
+    .consent input{margin-top:2px;accent-color:var(--purple);}
+
+    .btn{padding:10px 20px;border-radius:10px;font-size:.88rem;font-weight:600;cursor:pointer;border:none;transition:opacity .15s,transform .1s;}
+    .btn:active{transform:scale(.97);}
+    .btn-primary{background:linear-gradient(135deg,var(--purple-strong),var(--purple-deep));color:#fff;box-shadow:0 4px 16px rgba(141,45,226,.35);}
+    .btn-primary:hover{opacity:.9;}
+    .btn-secondary{background:var(--card-2);border:1px solid var(--line);color:var(--muted);}
+    .btn-secondary:hover{border-color:var(--purple);}
+
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*,*::before,*::after{transition:none!important;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hero">
+  <div class="brand">
+    <img alt="Logo" class="logo" id="brandLogo" onerror="this.onerror=null;this.src='logo.png';" src="https://tiagolima575.github.io/tiago-lima-treino-hub/logo.png"/>
+    <div class="brand-text"><div class="brand-name">Avaliação Inicial</div></div>
+  </div>
+  <h1>Avaliação de Treino — MFIT Premium</h1>
+  <p>Preencha com sinceridade. Resposta bonita e falsa só serve para sabotar o treino.</p>
+  <p>A ficha se adapta automaticamente conforme você responde.</p>
+  <div class="meta">
+    <span class="pill">Tempo médio: 6 a 12 minutos</span>
+    <span class="pill">Avaliação adaptativa</span>
+    <span class="pill">Prescrição personalizada</span>
+  </div>
+</div>
+
+<!-- Plano selecionado -->
+<div class="plano-banner" id="plano_banner">
+  <span class="plano-icon" id="plano_icon">📦</span>
+  <div>
+    <strong id="plano_texto">Plano selecionado</strong>
+    <small id="plano_desc">A avaliação será ajustada conforme o plano escolhido no site.</small>
+  </div>
+</div>
+
+<!-- Level indicator -->
+<div class="nivel-banner" id="nivel_banner">
+  <span id="nivel_icon">✅</span>
+  <span id="nivel_texto">Perfil identificado: Iniciante</span>
+</div>
+
+<form>
+
+<!-- ════════════════════════════════════════════════
+     BLOCO 1 — DADOS PESSOAIS (universal)
+═════════════════════════════════════════════════ -->
+<section class="section" id="section_dados_pessoais">
+<h2>BLOCO 1 — 👤 Dados Pessoais</h2>
+<p class="desc">Informações básicas para identificação e personalização.</p>
+<div class="grid">
+  <div class="field col-6">
+    <label class="label" for="nome">1. Nome completo *</label>
+    <input id="nome" name="nome" placeholder="Seu nome" required type="text"/>
+  </div>
+  <div class="field col-4">
+    <label class="label" for="idade">2. Idade</label>
+    <input id="idade" max="99" min="10" name="idade" placeholder="Ex.: 28" type="number"/>
+  </div>
+  <div class="field col-4">
+    <label class="label" for="sexo">3. Sexo biológico</label>
+    <select id="sexo" name="sexo">
+      <option value="">Selecione</option>
+      <option>Masculino</option>
+      <option>Feminino</option>
+      <option>Prefiro não informar</option>
+    </select>
+  </div>
+  <div class="field col-4">
+    <label class="label" for="peso">4. Peso aproximado (kg)</label>
+    <input id="peso" name="peso" placeholder="Ex.: 72" type="number"/>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="altura">5. Altura (cm)</label>
+    <input id="altura" name="altura" placeholder="Ex.: 170" type="number"/>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="profissao">6. Profissão / rotina de trabalho</label>
+    <input id="profissao" name="profissao" placeholder="Ex.: trabalho sentado, em pé, físico pesado, turnos" type="text"/>
+  </div>
+
+  <div class="field col-12 hidden" id="wrap_personal_dias_semana">
+    <label class="label" id="personal_dias_label">7. Dias da semana para treinar *</label>
+    <span class="helper" id="personal_dias_helper">Escolha os dias de segunda a sexta. A quantidade permitida depende do plano Personal escolhido.</span>
+    <div class="options inline-2 mt-8">
+      <label class="option"><input name="personal_dias_semana" type="checkbox" value="Segunda-feira" onchange="controlarCliqueDiaSemana(this)"/><span>Segunda-feira</span></label>
+      <label class="option"><input name="personal_dias_semana" type="checkbox" value="Terça-feira" onchange="controlarCliqueDiaSemana(this)"/><span>Terça-feira</span></label>
+      <label class="option"><input name="personal_dias_semana" type="checkbox" value="Quarta-feira" onchange="controlarCliqueDiaSemana(this)"/><span>Quarta-feira</span></label>
+      <label class="option"><input name="personal_dias_semana" type="checkbox" value="Quinta-feira" onchange="controlarCliqueDiaSemana(this)"/><span>Quinta-feira</span></label>
+      <label class="option"><input name="personal_dias_semana" type="checkbox" value="Sexta-feira" onchange="controlarCliqueDiaSemana(this)"/><span>Sexta-feira</span></label>
+    </div>
+    <span class="helper" id="personal_dias_contador">0 dia selecionado.</span>
+  </div>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     BLOCO 2 — CLASSIFICAÇÃO DE NÍVEL (obrigatório — determina o fluxo)
+═════════════════════════════════════════════════ -->
+<section class="section" id="section_nivel_base">
+<h2>BLOCO 2 — 📊 Classificação de Nível</h2>
+<p class="desc">Essas 6 perguntas são obrigatórias para identificar o nível real antes de liberar o restante da ficha.</p>
+<div id="triagem_alerta" class="triage-alert hidden">Responda todas as perguntas de classificação antes de continuar.</div>
+<div class="grid">
+  <div class="field col-6">
+    <label class="label" for="ja_treinou">8. Você já treinou musculação antes? *</label>
+    <select id="ja_treinou" name="ja_treinou" required data-level-required="true">
+      <option value="">Selecione</option>
+      <option>Não, nunca treinei</option>
+      <option>Já treinei e parei (faz mais de 6 meses)</option>
+      <option>Treino com algumas pausas há menos de 1 ano</option>
+      <option>Treino com constância há 1 a 2 anos</option>
+      <option>Treino com constância há mais de 2 anos</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="consistencia_atual">9. Nos últimos 30 dias, você treinou com regularidade? *</label>
+    <select id="consistencia_atual" name="consistencia_atual" required data-level-required="true">
+      <option value="">Selecione</option>
+      <option>Não treinei</option>
+      <option>Treinei pouco / irregular</option>
+      <option>Mais ou menos</option>
+      <option>Consistente</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="tecnica_exec">10. Na maioria dos exercícios, você se sente: *</label>
+    <select id="tecnica_exec" name="tecnica_exec" required data-level-required="true">
+      <option value="">Selecione</option>
+      <option>Inseguro(a) — não tenho certeza se estou fazendo certo</option>
+      <option>Mais ou menos seguro(a)</option>
+      <option>Seguro(a) na maioria</option>
+      <option>Seguro(a) em quase todos</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="anota_cargas">11. Você costuma anotar as cargas e repetições dos exercícios? *</label>
+    <span class="helper">Ex.: peso usado e quantas vezes fez cada exercício.</span>
+    <select id="anota_cargas" name="anota_cargas" required data-level-required="true">
+      <option value="">Selecione</option>
+      <option>Não</option>
+      <option>Às vezes</option>
+      <option>Na maioria das vezes</option>
+      <option>Sempre</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="recupera_geral">12. Depois de um treino pesado, você costuma recuperar bem até o próximo? *</label>
+    <select id="recupera_geral" name="recupera_geral" required data-level-required="true">
+      <option value="">Selecione</option>
+      <option>Não treino pesado ainda</option>
+      <option>Demoro muito para recuperar</option>
+      <option>Mais ou menos</option>
+      <option>Sim, na maioria das vezes</option>
+      <option>Sim, recupero muito bem</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="evolucao_recente">13. Nos últimos 2 meses, você conseguiu evoluir em carga, repetições ou execução? *</label>
+    <select id="evolucao_recente" name="evolucao_recente" required data-level-required="true">
+      <option value="">Selecione</option>
+      <option>Não se aplica / não treinei</option>
+      <option>Não evolui</option>
+      <option>Um pouco</option>
+      <option>Sim, em vários exercícios</option>
+    </select>
+  </div>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     DIVISOR — INTERMEDIÁRIO (aparece quando nível >= intermediário)
+═════════════════════════════════════════════════ -->
+<div class="level-divider" id="divider_int">
+  <span>✦ Confirmação de nível — responda para finalizar a classificação ✦</span>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     BLOCO 12 — EXPERIÊNCIA INTERMEDIÁRIA (aparece só para intermediário+)
+═════════════════════════════════════════════════ -->
+<section class="section hidden" id="bloco_int_experiencia">
+<h2>CONFIRMAÇÃO — 🏆 Experiência de Treino</h2>
+<p class="desc">Quando a triagem aponta intermediário, essas respostas confirmam se o perfil continua intermediário ou sobe para avançado.</p>
+<div class="grid">
+  <div class="field col-6">
+    <label class="label" for="int_divisao">Qual divisão de treino você já usou ou prefere? *</label>
+    <span class="helper">Como seu treino costuma ser organizado entre os dias da semana.</span>
+    <select id="int_divisao" name="int_divisao" data-level-refine="true">
+      <option value="">Selecione</option>
+      <option>Full body — treino o corpo todo em cada sessão</option>
+      <option>A/B — alterno dois treinos diferentes</option>
+      <option>Treino separado por grupos musculares (pernas, costas, peito...)</option>
+      <option>Upper/Lower — parte superior um dia, inferior no outro</option>
+      <option>Push/Pull/Legs — empurrar / puxar / pernas</option>
+      <option>Sem preferência</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="int_falha">Quando a série fica pesada, você normalmente: *</label>
+    <select id="int_falha" name="int_falha" data-level-refine="true">
+      <option value="">Selecione</option>
+      <option>Paro antes de perder a execução</option>
+      <option>Às vezes perco a execução no final</option>
+      <option>Quase sempre vou até perder a execução</option>
+      <option>Não sei dizer</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="int_lesao_hist">Você tem histórico de lesão que costuma voltar?</label>
+    <select id="int_lesao_hist" name="int_lesao_hist">
+      <option value="">Selecione</option>
+      <option>Nunca tive lesão relevante</option>
+      <option>Já tive lesão, mas hoje está controlada</option>
+      <option>Lesão costuma voltar com carga/volume</option>
+      <option>Estou em reabilitação</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="int_passos">Em média, quantos passos você dá por dia?</label>
+    <select id="int_passos" name="int_passos">
+      <option value="">Selecione</option>
+      <option>Não sei</option>
+      <option>Menos de 5 mil</option>
+      <option>5–8 mil</option>
+      <option>8–12 mil</option>
+      <option>Mais de 12 mil</option>
+    </select>
+    <span class="helper">Se não sabe, consulte o app de saúde do celular. Referência: 6.000–10.000 passos/dia é considerado ativo.</span>
+  </div>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     BLOCO 13 — ESTRATÉGIA INTERMEDIÁRIA (aparece só para intermediário+)
+═════════════════════════════════════════════════ -->
+<section class="section hidden" id="bloco_int_estrategia">
+<h2>CONFIRMAÇÃO — 🔬 Estratégia de Treino</h2>
+<p class="desc">Perguntas obrigatórias para separar intermediário real de avançado, sem chute.</p>
+<div class="grid">
+  <div class="field col-6">
+    <label class="label" for="int_periodizacao">Como você prefere organizar a evolução ao longo das semanas? *</label>
+    <select id="int_periodizacao" name="int_periodizacao" data-level-refine="true">
+      <option value="">Selecione</option>
+      <option>Sem preferência — o personal decide</option>
+      <option>Linear — aumentar carga gradualmente toda semana</option>
+      <option>Ondulação — variar carga e repetições entre as semanas</option>
+      <option>Blocos — fases diferentes (volume, força, definição...)</option>
+    </select>
+    <span class="helper">Se não souber a diferença, escolha "Sem preferência".</span>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="int_deload">Você costuma fazer semana de deload (semana de descarga — redução proposital de carga e volume para recuperar)? *</label>
+    <select id="int_deload" name="int_deload" data-level-refine="true">
+      <option value="">Selecione</option>
+      <option>Não, nunca fiz</option>
+      <option>Faço quando sinto que preciso</option>
+      <option>Sigo uma programação com deload planejado</option>
+      <option>Não sei o que é</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="int_rir">Você costuma controlar o RIR (Reps in Reserve — quantas repetições você ainda conseguiria fazer ao parar a série)? *</label>
+    <select id="int_rir" name="int_rir" data-level-refine="true">
+      <option value="">Selecione</option>
+      <option>Não uso isso</option>
+      <option>Paro com 3–4 repetições sobrando (esforço moderado)</option>
+      <option>Paro com 1–2 repetições sobrando (esforço alto)</option>
+      <option>Vou até a falha ou quase (RIR 0–1)</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="int_rpe">Você já usou RPE (Rate of Perceived Exertion — escala de esforço de 1 a 10, onde 10 é o máximo) para controlar a intensidade? *</label>
+    <select id="int_rpe" name="int_rpe" data-level-refine="true">
+      <option value="">Selecione</option>
+      <option>Não, nunca usei</option>
+      <option>Conheço mas não uso</option>
+      <option>Uso às vezes</option>
+      <option>Uso com frequência</option>
+    </select>
+  </div>
+  <div class="field col-12">
+    <label class="label">Técnicas de intensidade que você usa ou já usou:</label>
+    <div class="options inline-2">
+      <label class="option"><input name="int_tecnicas" type="checkbox" value="Drop set — reduz a carga e continua sem parar"/><span>Drop set — reduz a carga e continua sem parar</span></label>
+      <label class="option"><input name="int_tecnicas" type="checkbox" value="Rest-pause — pausa curta dentro da própria série"/><span>Rest-pause — pausa curta dentro da própria série</span></label>
+      <label class="option"><input name="int_tecnicas" type="checkbox" value="Bi-set — dois exercícios seguidos sem descanso"/><span>Bi-set — dois exercícios seguidos sem descanso</span></label>
+      <label class="option"><input name="int_tecnicas" type="checkbox" value="Myo-reps — acumula repetições com pausas muito curtas"/><span>Myo-reps — acumula repetições com pausas muito curtas</span></label>
+      <label class="option"><input name="int_tecnicas" type="checkbox" value="Nenhuma dessas"/><span>Nenhuma dessas</span></label>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     DIVISOR — AVANÇADO (aparece quando nível = avançado)
+═════════════════════════════════════════════════ -->
+<div class="level-divider" id="divider_adv">
+  <span>✦ Perfil Avançado identificado — últimas perguntas de refinamento ✦</span>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     BLOCO 14 — ESTRATÉGIA AVANÇADA (aparece só para avançado)
+═════════════════════════════════════════════════ -->
+<section class="section hidden" id="bloco_adv_estrategia">
+<h2>REFINAMENTO — 🔬 Estratégia Avançada</h2>
+<p class="desc">Nível de detalhe máximo para prescrição de alta precisão.</p>
+<div class="grid">
+  <div class="field col-6">
+    <label class="label" for="adv_periodizacao">Qual modelo de periodização você prefere ou já usou?</label>
+    <select id="adv_periodizacao" name="adv_periodizacao">
+      <option value="">Selecione</option>
+      <option>Sem preferência — o personal decide</option>
+      <option>Linear — progressão direta de carga semana a semana</option>
+      <option>Ondulação diária — muda rep/carga a cada sessão</option>
+      <option>Ondulação semanal — muda rep/carga a cada semana</option>
+      <option>Blocos — fases distintas (hipertrofia, força, potência...)</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="adv_deload">Como você trata o deload (semana de descarga — redução proposital de carga e volume para recuperar melhor)?</label>
+    <select id="adv_deload" name="adv_deload">
+      <option value="">Selecione</option>
+      <option>Nunca faço deload</option>
+      <option>Faço por intuição quando sinto que preciso</option>
+      <option>Sigo deload planejado a cada 4–6 semanas</option>
+      <option>Prefiro semanas de volume reduzido em vez de deload total</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="adv_rir">Como você trabalha o RIR (Reps in Reserve — quantas repetições sobraram ao parar a série)?</label>
+    <select id="adv_rir" name="adv_rir">
+      <option value="">Selecione</option>
+      <option>Não uso essa referência</option>
+      <option>RIR 3–4 — paro com bastante reserva (esforço moderado)</option>
+      <option>RIR 1–2 — paro perto do limite (esforço alto)</option>
+      <option>RIR 0 — vou até a falha técnica ou muscular</option>
+      <option>Varia conforme o exercício e a fase do treino</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="adv_rpe">Você usa RPE (Rate of Perceived Exertion — escala de esforço de 1 a 10) sistematicamente?</label>
+    <select id="adv_rpe" name="adv_rpe">
+      <option value="">Selecione</option>
+      <option>Não uso</option>
+      <option>Conheço mas não aplico no dia a dia</option>
+      <option>Uso como referência nas séries principais</option>
+      <option>Uso sistematicamente em todo o treino</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="adv_progressao">Como você prefere ver a progressão?</label>
+    <select id="adv_progressao" name="adv_progressao">
+      <option value="">Selecione</option>
+      <option>Carga primeiro — aumentar peso quando as reps ficarem fáceis</option>
+      <option>Volume primeiro — mais séries antes de aumentar carga</option>
+      <option>Dupla progressão — aumenta reps até o teto, depois sobe carga</option>
+      <option>Misturar conforme o exercício</option>
+      <option>Sem preferência</option>
+    </select>
+    <span class="helper">Dupla progressão: ex. alvo 8–12 reps → faz 8 → sobe até 12 → aumenta carga → recomeça em 8.</span>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="adv_velocidade">Você controla a velocidade de execução (tempo de subida, descida e pausa)?</label>
+    <select id="adv_velocidade" name="adv_velocidade">
+      <option value="">Selecione</option>
+      <option>Não controlo, executo no ritmo natural</option>
+      <option>Controlo a descida (excêntrico) — faço mais devagar</option>
+      <option>Controlo os dois — descida lenta e subida controlada</option>
+      <option>Uso tempo prescrito (ex.: 3-1-2 — 3s descer, 1s pausa, 2s subir)</option>
+    </select>
+  </div>
+  <div class="field col-12">
+    <label class="label">Técnicas de intensidade que você usa com frequência:</label>
+    <div class="options inline-2">
+      <label class="option"><input name="adv_tecnicas" type="checkbox" value="Drop set — reduz a carga e continua sem parar"/><span>Drop set — reduz a carga e continua sem parar</span></label>
+      <label class="option"><input name="adv_tecnicas" type="checkbox" value="Rest-pause — pausa curta de 10–20s dentro da própria série"/><span>Rest-pause — pausa curta de 10–20s dentro da própria série</span></label>
+      <label class="option"><input name="adv_tecnicas" type="checkbox" value="Myo-reps — acumula repetições com minirepousos de 3–5s"/><span>Myo-reps — acumula repetições com minirepousos de 3–5s</span></label>
+      <label class="option"><input name="adv_tecnicas" type="checkbox" value="Bi-set — dois exercícios seguidos sem descanso"/><span>Bi-set — dois exercícios seguidos sem descanso</span></label>
+      <label class="option"><input name="adv_tecnicas" type="checkbox" value="Cluster set — séries fragmentadas com pausa entre mini-blocos"/><span>Cluster set — séries fragmentadas com pausa entre mini-blocos</span></label>
+      <label class="option"><input name="adv_tecnicas" type="checkbox" value="Nenhuma dessas"/><span>Nenhuma dessas</span></label>
+    </div>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="adv_semana_teste">Você aceita uma semana de teste (semana de avaliação de carga — para calibrar o ponto real de cada exercício antes de progredir)?</label>
+    <select id="adv_semana_teste" name="adv_semana_teste">
+      <option value="">Selecione</option>
+      <option>Sim, prefiro calibrar antes</option>
+      <option>Não, prefiro começar direto com estimativa</option>
+    </select>
+  </div>
+
+  <div class="field col-12">
+    <div class="subhead">Histórico de resposta ao treino</div>
+  </div>
+
+  <div class="field col-6">
+    <label class="label" for="adv_evolucao_onde">Onde você viu mais evolução no seu corpo?</label>
+    <div class="options inline-2">
+      <label class="option"><input name="adv_evolucao_onde" type="checkbox" value="Peito"/><span>Peito</span></label>
+      <label class="option"><input name="adv_evolucao_onde" type="checkbox" value="Costas"/><span>Costas</span></label>
+      <label class="option"><input name="adv_evolucao_onde" type="checkbox" value="Ombro"/><span>Ombro</span></label>
+      <label class="option"><input name="adv_evolucao_onde" type="checkbox" value="Bíceps"/><span>Bíceps</span></label>
+      <label class="option"><input name="adv_evolucao_onde" type="checkbox" value="Tríceps"/><span>Tríceps</span></label>
+      <label class="option"><input name="adv_evolucao_onde" type="checkbox" value="Abdômen"/><span>Abdômen</span></label>
+      <label class="option"><input name="adv_evolucao_onde" type="checkbox" value="Glúteos"/><span>Glúteos</span></label>
+      <label class="option"><input name="adv_evolucao_onde" type="checkbox" value="Quadríceps"/><span>Quadríceps</span></label>
+      <label class="option"><input name="adv_evolucao_onde" type="checkbox" value="Posterior de coxa"/><span>Posterior de coxa</span></label>
+      <label class="option"><input name="adv_evolucao_onde" type="checkbox" value="Panturrilha"/><span>Panturrilha</span></label>
+    </div>
+    <input id="adv_evolucao_onde_obs" name="adv_evolucao_onde_obs" type="text" placeholder="Quer especificar algo? Escreva aqui..." style="margin-top:8px;"/>
+  </div>
+
+  <div class="field col-6">
+    <label class="label" for="adv_estagnacao_onde">Onde você viu menos evolução ou continua igual?</label>
+    <div class="options inline-2">
+      <label class="option"><input name="adv_estagnacao_onde" type="checkbox" value="Peito"/><span>Peito</span></label>
+      <label class="option"><input name="adv_estagnacao_onde" type="checkbox" value="Costas"/><span>Costas</span></label>
+      <label class="option"><input name="adv_estagnacao_onde" type="checkbox" value="Ombro"/><span>Ombro</span></label>
+      <label class="option"><input name="adv_estagnacao_onde" type="checkbox" value="Bíceps"/><span>Bíceps</span></label>
+      <label class="option"><input name="adv_estagnacao_onde" type="checkbox" value="Tríceps"/><span>Tríceps</span></label>
+      <label class="option"><input name="adv_estagnacao_onde" type="checkbox" value="Abdômen"/><span>Abdômen</span></label>
+      <label class="option"><input name="adv_estagnacao_onde" type="checkbox" value="Glúteos"/><span>Glúteos</span></label>
+      <label class="option"><input name="adv_estagnacao_onde" type="checkbox" value="Quadríceps"/><span>Quadríceps</span></label>
+      <label class="option"><input name="adv_estagnacao_onde" type="checkbox" value="Posterior de coxa"/><span>Posterior de coxa</span></label>
+      <label class="option"><input name="adv_estagnacao_onde" type="checkbox" value="Panturrilha"/><span>Panturrilha</span></label>
+    </div>
+    <input id="adv_estagnacao_onde_obs" name="adv_estagnacao_onde_obs" type="text" placeholder="Quer especificar algo? Escreva aqui..." style="margin-top:8px;"/>
+  </div>
+
+</div>
+</section>
+
+
+
+<!-- ════════════════════════════════════════════════
+     BLOCO 3 — OBJETIVO (universal)
+═════════════════════════════════════════════════ -->
+<section class="section">
+<h2>BLOCO 3 — 🎯 Objetivo</h2>
+<p class="desc">Seu objetivo guia toda a montagem do treino — seja direto.</p>
+<div class="grid">
+  <div class="field col-6">
+    <label class="label" for="objetivo">14. Objetivo principal *</label>
+    <select id="objetivo" name="objetivo" required>
+      <option value="">Selecione</option>
+      <option>Emagrecer / reduzir gordura</option>
+      <option>Ganhar massa muscular</option>
+      <option>Definir / tonificar</option>
+      <option>Ganhar força</option>
+      <option>Ficar mais saudável / condicionado</option>
+      <option>Melhorar condicionamento</option>
+      <option value="Outro">Outro</option>
+    </select>
+  </div>
+  <div class="field col-6 hidden" id="wrap_objetivo_outro">
+    <label class="label" for="objetivo_outro">15. Se marcou "Outro", especifique</label>
+    <input id="objetivo_outro" name="objetivo_outro" placeholder="Ex.: melhorar postura, correr 5km..." type="text"/>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="prazo">16. Prazo de foco</label>
+    <select id="prazo" name="prazo">
+      <option value="">Selecione</option>
+      <option>Curto (1–3 meses)</option>
+      <option>Médio (3–6 meses)</option>
+      <option>Longo (6+ meses)</option>
+      <option>Sem prazo definido</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="resultado">17. Como você vai medir resultado?</label>
+    <div class="options inline-2">
+      <label class="option"><input name="resultado" type="checkbox" value="Peso (balança)"/><span>Peso (balança)</span></label>
+      <label class="option"><input name="resultado" type="checkbox" value="Medidas"/><span>Medidas</span></label>
+      <label class="option"><input name="resultado" type="checkbox" value="Quanto consigo carregar e fazer (desempenho)"/><span>Quanto consigo carregar e fazer (desempenho)</span></label>
+      <label class="option"><input name="resultado" type="checkbox" value="Como meu corpo aparece no espelho"/><span>Como meu corpo aparece no espelho</span></label>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     BLOCO 4 — ROTINA DE TREINO (universal)
+═════════════════════════════════════════════════ -->
+<section class="section">
+<h2>BLOCO 4 — 📅 Rotina de Treino</h2>
+<p class="desc">Dias, horário, tempo disponível e preferências de cardio.</p>
+<div class="grid">
+  <div class="field col-4">
+    <label class="label" for="horario">18. Horário preferido de treino</label>
+    <select id="horario" name="horario">
+      <option value="">Selecione</option>
+      <option>Manhã</option>
+      <option>Tarde</option>
+      <option>Noite</option>
+      <option>Varia</option>
+    </select>
+  </div>
+  <div class="field col-4">
+    <label class="label" for="dias_semana">19. Quantos dias por semana você consegue treinar? *</label>
+    <select id="dias_semana" name="dias_semana" required>
+      <option value="">Selecione</option>
+      <option>2 dias</option>
+      <option>3 dias</option>
+      <option>4 dias</option>
+      <option>5 dias</option>
+      <option>6 dias</option>
+    </select>
+  </div>
+  <div class="field col-4">
+    <label class="label" for="tempo_treino_sel">20. Quanto tempo você tem por sessão?</label>
+    <select id="tempo_treino_sel" name="tempo_treino_sel">
+      <option value="">Selecione</option>
+      <option>30 min</option>
+      <option>45 min</option>
+      <option>60 min</option>
+      <option>75 min</option>
+      <option>90+ min</option>
+      <option>Outro</option>
+    </select>
+    <div class="hidden mt-8" id="wrap_tempo_treino_outro">
+      <input id="tempo_treino" name="tempo_treino" placeholder="Se marcou 'Outro', escreva aqui (ex.: 50 min)" type="text"/>
+    </div>
+  </div>
+  <div class="field col-4">
+    <label class="label" for="atividade_diaria">21. Seu dia a dia é mais:</label>
+    <select id="atividade_diaria" name="atividade_diaria">
+      <option value="">Selecione</option>
+      <option>Sedentário (pouca atividade)</option>
+      <option>Moderado (anda / ativa moderada)</option>
+      <option>Ativo (anda muito / físico pesado)</option>
+    </select>
+  </div>
+  <div class="field col-4">
+    <label class="label" for="cardio">22. Quer incluir cardio no plano?</label>
+    <select id="cardio" name="cardio">
+      <option value="">Selecione</option>
+      <option>Não</option>
+      <option>Sim</option>
+    </select>
+  </div>
+  <div class="field col-4 hidden" id="wrap_cardio_tempo">
+    <label class="label" for="cardio_tempo">23. Quanto tempo de cardio por sessão?</label>
+    <select id="cardio_tempo" name="cardio_tempo">
+      <option value="">Selecione</option>
+      <option>10–15 min</option>
+      <option>15–25 min</option>
+      <option>25–35 min</option>
+      <option>35+ min</option>
+    </select>
+  </div>
+  <div class="field col-4 hidden" id="wrap_cardio_pref">
+    <label class="label" for="cardio_pref">24. Preferência de cardio</label>
+    <select id="cardio_pref" name="cardio_pref">
+      <option value="">Selecione</option>
+      <option>Esteira</option>
+      <option>Bike</option>
+      <option>Elíptico</option>
+      <option>Escada</option>
+      <option value="Outro">Outro</option>
+    </select>
+  </div>
+  <div class="field col-4 hidden" id="wrap_cardio_outro">
+    <label class="label" for="cardio_outro">25. Se marcou "Outro", qual cardio?</label>
+    <input id="cardio_outro" name="cardio_outro" type="text"/>
+  </div>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     BLOCO 5 — SAÚDE E TRIAGEM (universal)
+═════════════════════════════════════════════════ -->
+<section class="section">
+<h2>BLOCO 5 — ❤️ Saúde e Triagem</h2>
+<p class="desc">Segurança antes de qualquer treino. Responda com sinceridade.</p>
+<div class="grid">
+  <div class="field col-4">
+    <label class="label" for="cardiaco">26. Você possui problemas cardíacos?</label>
+    <select id="cardiaco" name="cardiaco"><option value="">Selecione</option><option>Não</option><option>Sim</option></select>
+  </div>
+  <div class="field col-4">
+    <label class="label" for="respiratorio">27. Problemas respiratórios (asma, bronquite)?</label>
+    <select id="respiratorio" name="respiratorio"><option value="">Selecione</option><option>Não</option><option>Sim</option></select>
+  </div>
+  <div class="field col-4">
+    <label class="label" for="pressao">28. Como está sua pressão arterial?</label>
+    <select id="pressao" name="pressao"><option value="">Selecione</option><option>Normal</option><option>Alta</option><option>Baixa</option><option>Não sei</option></select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="medicacao">29. Você usa alguma medicação contínua?</label>
+    <textarea id="medicacao" name="medicacao" placeholder="Se não usa, deixe em branco"></textarea>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="doencas">30. Cirurgias ou doenças crônicas importantes?</label>
+    <textarea id="doencas" name="doencas" placeholder="Se não tem, deixe em branco"></textarea>
+  </div>
+  <div class="field col-6 hidden" id="wrap_cesarea">
+    <label class="label" for="cesarea">31. Você já realizou parto cesariano (cesárea)?</label>
+    <select id="cesarea" name="cesarea">
+      <option value="">Selecione</option><option>Não</option><option>Sim</option>
+    </select>
+    <div class="hidden mt-8" id="wrap_cesarea_tempo">
+      <label class="label" for="cesarea_tempo">32. Se sim, há quanto tempo?</label>
+      <input id="cesarea_tempo" name="cesarea_tempo" placeholder="Ex.: 2 anos / 8 meses" type="text"/>
+    </div>
+  </div>
+  <div class="field col-6"><label class="label" for="supervisao_medica">33. Algum médico disse que você só deveria treinar com supervisão?</label><select id="supervisao_medica" name="supervisao_medica"><option value="">Selecione</option><option>Não</option><option>Sim</option><option>Não sei</option></select></div>
+  <div class="field col-4"><label class="label" for="dor_peito_atividade">34. Sente dor no peito durante atividade?</label><select id="dor_peito_atividade" name="dor_peito_atividade"><option value="">Selecione</option><option>Não</option><option>Sim</option></select></div>
+  <div class="field col-4"><label class="label" for="dor_peito_repouso">35. Sente dor no peito em repouso?</label><select id="dor_peito_repouso" name="dor_peito_repouso"><option value="">Selecione</option><option>Não</option><option>Sim</option></select></div>
+  <div class="field col-4"><label class="label" for="desmaio">36. Já perdeu consciência ou quase desmaiou?</label><select id="desmaio" name="desmaio"><option value="">Selecione</option><option>Não</option><option>Sim</option></select></div>
+  <div class="field col-4"><label class="label" for="fuma">37. Você fuma atualmente?</label><select id="fuma" name="fuma"><option value="">Selecione</option><option>Não</option><option>Sim</option><option>Às vezes</option><option>Ex-fumante</option></select></div>
+  <div class="field col-4"><label class="label" for="alcool">38. Consome bebida alcoólica?</label><select id="alcool" name="alcool"><option value="">Selecione</option><option>Não</option><option>Raramente</option><option>1–2 vezes por semana</option><option>3 vezes ou mais por semana</option></select></div>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     BLOCO 6 — COMO SEU CORPO REAGE (universal)
+═════════════════════════════════════════════════ -->
+<section class="section">
+<h2>BLOCO 6 — 🧬 Como seu corpo costuma reagir</h2>
+<p class="desc">Essas respostas ajudam a entender seu perfil e ajustar a estratégia.</p>
+<div class="grid">
+  <div class="field col-6"><label class="label" for="ganha_peso">39. Você ganha peso com facilidade ou dificuldade?</label><select id="ganha_peso" name="ganha_peso"><option value="">Selecione</option><option>Com facilidade</option><option>Com dificuldade</option><option>Não sei</option></select></div>
+  <div class="field col-6"><label class="label" for="perde_peso">40. Você perde peso com facilidade?</label><select id="perde_peso" name="perde_peso"><option value="">Selecione</option><option>Sim</option><option>Não</option><option>Não sei</option></select></div>
+  <div class="field col-6"><label class="label" for="apetite">41. Como é seu apetite?</label><select id="apetite" name="apetite"><option value="">Selecione</option><option>Baixo</option><option>Médio</option><option>Alto</option><option>Varia</option></select></div>
+  <div class="field col-6"><label class="label" for="energia">42. Como é sua energia ao longo do dia?</label><select id="energia" name="energia"><option value="">Selecione</option><option>Baixa</option><option>Regular</option><option>Alta</option><option>Varia</option></select></div>
+  <div class="field col-12">
+    <label class="label">43. Como seu corpo costuma ser com mais facilidade?</label>
+    <details class="image-picker">
+      <summary>Toque para ver as opções com imagem</summary>
+      <div class="image-picker-body">
+        <div class="image-grid">
+          <label class="image-option"><input name="perfil_corporal_visual" type="radio" value="Mais magro"/><span class="image-card"><img alt="Mais magro" onerror="this.style.display='none';" src="https://tiagolima575.github.io/tiago-lima-treino-hub/biotipo_ectomorfo.jpg"/><strong>Mais magro</strong><small>Referência visual</small></span></label>
+          <label class="image-option"><input name="perfil_corporal_visual" type="radio" value="Mais equilibrado"/><span class="image-card"><img alt="Mais equilibrado" onerror="this.style.display='none';" src="https://tiagolima575.github.io/tiago-lima-treino-hub/biotipo_mesomorfo.jpg"/><strong>Mais equilibrado</strong><small>Referência visual</small></span></label>
+          <label class="image-option"><input name="perfil_corporal_visual" type="radio" value="Mais encorpado"/><span class="image-card"><img alt="Mais encorpado" onerror="this.style.display='none';" src="https://tiagolima575.github.io/tiago-lima-treino-hub/biotipo_endomorfo.jpg"/><strong>Mais encorpado</strong><small>Referência visual</small></span></label>
+        </div>
+      </div>
+    </details>
+  </div>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     BLOCO 7 — EQUIPAMENTOS (universal, mas versão adaptada por nível)
+═════════════════════════════════════════════════ -->
+<section class="section">
+<h2>BLOCO 7 — 🏋️ Local de Treino e Equipamentos</h2>
+<p class="desc">Onde você treina e o que tem disponível — define o que pode ser prescrito.</p>
+<div class="grid">
+  <div class="field col-4">
+    <label class="label" for="onde_treina">44. Onde você costuma treinar?</label>
+    <select id="onde_treina" name="onde_treina">
+      <option value="">Selecione</option><option>Academia</option><option>Casa</option><option>Condomínio</option><option>Ao ar livre</option>
+    </select>
+  </div>
+  <div class="field col-4">
+    <label class="label" for="lotacao">45. No seu horário, o local costuma estar lotado?</label>
+    <select id="lotacao" name="lotacao">
+      <option value="">Selecione</option><option>Pouco</option><option>Médio</option><option>Muito</option><option>Varia</option>
+    </select>
+  </div>
+  <div class="field col-4">
+    <label class="label" for="pref_equip">46. Qual tipo de equipamento você prefere usar?</label>
+    <select id="pref_equip" name="pref_equip">
+      <option value="">Selecione</option><option>Máquinas</option><option>Pesos livres</option><option>Gosto dos dois</option><option>Sem preferência</option>
+    </select>
+  </div>
+  <div class="field col-12">
+    <label class="label">47. Quais equipamentos você realmente tem acesso?</label>
+    <div class="options inline-2">
+      <label class="option"><input name="equip_real" type="checkbox" value="Máquinas em geral"/><span>Máquinas em geral</span></label>
+      <label class="option"><input name="equip_real" type="checkbox" value="Cabos / polias"/><span>Cabos / polias</span></label>
+      <label class="option"><input name="equip_real" type="checkbox" value="Halteres"/><span>Halteres</span></label>
+      <label class="option"><input name="equip_real" type="checkbox" value="Barras / anilhas"/><span>Barras / anilhas</span></label>
+      <label class="option"><input name="equip_real" type="checkbox" value="Banco regulável"/><span>Banco regulável</span></label>
+      <label class="option"><input name="equip_real" type="checkbox" value="Leg Press"/><span>Leg Press</span></label>
+      <label class="option"><input name="equip_real" type="checkbox" value="Smith"/><span>Smith</span></label>
+      <label class="option"><input name="equip_real" type="checkbox" value="Elásticos"/><span>Elásticos</span></label>
+      <label class="option"><input name="equip_real" type="checkbox" value="Não sei / tanto faz"/><span>Não sei / tanto faz</span></label>
+    </div>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="gosta_ex">48. Quais exercícios você gosta de fazer?</label>
+    <textarea id="gosta_ex" name="gosta_ex" placeholder="Ex.: agachamento, supino, rosca..."></textarea>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="nao_gosta_ex">49. Quais exercícios você não gosta de fazer?</label>
+    <textarea id="nao_gosta_ex" name="nao_gosta_ex"></textarea>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="nao_pode_ex">50. Quais exercícios você não pode fazer por dor ou limitação?</label>
+    <textarea id="nao_pode_ex" name="nao_pode_ex" placeholder="Se não tem, deixe em branco"></textarea>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="nao_quer">51. Tem algum exercício que você não quer fazer de jeito nenhum?</label>
+    <input id="nao_quer" name="nao_quer" type="text" placeholder="Ex.: agachamento livre, stiff..."/>
+  </div>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     BLOCO 8 — MOBILIDADE E ALONGAMENTO (universal)
+═════════════════════════════════════════════════ -->
+<section class="section">
+<h2>BLOCO 8 — 🧘 Mobilidade e Alongamento</h2>
+<p class="desc">A ficha identifica sinais primeiro. Os blocos seguintes aparecem conforme a resposta.</p>
+<div class="grid">
+  <div class="field col-6">
+    <label class="label" for="triagem_mob_amplitude">52. Você sente dificuldade para fazer movimentos completos?</label>
+    <select id="triagem_mob_amplitude" name="triagem_mob_amplitude">
+      <option value="">Selecione</option><option>Não</option><option>Sim</option><option>Não sei</option>
+    </select>
+    <span class="helper">Ex.: agachar, fazer leg press, levantar os braços, dobrar o quadril ou mover o tornozelo.</span>
+  </div>
+  <div class="field col-6" id="wrap_triagem_along_pos_treino">
+    <label class="label" for="triagem_along_pos_treino">53. Após os treinos, você sente necessidade de soltar ou relaxar a musculatura?</label>
+    <select id="triagem_along_pos_treino" name="triagem_along_pos_treino">
+      <option value="">Selecione</option><option>Não</option><option>Sim</option><option>Não sei</option>
+    </select>
+    <span class="helper">Alongamento entra depois do treino, não substitui aquecimento.</span>
+  </div>
+  <div class="field col-6 hidden" id="wrap_triagem_mob_articulacao">
+    <label class="label" for="triagem_mob_articulacao">54. Alguma articulação parece limitar seu movimento?</label>
+    <select id="triagem_mob_articulacao" name="triagem_mob_articulacao">
+      <option value="">Selecione</option><option>Não</option><option>Sim</option><option>Não sei</option>
+    </select>
+    <span class="helper">Ex.: tornozelo, quadril, coluna torácica, ombro, escápula, cervical ou punho.</span>
+  </div>
+  <div class="field col-12 hidden" id="wrap_incluir_mobilidade">
+    <label class="label" for="incluir_mobilidade">55. Com base nas suas respostas, incluir exercícios de mobilidade pode ajudar. Quer incluir?</label>
+    <select id="incluir_mobilidade" name="incluir_mobilidade">
+      <option value="">Selecione</option><option>Não</option><option>Sim</option>
+    </select>
+  </div>
+  <div class="field col-12 hidden" id="wrap_mobilidade_regioes">
+    <label class="label">56. Onde sente mais limitação de mobilidade?</label>
+    <div class="options inline-2">
+      <label class="option"><input name="mobilidade_regioes" type="checkbox" value="Tornozelo"/><span>Tornozelo</span></label>
+      <label class="option"><input name="mobilidade_regioes" type="checkbox" value="Quadril"/><span>Quadril</span></label>
+      <label class="option"><input name="mobilidade_regioes" type="checkbox" value="Coluna torácica"/><span>Coluna torácica</span></label>
+      <label class="option"><input name="mobilidade_regioes" type="checkbox" value="Lombar"/><span>Lombar</span></label>
+      <label class="option"><input name="mobilidade_regioes" type="checkbox" value="Ombro"/><span>Ombro</span></label>
+      <label class="option"><input name="mobilidade_regioes" type="checkbox" value="Escápula"/><span>Escápula</span></label>
+      <label class="option"><input name="mobilidade_regioes" type="checkbox" value="Cervical"/><span>Cervical</span></label>
+      <label class="option"><input name="mobilidade_regioes" type="checkbox" value="Punho"/><span>Punho</span></label>
+      <label class="option"><input name="mobilidade_regioes" type="checkbox" value="Corpo inteiro"/><span>Corpo inteiro</span></label>
+    </div>
+  </div>
+  <div class="field col-6 hidden" id="wrap_triagem_along_tensao">
+    <label class="label" for="triagem_along_tensao">57. Você sente tensão, encurtamento ou músculo muito preso com frequência?</label>
+    <select id="triagem_along_tensao" name="triagem_along_tensao">
+      <option value="">Selecione</option><option>Não</option><option>Sim</option><option>Não sei</option>
+    </select>
+    <span class="helper">Ex.: posterior de coxa, panturrilha, peitoral, ombros, pescoço, lombar ou quadril.</span>
+  </div>
+  <div class="field col-12 hidden" id="wrap_incluir_alongamento">
+    <label class="label" for="incluir_alongamento">58. Com base nas suas respostas, incluir alongamento pode ajudar. Quer incluir?</label>
+    <select id="incluir_alongamento" name="incluir_alongamento">
+      <option value="">Selecione</option><option>Não</option><option>Sim</option>
+    </select>
+  </div>
+  <div class="field col-12 hidden" id="wrap_alongamento_regioes">
+    <label class="label">59. Onde sente mais tensão ou encurtamento?</label>
+    <div class="options inline-2">
+      <label class="option"><input name="alongamento_regioes" type="checkbox" value="Posterior de coxa"/><span>Posterior de coxa</span></label>
+      <label class="option"><input name="alongamento_regioes" type="checkbox" value="Quadríceps"/><span>Quadríceps</span></label>
+      <label class="option"><input name="alongamento_regioes" type="checkbox" value="Panturrilha"/><span>Panturrilha</span></label>
+      <label class="option"><input name="alongamento_regioes" type="checkbox" value="Glúteos"/><span>Glúteos</span></label>
+      <label class="option"><input name="alongamento_regioes" type="checkbox" value="Adutores"/><span>Adutores</span></label>
+      <label class="option"><input name="alongamento_regioes" type="checkbox" value="Peitoral"/><span>Peitoral</span></label>
+      <label class="option"><input name="alongamento_regioes" type="checkbox" value="Dorsal"/><span>Dorsal</span></label>
+      <label class="option"><input name="alongamento_regioes" type="checkbox" value="Ombros"/><span>Ombros</span></label>
+      <label class="option"><input name="alongamento_regioes" type="checkbox" value="Pescoço"/><span>Pescoço</span></label>
+      <label class="option"><input name="alongamento_regioes" type="checkbox" value="Coluna"/><span>Coluna</span></label>
+      <label class="option"><input name="alongamento_regioes" type="checkbox" value="Corpo inteiro"/><span>Corpo inteiro</span></label>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     BLOCO 9 — DOR / LIMITAÇÃO (universal)
+═════════════════════════════════════════════════ -->
+<section class="section">
+<h2>BLOCO 9 — 🦵 Dor / Limitação e Segurança</h2>
+<p class="desc">Essa parte protege suas articulações e evita piora de qualquer dor existente.</p>
+<div class="grid">
+  <div class="field col-4">
+    <label class="label" for="dor_lesao">60. Você possui alguma dor, lesão ou limitação hoje?</label>
+    <select id="dor_lesao" name="dor_lesao"><option value="">Selecione</option><option>Não</option><option>Sim</option></select>
+  </div>
+  <div class="field hidden" id="pain_block" style="grid-column: 1 / -1;">
+  <div class="grid">
+    <div class="field col-4">
+      <label class="label" for="regiao_dor">61. Onde fica essa dor ou limitação?</label>
+      <select id="regiao_dor" name="regiao_dor">
+        <option value="">Selecione</option><option>Joelho</option><option>Quadril</option><option>Tornozelo</option><option>Lombar</option><option>Cervical</option><option>Ombro</option><option>Cotovelo</option><option>Punho / mão</option><option value="Outro">Outro</option>
+      </select>
+    </div>
+    <div class="field col-4 hidden" id="wrap_regiao_outro">
+      <label class="label" for="regiao_outro">62. Se marcou "Outro", qual região?</label>
+      <input id="regiao_outro" name="regiao_outro" type="text"/>
+    </div>
+    <div class="field col-4">
+      <label class="label" for="diagnostico">63. Já teve diagnóstico ou exame sobre isso?</label>
+      <select id="diagnostico" name="diagnostico"><option value="">Selecione</option><option>Não</option><option>Sim</option></select>
+    </div>
+    <div class="field col-4">
+      <label class="label" for="fisioterapia">64. Já fez fisioterapia para essa região?</label>
+      <select id="fisioterapia" name="fisioterapia"><option value="">Selecione</option><option>Não</option><option>Sim</option></select>
+    </div>
+    <div class="field col-4">
+      <label class="label" for="cirurgia_regiao">65. Já fez cirurgia nessa região?</label>
+      <select id="cirurgia_regiao" name="cirurgia_regiao"><option value="">Selecione</option><option>Não</option><option>Sim</option></select>
+    </div>
+    <div class="field col-4">
+      <label class="label" for="dor_atual">66. De 0 a 10, qual é sua dor hoje?</label>
+      <input id="dor_atual" max="10" min="0" name="dor_atual" type="number"/>
+    </div>
+    <div class="field col-4">
+      <label class="label" for="quando_dor">67. Quando essa dor aparece mais?</label>
+      <select id="quando_dor" name="quando_dor">
+        <option value="">Selecione</option><option>Durante o treino</option><option>Depois do treino</option><option>No dia seguinte</option><option>É constante</option><option>Varia / não sei</option>
+      </select>
+    </div>
+    <div class="field col-4">
+      <label class="label" for="piora_dor">68. Ela piora mais com:</label>
+      <select id="piora_dor" name="piora_dor"><option value="">Selecione</option><option>Carga (peso)</option><option>Movimento amplo (agachar fundo, levantar o braço todo)</option><option>Ambos</option><option>Não sei</option></select>
+    </div>
+    <div class="field col-4">
+      <label class="label" for="aceita_ajustar">69. Aceita ajustar ou parar o exercício se a dor passar de 3/10?</label>
+      <select id="aceita_ajustar" name="aceita_ajustar"><option value="">Selecione</option><option>Sim</option><option>Não</option></select>
+    </div>
+    <div class="field col-8">
+      <label class="label">70. Sinais de alerta (marque se sentir)</label>
+      <div class="options inline-2">
+        <label class="option"><input name="sinais" type="checkbox" value="Formigamento"/><span>Formigamento</span></label>
+        <label class="option"><input name="sinais" type="checkbox" value="Perda de força"/><span>Perda de força</span></label>
+        <label class="option"><input name="sinais" type="checkbox" value="Dor irradiando"/><span>Dor irradiando</span></label>
+        <label class="option"><input name="sinais" type="checkbox" value="Travamento/estalo com dor"/><span>Travamento/estalo com dor</span></label>
+        <label class="option"><input name="sinais" type="checkbox" value="Nenhum"/><span>Nenhum desses</span></label>
+      </div>
+    </div>
+    <div class="field col-4">
+      <label class="label" for="mov_piora">71. Qual movimento costuma piorar mais?</label>
+      <select id="mov_piora" name="mov_piora">
+        <option value="">Selecione</option><option>Agachar</option><option>Leg Press</option><option>Avanço / passada</option><option>Corrida / saltos</option><option>Empurrar</option><option>Puxar</option><option value="Outro">Outro</option><option>Não sei / varia</option>
+      </select>
+    </div>
+    <div class="field col-4 hidden" id="wrap_mov_outro">
+      <label class="label" for="mov_outro">72. Se marcou "Outro", qual movimento?</label>
+      <input id="mov_outro" name="mov_outro" type="text"/>
+    </div>
+    <div class="field col-8">
+      <label class="label" for="ex_desconforto">73. Existe algum exercício ou movimento que causa desconforto?</label>
+      <textarea id="ex_desconforto" name="ex_desconforto"></textarea>
+    </div>
+  </div>
+  </div>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     BLOCO 10 — FOCO MUSCULAR (universal)
+═════════════════════════════════════════════════ -->
+<section class="section">
+<h2>BLOCO 10 — 💪 Foco Muscular</h2>
+<p class="desc">Uma prioridade principal para guiar a montagem.</p>
+<div class="grid">
+  <div class="field col-6">
+    <label class="label" for="foco">74. O que você quer priorizar mais agora?</label>
+    <select id="foco" name="foco">
+      <option value="">Selecione</option>
+      <option>Costas</option><option>Peito</option><option>Ombro</option><option>Braços</option><option>Abdômen</option><option>Glúteos</option><option>Pernas</option><option>Treino equilibrado</option><option value="Outro">Outro</option>
+    </select>
+  </div>
+  <div class="field col-6 hidden" id="wrap_foco_outro">
+    <label class="label" for="foco_outro">75. Se não está na lista, escreva qual é</label>
+    <input id="foco_outro" name="foco_outro" type="text"/>
+  </div>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     BLOCO 11 — RECUPERAÇÃO (universal)
+═════════════════════════════════════════════════ -->
+<section class="section">
+<h2>BLOCO 11 — 🚦 Recuperação</h2>
+<p class="desc">Essas respostas ajudam a calibrar volume, frequência e intensidade.</p>
+<div class="grid">
+  <div class="field col-4">
+    <label class="label" for="dor_muscular">76. Depois do treino, por quantos dias você fica com dor muscular?</label>
+    <select id="dor_muscular" name="dor_muscular">
+      <option value="">Selecione</option><option>0–1 dia</option><option>1–2 dias</option><option>3–4 dias</option><option>5+ dias</option><option>Quase não sinto</option>
+    </select>
+    <span class="helper">Aquela dor ao mexer, sentar ou subir escada no dia seguinte.</span>
+  </div>
+  <div class="field col-4">
+    <label class="label" for="sono_horas">77. Quantas horas você costuma dormir por noite?</label>
+    <select id="sono_horas" name="sono_horas">
+      <option value="">Selecione</option><option>Menos de 5h</option><option>5–6h</option><option>6–7h</option><option>7–8h</option><option>8h ou mais</option>
+    </select>
+  </div>
+  <div class="field col-4">
+    <label class="label" for="acorda">78. Quando acorda, como normalmente se sente?</label>
+    <select id="acorda" name="acorda">
+      <option value="">Selecione</option><option>Descansado(a)</option><option>Mais ou menos</option><option>Cansado(a)</option><option>Muito cansado(a)</option>
+    </select>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="estresse">79. Como está seu nível de estresse no dia a dia?</label>
+    <select id="estresse" name="estresse">
+      <option value="">Selecione</option><option>Baixo</option><option>Médio</option><option>Alto</option><option>Varia muito</option>
+    </select>
+  </div>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     BLOCO 15 — OBSERVAÇÕES FINAIS (universal)
+═════════════════════════════════════════════════ -->
+<section class="section">
+<h2>BLOCO FINAL — 📝 Observações Finais</h2>
+<p class="desc">O que faltou e pode ajudar na montagem do treino.</p>
+<div class="grid">
+  <div class="field col-12">
+    <label class="label" for="obs_recuperacao">Quer adicionar alguma observação sobre sono, cansaço, rotina ou recuperação?</label>
+    <textarea id="obs_recuperacao" name="obs_recuperacao"></textarea>
+  </div>
+  <div class="field col-12">
+    <label class="label" for="obs_finais">Observações gerais (tudo que não coube nas perguntas anteriores)</label>
+    <textarea id="obs_finais" name="obs_finais"></textarea>
+  </div>
+  <div class="field col-6">
+    <label class="label" for="medidas">Medidas corporais (opcional)</label>
+    <textarea id="medidas" name="medidas" placeholder="Ex.: cintura, quadril, braço, coxa..."></textarea>
+  </div>
+  <div id="wrap_campo_fotos"><div class="field col-6">
+    <label class="label" for="fotos" id="fotos_label">Fotos (opcional)</label>
+    <span class="helper" id="fotos_plano_desc">As fotos serão liberadas conforme o plano escolhido.</span>
+    <select id="fotos" name="fotos">
+      <option value="">Selecione</option>
+      <option>Sim</option>
+      <option>Não</option>
+    </select>
+    <div id="wrap_fotos_drive" class="hidden" style="margin-top:14px;">
+  <div style="background:rgba(163,89,218,.10);border:1px solid rgba(163,89,218,.25);border-radius:12px;padding:14px 16px;margin-bottom:12px;">
+    <p style="font-size:.88rem;color:var(--purple);font-weight:700;margin:0 0 8px;">📸 Como tirar as fotos</p>
+    <p style="font-size:.82rem;color:var(--muted);margin:0 0 6px;">Use roupas de academia confortáveis — short ou bermuda e cropped ou top esportivo. Evite roupas largas, pois dificultam a avaliação postural.</p>
+    <p style="font-size:.80rem;color:var(--muted-2);margin:0 0 8px;font-style:italic;">As fotos são para avaliação postural e física. Por respeito e segurança, não serão aceitas fotos em roupas íntimas.</p>
+    <ul style="font-size:.82rem;color:var(--muted);margin:0;padding-left:18px;line-height:1.7;">
+      <li>📷 <strong>4 ângulos:</strong> frente, costas, lado direito e lado esquerdo</li>
+      <li>💡 Ambiente bem iluminado e fundo neutro (parede lisa)</li>
+      <li>📐 Câmera na altura do umbigo, braços relaxados ao lado do corpo</li>
+    </ul>
+  </div>
+  <p style="font-size:.82rem;color:var(--muted);margin:0 0 8px;">Ao enviar sua avaliação, você receberá o link para enviar as fotos direto na mensagem do WhatsApp.</p>
+</div>
+  </div>
+</div>
+</section>
+
+<!-- Submit -->
+<div class="submit-bar">
+  <div class="submit-left">
+    <strong>Pronto para enviar.</strong>
+    <div class="helper">Antes de enviar, confirme o consentimento.</div>
+    <label class="consent">
+      <input id="consent" name="consent" required type="checkbox"/>
+      <span>Declaro que respondi com sinceridade e autorizo o envio para o personal.</span>
+    </label>
+  </div>
+  <div class="submit-right">
+    <button class="btn btn-secondary" id="clearBtn" type="reset">🗑️ Limpar tudo</button>
+    <button class="btn btn-primary" id="sendBtn" type="submit">💬 Enviar minhas respostas no WhatsApp</button>
+  </div>
+</div>
+
+</form>
+</div>
+
+<script>
+  // ── Logo fallback ──────────────────────────────────────────────────────
+  function setupLogo(){
+    const img = document.getElementById('brandLogo');
+    if(!img) return;
+    const tries = [img.getAttribute('src'),'logo-tiago.png','logo.png','./logo.png'].filter(Boolean);
+    let i = 0;
+    img.onerror = () => { i+=1; if(i<tries.length) img.src=tries[i]; else img.style.display='none'; };
+  }
+
+  // ── Helpers ────────────────────────────────────────────────────────────
+  function val(id){ return (document.getElementById(id)?.value||'').trim(); }
+  function show(id,s){ const el=document.getElementById(id); if(el) el.classList.toggle('hidden',!s); }
+  function showSection(id,s){ const el=document.getElementById(id); if(el){ el.classList.toggle('hidden',!s); if(!s) resetInside(el); } }
+  function resetInside(el){ if(!el) return; el.querySelectorAll('input,select,textarea').forEach(c=>{ if(c.type==='checkbox'||c.type==='radio') c.checked=false; else c.value=''; }); }
+
+  // ── Plano selecionado pelo site ───────────────────────────────────────
+  const PLANOS_CONFIG = {
+    bronze: { label:'BRONZE', icon:'🥉', classe:'bronze', desc:'Treino básico personalizado. Não inclui envio de fotos para avaliação postural.' },
+    prata:  { label:'PRATA',  icon:'🥈', classe:'prata',  desc:'Treino personalizado com avaliação postural simples.' },
+    ouro:   { label:'OURO',   icon:'🥇', classe:'ouro',   desc:'Treino personalizado com avaliação postural completa.' }
+  };
+
+  function getPlanoParams(){
+    return new URLSearchParams(window.location.search);
+  }
+
+  function isPlanoPersonal(){
+    const params = getPlanoParams();
+    const tipo = (params.get('tipo') || '').toLowerCase().trim();
+    const nome = (params.get('nome') || '').trim();
+    return tipo === 'personal' || nome.toLowerCase().startsWith('personal');
+  }
+
+  function getPlanoKey(){
+    const params = getPlanoParams();
+    const plano = (params.get('plano') || params.get('plan') || '').toLowerCase().trim();
+    return PLANOS_CONFIG[plano] ? plano : '';
+  }
+
+  function getPlanoLabel(){
+    const params = getPlanoParams();
+    const nome = (params.get('nome') || '').trim();
+    if(isPlanoPersonal() && nome) return nome;
+    const plano = getPlanoKey();
+    return plano ? PLANOS_CONFIG[plano].label : 'NÃO INFORMADO';
+  }
+
+  function getPersonalDiasMensais(){
+    const params = getPlanoParams();
+    const dias = parseInt((params.get('dias') || '').trim(), 10);
+    return Number.isFinite(dias) ? dias : 0;
+  }
+
+  function getPersonalFrequenciaSemanal(){
+    const dias = getPersonalDiasMensais();
+    const mapa = {4:1, 8:2, 12:3, 16:4, 20:5};
+    return mapa[dias] || (dias ? Math.max(1, Math.round(dias / 4)) : 0);
+  }
+
+  function getPersonalFrequenciaTexto(){
+    const freq = getPersonalFrequenciaSemanal();
+    if(!freq) return '';
+    return 'média de ' + freq + ' ' + (freq === 1 ? 'treino' : 'treinos') + ' por semana';
+  }
+
+  function getPlanoDescPersonal(){
+    const params = getPlanoParams();
+    const dias = getPersonalDiasMensais();
+    const valorSessao = (params.get('valorSessao') || '').trim();
+    const total = (params.get('total') || '').trim();
+    const partes = [];
+    if(dias) partes.push(dias + 'x/mês');
+    const freqTxt = getPersonalFrequenciaTexto();
+    if(freqTxt) partes.push(freqTxt);
+    if(valorSessao) partes.push('R$ ' + valorSessao + ' por sessão');
+    if(total) partes.push('total R$ ' + total);
+    return partes.length ? partes.join(' • ') : 'Plano Personal escolhido na página de planos.';
+  }
+
+  function getPersonalDiasSelecionados(){
+    return [...document.querySelectorAll('input[name="personal_dias_semana"]')]
+      .filter(c => c.checked)
+      .map(c => c.value);
+  }
+
+  function updatePersonalDiasVisual(){
+    document.querySelectorAll('input[name="personal_dias_semana"]').forEach(c => {
+      const label = c.closest('.option');
+      if(label) label.classList.toggle('dia-confirmado', c.checked);
+    });
+  }
+
+  function controlarCliqueDiaSemana(el){
+    const freq = getPersonalFrequenciaSemanal();
+    const checks = [...document.querySelectorAll('input[name="personal_dias_semana"]')];
+
+    checks.forEach(c => c.setCustomValidity(''));
+
+    if(!freq){
+      updatePersonalDiasSemana();
+      return;
+    }
+
+    const marcados = checks.filter(c => c.checked);
+
+    if(marcados.length > freq){
+      el.checked = false;
+      alert('Este plano permite escolher apenas ' + freq + ' ' + (freq === 1 ? 'dia' : 'dias') + ' por semana.');
+    }
+
+    updatePersonalDiasSemana();
+  }
+
+  function updatePersonalDiasSemana(){
+    const wrap = document.getElementById('wrap_personal_dias_semana');
+    if(!wrap) return;
+
+    const personal = isPlanoPersonal();
+    wrap.classList.toggle('hidden', !personal);
+
+    const checks = [...document.querySelectorAll('input[name="personal_dias_semana"]')];
+    const freq = getPersonalFrequenciaSemanal();
+    const helper = document.getElementById('personal_dias_helper');
+    const contador = document.getElementById('personal_dias_contador');
+
+    if(personal && freq){
+      const marcadosAtuais = checks.filter(c => c.checked);
+      if(marcadosAtuais.length > freq){
+        marcadosAtuais.slice(freq).forEach(c => c.checked = false);
+      }
+    } else if(!personal){
+      checks.forEach(c => {
+        c.checked = false;
+        c.disabled = false;
+        const label = c.closest('.option');
+        if(label) label.style.opacity = '';
+      });
+    }
+
+    const marcados = getPersonalDiasSelecionados().length;
+
+    if(helper){
+      helper.textContent = freq
+        ? 'Escolha exatamente ' + freq + ' ' + (freq === 1 ? 'dia' : 'dias') + ' de segunda a sexta.'
+        : 'Escolha os dias de segunda a sexta em que prefere treinar.';
+    }
+
+    checks.forEach(c => {
+      c.disabled = personal && freq && marcados >= freq && !c.checked;
+      const label = c.closest('.option');
+      if(label) label.style.opacity = c.disabled ? '.52' : '';
+    });
+
+    if(contador){
+      contador.textContent = freq
+        ? marcados + ' de ' + freq + ' ' + (freq === 1 ? 'dia selecionado' : 'dias selecionados') + '.'
+        : marcados + ' dia(s) selecionado(s).';
+    }
+
+    updatePersonalDiasVisual();
+  }
+
+  function validatePersonalDiasSemana(){
+    if(!isPlanoPersonal()) return true;
+
+    const checks = [...document.querySelectorAll('input[name="personal_dias_semana"]')];
+    const freq = getPersonalFrequenciaSemanal();
+    const marcados = checks.filter(c => c.checked).length;
+
+    checks.forEach(c => c.setCustomValidity(''));
+
+    if(freq && marcados !== freq){
+      const msg = 'Escolha exatamente ' + freq + ' ' + (freq === 1 ? 'dia' : 'dias') + ' da semana para treinar.';
+      if(checks[0]){
+        checks[0].setCustomValidity(msg);
+        checks[0].reportValidity();
+        document.getElementById('wrap_personal_dias_semana')?.scrollIntoView({behavior:'smooth', block:'center'});
+        setTimeout(() => checks[0].setCustomValidity(''), 900);
+      }
+      return false;
+    }
+
+    return true;
+  }
+
+  function idadeMenor18(){
+    const idadeEl = document.getElementById('idade');
+    if(!idadeEl) return false;
+    const idade = parseInt(idadeEl.value, 10);
+    return !isNaN(idade) && idade < 18;
+  }
+
+  function applyPlano(){
+    const plano = getPlanoKey();
+    const cfg = plano ? PLANOS_CONFIG[plano] : null;
+    const banner = document.getElementById('plano_banner');
+    const icon = document.getElementById('plano_icon');
+    const texto = document.getElementById('plano_texto');
+    const desc = document.getElementById('plano_desc');
+
+    const personal = isPlanoPersonal();
+    const planoLabel = getPlanoLabel();
+
+    if(banner){
+      banner.classList.remove('bronze','prata','ouro');
+      if(cfg) banner.classList.add(cfg.classe);
+    }
+    if(icon) icon.textContent = personal ? '💪' : (cfg ? cfg.icon : '📦');
+    if(texto) texto.textContent = cfg || personal ? ('Plano selecionado: ' + planoLabel) : 'Plano não identificado';
+    if(desc) desc.textContent = personal ? getPlanoDescPersonal() : (cfg ? cfg.desc : 'Volte para a página dos planos e escolha Bronze, Prata, Ouro ou Personal antes de preencher a avaliação.');
+
+    updatePersonalDiasSemana();
+    updateFotosPorPlano();
+  }
+
+  function updateFotosPorPlano(){
+    const plano = getPlanoKey();
+    const fotosField = document.getElementById('wrap_campo_fotos');
+    const fotosSelect = document.getElementById('fotos');
+    const fotosWrap = document.getElementById('wrap_fotos_drive');
+    const fotosLabel = document.getElementById('fotos_label');
+    const fotosDesc = document.getElementById('fotos_plano_desc');
+    if(!fotosField || !fotosSelect) return;
+
+    const menor = idadeMenor18();
+    const mostrarFotos = (plano === 'prata' || plano === 'ouro') && !menor;
+    fotosField.classList.toggle('hidden', !mostrarFotos);
+
+    if(!mostrarFotos){
+      fotosSelect.value = '';
+      fotosSelect.classList.remove('hidden');
+      if(fotosWrap) fotosWrap.classList.add('hidden');
+      return;
+    }
+
+    if(plano === 'ouro'){
+      if(fotosLabel) fotosLabel.textContent = 'Fotos para avaliação postural completa';
+      if(fotosDesc) fotosDesc.textContent = 'Incluído no Plano Ouro. O link para envio das fotos será enviado automaticamente no WhatsApp.';
+      fotosSelect.value = 'Sim';
+      fotosSelect.classList.add('hidden');
+      if(fotosWrap) fotosWrap.classList.remove('hidden');
+    } else if(plano === 'prata'){
+      if(fotosLabel) fotosLabel.textContent = 'Fotos para avaliação postural simples';
+      if(fotosDesc) fotosDesc.textContent = 'No Plano Prata, as fotos ajudam em uma avaliação postural simples para ajustar melhor o treino.';
+      fotosSelect.classList.remove('hidden');
+      if(!fotosSelect.value) fotosSelect.value = 'Sim';
+      if(fotosWrap) fotosWrap.classList.toggle('hidden', fotosSelect.value !== 'Sim');
+    }
+  }
+
+  // ── Nivel classification ───────────────────────────────────────────────
+  const TRIAGEM_NIVEL_IDS = ['ja_treinou','consistencia_atual','tecnica_exec','anota_cargas','recupera_geral','evolucao_recente'];
+  const REFINO_NIVEL_IDS = ['int_divisao','int_falha','int_periodizacao','int_deload','int_rir','int_rpe'];
+
+  function firstMissing(ids){
+    return ids.map(id => document.getElementById(id)).find(el => el && !el.value);
+  }
+
+  function marcarCamposFaltantes(ids){
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      const field = el ? el.closest('.field') : null;
+      if(field) field.classList.toggle('level-required-missing', !el.value);
+    });
+  }
+
+  function mostrarAvisoNivel(texto, missingEl){
+    const box = document.getElementById('triagem_alerta');
+    if(box){
+      box.textContent = texto;
+      box.classList.remove('hidden');
+    }
+    if(missingEl){
+      const msg = texto;
+      missingEl.setCustomValidity(msg);
+      missingEl.reportValidity();
+      setTimeout(() => missingEl.setCustomValidity(''), 900);
+      missingEl.scrollIntoView({behavior:'smooth', block:'center'});
+      setTimeout(() => missingEl.focus({preventScroll:true}), 180);
+    }
+  }
+
+  function ocultarAvisoNivelSeCompleto(){
+    if(!firstMissing(TRIAGEM_NIVEL_IDS) && !firstMissing(REFINO_NIVEL_IDS.filter(id => {
+      const el = document.getElementById(id);
+      return el && el.required;
+    }))){
+      const box = document.getElementById('triagem_alerta');
+      if(box) box.classList.add('hidden');
+    }
+  }
+
+  function calcNivelBase(){
+    const jaTreinou = val('ja_treinou');
+    const consistencia = val('consistencia_atual');
+    const tecnica = val('tecnica_exec');
+    const anota = val('anota_cargas');
+    const recupera = val('recupera_geral');
+    const evolucao = val('evolucao_recente');
+
+    if(!jaTreinou || !consistencia || !tecnica || !anota || !recupera || !evolucao) return null;
+
+    const intConstancia = ['Treino com algumas pausas há menos de 1 ano','Treino com constância há 1 a 2 anos','Treino com constância há mais de 2 anos'].includes(jaTreinou);
+    const intTecnica = ['Seguro(a) na maioria','Seguro(a) em quase todos'].includes(tecnica);
+    const intConsistencia = ['Consistente'].includes(consistencia);
+    const intControle = ['Às vezes','Na maioria das vezes','Sempre'].includes(anota) || ['Um pouco','Sim, em vários exercícios'].includes(evolucao);
+    const intRecuperacao = ['Mais ou menos','Sim, na maioria das vezes','Sim, recupero muito bem'].includes(recupera);
+    const intScore = [intConstancia,intTecnica,intConsistencia,intControle,intRecuperacao].filter(Boolean).length;
+
+    return intScore >= 3 ? 'int' : 'ini';
+  }
+
+  function calcSinaisAvancadoRapidos(){
+    const jaTreinou = val('ja_treinou');
+    const tecnica = val('tecnica_exec');
+    const anota = val('anota_cargas');
+    const recupera = val('recupera_geral');
+    const evolucao = val('evolucao_recente');
+    return [
+      ['Treino com constância há 1 a 2 anos','Treino com constância há mais de 2 anos'].includes(jaTreinou),
+      ['Seguro(a) em quase todos'].includes(tecnica),
+      ['Na maioria das vezes','Sempre'].includes(anota),
+      ['Sim, na maioria das vezes','Sim, recupero muito bem'].includes(recupera),
+      ['Sim, em vários exercícios'].includes(evolucao)
+    ].filter(Boolean).length;
+  }
+
+  function calcSinaisAvancadoRefino(){
+    const divisao = val('int_divisao');
+    const falha = val('int_falha');
+    const periodizacao = val('int_periodizacao');
+    const deload = val('int_deload');
+    const rir = val('int_rir');
+    const rpe = val('int_rpe');
+    return [
+      ['Treino separado por grupos musculares (pernas, costas, peito...)','Upper/Lower — parte superior um dia, inferior no outro','Push/Pull/Legs — empurrar / puxar / pernas'].includes(divisao),
+      ['Paro antes de perder a execução'].includes(falha),
+      ['Linear — aumentar carga gradualmente toda semana','Ondulação — variar carga e repetições entre as semanas','Blocos — fases diferentes (volume, força, definição...)'].includes(periodizacao),
+      ['Faço quando sinto que preciso','Sigo uma programação com deload planejado'].includes(deload),
+      ['Paro com 1–2 repetições sobrando (esforço alto)','Vou até a falha ou quase (RIR 0–1)'].includes(rir),
+      ['Uso às vezes','Uso com frequência'].includes(rpe)
+    ].filter(Boolean).length;
+  }
+
+  // Returns: null | 'ini' | 'int' | 'adv'
+  function calcNivel(){
+    const base = calcNivelBase();
+    if(!base) return null;
+    if(base === 'ini') return 'ini';
+
+    const refinoCompleto = !firstMissing(REFINO_NIVEL_IDS);
+    if(!refinoCompleto) return 'int';
+
+    const scoreRapido = calcSinaisAvancadoRapidos();
+    const scoreRefino = calcSinaisAvancadoRefino();
+    return (scoreRapido >= 4 && scoreRefino >= 2) || (scoreRefino >= 4) ? 'adv' : 'int';
+  }
+
+  function updateNivelRequired(){
+    TRIAGEM_NIVEL_IDS.forEach(id => {
+      const el = document.getElementById(id);
+      if(el) el.required = true;
+    });
+
+    const base = calcNivelBase();
+    const exigirRefino = base === 'int';
+    REFINO_NIVEL_IDS.forEach(id => {
+      const el = document.getElementById(id);
+      if(el) el.required = exigirRefino;
+    });
+
+    const box = document.getElementById('triagem_alerta');
+    const alertaVisivel = box && !box.classList.contains('hidden');
+    if(alertaVisivel){
+      marcarCamposFaltantes(TRIAGEM_NIVEL_IDS);
+      if(exigirRefino) marcarCamposFaltantes(REFINO_NIVEL_IDS);
+    } else {
+      [...TRIAGEM_NIVEL_IDS, ...REFINO_NIVEL_IDS].forEach(id => {
+        const el = document.getElementById(id);
+        const field = el ? el.closest('.field') : null;
+        if(field) field.classList.remove('level-required-missing');
+      });
+    }
+    ocultarAvisoNivelSeCompleto();
+  }
+
+  function validateNivelCompleto(){
+    updateNivelRequired();
+    const faltaBase = firstMissing(TRIAGEM_NIVEL_IDS);
+    if(faltaBase){
+      marcarCamposFaltantes(TRIAGEM_NIVEL_IDS);
+      mostrarAvisoNivel('Antes de continuar, responda as 6 perguntas obrigatórias de classificação de nível.', faltaBase);
+      return false;
+    }
+
+    if(calcNivelBase() === 'int'){
+      const faltaRefino = firstMissing(REFINO_NIVEL_IDS);
+      if(faltaRefino){
+        marcarCamposFaltantes(REFINO_NIVEL_IDS);
+        mostrarAvisoNivel('Como o perfil apontou intermediário, responda também as perguntas de refinamento para confirmar se é intermediário ou avançado.', faltaRefino);
+        return false;
+      }
+    }
+    return true;
+  }
+
+  function bloquearPuloDeNivel(target, ev){
+    if(!target || !target.matches || !target.matches('input,select,textarea,button')) return;
+    if(target.closest('#section_dados_pessoais') || target.closest('#section_nivel_base')) return;
+    if(target.closest('.submit-bar')) return;
+
+    const faltaBase = firstMissing(TRIAGEM_NIVEL_IDS);
+    if(faltaBase){
+      if(ev) ev.preventDefault();
+      mostrarAvisoNivel('Antes de continuar, responda as 6 perguntas obrigatórias de classificação de nível.', faltaBase);
+      return;
+    }
+
+    if(calcNivelBase() === 'int'){
+      const faltaRefino = firstMissing(REFINO_NIVEL_IDS);
+      const dentroRefino = target.closest('#bloco_int_experiencia') || target.closest('#bloco_int_estrategia');
+      if(faltaRefino && !dentroRefino){
+        if(ev) ev.preventDefault();
+        mostrarAvisoNivel('Antes de seguir para os outros blocos, finalize a confirmação do nível intermediário/avançado.', faltaRefino);
+      }
+    }
+  }
+
+  function applyNivel(){
+    updateNivelRequired();
+    const nivel = calcNivel();
+    const base = calcNivelBase();
+
+    // Banner
+    const banner = document.getElementById('nivel_banner');
+    const icon = document.getElementById('nivel_icon');
+    const texto = document.getElementById('nivel_texto');
+
+    if(!nivel){
+      banner.classList.remove('show','ini','int','adv');
+      showSection('bloco_int_experiencia', false);
+      showSection('bloco_int_estrategia', false);
+      showSection('bloco_adv_estrategia', false);
+      show('divider_int', false);
+      show('divider_adv', false);
+      return;
+    }
+
+    banner.classList.remove('ini','int','adv');
+    banner.classList.add('show', nivel);
+
+    if(nivel === 'ini'){
+      icon.textContent = '🟢';
+      texto.textContent = 'Perfil identificado: Iniciante';
+      showSection('bloco_int_experiencia', false);
+      showSection('bloco_int_estrategia', false);
+      showSection('bloco_adv_estrategia', false);
+      show('divider_int', false);
+      show('divider_adv', false);
+    } else if(nivel === 'int'){
+      icon.textContent = '🟣';
+      const faltaRefino = base === 'int' && firstMissing(REFINO_NIVEL_IDS);
+      texto.textContent = faltaRefino ? 'Perfil inicial: Intermediário — responda as próximas perguntas para confirmar se é intermediário ou avançado' : 'Perfil identificado: Intermediário';
+      show('divider_int', true);
+      showSection('bloco_int_experiencia', true);
+      showSection('bloco_int_estrategia', true);
+      showSection('bloco_adv_estrategia', false);
+      show('divider_adv', false);
+    } else {
+      icon.textContent = '⚡';
+      texto.textContent = 'Perfil identificado: Avançado — últimas perguntas de refinamento liberadas';
+      show('divider_int', true);
+      showSection('bloco_int_experiencia', true);
+      showSection('bloco_int_estrategia', true);
+      show('divider_adv', true);
+      showSection('bloco_adv_estrategia', true);
+    }
+
+    updateNivelRequired();
+  }
+
+  // ── Mobility / stretching triage ──────────────────────────────────────
+  function toggleMobAlongTriage(){
+    const answered = (id) => val(id) !== '';
+    const hasSignal = (id) => ['Sim','Não sei'].includes(val(id));
+
+    const wrapMob2 = document.getElementById('wrap_triagem_mob_articulacao');
+    const mobChoice = document.getElementById('wrap_incluir_mobilidade');
+    const mobReg = document.getElementById('wrap_mobilidade_regioes');
+    const wrapAlong1 = document.getElementById('wrap_triagem_along_tensao');
+    const alongChoice = document.getElementById('wrap_incluir_alongamento');
+    const alongReg = document.getElementById('wrap_alongamento_regioes');
+
+    function showWrap(el,s,rst=true){ if(!el) return; el.classList.toggle('hidden',!s); if(!s&&rst) resetInside(el); }
+
+    // Mobility
+    const mobBaseAnswered = answered('triagem_mob_amplitude');
+    const mobBaseSignal = hasSignal('triagem_mob_amplitude');
+    showWrap(wrapMob2, mobBaseAnswered && mobBaseSignal, false);
+    if(!mobBaseAnswered || !mobBaseSignal){ showWrap(mobChoice,false); showWrap(mobReg,false); }
+    else {
+      const detail = answered('triagem_mob_articulacao');
+      if(!detail){ showWrap(mobChoice,false); showWrap(mobReg,false); }
+      else { showWrap(mobChoice,true,false); showWrap(mobReg, val('incluir_mobilidade')==='Sim'); }
+    }
+
+    // Stretching
+    const alongBaseAnswered = answered('triagem_along_pos_treino');
+    const alongBaseSignal = hasSignal('triagem_along_pos_treino');
+    showWrap(wrapAlong1, alongBaseAnswered && alongBaseSignal, false);
+    if(!alongBaseAnswered || !alongBaseSignal){ showWrap(alongChoice,false); showWrap(alongReg,false); }
+    else {
+      const detail = answered('triagem_along_tensao');
+      if(!detail){ showWrap(alongChoice,false); showWrap(alongReg,false); }
+      else { showWrap(alongChoice,true,false); showWrap(alongReg, val('incluir_alongamento')==='Sim'); }
+    }
+  }
+
+  // ── Pain block ────────────────────────────────────────────────────────
+  function togglePainBlock(){ show('pain_block', val('dor_lesao')==='Sim'); }
+
+  // ── WhatsApp message builder ───────────────────────────────────────────
+  function isFieldHidden(field){ return !!field.closest('.hidden'); }
+  function cleanLabel(text){ return (text||'').replace(/^\d+\.\s*/,'').replace(/\s*\*\s*$/,'').replace(/\s+/g,' ').trim(); }
+  function formatTitle(text){ const c=(text||'').replace(/\s+/g,' ').trim().toUpperCase(); return ['━━━━━━━━━━━━━━━━━━',c,'━━━━━━━━━━━━━━━━━━']; }
+
+  function getVal(container){
+    const cbs = container.querySelectorAll('input[type="checkbox"]');
+    if(cbs.length){ const v=[]; cbs.forEach(c=>{ if(c.checked) v.push(c.value||c.id); }); return v.length?v.join(', '):''; }
+    const radios = container.querySelectorAll('input[type="radio"]');
+    if(radios.length){ const c=[...radios].find(r=>r.checked); return c?c.value:''; }
+    const inp = container.querySelector('input:not([type="checkbox"]):not([type="radio"])');
+    const sel = container.querySelector('select');
+    if(sel && inp){ const s=(sel.value||'').trim(); if(s&&s.toLowerCase()!=='outro') return s; return (inp.value||'').trim(); }
+    if(inp) return (inp.value||'').trim();
+    if(sel) return (sel.value||'').trim();
+    const ta = container.querySelector('textarea');
+    return ta ? (ta.value||'').trim() : '';
+  }
+
+  function getNivelResumoWhatsApp(){
+    const nivel = calcNivel();
+    const base = calcNivelBase();
+    if(nivel === 'ini'){
+      return [
+        '📌 Nível final: Iniciante',
+        '✅ Classificação concluída na triagem inicial.'
+      ];
+    }
+    if(nivel === 'int'){
+      return [
+        '📌 Nível final: Intermediário',
+        base === 'int' ? '✅ Triagem inicial + confirmação intermediária concluídas.' : '✅ Classificação concluída.'
+      ];
+    }
+    if(nivel === 'adv'){
+      return [
+        '📌 Nível final: Avançado',
+        '✅ Triagem inicial + confirmação intermediária/avançada concluídas.'
+      ];
+    }
+    return [
+      '📌 Nível final: Não classificado',
+      '⚠️ Triagem de nível incompleta.'
+    ];
+  }
+
+  function buildMessage(){
+    const lines = [];
+    const stamp = new Date().toLocaleString('pt-BR');
+    lines.push('📋 NOVA AVALIAÇÃO — PERSONAL MFIT');
+    lines.push('📦 PLANO ESCOLHIDO: ' + getPlanoLabel());
+    if(isPlanoPersonal() && getPersonalFrequenciaTexto()) lines.push('📅 FREQUÊNCIA: ' + getPersonalFrequenciaTexto());
+    lines.push(...getNivelResumoWhatsApp());
+    lines.push('🕒 Data/Hora: ' + stamp);
+    lines.push('');
+
+    // Bloco de fotos no TOPO da mensagem
+    const planoMsg = getPlanoKey();
+    const fotosValMsg = document.getElementById('fotos');
+    const enviarFotos = fotosValMsg && fotosValMsg.value === 'Sim' && (planoMsg === 'prata' || planoMsg === 'ouro') && !idadeMenor18();
+    if(enviarFotos){
+      lines.push('━━━━━━━━━━━━━━━━━━━━━');
+      lines.push('📸 ENVIAR FOTOS — Clique aqui:');
+      lines.push('https://docs.google.com/forms/d/e/1FAIpQLSdPfcwdKj1kU2Oh_vRalywjHtm_by26FGhZoBhunjtEHjXgGw/viewform?usp=publish-editor');
+      lines.push('✅ Short/bermuda + cropped ou top esportivo');
+      lines.push('✅ 4 ângulos: frente, costas, lado direito, lado esquerdo');
+      lines.push('━━━━━━━━━━━━━━━━━━━━━');
+      lines.push('');
+    }
+
+    const SECOES_INTERNAS_CLASSIFICACAO = new Set([
+      'section_nivel_base',
+      'bloco_int_experiencia',
+      'bloco_int_estrategia',
+      'bloco_adv_estrategia'
+    ]);
+
+    document.querySelectorAll('.section').forEach(sec => {
+      if(sec.classList.contains('hidden')) return; // skip hidden sections entirely
+      if(SECOES_INTERNAS_CLASSIFICACAO.has(sec.id)) return; // testes de nível ficam só na lógica interna
+      const title = sec.querySelector('h2');
+      const secLines = [];
+      sec.querySelectorAll('.field').forEach(field => {
+        if(isFieldHidden(field)) return;
+        const label = field.querySelector(':scope > .label');
+        if(!label) return;
+        const v = getVal(field);
+        if(!v) return;
+        secLines.push('• ' + cleanLabel(label.textContent) + ': ' + v);
+      });
+      if(secLines.length){
+        lines.push(...formatTitle(title ? title.textContent.trim() : 'BLOCO'));
+        lines.push(...secLines);
+        lines.push('');
+      }
+    });
+
+    while(lines.length && lines[lines.length-1]==='') lines.pop();
+    return lines.join('\n');
+  }
+
+  // ── Bind ───────────────────────────────────────────────────────────────
+  function bind(){
+    setupLogo();
+
+    // Nivel triggers
+    [...TRIAGEM_NIVEL_IDS, ...REFINO_NIVEL_IDS].forEach(id => {
+      const el = document.getElementById(id);
+      if(el){
+        el.addEventListener('change', applyNivel);
+        el.addEventListener('input', applyNivel);
+      }
+    });
+
+    document.addEventListener('focusin', e => bloquearPuloDeNivel(e.target, e), true);
+    document.addEventListener('click', e => bloquearPuloDeNivel(e.target, e), true);
+
+    // Objetivo outro
+    const obj = document.getElementById('objetivo');
+    if(obj) obj.addEventListener('change', () => show('wrap_objetivo_outro', obj.value==='Outro'));
+
+    // Foco outro
+    const foco = document.getElementById('foco');
+    if(foco) foco.addEventListener('change', () => show('wrap_foco_outro', foco.value==='Outro'));
+
+    // Cardio
+    const cardio = document.getElementById('cardio');
+    const cardioPref = document.getElementById('cardio_pref');
+    if(cardio) cardio.addEventListener('change', () => {
+      const s = cardio.value==='Sim';
+      show('wrap_cardio_tempo',s); show('wrap_cardio_pref',s);
+      if(!s) show('wrap_cardio_outro',false);
+    });
+    if(cardioPref) cardioPref.addEventListener('change', () => show('wrap_cardio_outro', cardioPref.value==='Outro'));
+
+    // Tempo treino outro
+    const tempoSel = document.getElementById('tempo_treino_sel');
+    if(tempoSel) tempoSel.addEventListener('change', () => show('wrap_tempo_treino_outro', tempoSel.value==='Outro'));
+
+    // Fotos conforme o plano selecionado
+    const fotosEl = document.getElementById('fotos');
+    if(fotosEl) fotosEl.addEventListener('change', updateFotosPorPlano);
+    const idadeInputF = document.getElementById('idade');
+    if(idadeInputF) idadeInputF.addEventListener('input', updateFotosPorPlano);
+    updateFotosPorPlano();
+
+    // Pain block
+    const dor = document.getElementById('dor_lesao');
+    if(dor) dor.addEventListener('change', togglePainBlock);
+    const regiao = document.getElementById('regiao_dor');
+    if(regiao) regiao.addEventListener('change', () => show('wrap_regiao_outro', regiao.value==='Outro'));
+    const mov = document.getElementById('mov_piora');
+    if(mov) mov.addEventListener('change', () => show('wrap_mov_outro', mov.value==='Outro'));
+
+    // Cesárea
+    const sexo = document.getElementById('sexo');
+    const cesarea = document.getElementById('cesarea');
+    function toggleCesarea(){
+      const isFem = val('sexo')==='Feminino';
+      show('wrap_cesarea', isFem);
+      if(!isFem){ if(cesarea) cesarea.value=''; show('wrap_cesarea_tempo',false); return; }
+      show('wrap_cesarea_tempo', val('cesarea')==='Sim');
+    }
+    if(sexo) sexo.addEventListener('change', toggleCesarea);
+    if(cesarea) cesarea.addEventListener('change', toggleCesarea);
+
+    // Mobility triage
+    ['triagem_mob_amplitude','triagem_mob_articulacao','triagem_along_tensao','triagem_along_pos_treino','incluir_mobilidade','incluir_alongamento'].forEach(id => {
+      const el = document.getElementById(id);
+      if(el) el.addEventListener('change', toggleMobAlongTriage);
+    });
+
+    document.querySelectorAll('input[name="personal_dias_semana"]').forEach(el => {
+      el.addEventListener('change', () => {
+        controlarCliqueDiaSemana(el);
+      });
+    });
+
+    // Initial state
+    applyPlano();
+    applyNivel();
+    toggleCesarea();
+    toggleMobAlongTriage();
+    togglePainBlock();
+
+    // Form submit
+    const form = document.querySelector('form');
+    if(form){
+      form.addEventListener('submit', e => {
+        e.preventDefault();
+        if(!validateNivelCompleto()) return;
+        if(!validatePersonalDiasSemana()) return;
+        if(!form.checkValidity()){ form.reportValidity(); return; }
+        const msg = buildMessage();
+        window.open('https://wa.me/5569992913628?text='+encodeURIComponent(msg),'_blank');
+
+      });
+      form.addEventListener('reset', () => {
+        setTimeout(() => {
+          applyPlano();
+          applyNivel();
+          updatePersonalDiasSemana();
+          toggleCesarea();
+          toggleMobAlongTriage();
+          togglePainBlock();
+          show('wrap_objetivo_outro',false);
+          show('wrap_foco_outro',false);
+          show('wrap_cardio_tempo',false);
+          show('wrap_cardio_pref',false);
+          show('wrap_cardio_outro',false);
+          show('wrap_tempo_treino_outro',false);
+        },0);
+      });
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', bind);
+</script>
+</body>
+</html>
