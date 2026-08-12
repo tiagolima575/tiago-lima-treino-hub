@@ -1,11 +1,16 @@
-# Tiago Lima — HUB de Pesquisas (MFIT)
+# Tiago Lima — HUB de Pesquisas e Planos
 
-Arquivos estáticos (HTML) prontos para GitHub Pages e para abrir localmente no celular.
+Arquivos estáticos em HTML para GitHub Pages e abertura no celular.
 
-## Arquivos
-- index.html (menu)
-- treino_iniciante.html
-- treino_intermediario.html
-- treino_avancado.html
-- pesquisa_checkin_30dias.html
+## Arquivos principais
 
+- index_personal.html — página dos planos Personal / Bronze / Prata / Ouro
+- ficha_unica_planos.html — ficha de avaliação dos planos
+- avaliacao_nivel.html — avaliação de nível
+- pesquisa_checkin_30dias.html — pesquisa de check-in de 30 dias
+
+## Observação
+
+Para abrir a página dos planos, acesse:
+
+index_personal.html
