@@ -4,7 +4,7 @@ Arquivos estáticos em HTML para GitHub Pages e abertura no celular.
 
 ## Arquivos principais
 
-- index.html — página dos planos Personal / Bronze / Prata / Ouro
+- index_personal.htmla — página dos planos Personal / Bronze / Prata / Ouro
 - ficha_unica_planos.html — ficha de avaliação dos planos
 - avaliacao_nivel.html — avaliação de nível
 - pesquisa_checkin_30dias.html — pesquisa de check-in de 30 dias
@@ -13,4 +13,4 @@ Arquivos estáticos em HTML para GitHub Pages e abertura no celular.
 
 Para abrir a página dos planos, acesse:
 
-index.html
+index_personal.html
