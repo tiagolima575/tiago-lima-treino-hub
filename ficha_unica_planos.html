@@ -264,6 +264,65 @@
 
     .danger-note{background:var(--danger-bg);border:1px solid rgba(255,94,94,.2);border-radius:10px;padding:10px 14px;font-size:.82rem;color:var(--danger);margin-top:10px;}
 
+    /* Orientações para fotos — ocupa toda a grade e não cria rolagem lateral */
+    .photo-field{grid-column:1/-1;min-width:0;}
+    .photo-guide{
+      margin-top:14px;
+      padding:18px;
+      overflow:hidden;
+      background:linear-gradient(145deg,rgba(163,89,218,.13),rgba(163,89,218,.055));
+      border:1px solid rgba(163,89,218,.30);
+      border-radius:14px;
+    }
+    .photo-guide-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:13px;}
+    .photo-guide-icon{
+      display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;
+      border-radius:10px;background:rgba(163,89,218,.17);font-size:1.02rem;
+    }
+    .photo-guide-title{margin:0;color:var(--purple-2);font-size:.94rem;font-weight:750;line-height:1.25;}
+    .photo-guide-intro{margin:3px 0 0;color:var(--muted);font-size:.80rem;line-height:1.48;}
+    .photo-angles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:0 0 14px;}
+    .photo-angle{
+      min-width:0;padding:8px 6px;text-align:center;border-radius:9px;
+      background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.075);
+      color:var(--text);font-size:.76rem;font-weight:650;line-height:1.25;
+    }
+    .photo-tips{
+      display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;
+      list-style:none;margin:0;padding:0;
+    }
+    .photo-tip{
+      position:relative;min-width:0;padding:9px 10px 9px 27px;border-radius:10px;
+      background:rgba(8,10,16,.40);border:1px solid rgba(255,255,255,.065);
+      color:var(--muted);font-size:.79rem;line-height:1.42;
+    }
+    .photo-tip::before{
+      content:'✓';position:absolute;left:10px;top:9px;color:var(--purple-2);
+      font-size:.76rem;font-weight:800;
+    }
+    .photo-tip strong{color:#DDD6E8;}
+    .photo-tip-wide{grid-column:1/-1;}
+    .photo-warning{
+      margin-top:10px;padding:11px 12px;border-radius:10px;
+      background:rgba(255,94,94,.075);border:1px solid rgba(255,94,94,.27);
+      color:#FFD3D3;font-size:.79rem;line-height:1.48;
+    }
+    .photo-privacy{margin:9px 0 0;color:var(--muted-2);font-size:.76rem;font-style:italic;}
+    .photo-whatsapp-note{margin:10px 1px 0;color:var(--muted-2);font-size:.77rem;}
+
+    @media(max-width:620px){
+      .photo-guide{padding:14px;}
+      .photo-angles{grid-template-columns:repeat(2,minmax(0,1fr));}
+      .photo-tips{grid-template-columns:1fr;}
+      .photo-tip-wide{grid-column:auto;}
+    }
+
+    @media(max-width:420px){
+      .wrap{padding-left:10px;padding-right:10px;}
+      .section{padding:18px 14px;}
+      .photo-guide{padding:13px 12px;}
+    }
+
     .submit-bar{
       background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
       padding:20px 24px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;
@@ -1212,29 +1271,47 @@
     <label class="label" for="medidas">Medidas corporais (opcional)</label>
     <textarea id="medidas" name="medidas" placeholder="Ex.: cintura, quadril, braço, coxa..."></textarea>
   </div>
-  <div id="wrap_campo_fotos"><div class="field col-6">
-    <label class="label" for="fotos" id="fotos_label">Fotos (opcional)</label>
-    <span class="helper" id="fotos_plano_desc">As fotos serão liberadas conforme o plano escolhido.</span>
+  <div id="wrap_campo_fotos" class="field photo-field hidden">
+    <label class="label" for="fotos" id="fotos_label">Deseja enviar fotos para avaliação postural?</label>
+    <span class="helper" id="fotos_plano_desc">Esta opção aparece somente para pessoas com 18 anos ou mais.</span>
     <select id="fotos" name="fotos">
       <option value="">Selecione</option>
       <option>Sim</option>
       <option>Não</option>
     </select>
-    <div id="wrap_fotos_drive" class="hidden" style="margin-top:14px;">
-  <div style="background:rgba(163,89,218,.10);border:1px solid rgba(163,89,218,.25);border-radius:12px;padding:14px 16px;margin-bottom:12px;">
-    <p style="font-size:.88rem;color:var(--purple);font-weight:700;margin:0 0 8px;">📸 Como tirar as fotos</p>
-    <p style="font-size:.82rem;color:var(--muted);margin:0 0 6px;">Use roupas de academia confortáveis — short ou bermuda e cropped ou top esportivo. Evite roupas largas, pois dificultam a avaliação postural.</p>
-    <p style="font-size:.80rem;color:var(--muted-2);margin:0 0 8px;font-style:italic;">As fotos são para avaliação postural e física. Por respeito e segurança, não serão aceitas fotos em roupas íntimas.</p>
-    <ul style="font-size:.82rem;color:var(--muted);margin:0;padding-left:18px;line-height:1.7;">
-      <li>📷 <strong>4 ângulos:</strong> frente, costas, lado direito e lado esquerdo</li>
-      <li>💡 Ambiente bem iluminado e fundo neutro (parede lisa)</li>
-      <li>📐 Câmera na altura do umbigo, braços relaxados ao lado do corpo</li>
-    </ul>
+    <div id="wrap_fotos_drive" class="hidden">
+      <div class="photo-guide">
+        <div class="photo-guide-head">
+          <span class="photo-guide-icon" aria-hidden="true">📸</span>
+          <div>
+            <p class="photo-guide-title">Como tirar e enviar as fotos</p>
+            <p class="photo-guide-intro">Depois de enviar a avaliação, mande <strong>4 fotos separadas neste mesmo WhatsApp</strong>.</p>
+          </div>
+        </div>
+
+        <div class="photo-angles" aria-label="Ângulos necessários">
+          <span class="photo-angle">Frente</span>
+          <span class="photo-angle">Costas</span>
+          <span class="photo-angle">Perfil direito</span>
+          <span class="photo-angle">Perfil esquerdo</span>
+        </div>
+
+        <ul class="photo-tips">
+          <li class="photo-tip"><strong>Corpo inteiro:</strong> da cabeça aos pés, sem cortar nenhuma parte.</li>
+          <li class="photo-tip"><strong>Postura natural:</strong> sem contrair, fazer pose ou prender a barriga.</li>
+          <li class="photo-tip"><strong>Posição:</strong> pés paralelos, olhar à frente e braços relaxados.</li>
+          <li class="photo-tip"><strong>Câmera:</strong> celular na vertical, na altura do umbigo, reto e sem inclinar.</li>
+          <li class="photo-tip"><strong>Ambiente:</strong> boa iluminação, fundo liso e nada cobrindo o corpo.</li>
+          <li class="photo-tip"><strong>Sem selfie ou espelho:</strong> peça ajuda ou use o temporizador.</li>
+          <li class="photo-tip photo-tip-wide"><strong id="photo_clothing_title">Roupa adequada:</strong> <span id="photo_clothing_text">A orientação será ajustada conforme o sexo biológico informado no início da ficha.</span></li>
+        </ul>
+
+        <div class="photo-warning"><strong id="photo_warning_title">⚠️ Privacidade e segurança:</strong> <span id="photo_warning_text">Não envie fotos com transparência, roupa íntima ou exposição de partes íntimas.</span></div>
+        <p class="photo-privacy">As fotos serão utilizadas somente para avaliação postural e física.</p>
+      </div>
+      <p class="photo-whatsapp-note">Essas instruções também serão incluídas automaticamente na mensagem do WhatsApp.</p>
+    </div>
   </div>
-  <p style="font-size:.82rem;color:var(--muted);margin:0 0 8px;">Ao enviar sua avaliação, você receberá o link para enviar as fotos direto na mensagem do WhatsApp.</p>
-</div>
-  </div>
-</div>
 </section>
 
 <!-- Submit -->
@@ -1283,34 +1360,220 @@
     return new URLSearchParams(window.location.search);
   }
 
+  function normalizarChavePlano(texto){
+    return String(texto || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '');
+  }
+
+  function normalizarBuscaPlano(texto){
+    return String(texto || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[_-]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function getPlanoParam(){
+    const procuradas = [...arguments].map(normalizarChavePlano);
+    for(const [chave, valor] of getPlanoParams().entries()){
+      if(procuradas.includes(normalizarChavePlano(chave)) && String(valor || '').trim()){
+        return String(valor).trim();
+      }
+    }
+    return '';
+  }
+
+  function limparNomePlano(texto){
+    return String(texto || '')
+      .replace(/[_-]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function formatarValorBR(valorBruto){
+    if(!valorBruto) return '';
+    let valor = String(valorBruto).trim();
+    const trechoMoeda = valor.match(/R\$\s*[\d.]+(?:,\d{1,2})?/i);
+    if(trechoMoeda) valor = trechoMoeda[0].replace(/R\$/i, '').trim();
+    valor = valor.replace(/[^\d,.-]/g, '');
+    if(!valor) return '';
+
+    let normalizado = valor;
+    if(valor.includes(',')) normalizado = valor.replace(/\./g, '').replace(',', '.');
+    else if(/^\d{1,3}(?:\.\d{3})+$/.test(valor)) normalizado = valor.replace(/\./g, '');
+
+    const numero = Number(normalizado);
+    if(!Number.isFinite(numero)) return '';
+    return numero.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+  }
+
+  function isPlanoDupla(){
+    const origem = normalizarBuscaPlano([
+      getPlanoParam('formato', 'categoria', 'subtipo'),
+      getPlanoParam('modalidade', 'tipo', 'atendimento'),
+      getPlanoParam('nome', 'nomePlano', 'nome_plano', 'pacote'),
+      getPlanoParam('dupla', 'emDupla', 'em_dupla')
+    ].join(' '));
+    return /(^|\s)(dupla|em dupla|com dupla)(\s|$)/.test(origem) && !origem.includes('sem dupla');
+  }
+
+  function getValorPlanoBruto(){
+    if(isPlanoDupla()){
+      const totalDupla = getPlanoParam('totalDupla', 'total_dupla', 'valorDupla', 'valor_dupla');
+      if(totalDupla) return totalDupla;
+    }
+
+    const direto = getPlanoParam(
+      'valor', 'preco', 'price', 'mensalidade', 'total',
+      'valorPlano', 'valor_plano', 'valorFinal', 'valor_final',
+      'totalDupla', 'total_dupla'
+    );
+    if(direto) return direto;
+
+    const nomeOuPlano = [
+      getPlanoParam('nome', 'nomePlano', 'nome_plano', 'pacote'),
+      getPlanoParam('plano', 'plan', 'opcao')
+    ].join(' ');
+    const moedaNoTexto = nomeOuPlano.match(/R\$\s*[\d.]+(?:,\d{1,2})?/i);
+    if(moedaNoTexto) return moedaNoTexto[0];
+
+    const buscaNomeOuPlano = normalizarBuscaPlano(nomeOuPlano);
+    if(buscaNomeOuPlano.includes('online')){
+      const valorOnline = nomeOuPlano.match(/(?:^|\D)(70|150)(?:[.,]00)?(?:\D|$)/);
+      if(valorOnline) return valorOnline[1];
+    }
+
+    const planoNumerico = getPlanoParam('plano', 'plan');
+    return /^\d+(?:[.,]\d{1,2})?$/.test(planoNumerico) ? planoNumerico : '';
+  }
+
+  function getValorPlanoFormatado(){
+    return formatarValorBR(getValorPlanoBruto());
+  }
+
+  function getValorPorPessoaFormatado(){
+    return formatarValorBR(getPlanoParam(
+      'valorPorPessoa', 'valor_por_pessoa', 'totalPessoa', 'total_pessoa', 'total'
+    ));
+  }
+
+  function getValorSessaoFormatado(){
+    return formatarValorBR(getPlanoParam(
+      'valorSessao', 'valor_sessao', 'precoSessao', 'preco_sessao'
+    ));
+  }
+
   function isPlanoPersonal(){
-    const params = getPlanoParams();
-    const tipo = (params.get('tipo') || '').toLowerCase().trim();
-    const nome = (params.get('nome') || '').trim();
-    return tipo === 'personal' || nome.toLowerCase().startsWith('personal');
+    const origem = normalizarBuscaPlano([
+      getPlanoParam('tipo', 'modalidade', 'atendimento'),
+      getPlanoParam('nome', 'nomePlano', 'nome_plano', 'pacote'),
+      getPlanoParam('plano', 'plan'),
+      getPlanoParam('formato', 'categoria', 'subtipo')
+    ].join(' '));
+    return /(^|\s)(personal|presencial)(\s|$)/.test(origem);
   }
 
   function getPlanoKey(){
-    const params = getPlanoParams();
-    const plano = (params.get('plano') || params.get('plan') || '').toLowerCase().trim();
-    return PLANOS_CONFIG[plano] ? plano : '';
+    const plano = normalizarBuscaPlano([
+      getPlanoParam('plano', 'plan'),
+      getPlanoParam('nome', 'nomePlano', 'nome_plano', 'pacote')
+    ].join(' '));
+    return Object.keys(PLANOS_CONFIG).find(chave => new RegExp('(^|\\s)' + chave + '(\\s|$)').test(plano)) || '';
+  }
+
+  function getModalidadePlano(){
+    const modalidade = normalizarBuscaPlano([
+      getPlanoParam('modalidade', 'tipo', 'atendimento'),
+      getPlanoParam('nome', 'nomePlano', 'nome_plano', 'pacote'),
+      getPlanoParam('plano', 'plan')
+    ].join(' '));
+    if(/(^|\s)online(\s|$)/.test(modalidade)) return 'ONLINE';
+    if(/(^|\s)(presencial|personal)(\s|$)/.test(modalidade)) return 'PRESENCIAL';
+    if(isPlanoPersonal()) return 'PRESENCIAL';
+    if(getPlanoKey() || getValorPlanoFormatado()) return 'ONLINE';
+    return '';
+  }
+
+  function getFormatoPresencial(){
+    const formato = getPlanoParam('formato', 'categoria', 'subtipo', 'opcaoAtendimento', 'opcao_atendimento');
+    const formatoBusca = normalizarBuscaPlano(formato);
+    if(['dupla','em dupla','com dupla'].includes(formatoBusca)) return 'Em dupla';
+    if(['individual','sem dupla','sozinho'].includes(formatoBusca)) return 'Individual (sem dupla)';
+    if(formato) return limparNomePlano(formato);
+
+    const dupla = normalizarBuscaPlano(getPlanoParam('dupla', 'emDupla', 'em_dupla'));
+    if(['nao','não','false','0','sem dupla','individual'].includes(dupla)) return 'Individual (sem dupla)';
+    if(['sim','true','1','com dupla','dupla'].includes(dupla)) return 'Em dupla';
+    if(isPlanoPersonal()) return isPlanoDupla() ? 'Em dupla' : 'Individual (sem dupla)';
+    return '';
+  }
+
+  function getPlanoNome(){
+    const nome = getPlanoParam('nome', 'nomePlano', 'nome_plano', 'pacote');
+    if(nome) return limparNomePlano(nome);
+
+    const plano = getPlanoKey();
+    if(plano) return PLANOS_CONFIG[plano].label;
+
+    const planoBruto = getPlanoParam('plano', 'plan');
+    const planoBusca = normalizarBuscaPlano(planoBruto);
+    const planoGenerico = ['online', 'presencial', 'personal'].includes(planoBusca);
+    const planoEhValor = /^\d+(?:[.,]\d{1,2})?$/.test(planoBruto);
+    if(isPlanoPersonal() && ['sem dupla','individual','sozinho'].includes(planoBusca)) return 'Sem dupla (individual)';
+    if(isPlanoPersonal() && ['dupla','em dupla','com dupla'].includes(planoBusca)) return 'Em dupla';
+    if(planoBruto && !planoGenerico && !planoEhValor) return limparNomePlano(planoBruto);
+
+    if(isPlanoPersonal()){
+      const formato = getFormatoPresencial();
+      return formato || 'PRESENCIAL';
+    }
+
+    const valor = getValorPlanoFormatado();
+    if(getModalidadePlano() === 'ONLINE' && valor) return 'PLANO DE ' + valor;
+    return '';
   }
 
   function getPlanoLabel(){
-    const params = getPlanoParams();
-    const nome = (params.get('nome') || '').trim();
-    if(isPlanoPersonal() && nome) return nome;
-    const plano = getPlanoKey();
-    return plano ? PLANOS_CONFIG[plano].label : 'NÃO INFORMADO';
+    return getPlanoNome() || getModalidadePlano() || 'NÃO INFORMADO';
+  }
+
+  function getPlanoCabecalho(){
+    const modalidade = getModalidadePlano();
+    const nome = getPlanoNome();
+    const valor = getValorPlanoFormatado();
+    const formato = modalidade === 'PRESENCIAL' ? getFormatoPresencial() : '';
+    const partes = [];
+
+    if(modalidade) partes.push(modalidade);
+    if(formato){
+      const nomeBusca = normalizarBuscaPlano(nome);
+      const formatoJaNoNome = isPlanoDupla() ? nomeBusca.includes('dupla') : nomeBusca.includes('individual');
+      if(!formatoJaNoNome) partes.push(formato.toUpperCase());
+    }
+    if(nome && normalizarBuscaPlano(nome) !== normalizarBuscaPlano(modalidade)) partes.push(nome.toUpperCase());
+
+    const nomeJaMostraValor = /R\$\s*\d/i.test(String(nome || ''));
+    if(valor && !nomeJaMostraValor) partes.push(valor);
+
+    return partes.length ? partes.join(' — ') : 'NÃO INFORMADO';
   }
 
   function getPersonalDiasMensais(){
-    const params = getPlanoParams();
-    const dias = parseInt((params.get('dias') || '').trim(), 10);
+    const dias = parseInt(getPlanoParam('dias', 'aulas', 'sessoes', 'sessões'), 10);
     return Number.isFinite(dias) ? dias : 0;
   }
 
   function getPersonalFrequenciaSemanal(){
+    const frequenciaInformada = parseInt(getPlanoParam(
+      'frequenciaSemanal', 'frequencia_semanal', 'diasSemana', 'dias_semana'
+    ), 10);
+    if(Number.isFinite(frequenciaInformada) && frequenciaInformada > 0) return frequenciaInformada;
+
     const dias = getPersonalDiasMensais();
     const mapa = {4:1, 8:2, 12:3, 16:4, 20:5};
     return mapa[dias] || (dias ? Math.max(1, Math.round(dias / 4)) : 0);
@@ -1318,21 +1581,25 @@
 
   function getPersonalFrequenciaTexto(){
     const freq = getPersonalFrequenciaSemanal();
-    if(!freq) return '';
-    return 'média de ' + freq + ' ' + (freq === 1 ? 'treino' : 'treinos') + ' por semana';
+    const mensal = getPersonalDiasMensais();
+    if(!freq && !mensal) return '';
+    const partes = [];
+    if(freq) partes.push(freq + ' ' + (freq === 1 ? 'dia por semana' : 'dias por semana'));
+    if(mensal) partes.push(mensal + ' ' + (mensal === 1 ? 'treino no mês' : 'treinos no mês'));
+    return partes.join(' • ');
   }
 
   function getPlanoDescPersonal(){
-    const params = getPlanoParams();
-    const dias = getPersonalDiasMensais();
-    const valorSessao = (params.get('valorSessao') || '').trim();
-    const total = (params.get('total') || '').trim();
+    const valorSessao = getValorSessaoFormatado();
+    const total = getValorPlanoFormatado();
+    const valorPessoa = getValorPorPessoaFormatado();
     const partes = [];
-    if(dias) partes.push(dias + 'x/mês');
+    partes.push(isPlanoDupla() ? 'Em dupla' : 'Individual');
     const freqTxt = getPersonalFrequenciaTexto();
     if(freqTxt) partes.push(freqTxt);
-    if(valorSessao) partes.push('R$ ' + valorSessao + ' por sessão');
-    if(total) partes.push('total R$ ' + total);
+    if(total) partes.push(isPlanoDupla() ? ('total da dupla ' + total) : ('pacote ' + total));
+    if(isPlanoDupla() && valorPessoa) partes.push('referência ' + valorPessoa + ' por pessoa');
+    if(valorSessao) partes.push(valorSessao + (isPlanoDupla() ? ' por sessão/pessoa' : ' por sessão'));
     return partes.length ? partes.join(' • ') : 'Plano Personal escolhido na página de planos.';
   }
 
@@ -1442,11 +1709,11 @@
     return true;
   }
 
-  function idadeMenor18(){
+  function idadePermiteFotos(){
     const idadeEl = document.getElementById('idade');
     if(!idadeEl) return false;
     const idade = parseInt(idadeEl.value, 10);
-    return !isNaN(idade) && idade < 18;
+    return Number.isFinite(idade) && idade >= 18;
   }
 
   function applyPlano(){
@@ -1458,22 +1725,27 @@
     const desc = document.getElementById('plano_desc');
 
     const personal = isPlanoPersonal();
-    const planoLabel = getPlanoLabel();
+    const planoCabecalho = getPlanoCabecalho();
+    const planoIdentificado = planoCabecalho !== 'NÃO INFORMADO';
 
     if(banner){
       banner.classList.remove('bronze','prata','ouro');
       if(cfg) banner.classList.add(cfg.classe);
     }
-    if(icon) icon.textContent = personal ? '💪' : (cfg ? cfg.icon : '📦');
-    if(texto) texto.textContent = cfg || personal ? ('Plano selecionado: ' + planoLabel) : 'Plano não identificado';
-    if(desc) desc.textContent = personal ? getPlanoDescPersonal() : (cfg ? cfg.desc : 'Volte para a página dos planos e escolha Bronze, Prata, Ouro ou Personal antes de preencher a avaliação.');
+    if(icon) icon.textContent = personal ? '💪' : (cfg ? cfg.icon : (getModalidadePlano() === 'ONLINE' ? '🌐' : '📦'));
+    if(texto) texto.textContent = planoIdentificado ? ('Plano escolhido: ' + planoCabecalho) : 'Plano não identificado';
+    if(desc){
+      if(personal) desc.textContent = getPlanoDescPersonal();
+      else if(cfg) desc.textContent = cfg.desc;
+      else if(planoIdentificado) desc.textContent = 'Modalidade, plano e valor registrados conforme a escolha feita na página anterior.';
+      else desc.textContent = 'Volte para a página dos planos, escolha uma opção e abra novamente esta avaliação.';
+    }
 
     updatePersonalDiasSemana();
     updateFotosPorPlano();
   }
 
   function updateFotosPorPlano(){
-    const plano = getPlanoKey();
     const fotosField = document.getElementById('wrap_campo_fotos');
     const fotosSelect = document.getElementById('fotos');
     const fotosWrap = document.getElementById('wrap_fotos_drive');
@@ -1481,8 +1753,9 @@
     const fotosDesc = document.getElementById('fotos_plano_desc');
     if(!fotosField || !fotosSelect) return;
 
-    const menor = idadeMenor18();
-    const mostrarFotos = (plano === 'prata' || plano === 'ouro') && !menor;
+    updateOrientacoesFotosPorSexo();
+
+    const mostrarFotos = idadePermiteFotos();
     fotosField.classList.toggle('hidden', !mostrarFotos);
 
     if(!mostrarFotos){
@@ -1492,19 +1765,64 @@
       return;
     }
 
-    if(plano === 'ouro'){
-      if(fotosLabel) fotosLabel.textContent = 'Fotos para avaliação postural completa';
-      if(fotosDesc) fotosDesc.textContent = 'Incluído no Plano Ouro. O link para envio das fotos será enviado automaticamente no WhatsApp.';
-      fotosSelect.value = 'Sim';
-      fotosSelect.classList.add('hidden');
-      if(fotosWrap) fotosWrap.classList.remove('hidden');
-    } else if(plano === 'prata'){
-      if(fotosLabel) fotosLabel.textContent = 'Fotos para avaliação postural simples';
-      if(fotosDesc) fotosDesc.textContent = 'No Plano Prata, as fotos ajudam em uma avaliação postural simples para ajustar melhor o treino.';
-      fotosSelect.classList.remove('hidden');
-      if(!fotosSelect.value) fotosSelect.value = 'Sim';
-      if(fotosWrap) fotosWrap.classList.toggle('hidden', fotosSelect.value !== 'Sim');
+    if(fotosLabel) fotosLabel.textContent = 'Deseja enviar fotos para avaliação postural?';
+    if(fotosDesc) fotosDesc.textContent = 'Opcional e disponível somente para maiores de idade. Se escolher “Sim”, siga rigorosamente as orientações de roupa, posição e enquadramento.';
+    fotosSelect.classList.remove('hidden');
+    if(fotosWrap) fotosWrap.classList.toggle('hidden', fotosSelect.value !== 'Sim');
+  }
+
+  function getOrientacaoRoupaFotos(){
+    const sexoEl = document.getElementById('sexo');
+    const sexoInformado = sexoEl ? sexoEl.value : '';
+
+    if(sexoInformado === 'Masculino'){
+      return {
+        titulo:'Roupa para homens:',
+        tela:'É permitido tirar as fotos sem camiseta para facilitar a visualização do tronco e do abdômen. Use short ou bermuda que cubra completamente os glúteos e as partes íntimas.',
+        alerta:'Para homens, foto sem camiseta é permitida. Não envie fotos de cueca, sunga, com roupa transparente ou com glúteos e partes íntimas expostos.',
+        whatsapp:[
+          '• HOMEM: é permitido tirar as fotos sem camiseta para facilitar a avaliação do tronco e do abdômen.',
+          '• Use short ou bermuda que cubra completamente os glúteos e as partes íntimas.',
+          '• Não envie fotos de cueca, sunga, com roupa transparente ou com partes íntimas expostas.'
+        ]
+      };
     }
+
+    if(sexoInformado === 'Feminino'){
+      return {
+        titulo:'Roupa para mulheres:',
+        tela:'Dê preferência a um top esportivo ajustado, opaco e com cobertura completa dos seios, deixando o abdômen visível. Use short ou legging que cubra completamente os glúteos e as partes íntimas.',
+        alerta:'Não envie fotos sem top, em lingerie, calcinha ou biquíni, nem com transparência, decote excessivo, seios, glúteos ou partes íntimas expostos.',
+        whatsapp:[
+          '• MULHER: dê preferência a um top esportivo ajustado, opaco e com cobertura completa dos seios, deixando o abdômen visível.',
+          '• Use short ou legging que cubra completamente os glúteos e as partes íntimas.',
+          '• Não envie fotos sem top, em lingerie, calcinha, biquíni, com transparência ou com partes íntimas expostas.'
+        ]
+      };
+    }
+
+    return {
+      titulo:'Roupa adequada:',
+      tela:'Use roupa esportiva ajustada e opaca, com cobertura completa do peito, dos glúteos e das partes íntimas. A roupa deve permitir observar a postura sem expor o corpo.',
+      alerta:'Não envie fotos em roupa íntima, biquíni, sunga, com transparência ou com seios, glúteos e partes íntimas expostos.',
+      whatsapp:[
+        '• Use roupa esportiva ajustada e opaca, com cobertura completa do peito, dos glúteos e das partes íntimas.',
+        '• Não envie fotos em roupa íntima, biquíni, sunga, com transparência ou com partes íntimas expostas.'
+      ]
+    };
+  }
+
+  function updateOrientacoesFotosPorSexo(){
+    const orientacao = getOrientacaoRoupaFotos();
+    const titulo = document.getElementById('photo_clothing_title');
+    const texto = document.getElementById('photo_clothing_text');
+    const avisoTitulo = document.getElementById('photo_warning_title');
+    const avisoTexto = document.getElementById('photo_warning_text');
+
+    if(titulo) titulo.textContent = orientacao.titulo;
+    if(texto) texto.textContent = orientacao.tela;
+    if(avisoTitulo) avisoTitulo.textContent = '⚠️ Privacidade e segurança:';
+    if(avisoTexto) avisoTexto.textContent = orientacao.alerta;
   }
 
   // ── Nivel classification ───────────────────────────────────────────────
@@ -1824,27 +2142,72 @@
     ];
   }
 
+  function getInstrucoesFotosWhatsApp(){
+    const orientacaoRoupa = getOrientacaoRoupaFotos();
+    return [
+      '━━━━━━━━━━━━━━━━━━━━━',
+      '📸 ENVIO DE FOTOS CONFIRMADO — MAIOR DE 18 ANOS',
+      '',
+      'Envie 4 fotos separadas nesta mesma conversa do WhatsApp:',
+      '1. De frente',
+      '2. De costas',
+      '3. Perfil direito',
+      '4. Perfil esquerdo',
+      '',
+      'PADRÃO PARA AS 4 FOTOS:',
+      '• Enquadre o corpo inteiro, da cabeça aos pés, sem cortar nenhuma parte.',
+      '• Fique em postura natural, sem fazer pose, contrair o corpo ou prender a barriga.',
+      '• Mantenha os pés paralelos, o olhar à frente e os braços relaxados ao lado do corpo.',
+      '• Use o celular na vertical, reto, sem inclinar e posicionado na altura do umbigo.',
+      '• Fotografe em local bem iluminado, diante de parede lisa e sem objetos cobrindo o corpo.',
+      '• Não faça selfie nem tire pelo espelho. Peça para alguém fotografar ou use o temporizador.',
+      '',
+      'ROUPA ADEQUADA OBRIGATÓRIA:',
+      ...orientacaoRoupa.whatsapp,
+      '',
+      '🔒 PRIVACIDADE E SEGURANÇA:',
+      '• Siga a orientação de roupa correspondente ao sexo biológico informado na ficha.',
+      '━━━━━━━━━━━━━━━━━━━━━'
+    ];
+  }
+
   function buildMessage(){
     const lines = [];
     const stamp = new Date().toLocaleString('pt-BR');
+    const modalidadePlano = getModalidadePlano();
+    const nomePlano = getPlanoNome();
+    const valorPlano = getValorPlanoFormatado();
+    const personal = isPlanoPersonal();
+    const dupla = personal && isPlanoDupla();
     lines.push('📋 NOVA AVALIAÇÃO — PERSONAL MFIT');
-    lines.push('📦 PLANO ESCOLHIDO: ' + getPlanoLabel());
-    if(isPlanoPersonal() && getPersonalFrequenciaTexto()) lines.push('📅 FREQUÊNCIA: ' + getPersonalFrequenciaTexto());
+    lines.push('🧭 MODALIDADE: ' + (modalidadePlano || 'NÃO INFORMADA'));
+    if(personal) lines.push('👥 FORMATO: ' + (dupla ? 'EM DUPLA — 2 PESSOAS' : 'INDIVIDUAL — SEM DUPLA'));
+    lines.push('📦 PLANO ESCOLHIDO: ' + (nomePlano || getPlanoLabel()));
+    if(personal && getPersonalFrequenciaTexto()) lines.push('📅 FREQUÊNCIA: ' + getPersonalFrequenciaTexto());
+
+    if(dupla){
+      const valorPessoa = getValorPorPessoaFormatado();
+      const valorSessao = getValorSessaoFormatado();
+      if(valorPlano) lines.push('💰 VALOR TOTAL DA DUPLA: ' + valorPlano + ' por mês');
+      if(valorPessoa) lines.push('👤 REFERÊNCIA POR PESSOA: ' + valorPessoa + ' por mês');
+      if(valorSessao) lines.push('💵 VALOR POR SESSÃO/PESSOA: ' + valorSessao);
+    } else if(personal){
+      const valorSessao = getValorSessaoFormatado();
+      if(valorPlano) lines.push('💰 VALOR DO PACOTE INDIVIDUAL: ' + valorPlano + ' por mês');
+      if(valorSessao) lines.push('💵 VALOR POR SESSÃO: ' + valorSessao);
+    } else if(valorPlano){
+      lines.push('💰 VALOR DO PLANO ONLINE: ' + valorPlano + ' por mês');
+    }
+
     lines.push(...getNivelResumoWhatsApp());
     lines.push('🕒 Data/Hora: ' + stamp);
     lines.push('');
 
     // Bloco de fotos no TOPO da mensagem
-    const planoMsg = getPlanoKey();
     const fotosValMsg = document.getElementById('fotos');
-    const enviarFotos = fotosValMsg && fotosValMsg.value === 'Sim' && (planoMsg === 'prata' || planoMsg === 'ouro') && !idadeMenor18();
+    const enviarFotos = fotosValMsg && fotosValMsg.value === 'Sim' && idadePermiteFotos();
     if(enviarFotos){
-      lines.push('━━━━━━━━━━━━━━━━━━━━━');
-      lines.push('📸 ENVIAR FOTOS — Clique aqui:');
-      lines.push('https://docs.google.com/forms/d/e/1FAIpQLSdPfcwdKj1kU2Oh_vRalywjHtm_by26FGhZoBhunjtEHjXgGw/viewform?usp=publish-editor');
-      lines.push('✅ Short/bermuda + cropped ou top esportivo');
-      lines.push('✅ 4 ângulos: frente, costas, lado direito, lado esquerdo');
-      lines.push('━━━━━━━━━━━━━━━━━━━━━');
+      lines.push(...getInstrucoesFotosWhatsApp());
       lines.push('');
     }
 
@@ -1922,6 +2285,8 @@
     if(fotosEl) fotosEl.addEventListener('change', updateFotosPorPlano);
     const idadeInputF = document.getElementById('idade');
     if(idadeInputF) idadeInputF.addEventListener('input', updateFotosPorPlano);
+    const sexoFotosEl = document.getElementById('sexo');
+    if(sexoFotosEl) sexoFotosEl.addEventListener('change', updateFotosPorPlano);
     updateFotosPorPlano();
 
     // Pain block
