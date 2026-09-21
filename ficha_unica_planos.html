@@ -210,6 +210,16 @@
     .label{font-size:.84rem;font-weight:600;color:var(--muted);line-height:1.3;}
     .helper{font-size:.75rem;color:var(--muted-2);font-style:italic;margin-top:2px;}
 
+    .local-choice{
+      grid-column:1/-1;
+      padding:16px;
+      border:1px solid rgba(163,89,218,.42);
+      border-radius:12px;
+      background:rgba(163,89,218,.09);
+    }
+    .local-choice .label{color:var(--text);font-size:.92rem;}
+    .local-choice .helper{margin-top:4px;}
+
     select,input[type=text],input[type=number],input[type=tel],textarea{
       width:100%;
       background:var(--card-2);
@@ -282,6 +292,21 @@
     .btn-primary:hover{opacity:.9;}
     .btn-secondary{background:var(--card-2);border:1px solid var(--line);color:var(--muted);}
     .btn-secondary:hover{border-color:var(--purple);}
+
+    /* No celular, a área da ficha ocupa toda a largura a partir do Bloco 1. */
+    @media(max-width:680px){
+      .wrap > form{
+        margin-left:-16px;
+        margin-right:-16px;
+        background:var(--card);
+      }
+      .wrap > form .section,
+      .wrap > form .submit-bar{
+        border-left:0;
+        border-right:0;
+        border-radius:0;
+      }
+    }
 
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*,*::before,*::after{transition:none!important;}}
 </style>
@@ -924,36 +949,35 @@
 <h2>BLOCO 7 — 🏋️ Local de Treino e Equipamentos</h2>
 <p class="desc">Onde você treina e o que tem disponível — define o que pode ser prescrito.</p>
 <div class="grid">
-  <div class="field col-4">
-    <label class="label" for="onde_treina">44. Onde você costuma treinar?</label>
-    <select id="onde_treina" name="onde_treina">
-      <option value="">Selecione</option><option>Academia</option><option>Casa</option><option>Condomínio</option><option>Ao ar livre</option>
+  <div class="field col-12 local-choice" id="wrap_onde_treina">
+    <label class="label" for="onde_treina">44. Onde você vai realizar seus treinos? *</label>
+    <select id="onde_treina" name="onde_treina" required>
+      <option value="">Escolha o local de treino</option>
+      <option value="Academia">Academia</option>
+      <option value="Casa">Em casa</option>
+      <option value="Condomínio">Academia do condomínio</option>
+      <option value="Ao ar livre">Ao ar livre</option>
     </select>
+    <span class="helper">Escolha primeiro o local. As perguntas sobre espaço e equipamentos aparecerão em seguida.</span>
   </div>
-  <div class="field col-4">
-    <label class="label" for="lotacao">45. No seu horário, o local costuma estar lotado?</label>
+  <div class="field col-4 hidden" hidden id="wrap_local_contexto">
+    <label class="label" for="lotacao" id="lotacao_label">45. No seu horário, o local costuma estar lotado?</label>
     <select id="lotacao" name="lotacao">
-      <option value="">Selecione</option><option>Pouco</option><option>Médio</option><option>Muito</option><option>Varia</option>
+      <option value="">Selecione</option>
     </select>
   </div>
-  <div class="field col-4">
-    <label class="label" for="pref_equip">46. Qual tipo de equipamento você prefere usar?</label>
+  <div class="field col-4 hidden" hidden id="wrap_preferencia_contexto">
+    <label class="label" for="pref_equip" id="pref_equip_label">46. Qual tipo de equipamento você prefere usar?</label>
     <select id="pref_equip" name="pref_equip">
-      <option value="">Selecione</option><option>Máquinas</option><option>Pesos livres</option><option>Gosto dos dois</option><option>Sem preferência</option>
+      <option value="">Selecione</option>
     </select>
   </div>
-  <div class="field col-12">
-    <label class="label">47. Quais equipamentos você realmente tem acesso?</label>
-    <div class="options inline-2">
-      <label class="option"><input name="equip_real" type="checkbox" value="Máquinas em geral"/><span>Máquinas em geral</span></label>
-      <label class="option"><input name="equip_real" type="checkbox" value="Cabos / polias"/><span>Cabos / polias</span></label>
-      <label class="option"><input name="equip_real" type="checkbox" value="Halteres"/><span>Halteres</span></label>
-      <label class="option"><input name="equip_real" type="checkbox" value="Barras / anilhas"/><span>Barras / anilhas</span></label>
-      <label class="option"><input name="equip_real" type="checkbox" value="Banco regulável"/><span>Banco regulável</span></label>
-      <label class="option"><input name="equip_real" type="checkbox" value="Leg Press"/><span>Leg Press</span></label>
-      <label class="option"><input name="equip_real" type="checkbox" value="Smith"/><span>Smith</span></label>
-      <label class="option"><input name="equip_real" type="checkbox" value="Elásticos"/><span>Elásticos</span></label>
-      <label class="option"><input name="equip_real" type="checkbox" value="Não sei / tanto faz"/><span>Não sei / tanto faz</span></label>
+  <div class="field col-12 hidden" hidden id="wrap_equipamentos_contexto">
+    <label class="label" id="equip_real_label">47. Quais equipamentos você realmente tem acesso?</label>
+    <div class="options inline-2" id="equip_real_options"></div>
+    <div style="margin-top:10px;">
+      <label class="helper" for="equip_outro" id="equip_outro_label">Outro equipamento ou objeto disponível (opcional)</label>
+      <input id="equip_outro" name="equip_outro" placeholder="Descreva aqui, se houver" type="text"/>
     </div>
   </div>
   <div class="field col-6">
@@ -1279,6 +1303,124 @@
   function showSection(id,s){ const el=document.getElementById(id); if(el){ el.classList.toggle('hidden',!s); if(!s) resetInside(el); } }
   function resetInside(el){ if(!el) return; el.querySelectorAll('input,select,textarea').forEach(c=>{ if(c.type==='checkbox'||c.type==='radio') c.checked=false; else c.value=''; }); }
 
+  // ── Local de treino e equipamentos adaptativos ───────────────────────
+  const LOCAL_TREINO_CONFIG = {
+    Academia: {
+      perguntaLocal: '45. No seu horário, a academia costuma estar lotada?',
+      opcoesLocal: ['Pouco', 'Médio', 'Muito', 'Varia'],
+      perguntaPreferencia: '46. Qual tipo de equipamento você prefere usar na academia?',
+      opcoesPreferencia: ['Máquinas', 'Pesos livres', 'Gosto dos dois', 'Sem preferência'],
+      perguntaEquipamentos: '47. Quais equipamentos da academia você realmente tem acesso?',
+      equipamentos: ['Máquinas em geral', 'Cabos / polias', 'Halteres', 'Barras / anilhas', 'Banco regulável', 'Leg Press', 'Smith', 'Elásticos', 'Não sei informar'],
+      rotuloOutro: 'Outro equipamento da academia (opcional)',
+      placeholderOutro: 'Ex.: hack squat, cadeira extensora...'
+    },
+    Casa: {
+      perguntaLocal: '45. Você tem um espaço livre e seguro para treinar em casa?',
+      opcoesLocal: ['Sim, um espaço confortável', 'Sim, mas o espaço é pequeno', 'Preciso adaptar o espaço', 'Não tenho espaço fixo'],
+      perguntaPreferencia: '46. Como você prefere treinar em casa?',
+      opcoesPreferencia: ['Com o peso do corpo', 'Com pesos e acessórios', 'Com aparelho de cardio', 'Misturando as opções', 'Sem preferência'],
+      perguntaEquipamentos: '47. Quais objetos ou equipamentos você tem para treinar em casa?',
+      equipamentos: ['Nenhum — treino só com o peso do corpo', 'Colchonete / tapete', 'Elásticos / minibands', 'Halteres / pesos', 'Kettlebell', 'Barra / anilhas', 'Banco / caixa / cadeira firme', 'Corda de pular', 'Step', 'Esteira', 'Bike ergométrica'],
+      rotuloOutro: 'Outro equipamento ou objeto que você tem em casa (opcional)',
+      placeholderOutro: 'Ex.: caneleiras, bola, saco de areia...'
+    },
+    Condomínio: {
+      perguntaLocal: '45. No seu horário, a academia do condomínio costuma estar lotada?',
+      opcoesLocal: ['Pouco', 'Médio', 'Muito', 'Varia'],
+      perguntaPreferencia: '46. Qual tipo de equipamento você prefere usar no condomínio?',
+      opcoesPreferencia: ['Máquinas', 'Pesos livres', 'Gosto dos dois', 'Sem preferência'],
+      perguntaEquipamentos: '47. Quais equipamentos existem na academia do condomínio?',
+      equipamentos: ['Máquinas em geral', 'Cabos / polias', 'Halteres', 'Barras / anilhas', 'Banco regulável', 'Leg Press', 'Smith', 'Elásticos', 'Esteira', 'Bike ergométrica', 'Equipamentos limitados / não sei informar'],
+      rotuloOutro: 'Outro equipamento do condomínio (opcional)',
+      placeholderOutro: 'Descreva o que mais existe no local'
+    },
+    'Ao ar livre': {
+      perguntaLocal: '45. O local costuma estar disponível e seguro no seu horário?',
+      opcoesLocal: ['Sim', 'Na maioria das vezes', 'Às vezes', 'Varia / não sei'],
+      perguntaPreferencia: '46. Como você prefere treinar ao ar livre?',
+      opcoesPreferencia: ['Com o peso do corpo', 'Caminhada / corrida / bike', 'Com acessórios portáteis', 'Misturando as opções', 'Sem preferência'],
+      perguntaEquipamentos: '47. Quais estruturas ou equipamentos você tem disponíveis ao ar livre?',
+      equipamentos: ['Nenhum — apenas espaço livre', 'Barras fixas / paralelas', 'Banco / mureta / escada', 'Pista / área para caminhada e corrida', 'Bicicleta', 'Elásticos / minibands', 'Halteres / pesos portáteis', 'Corda de pular', 'Colchonete / tapete'],
+      rotuloOutro: 'Outra estrutura ou equipamento disponível (opcional)',
+      placeholderOutro: 'Descreva aqui, se houver'
+    }
+  };
+
+  function preencherSelectAdaptativo(select, opcoes){
+    if(!select) return;
+    select.replaceChildren();
+    const inicial = document.createElement('option');
+    inicial.value = '';
+    inicial.textContent = 'Selecione';
+    select.appendChild(inicial);
+    opcoes.forEach(texto => {
+      const option = document.createElement('option');
+      option.value = texto;
+      option.textContent = texto;
+      select.appendChild(option);
+    });
+  }
+
+  function preencherEquipamentosAdaptativos(container, equipamentos){
+    if(!container) return;
+    container.replaceChildren();
+    equipamentos.forEach(texto => {
+      const label = document.createElement('label');
+      label.className = 'option';
+      const input = document.createElement('input');
+      input.type = 'checkbox';
+      input.name = 'equip_real';
+      input.value = texto;
+      const span = document.createElement('span');
+      span.textContent = texto;
+      label.append(input, span);
+      container.appendChild(label);
+    });
+  }
+
+  function updateLocalTreino(){
+    const ondeTreina = document.getElementById('onde_treina');
+    const local = val('onde_treina');
+    const config = LOCAL_TREINO_CONFIG[local];
+    const wrapLocal = document.getElementById('wrap_local_contexto');
+    const wrapPreferencia = document.getElementById('wrap_preferencia_contexto');
+    const wrapEquipamentos = document.getElementById('wrap_equipamentos_contexto');
+    const wraps = [wrapLocal, wrapPreferencia, wrapEquipamentos].filter(Boolean);
+    const localAnterior = ondeTreina?.dataset.localAplicado || '';
+
+    wraps.forEach(wrap => {
+      wrap.classList.toggle('hidden', !config);
+      wrap.hidden = !config;
+      wrap.setAttribute('aria-hidden', String(!config));
+    });
+    if(!config){
+      wraps.forEach(resetInside);
+      if(ondeTreina) ondeTreina.dataset.localAplicado = '';
+      return;
+    }
+
+    if(localAnterior === local) return;
+    wraps.forEach(resetInside);
+
+    const lotacaoLabel = document.getElementById('lotacao_label');
+    const preferenciaLabel = document.getElementById('pref_equip_label');
+    const equipamentosLabel = document.getElementById('equip_real_label');
+    const outroLabel = document.getElementById('equip_outro_label');
+    const outroInput = document.getElementById('equip_outro');
+
+    if(lotacaoLabel) lotacaoLabel.textContent = config.perguntaLocal;
+    if(preferenciaLabel) preferenciaLabel.textContent = config.perguntaPreferencia;
+    if(equipamentosLabel) equipamentosLabel.textContent = config.perguntaEquipamentos;
+    if(outroLabel) outroLabel.textContent = config.rotuloOutro;
+    if(outroInput) outroInput.placeholder = config.placeholderOutro;
+
+    preencherSelectAdaptativo(document.getElementById('lotacao'), config.opcoesLocal);
+    preencherSelectAdaptativo(document.getElementById('pref_equip'), config.opcoesPreferencia);
+    preencherEquipamentosAdaptativos(document.getElementById('equip_real_options'), config.equipamentos);
+    if(ondeTreina) ondeTreina.dataset.localAplicado = local;
+  }
+
   // ── Plano selecionado pelo site ───────────────────────────────────────
   const PLANOS_CONFIG = {
     prata:  { label:'MAIS DIREÇÃO', icon:'🥈', classe:'prata', desc:'Treino personalizado com avaliação postural simples, análise inicial, ajuste básico e suporte para dúvidas.' },
@@ -1406,9 +1548,16 @@
   }
 
   function getValorPorPessoaFormatado(){
-    return formatarValorBR(getPlanoParam(
+    const valorExplicito = getPlanoParam(
       'valorPorPessoa', 'valor_por_pessoa', 'totalPessoa', 'total_pessoa'
-    ));
+    );
+    if(valorExplicito) return formatarValorBR(valorExplicito);
+
+    const totalDupla = getPlanoParam('totalDupla', 'total_dupla', 'valorDupla', 'valor_dupla');
+    if(isPlanoDupla() && totalDupla){
+      return formatarValorBR(getPlanoParam('total'));
+    }
+    return '';
   }
 
   function getValorSessaoFormatado(){
@@ -1468,6 +1617,13 @@
   }
 
   function getPlanoNome(){
+    if(isPlanoPersonal()){
+      const frequencia = getPersonalFrequenciaSemanal();
+      const base = isPlanoDupla() ? 'PERSONAL EM DUPLA' : 'PERSONAL';
+      if(!frequencia) return base;
+      return base + ' — ' + frequencia + ' ' + (frequencia === 1 ? 'VEZ' : 'VEZES') + ' POR SEMANA';
+    }
+
     const plano = getPlanoKey();
     if(plano) return PLANOS_CONFIG[plano].label;
 
@@ -1492,14 +1648,7 @@
     const planoBusca = normalizarBuscaPlano(planoBruto);
     const planoGenerico = ['online', 'presencial', 'personal', 'bronze', 'essencial', 'treino essencial'].includes(planoBusca);
     const planoEhValor = /^\d+(?:[.,]\d{1,2})?$/.test(planoBruto);
-    if(isPlanoPersonal() && ['sem dupla','individual','sozinho'].includes(planoBusca)) return 'Sem dupla (individual)';
-    if(isPlanoPersonal() && ['dupla','em dupla','com dupla'].includes(planoBusca)) return 'Em dupla';
     if(planoBruto && !planoGenerico && !planoEhValor) return limparNomePlano(planoBruto);
-
-    if(isPlanoPersonal()){
-      const formato = getFormatoPresencial();
-      return formato || 'PRESENCIAL';
-    }
 
     // Fallback para links online antigos que traziam apenas o valor.
     const valor = getValorPlanoFormatado();
@@ -1539,6 +1688,22 @@
     const modalidade = getModalidadePlano();
     const nome = getPlanoNome();
     const valor = getValorPlanoFormatado();
+
+    if(isPlanoPersonal()){
+      const frequencia = getPersonalFrequenciaSemanal();
+      const vezes = frequencia ? (frequencia + ' ' + (frequencia === 1 ? 'VEZ' : 'VEZES') + ' POR SEMANA') : '';
+      const partesPersonal = ['PRESENCIAL'];
+
+      if(isPlanoDupla()){
+        partesPersonal.push('PERSONAL EM DUPLA');
+        if(vezes) partesPersonal.push(vezes);
+      } else {
+        partesPersonal.push('INDIVIDUAL', 'PERSONAL' + (vezes ? ' ' + vezes : ''));
+      }
+      if(valor) partesPersonal.push(valor);
+      return partesPersonal.join(' — ');
+    }
+
     const formato = modalidade === 'PRESENCIAL' ? getFormatoPresencial() : '';
     const partes = [];
 
@@ -1728,7 +1893,8 @@
     if(icon) icon.textContent = personal ? '💪' : (cfg ? cfg.icon : (getModalidadePlano() === 'ONLINE' ? '🌐' : '📦'));
     if(texto) texto.textContent = planoIdentificado ? ('Plano escolhido: ' + planoCabecalho) : 'Plano não identificado';
     if(desc){
-      if(personal) desc.textContent = getPlanoDescPersonal();
+      desc.hidden = personal;
+      if(personal) desc.textContent = '';
       else if(cfg) desc.textContent = cfg.desc;
       else if(planoIdentificado) desc.textContent = 'Modalidade, plano e valor registrados conforme a escolha feita na página anterior.';
       else desc.textContent = 'Volte para a página dos planos e toque novamente em “Escolher Treino”. A avaliação não enviará um plano genérico ou incorreto.';
@@ -2244,6 +2410,10 @@
     const tempoSel = document.getElementById('tempo_treino_sel');
     if(tempoSel) tempoSel.addEventListener('change', () => show('wrap_tempo_treino_outro', tempoSel.value==='Outro'));
 
+    // Local de treino: troca perguntas e equipamentos conforme a escolha
+    const ondeTreina = document.getElementById('onde_treina');
+    if(ondeTreina) ondeTreina.addEventListener('change', updateLocalTreino);
+
     // Fotos conforme o plano selecionado
     const fotosEl = document.getElementById('fotos');
     if(fotosEl) fotosEl.addEventListener('change', updateFotosPorPlano);
@@ -2296,6 +2466,7 @@
     toggleCesarea();
     toggleMobAlongTriage();
     togglePainBlock();
+    updateLocalTreino();
 
     // Form submit
     const form = document.querySelector('form');
@@ -2318,6 +2489,7 @@
           toggleCesarea();
           toggleMobAlongTriage();
           togglePainBlock();
+          updateLocalTreino();
           show('wrap_objetivo_outro',false);
           show('wrap_foco_outro',false);
           show('wrap_cardio_tempo',false);
