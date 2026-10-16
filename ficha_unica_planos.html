@@ -1748,7 +1748,6 @@
   }
 
   function getPlanoDescPersonal(){
-    const valorSessao = getValorSessaoFormatado();
     const total = getValorPlanoFormatado();
     const valorPessoa = getValorPorPessoaFormatado();
     const partes = [];
@@ -1757,7 +1756,6 @@
     if(freqTxt) partes.push(freqTxt);
     if(total) partes.push(isPlanoDupla() ? ('total da dupla ' + total) : ('pacote ' + total));
     if(isPlanoDupla() && valorPessoa) partes.push('referência ' + valorPessoa + ' por pessoa');
-    if(valorSessao) partes.push(valorSessao + (isPlanoDupla() ? ' por sessão/pessoa' : ' por sessão'));
     return partes.length ? partes.join(' • ') : 'Plano Personal escolhido na página de planos.';
   }
 
@@ -2245,28 +2243,16 @@
 
   function getNivelResumoWhatsApp(){
     const nivel = calcNivel();
-    const base = calcNivelBase();
-    if(nivel === 'ini'){
+    const nomes = {ini:'Iniciante', int:'Intermediário', adv:'Avançado'};
+    if(!nomes[nivel]){
       return [
-        '📌 Nível final: Iniciante',
-        '✅ Classificação concluída na triagem inicial.'
-      ];
-    }
-    if(nivel === 'int'){
-      return [
-        '📌 Nível final: Intermediário',
-        base === 'int' ? '✅ Triagem inicial + confirmação intermediária concluídas.' : '✅ Classificação concluída.'
-      ];
-    }
-    if(nivel === 'adv'){
-      return [
-        '📌 Nível final: Avançado',
-        '✅ Triagem inicial + confirmação intermediária/avançada concluídas.'
+        '📌 Sugestão inicial de nível: Não classificado',
+        '⚠️ Triagem de nível incompleta. Conferir as respostas antes de classificar.'
       ];
     }
     return [
-      '📌 Nível final: Não classificado',
-      '⚠️ Triagem de nível incompleta.'
+      '📌 Nível final: ' + nomes[nivel],
+      '✅ Classificação concluída na triagem inicial.'
     ];
   }
 
@@ -2303,35 +2289,38 @@
 
   function buildMessage(){
     const lines = [];
-    const stamp = new Date().toLocaleString('pt-BR');
     const modalidadePlano = getModalidadePlano();
     const nomePlano = getPlanoNome();
     const valorPlano = getValorPlanoFormatado();
     const personal = isPlanoPersonal();
     const dupla = personal && isPlanoDupla();
-    lines.push('📋 NOVA AVALIAÇÃO — PERSONAL MFIT');
-    lines.push('🧭 MODALIDADE: ' + (modalidadePlano || 'NÃO INFORMADA'));
-    if(personal) lines.push('👥 FORMATO: ' + (dupla ? 'EM DUPLA — 2 PESSOAS' : 'INDIVIDUAL — SEM DUPLA'));
-    lines.push('📦 PLANO ESCOLHIDO: ' + (nomePlano || 'NÃO INFORMADO'));
-    if(personal && getPersonalFrequenciaTexto()) lines.push('📅 FREQUÊNCIA: ' + getPersonalFrequenciaTexto());
+    const frequencia = personal ? getPersonalFrequenciaTexto() : '';
+    const diasSelecionados = personal ? getPersonalDiasSelecionados() : [];
+
+    lines.push('📋 NOVA AVALIAÇÃO — PERSONAL MFIT', '');
+    lines.push('🧭 MODALIDADE: ' + (modalidadePlano || 'NÃO INFORMADA'), '');
+    if(personal) lines.push('👥 FORMATO: ' + (dupla ? 'EM DUPLA' : 'INDIVIDUAL'), '');
+    lines.push('📦 PLANO ESCOLHIDO: ' + (nomePlano || 'NÃO INFORMADO'), '');
+    if(frequencia) lines.push('📅 FREQUÊNCIA: ' + frequencia, '');
+    if(diasSelecionados.length){
+      lines.push('Dias de treino:', diasSelecionados.join(' • '), '');
+    }
 
     if(dupla){
       const valorPessoa = getValorPorPessoaFormatado();
       const valorSessao = getValorSessaoFormatado();
-      if(valorPlano) lines.push('💰 VALOR TOTAL DA DUPLA: ' + valorPlano + ' por mês');
-      if(valorPessoa) lines.push('👤 REFERÊNCIA POR PESSOA: ' + valorPessoa + ' por mês');
-      if(valorSessao) lines.push('💵 VALOR POR SESSÃO/PESSOA: ' + valorSessao);
+      if(valorPlano) lines.push('💰 VALOR TOTAL DA DUPLA: ' + valorPlano + ' por mês', '');
+      if(valorPessoa) lines.push('👤 REFERÊNCIA POR PESSOA: ' + valorPessoa + ' por mês', '');
+      if(valorSessao) lines.push('💵 VALOR POR SESSÃO/PESSOA: ' + valorSessao, '');
     } else if(personal){
       const valorSessao = getValorSessaoFormatado();
-      if(valorPlano) lines.push('💰 VALOR DO PACOTE INDIVIDUAL: ' + valorPlano + ' por mês');
-      if(valorSessao) lines.push('💵 VALOR POR SESSÃO: ' + valorSessao);
+      if(valorPlano) lines.push('💰 VALOR DO PACOTE INDIVIDUAL: ' + valorPlano + ' por mês', '');
+      if(valorSessao) lines.push('💵 VALOR POR SESSÃO: ' + valorSessao, '');
     } else if(valorPlano){
-      lines.push('💰 VALOR DO PLANO ONLINE: ' + valorPlano + ' por mês');
+      lines.push('💰 VALOR DO PLANO ONLINE: ' + valorPlano + ' por mês', '');
     }
 
-    lines.push(...getNivelResumoWhatsApp());
-    lines.push('🕒 Data/Hora: ' + stamp);
-    lines.push('');
+    getNivelResumoWhatsApp().forEach(linha => lines.push(linha, ''));
 
     // Bloco de fotos no TOPO da mensagem
     const fotosValMsg = document.getElementById('fotos');
@@ -2341,20 +2330,12 @@
       lines.push('');
     }
 
-    const SECOES_INTERNAS_CLASSIFICACAO = new Set([
-      'section_nivel_base',
-      'bloco_int_experiencia',
-      'bloco_int_estrategia',
-      'bloco_adv_estrategia'
-    ]);
-
     document.querySelectorAll('.section').forEach(sec => {
       if(sec.classList.contains('hidden')) return; // skip hidden sections entirely
-      if(SECOES_INTERNAS_CLASSIFICACAO.has(sec.id)) return; // testes de nível ficam só na lógica interna
       const title = sec.querySelector('h2');
       const secLines = [];
       sec.querySelectorAll('.field').forEach(field => {
-        if(isFieldHidden(field)) return;
+        if(isFieldHidden(field) || field.id === 'wrap_personal_dias_semana') return;
         const label = field.querySelector(':scope > .label');
         if(!label) return;
         const v = getVal(field);
